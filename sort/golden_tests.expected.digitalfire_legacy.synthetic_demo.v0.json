@@ -1,0 +1,210 @@
+{
+  "generated": "2026-01-27",
+  "profile": "digitalfire_legacy",
+  "expected": [
+    {
+      "id": "gt_01_cone6_glossy_base",
+      "name": "Cone 6 Glossy Base",
+      "expect": {
+        "status": "OK",
+        "diagnostic_codes": [],
+        "umf": {
+          "Al2O3": 0.7151075191936194,
+          "CaO": 0.7272638184851592,
+          "K2O": 0.21152162755082357,
+          "Na2O": 0.06121455396401715,
+          "SiO2": 4.860560356504369
+        },
+        "stull_point": {
+          "sio2": 4.860560356504369,
+          "al2o3": 0.7151075191936194
+        },
+        "ratio_sio2_al2o3": 6.796964408911976
+      }
+    },
+    {
+      "id": "gt_02_cone6_boron_glossy",
+      "name": "Cone 6 Boron Frit Glossy",
+      "expect": {
+        "status": "OK",
+        "diagnostic_codes": [],
+        "umf": {
+          "Al2O3": 0.856294507698861,
+          "B2O3": 0.42684162065683307,
+          "CaO": 0.3959072877719503,
+          "K2O": 0.22076139870913913,
+          "Na2O": 0.38333131351891075,
+          "SiO2": 5.477452452918482
+        },
+        "stull_point": {
+          "sio2": 5.477452452918482,
+          "al2o3": 0.856294507698861
+        },
+        "ratio_sio2_al2o3": 6.396692263784525
+      }
+    },
+    {
+      "id": "gt_03_cone6_mg_matte",
+      "name": "Cone 6 Magnesium Matte",
+      "expect": {
+        "status": "OK",
+        "diagnostic_codes": [],
+        "umf": {
+          "Al2O3": 0.5687357460808135,
+          "CaO": 0.01253629191222626,
+          "K2O": 0.15678349789589976,
+          "MgO": 0.7853069213998808,
+          "Na2O": 0.04537328879199311,
+          "SiO2": 4.6172471273449425
+        },
+        "stull_point": {
+          "sio2": 4.6172471273449425,
+          "al2o3": 0.5687357460808135
+        },
+        "ratio_sio2_al2o3": 8.118440170435257
+      }
+    },
+    {
+      "id": "gt_04_cone6_ca_matte",
+      "name": "Cone 6 Calcium Matte",
+      "expect": {
+        "status": "OK",
+        "diagnostic_codes": [],
+        "umf": {
+          "Al2O3": 0.26656728015477804,
+          "CaO": 0.8982341274154848,
+          "K2O": 0.07892492620028511,
+          "Na2O": 0.022840946384229975,
+          "SiO2": 1.9734045607340127
+        },
+        "stull_point": {
+          "sio2": 1.9734045607340127,
+          "al2o3": 0.26656728015477804
+        },
+        "ratio_sio2_al2o3": 7.403026206322797
+      }
+    },
+    {
+      "id": "gt_05_cone6_zinc_matte",
+      "name": "Cone 6 Zinc Matte",
+      "expect": {
+        "status": "OK",
+        "diagnostic_codes": [],
+        "umf": {
+          "Al2O3": 0.5417217984333809,
+          "B2O3": 0.2335007751868022,
+          "CaO": 0.22632093851661972,
+          "K2O": 0.11321813064391918,
+          "Na2O": 0.1638271567842886,
+          "SiO2": 3.873626337383452,
+          "ZnO": 0.4966337740551726
+        },
+        "stull_point": {
+          "sio2": 3.873626337383452,
+          "al2o3": 0.5417217984333809
+        },
+        "ratio_sio2_al2o3": 7.150582362728787
+      }
+    },
+    {
+      "id": "gt_06_cone10_reduc_base",
+      "name": "Cone 10 Reduction Base",
+      "expect": {
+        "status": "OK",
+        "diagnostic_codes": [],
+        "umf": {
+          "Al2O3": 0.6847209804557768,
+          "CaO": 0.5817743807978557,
+          "Fe2O3": 0.007879235109035336,
+          "K2O": 0.33011374271400706,
+          "Na2O": 0.08811187648813712,
+          "SiO2": 6.383797363992691,
+          "TiO2": 0.010518795306179841
+        },
+        "stull_point": {
+          "sio2": 6.383797363992691,
+          "al2o3": 0.6847209804557768
+        },
+        "ratio_sio2_al2o3": 9.32320981276693
+      }
+    },
+    {
+      "id": "gt_07_cone10_iron_sat",
+      "name": "Cone 10 Iron Saturation Base",
+      "expect": {
+        "status": "OK",
+        "diagnostic_codes": [],
+        "umf": {
+          "Al2O3": 0.6634272096593681,
+          "CaO": 0.6070404758074283,
+          "Fe2O3": 0.3715588127850935,
+          "K2O": 0.31009495423651745,
+          "Na2O": 0.08286456995605432,
+          "SiO2": 5.873989078273,
+          "TiO2": 0.01102292866928382
+        },
+        "stull_point": {
+          "sio2": 5.873989078273,
+          "al2o3": 0.6634272096593681
+        },
+        "ratio_sio2_al2o3": 8.854006879351479
+      }
+    },
+    {
+      "id": "gt_08_cone04_lowfire_boron",
+      "name": "Cone 04 Low-fire Boron",
+      "expect": {
+        "status": "OK",
+        "diagnostic_codes": [],
+        "umf": {
+          "Al2O3": 0.30096311805443715,
+          "B2O3": 0.3621897579153731,
+          "CaO": 0.7289418585923659,
+          "Na2O": 0.27105814140763407,
+          "SiO2": 2.0599216048626743
+        },
+        "stull_point": {
+          "sio2": 2.0599216048626743,
+          "al2o3": 0.30096311805443715
+        },
+        "ratio_sio2_al2o3": 6.844432029342821
+      }
+    },
+    {
+      "id": "gt_09_high_expansion",
+      "name": "High Expansion Diagnostic",
+      "expect": {
+        "status": "OK",
+        "diagnostic_codes": [],
+        "umf": {
+          "Al2O3": 0.7054681303263373,
+          "B2O3": 0.28483292716266767,
+          "CaO": 0.2986865276434595,
+          "K2O": 0.0275589031740646,
+          "Na2O": 0.6737545691824761,
+          "SiO2": 4.788808597847075
+        },
+        "stull_point": {
+          "sio2": 4.788808597847075,
+          "al2o3": 0.7054681303263373
+        },
+        "ratio_sio2_al2o3": 6.788128891990991
+      }
+    },
+    {
+      "id": "gt_10_unknown_material",
+      "name": "Unknown Material Case",
+      "expect": {
+        "status": "ERROR",
+        "diagnostic_codes": [
+          "RECIPE_TOTAL_NOT_100",
+          "MATERIAL_NO_ANALYSIS",
+          "UMF_NOT_COMPUTABLE"
+        ],
+        "umf": null,
+        "stull_point": null,
+        "ratio_sio2_al2o3": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "catalog_version": "2026-01-27",
+  "note": "SYNTHETIC demo catalog. Values are plausible placeholders for testing the compute pipeline ONLY. Do not treat as real analyses.",
+  "materials": [
+    {
+      "id": "m_ball_clay",
+      "name": "Ball Clay"
+    },
+    {
+      "id": "m_custer_feldspar",
+      "name": "Custer Feldspar"
+    },
+    {
+      "id": "m_epk_kaolin",
+      "name": "Epk Kaolin"
+    },
+    {
+      "id": "m_frit_3124",
+      "name": "Frit 3124"
+    },
+    {
+      "id": "m_frit_3134",
+      "name": "Frit 3134"
+    },
+    {
+      "id": "m_frit_3195",
+      "name": "Frit 3195"
+    },
+    {
+      "id": "m_kaolin",
+      "name": "Kaolin"
+    },
+    {
+      "id": "m_potash_feldspar",
+      "name": "Potash Feldspar"
+    },
+    {
+      "id": "m_red_iron_oxide",
+      "name": "Red Iron Oxide"
+    },
+    {
+      "id": "m_silica_325",
+      "name": "Silica 325"
+    },
+    {
+      "id": "m_soda_feldspar",
+      "name": "Soda Feldspar"
+    },
+    {
+      "id": "m_talc",
+      "name": "Talc"
+    },
+    {
+      "id": "m_unknown",
+      "name": "Unknown"
+    },
+    {
+      "id": "m_whiting",
+      "name": "Whiting"
+    },
+    {
+      "id": "m_wollastonite",
+      "name": "Wollastonite"
+    },
+    {
+      "id": "m_zinc_oxide",
+      "name": "Zinc Oxide"
+    }
+  ],
+  "analyses": [
+    {
+      "materialId": "m_custer_feldspar",
+      "oxides_wt_pct": {
+        "SiO2": 68.5,
+        "Al2O3": 18.5,
+        "K2O": 10.5,
+        "Na2O": 2.0,
+        "CaO": 0.5
+      },
+      "LOI_pct": 0.0,
+      "source": "synthetic_demo",
+      "version": "0"
+    },
+    {
+      "materialId": "m_potash_feldspar",
+      "oxides_wt_pct": {
+        "SiO2": 67.5,
+        "Al2O3": 18.5,
+        "K2O": 11.5,
+        "Na2O": 2.0,
+        "CaO": 0.5
+      },
+      "LOI_pct": 0.0,
+      "source": "synthetic_demo",
+      "version": "0"
+    },
+    {
+      "materialId": "m_soda_feldspar",
+      "oxides_wt_pct": {
+        "SiO2": 68.0,
+        "Al2O3": 19.0,
+        "Na2O": 11.0,
+        "K2O": 1.0,
+        "CaO": 1.0
+      },
+      "LOI_pct": 0.0,
+      "source": "synthetic_demo",
+      "version": "0"
+    },
+    {
+      "materialId": "m_silica_325",
+      "oxides_wt_pct": {
+        "SiO2": 99.5,
+        "Al2O3": 0.3
+      },
+      "LOI_pct": 0.0,
+      "source": "synthetic_demo",
+      "version": "0"
+    },
+    {
+      "materialId": "m_epk_kaolin",
+      "oxides_wt_pct": {
+        "SiO2": 46.5,
+        "Al2O3": 39.5
+      },
+      "LOI_pct": 0.0,
+      "source": "synthetic_demo",
+      "version": "0"
+    },
+    {
+      "materialId": "m_kaolin",
+      "oxides_wt_pct": {
+        "SiO2": 46.5,
+        "Al2O3": 39.5
+      },
+      "LOI_pct": 0.0,
+      "source": "synthetic_demo",
+      "version": "0"
+    },
+    {
+      "materialId": "m_ball_clay",
+      "oxides_wt_pct": {
+        "SiO2": 55.0,
+        "Al2O3": 27.0,
+        "K2O": 2.5,
+        "Na2O": 0.5,
+        "Fe2O3": 1.5,
+        "TiO2": 1.0
+      },
+      "LOI_pct": 0.0,
+      "source": "synthetic_demo",
+      "version": "0"
+    },
+    {
+      "materialId": "m_whiting",
+      "oxides_wt_pct": {
+        "CaO": 56.0
+      },
+      "LOI_pct": 44.0,
+      "source": "synthetic_demo",
+      "version": "0"
+    },
+    {
+      "materialId": "m_wollastonite",
+      "oxides_wt_pct": {
+        "CaO": 48.0,
+        "SiO2": 52.0
+      },
+      "LOI_pct": 0.0,
+      "source": "synthetic_demo",
+      "version": "0"
+    },
+    {
+      "materialId": "m_talc",
+      "oxides_wt_pct": {
+        "MgO": 31.5,
+        "SiO2": 63.5
+      },
+      "LOI_pct": 0.0,
+      "source": "synthetic_demo",
+      "version": "0"
+    },
+    {
+      "materialId": "m_zinc_oxide",
+      "oxides_wt_pct": {
+        "ZnO": 99.5
+      },
+      "LOI_pct": 0.0,
+      "source": "synthetic_demo",
+      "version": "0"
+    },
+    {
+      "materialId": "m_red_iron_oxide",
+      "oxides_wt_pct": {
+        "Fe2O3": 99.0
+      },
+      "LOI_pct": 0.0,
+      "source": "synthetic_demo",
+      "version": "0"
+    },
+    {
+      "materialId": "m_frit_3134",
+      "oxides_wt_pct": {
+        "SiO2": 20.0,
+        "B2O3": 21.0,
+        "Na2O": 14.0,
+        "CaO": 15.0,
+        "Al2O3": 4.0
+      },
+      "LOI_pct": 0.0,
+      "source": "synthetic_demo",
+      "version": "0"
+    },
+    {
+      "materialId": "m_frit_3124",
+      "oxides_wt_pct": {
+        "SiO2": 30.0,
+        "B2O3": 20.0,
+        "Na2O": 10.0,
+        "CaO": 15.0,
+        "Al2O3": 5.0
+      },
+      "LOI_pct": 0.0,
+      "source": "synthetic_demo",
+      "version": "0"
+    },
+    {
+      "materialId": "m_frit_3195",
+      "oxides_wt_pct": {
+        "SiO2": 30.0,
+        "B2O3": 18.0,
+        "Na2O": 12.0,
+        "CaO": 18.0,
+        "Al2O3": 6.0
+      },
+      "LOI_pct": 0.0,
+      "source": "synthetic_demo",
+      "version": "0"
+    }
+  ]
+}

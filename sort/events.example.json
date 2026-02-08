@@ -1,0 +1,46 @@
+{
+  "events": [
+    {
+      "type": "ADD_MATERIAL",
+      "fields": [
+        "recipeId",
+        "materialId"
+      ]
+    },
+    {
+      "type": "REMOVE_MATERIAL",
+      "fields": [
+        "recipeId",
+        "materialId"
+      ]
+    },
+    {
+      "type": "SET_MATERIAL_PERCENT",
+      "fields": [
+        "recipeId",
+        "materialId",
+        "percent"
+      ]
+    },
+    {
+      "type": "SET_CONE",
+      "fields": [
+        "recipeId",
+        "cone"
+      ]
+    },
+    {
+      "type": "SET_ATMOS",
+      "fields": [
+        "recipeId",
+        "atmosphere"
+      ]
+    },
+    {
+      "type": "NORMALIZE_TO_100",
+      "fields": [
+        "recipeId"
+      ]
+    }
+  ]
+}

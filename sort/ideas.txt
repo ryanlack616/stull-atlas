@@ -1,0 +1,7 @@
+
+
+stull map interactive in taichi and py
+
+maped in 2d on the map, and another aspect in vertical, and another in color
+
+gradient mapped to the struture of best detailed stull map

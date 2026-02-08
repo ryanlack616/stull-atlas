@@ -1,0 +1,104 @@
+{
+  "generated": "2026-01-22",
+  "profiles": [
+    "glazy_v1",
+    "digitalfire_legacy"
+  ],
+  "recipes": [
+    {
+      "id": "gt_01_cone6_glossy_base",
+      "name": "Cone 6 Glossy Base",
+      "recipeDoc": {
+        "cone": "6",
+        "atmosphere": "ox",
+        "items": []
+      }
+    },
+    {
+      "id": "gt_02_cone6_boron_glossy",
+      "name": "Cone 6 Boron Frit Glossy",
+      "recipeDoc": {
+        "cone": "6",
+        "atmosphere": "ox",
+        "items": []
+      }
+    },
+    {
+      "id": "gt_03_cone6_mg_matte",
+      "name": "Cone 6 Magnesium Matte",
+      "recipeDoc": {
+        "cone": "6",
+        "atmosphere": "ox",
+        "items": []
+      }
+    },
+    {
+      "id": "gt_04_cone6_ca_matte",
+      "name": "Cone 6 Calcium Matte",
+      "recipeDoc": {
+        "cone": "6",
+        "atmosphere": "ox",
+        "items": []
+      }
+    },
+    {
+      "id": "gt_05_cone6_zinc_matte",
+      "name": "Cone 6 Zinc Matte",
+      "recipeDoc": {
+        "cone": "6",
+        "atmosphere": "ox",
+        "items": []
+      }
+    },
+    {
+      "id": "gt_06_cone10_reduc_base",
+      "name": "Cone 10 Reduction Base",
+      "recipeDoc": {
+        "cone": "10",
+        "atmosphere": "red",
+        "items": []
+      }
+    },
+    {
+      "id": "gt_07_cone10_iron_sat",
+      "name": "Cone 10 Iron Saturation Base",
+      "recipeDoc": {
+        "cone": "10",
+        "atmosphere": "red",
+        "items": []
+      }
+    },
+    {
+      "id": "gt_08_cone04_lowfire_boron",
+      "name": "Cone 04 Low-fire Boron",
+      "recipeDoc": {
+        "cone": "04",
+        "atmosphere": "ox",
+        "items": []
+      }
+    },
+    {
+      "id": "gt_09_high_expansion",
+      "name": "High Expansion Diagnostic",
+      "recipeDoc": {
+        "cone": "6",
+        "atmosphere": "ox",
+        "items": []
+      }
+    },
+    {
+      "id": "gt_10_unknown_material",
+      "name": "Unknown Material Case",
+      "recipeDoc": {
+        "cone": "6",
+        "atmosphere": "ox",
+        "items": [
+          {
+            "materialId": "m_unknown",
+            "percent": 50.0
+          }
+        ]
+      }
+    }
+  ]
+}

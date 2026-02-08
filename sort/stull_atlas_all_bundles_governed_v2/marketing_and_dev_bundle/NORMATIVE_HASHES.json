@@ -1,0 +1,29 @@
+{
+  "generated": "2026-01-23",
+  "normative_targets": [
+    "SPEC.md",
+    "ENGINE_CONTRACT.md",
+    "PROJECT_BUNDLE_SCHEMA_v0.md",
+    "COMPATIBILITY_CONTRACT.md",
+    "COMPATIBILITY_PROFILES.md",
+    "GOLDEN_TESTS.md",
+    "molar_masses.glazy_v1.json",
+    "molar_masses.digitalfire.json",
+    "golden_tests.expected.glazy_v1.json",
+    "golden_tests.expected.digitalfire_legacy.json"
+  ],
+  "files": {},
+  "missing": [
+    "SPEC.md",
+    "ENGINE_CONTRACT.md",
+    "PROJECT_BUNDLE_SCHEMA_v0.md",
+    "COMPATIBILITY_CONTRACT.md",
+    "COMPATIBILITY_PROFILES.md",
+    "GOLDEN_TESTS.md",
+    "molar_masses.glazy_v1.json",
+    "molar_masses.digitalfire.json",
+    "golden_tests.expected.glazy_v1.json",
+    "golden_tests.expected.digitalfire_legacy.json"
+  ],
+  "notes": "Update this file whenever normative artifacts change. See tools/update_normative_hashes.py."
+}

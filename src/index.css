@@ -1,0 +1,488 @@
+/* Stull Atlas Global Styles */
+
+/* ========= Theme Variables ========= */
+:root {
+  /* Backgrounds */
+  --bg-primary: #121212;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #222;
+  --bg-elevated: #2a2a2a;
+  --bg-input: #333;
+  --bg-hover: #1e1e1e;
+
+  /* Text */
+  --text-primary: #e0e0e0;
+  --text-secondary: #888;
+  --text-muted: #666;
+  --text-bright: #fff;
+  --text-dim: #555;
+  --text-body: #bbb;
+  --text-label: #aaa;
+  --text-link: #5ba3d9;
+
+  /* Borders */
+  --border-primary: #333;
+  --border-secondary: #444;
+  --border-subtle: #2a2a2a;
+  --border-input: #3a3a3a;
+
+  /* Accent */
+  --accent: #3498db;
+  --accent-bg: #2a4a6a;
+  --accent-hover: #345a7a;
+  --accent-selection: #2980b9;
+
+  /* Status */
+  --danger: #e74c3c;
+  --warning: #e67e22;
+
+  /* Scrollbar */
+  --scrollbar-track: #1a1a1a;
+  --scrollbar-thumb: #444;
+  --scrollbar-thumb-hover: #555;
+}
+
+[data-theme="light"] {
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #efefef;
+  --bg-elevated: #e8e8e8;
+  --bg-input: #e0e0e0;
+  --bg-hover: #f0f0f0;
+
+  --text-primary: #1a1a1a;
+  --text-secondary: #666;
+  --text-muted: #999;
+  --text-bright: #000;
+  --text-dim: #aaa;
+  --text-body: #444;
+  --text-label: #555;
+  --text-link: #2980b9;
+
+  --border-primary: #ddd;
+  --border-secondary: #ccc;
+  --border-subtle: #e0e0e0;
+  --border-input: #bbb;
+
+  --accent: #2980b9;
+  --accent-bg: #d4e6f9;
+  --accent-hover: #bdd8f0;
+  --accent-selection: #3498db;
+
+  --danger: #c0392b;
+  --warning: #d35400;
+
+  --scrollbar-track: #f0f0f0;
+  --scrollbar-thumb: #c0c0c0;
+  --scrollbar-thumb-hover: #aaa;
+}
+
+/* ========= Global Reset ========= */
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Selection */
+::selection {
+  background: var(--accent-selection);
+  color: var(--text-bright);
+}
+
+/* Focus outlines — visible only for keyboard users */
+:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Visually hidden but accessible to screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Form elements */
+input, select, button {
+  font-family: inherit;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  background: var(--bg-input);
+  height: 4px;
+  border-radius: 2px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* ========= Print Styles ========= */
+@media print {
+  /* Light background for printing */
+  :root,
+  [data-theme="dark"],
+  [data-theme="light"] {
+    --bg-primary: #fff;
+    --bg-secondary: #fff;
+    --bg-tertiary: #f5f5f5;
+    --bg-elevated: #f0f0f0;
+    --bg-input: #eee;
+    --bg-hover: #f0f0f0;
+    --text-primary: #000;
+    --text-secondary: #333;
+    --text-muted: #666;
+    --text-bright: #000;
+    --text-dim: #999;
+    --text-body: #222;
+    --text-label: #444;
+    --text-link: #1a5276;
+    --border-primary: #ccc;
+    --border-secondary: #aaa;
+    --border-subtle: #ddd;
+    --accent: #1a5276;
+    --accent-bg: #e8f0f8;
+  }
+
+  /* Hide non-essential UI elements */
+  .atlas-header,
+  .controls-panel,
+  .theme-toggle,
+  .close-sidebar,
+  .sidebar-tabs,
+  .view-toggle,
+  .reset-zoom,
+  .zoom-control,
+  button,
+  input[type="range"],
+  .guide-toc {
+    display: none !important;
+  }
+
+  /* Full-width content */
+  .app-layout {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .page-content {
+    overflow: visible !important;
+  }
+
+  .stull-explorer {
+    flex-direction: column !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+
+  .detail-panel {
+    width: 100% !important;
+    border-left: none !important;
+    border-top: 1px solid #ccc !important;
+    page-break-inside: avoid;
+  }
+
+  .plot-container {
+    width: 100% !important;
+    height: 500px !important;
+  }
+
+  /* Calculator results */
+  .calc-page {
+    flex-direction: column !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .calc-sidebar {
+    width: 100% !important;
+    min-width: unset !important;
+    border-right: none !important;
+    page-break-after: always;
+  }
+
+  .calc-main {
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .results-table {
+    page-break-inside: avoid;
+  }
+
+  .results-table th,
+  .results-table td {
+    border: 1px solid #aaa !important;
+    padding: 4px 8px !important;
+  }
+
+  /* Guide page */
+  .guide-content {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .guide-section {
+    page-break-inside: avoid;
+  }
+
+  /* About page */
+  .about-content {
+    max-width: 100% !important;
+    padding: 20px !important;
+  }
+
+  /* Comparison panel */
+  .comparison-panel {
+    page-break-inside: avoid;
+  }
+
+  /* No background colors for clean printing */
+  .calc-card,
+  .glossary-item {
+    border: 1px solid #ccc !important;
+    background: #fff !important;
+  }
+
+  /* Links show URL */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 10px;
+    color: #888;
+  }
+}
+
+/* ========= Mobile Responsive ========= */
+
+/* Tablet & small desktop */
+@media (max-width: 1024px) {
+  .controls-panel {
+    width: 220px !important;
+    padding: 12px !important;
+  }
+
+  .detail-panel {
+    width: 280px !important;
+    padding: 12px !important;
+  }
+
+  .calc-sidebar {
+    width: 300px !important;
+  }
+}
+
+/* Phone landscape / small tablet */
+@media (max-width: 768px) {
+  /* Layout header */
+  .atlas-header {
+    flex-wrap: wrap;
+    padding: 8px 12px !important;
+    gap: 8px;
+  }
+
+  .header-left {
+    flex-wrap: wrap;
+    gap: 8px !important;
+    width: 100%;
+  }
+
+  .header-left h1 {
+    font-size: 17px !important;
+  }
+
+  .main-nav {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    gap: 2px !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .main-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .main-nav a {
+    padding: 5px 10px !important;
+    font-size: 13px !important;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .header-right {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+  }
+
+  .stats {
+    display: none;
+  }
+
+  /* Explorer: stack layout */
+  .stull-explorer {
+    flex-direction: column !important;
+  }
+
+  .controls-panel {
+    width: 100% !important;
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 10px !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border-primary);
+    max-height: none;
+    overflow-y: visible !important;
+  }
+
+  .control-group {
+    margin-bottom: 0 !important;
+    min-width: 140px;
+  }
+
+  .plot-container {
+    min-height: 300px;
+    height: 50vh !important;
+  }
+
+  .detail-panel {
+    width: 100% !important;
+    border-left: none !important;
+    border-top: 1px solid var(--border-primary);
+    max-height: 45vh;
+  }
+
+  /* Calculator pages */
+  .calc-page {
+    flex-direction: column !important;
+  }
+
+  .calc-sidebar {
+    width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border-primary);
+    max-height: 40vh;
+    overflow-y: auto;
+  }
+
+  .calc-main {
+    padding: 12px !important;
+  }
+
+  /* About page */
+  .about-page {
+    padding: 20px 12px !important;
+  }
+
+  /* Compare buttons */
+  .sidebar-tabs {
+    flex-wrap: wrap;
+  }
+
+  .sidebar-tab {
+    font-size: 11px !important;
+    padding: 5px 8px !important;
+  }
+}
+
+/* Phone portrait */
+@media (max-width: 480px) {
+  .header-left h1 {
+    font-size: 15px !important;
+  }
+
+  .main-nav a {
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+  }
+
+  .plot-container {
+    min-height: 250px;
+    height: 40vh !important;
+  }
+
+  .detail-panel {
+    max-height: 50vh;
+    font-size: 13px;
+  }
+
+  .calc-sidebar {
+    padding: 12px !important;
+  }
+
+  .compare-table th,
+  .compare-table td {
+    padding: 2px 4px !important;
+    font-size: 10px !important;
+  }
+
+  .results-table th,
+  .results-table td {
+    padding: 4px 6px !important;
+    font-size: 11px !important;
+  }
+
+  .about-hero h1 {
+    font-size: 24px !important;
+  }
+
+  .about-hero .subtitle {
+    font-size: 14px !important;
+  }
+}

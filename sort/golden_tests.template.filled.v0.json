@@ -1,0 +1,269 @@
+{
+  "generated": "2026-01-22",
+  "profiles": [
+    "glazy_v1",
+    "digitalfire_legacy"
+  ],
+  "recipes": [
+    {
+      "id": "gt_01_cone6_glossy_base",
+      "name": "Cone 6 Glossy Base",
+      "recipeDoc": {
+        "cone": "6",
+        "atmosphere": "ox",
+        "items": [
+          {
+            "materialId": "m_custer_feldspar",
+            "percent": 40.0
+          },
+          {
+            "materialId": "m_silica_325",
+            "percent": 25.0
+          },
+          {
+            "materialId": "m_epk_kaolin",
+            "percent": 20.0
+          },
+          {
+            "materialId": "m_whiting",
+            "percent": 15.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "gt_02_cone6_boron_glossy",
+      "name": "Cone 6 Boron Frit Glossy",
+      "recipeDoc": {
+        "cone": "6",
+        "atmosphere": "ox",
+        "items": [
+          {
+            "materialId": "m_frit_3134",
+            "percent": 25.0
+          },
+          {
+            "materialId": "m_custer_feldspar",
+            "percent": 35.0
+          },
+          {
+            "materialId": "m_silica_325",
+            "percent": 20.0
+          },
+          {
+            "materialId": "m_epk_kaolin",
+            "percent": 20.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "gt_03_cone6_mg_matte",
+      "name": "Cone 6 Magnesium Matte",
+      "recipeDoc": {
+        "cone": "6",
+        "atmosphere": "ox",
+        "items": [
+          {
+            "materialId": "m_talc",
+            "percent": 25.0
+          },
+          {
+            "materialId": "m_custer_feldspar",
+            "percent": 35.0
+          },
+          {
+            "materialId": "m_silica_325",
+            "percent": 20.0
+          },
+          {
+            "materialId": "m_epk_kaolin",
+            "percent": 20.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "gt_04_cone6_ca_matte",
+      "name": "Cone 6 Calcium Matte",
+      "recipeDoc": {
+        "cone": "6",
+        "atmosphere": "ox",
+        "items": [
+          {
+            "materialId": "m_whiting",
+            "percent": 25.0
+          },
+          {
+            "materialId": "m_wollastonite",
+            "percent": 15.0
+          },
+          {
+            "materialId": "m_custer_feldspar",
+            "percent": 30.0
+          },
+          {
+            "materialId": "m_silica_325",
+            "percent": 15.0
+          },
+          {
+            "materialId": "m_epk_kaolin",
+            "percent": 15.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "gt_05_cone6_zinc_matte",
+      "name": "Cone 6 Zinc Matte",
+      "recipeDoc": {
+        "cone": "6",
+        "atmosphere": "ox",
+        "items": [
+          {
+            "materialId": "m_zinc_oxide",
+            "percent": 10.0
+          },
+          {
+            "materialId": "m_frit_3124",
+            "percent": 20.0
+          },
+          {
+            "materialId": "m_custer_feldspar",
+            "percent": 25.0
+          },
+          {
+            "materialId": "m_silica_325",
+            "percent": 25.0
+          },
+          {
+            "materialId": "m_epk_kaolin",
+            "percent": 20.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "gt_06_cone10_reduc_base",
+      "name": "Cone 10 Reduction Base",
+      "recipeDoc": {
+        "cone": "10",
+        "atmosphere": "red",
+        "items": [
+          {
+            "materialId": "m_potash_feldspar",
+            "percent": 45.0
+          },
+          {
+            "materialId": "m_silica_325",
+            "percent": 30.0
+          },
+          {
+            "materialId": "m_ball_clay",
+            "percent": 15.0
+          },
+          {
+            "materialId": "m_whiting",
+            "percent": 10.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "gt_07_cone10_iron_sat",
+      "name": "Cone 10 Iron Saturation Base",
+      "recipeDoc": {
+        "cone": "10",
+        "atmosphere": "red",
+        "items": [
+          {
+            "materialId": "m_potash_feldspar",
+            "percent": 40.0
+          },
+          {
+            "materialId": "m_silica_325",
+            "percent": 25.0
+          },
+          {
+            "materialId": "m_ball_clay",
+            "percent": 15.0
+          },
+          {
+            "materialId": "m_whiting",
+            "percent": 10.0
+          },
+          {
+            "materialId": "m_red_iron_oxide",
+            "percent": 10.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "gt_08_cone04_lowfire_boron",
+      "name": "Cone 04 Low-fire Boron",
+      "recipeDoc": {
+        "cone": "04",
+        "atmosphere": "ox",
+        "items": [
+          {
+            "materialId": "m_frit_3195",
+            "percent": 50.0
+          },
+          {
+            "materialId": "m_silica_325",
+            "percent": 20.0
+          },
+          {
+            "materialId": "m_kaolin",
+            "percent": 20.0
+          },
+          {
+            "materialId": "m_whiting",
+            "percent": 10.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "gt_09_high_expansion",
+      "name": "High Expansion Diagnostic",
+      "recipeDoc": {
+        "cone": "6",
+        "atmosphere": "ox",
+        "items": [
+          {
+            "materialId": "m_soda_feldspar",
+            "percent": 55.0
+          },
+          {
+            "materialId": "m_frit_3134",
+            "percent": 20.0
+          },
+          {
+            "materialId": "m_silica_325",
+            "percent": 15.0
+          },
+          {
+            "materialId": "m_epk_kaolin",
+            "percent": 10.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "gt_10_unknown_material",
+      "name": "Unknown Material Case",
+      "recipeDoc": {
+        "cone": "6",
+        "atmosphere": "ox",
+        "items": [
+          {
+            "materialId": "m_unknown",
+            "percent": 50.0
+          }
+        ]
+      }
+    }
+  ]
+}

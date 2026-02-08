@@ -1,0 +1,176 @@
+{
+  "catalog_version": "2026-01-27",
+  "materials": [
+    {
+      "id": "m_ball_clay",
+      "name": "Ball Clay"
+    },
+    {
+      "id": "m_custer_feldspar",
+      "name": "Custer Feldspar"
+    },
+    {
+      "id": "m_epk_kaolin",
+      "name": "Epk Kaolin"
+    },
+    {
+      "id": "m_frit_3124",
+      "name": "Frit 3124"
+    },
+    {
+      "id": "m_frit_3134",
+      "name": "Frit 3134"
+    },
+    {
+      "id": "m_frit_3195",
+      "name": "Frit 3195"
+    },
+    {
+      "id": "m_kaolin",
+      "name": "Kaolin"
+    },
+    {
+      "id": "m_potash_feldspar",
+      "name": "Potash Feldspar"
+    },
+    {
+      "id": "m_red_iron_oxide",
+      "name": "Red Iron Oxide"
+    },
+    {
+      "id": "m_silica_325",
+      "name": "Silica 325"
+    },
+    {
+      "id": "m_soda_feldspar",
+      "name": "Soda Feldspar"
+    },
+    {
+      "id": "m_talc",
+      "name": "Talc"
+    },
+    {
+      "id": "m_unknown",
+      "name": "Unknown"
+    },
+    {
+      "id": "m_whiting",
+      "name": "Whiting"
+    },
+    {
+      "id": "m_wollastonite",
+      "name": "Wollastonite"
+    },
+    {
+      "id": "m_zinc_oxide",
+      "name": "Zinc Oxide"
+    }
+  ],
+  "analyses": [
+    {
+      "materialId": "m_ball_clay",
+      "oxides_wt_pct": {},
+      "LOI_pct": 0.0,
+      "source": "",
+      "version": ""
+    },
+    {
+      "materialId": "m_custer_feldspar",
+      "oxides_wt_pct": {},
+      "LOI_pct": 0.0,
+      "source": "",
+      "version": ""
+    },
+    {
+      "materialId": "m_epk_kaolin",
+      "oxides_wt_pct": {},
+      "LOI_pct": 0.0,
+      "source": "",
+      "version": ""
+    },
+    {
+      "materialId": "m_frit_3124",
+      "oxides_wt_pct": {},
+      "LOI_pct": 0.0,
+      "source": "",
+      "version": ""
+    },
+    {
+      "materialId": "m_frit_3134",
+      "oxides_wt_pct": {},
+      "LOI_pct": 0.0,
+      "source": "",
+      "version": ""
+    },
+    {
+      "materialId": "m_frit_3195",
+      "oxides_wt_pct": {},
+      "LOI_pct": 0.0,
+      "source": "",
+      "version": ""
+    },
+    {
+      "materialId": "m_kaolin",
+      "oxides_wt_pct": {},
+      "LOI_pct": 0.0,
+      "source": "",
+      "version": ""
+    },
+    {
+      "materialId": "m_potash_feldspar",
+      "oxides_wt_pct": {},
+      "LOI_pct": 0.0,
+      "source": "",
+      "version": ""
+    },
+    {
+      "materialId": "m_red_iron_oxide",
+      "oxides_wt_pct": {},
+      "LOI_pct": 0.0,
+      "source": "",
+      "version": ""
+    },
+    {
+      "materialId": "m_silica_325",
+      "oxides_wt_pct": {},
+      "LOI_pct": 0.0,
+      "source": "",
+      "version": ""
+    },
+    {
+      "materialId": "m_soda_feldspar",
+      "oxides_wt_pct": {},
+      "LOI_pct": 0.0,
+      "source": "",
+      "version": ""
+    },
+    {
+      "materialId": "m_talc",
+      "oxides_wt_pct": {},
+      "LOI_pct": 0.0,
+      "source": "",
+      "version": ""
+    },
+    {
+      "materialId": "m_whiting",
+      "oxides_wt_pct": {},
+      "LOI_pct": 0.0,
+      "source": "",
+      "version": ""
+    },
+    {
+      "materialId": "m_wollastonite",
+      "oxides_wt_pct": {},
+      "LOI_pct": 0.0,
+      "source": "",
+      "version": ""
+    },
+    {
+      "materialId": "m_zinc_oxide",
+      "oxides_wt_pct": {},
+      "LOI_pct": 0.0,
+      "source": "",
+      "version": ""
+    }
+  ]
+}

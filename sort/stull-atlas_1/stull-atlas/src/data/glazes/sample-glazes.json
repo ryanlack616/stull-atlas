@@ -1,0 +1,163 @@
+{
+  "source": "sample_data",
+  "description": "Sample glaze recipes for development",
+  "glazes": [
+    {
+      "id": "sample_001",
+      "name": "Leach 4321",
+      "source": "sample",
+      "coneRange": [10, 10],
+      "atmosphere": "reduction",
+      "surfaceType": "gloss",
+      "ingredients": [
+        { "material": "Custer Feldspar", "amount": 40 },
+        { "material": "Silica", "amount": 30 },
+        { "material": "Whiting", "amount": 20 },
+        { "material": "EPK Kaolin", "amount": 10 }
+      ],
+      "notes": "Classic Bernard Leach recipe. Clear, reliable cone 10 reduction glaze."
+    },
+    {
+      "id": "sample_002",
+      "name": "Cone 6 Satin Matte",
+      "source": "sample",
+      "coneRange": [6, 6],
+      "atmosphere": "oxidation",
+      "surfaceType": "satin",
+      "ingredients": [
+        { "material": "Nepheline Syenite", "amount": 55 },
+        { "material": "Silica", "amount": 15 },
+        { "material": "Wollastonite", "amount": 15 },
+        { "material": "EPK Kaolin", "amount": 10 },
+        { "material": "Zinc Oxide", "amount": 5 }
+      ],
+      "notes": "Smooth satin finish at cone 6 oxidation."
+    },
+    {
+      "id": "sample_003",
+      "name": "Tenmoku",
+      "source": "sample",
+      "coneRange": [9, 10],
+      "atmosphere": "reduction",
+      "surfaceType": "gloss",
+      "ingredients": [
+        { "material": "Custer Feldspar", "amount": 44 },
+        { "material": "Silica", "amount": 22 },
+        { "material": "Whiting", "amount": 11 },
+        { "material": "EPK Kaolin", "amount": 11 },
+        { "material": "Ball Clay", "amount": 4 },
+        { "material": "Red Iron Oxide", "amount": 8 }
+      ],
+      "notes": "Traditional iron glaze. Rich brown breaking to rust on edges."
+    },
+    {
+      "id": "sample_004",
+      "name": "Shino Base",
+      "source": "sample",
+      "coneRange": [10, 11],
+      "atmosphere": "reduction",
+      "surfaceType": "satin",
+      "ingredients": [
+        { "material": "Nepheline Syenite", "amount": 80 },
+        { "material": "EPK Kaolin", "amount": 12 },
+        { "material": "Ball Clay", "amount": 8 }
+      ],
+      "notes": "High soda shino. Orange flashing in heavy reduction."
+    },
+    {
+      "id": "sample_005",
+      "name": "Oribe Green",
+      "source": "sample",
+      "coneRange": [9, 10],
+      "atmosphere": "oxidation",
+      "surfaceType": "gloss",
+      "ingredients": [
+        { "material": "Custer Feldspar", "amount": 35 },
+        { "material": "Silica", "amount": 25 },
+        { "material": "Whiting", "amount": 20 },
+        { "material": "EPK Kaolin", "amount": 15 },
+        { "material": "Copper Carbonate", "amount": 5 }
+      ],
+      "notes": "Traditional Japanese copper green."
+    },
+    {
+      "id": "sample_006",
+      "name": "Cone 06 Clear",
+      "source": "sample",
+      "coneRange": ["06", "06"],
+      "atmosphere": "oxidation",
+      "surfaceType": "gloss",
+      "ingredients": [
+        { "material": "Ferro Frit 3134", "amount": 85 },
+        { "material": "EPK Kaolin", "amount": 15 }
+      ],
+      "notes": "Low fire clear glaze. Good for majolica."
+    },
+    {
+      "id": "sample_007",
+      "name": "Ash Celadon",
+      "source": "sample",
+      "coneRange": [10, 11],
+      "atmosphere": "reduction",
+      "surfaceType": "gloss",
+      "ingredients": [
+        { "material": "Custer Feldspar", "amount": 40 },
+        { "material": "Silica", "amount": 20 },
+        { "material": "Whiting", "amount": 20 },
+        { "material": "EPK Kaolin", "amount": 10 },
+        { "material": "Bone Ash", "amount": 8 },
+        { "material": "Red Iron Oxide", "amount": 2 }
+      ],
+      "notes": "Subtle blue-green with depth. Pools beautifully."
+    },
+    {
+      "id": "sample_008",
+      "name": "Dolomite Matte",
+      "source": "sample",
+      "coneRange": [6, 6],
+      "atmosphere": "oxidation",
+      "surfaceType": "matte",
+      "ingredients": [
+        { "material": "Nepheline Syenite", "amount": 40 },
+        { "material": "Silica", "amount": 18 },
+        { "material": "Dolomite", "amount": 22 },
+        { "material": "EPK Kaolin", "amount": 15 },
+        { "material": "Talc", "amount": 5 }
+      ],
+      "notes": "Smooth dolomite matte. Breaks well on texture."
+    },
+    {
+      "id": "sample_009",
+      "name": "Cobalt Blue",
+      "source": "sample",
+      "coneRange": [9, 10],
+      "atmosphere": "oxidation",
+      "surfaceType": "gloss",
+      "ingredients": [
+        { "material": "Custer Feldspar", "amount": 38 },
+        { "material": "Silica", "amount": 28 },
+        { "material": "Whiting", "amount": 18 },
+        { "material": "EPK Kaolin", "amount": 15 },
+        { "material": "Cobalt Oxide", "amount": 1 }
+      ],
+      "notes": "Classic cobalt blue. Intense color."
+    },
+    {
+      "id": "sample_010",
+      "name": "Lithium Blue",
+      "source": "sample",
+      "coneRange": [6, 6],
+      "atmosphere": "oxidation",
+      "surfaceType": "gloss",
+      "ingredients": [
+        { "material": "Spodumene", "amount": 28 },
+        { "material": "Nepheline Syenite", "amount": 25 },
+        { "material": "Silica", "amount": 20 },
+        { "material": "Whiting", "amount": 15 },
+        { "material": "EPK Kaolin", "amount": 10 },
+        { "material": "Copper Carbonate", "amount": 2 }
+      ],
+      "notes": "Lithium-copper blue. Turquoise to blue range."
+    }
+  ]
+}

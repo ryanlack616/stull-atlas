@@ -1,0 +1,56 @@
+{
+  "version": "stull_guides_v1",
+  "generated": "2026-01-22",
+  "notes": "Starter guide set for Stull map. Shapes are placeholders; refine with domain review. Coordinates are in UMF space (SiO2, Al2O3).",
+  "guides": [
+    {
+      "id": "g_default_zone",
+      "label": "Default Guide Zone (starter)",
+      "cone": "6",
+      "atmosphere": "ox",
+      "type": "polygon",
+      "style": {
+        "fill": "guideFill",
+        "stroke": "guideStroke",
+        "strokeWidth": 1
+      },
+      "points": [
+        {
+          "sio2": 2.5,
+          "al2o3": 0.2
+        },
+        {
+          "sio2": 3.8,
+          "al2o3": 0.2
+        },
+        {
+          "sio2": 4.2,
+          "al2o3": 0.35
+        },
+        {
+          "sio2": 3.2,
+          "al2o3": 0.45
+        },
+        {
+          "sio2": 2.4,
+          "al2o3": 0.35
+        }
+      ],
+      "tooltip": "Starter zone for cone 6 oxidation. Refine boundaries with testing and reference guides."
+    },
+    {
+      "id": "g_glossy_band",
+      "label": "Glossy Band (starter)",
+      "cone": "6",
+      "atmosphere": "ox",
+      "type": "band",
+      "band": {
+        "xMin": 2.9,
+        "xMax": 4.0,
+        "yMin": 0.22,
+        "yMax": 0.33
+      },
+      "tooltip": "A starter glossy band region. Intended as a visual learning aid, not a guarantee."
+    }
+  ]
+}

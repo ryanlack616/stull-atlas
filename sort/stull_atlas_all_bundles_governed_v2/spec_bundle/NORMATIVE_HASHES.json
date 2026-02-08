@@ -1,0 +1,49 @@
+{
+  "generated": "2026-01-23",
+  "normative_targets": [
+    "SPEC.md",
+    "ENGINE_CONTRACT.md",
+    "PROJECT_BUNDLE_SCHEMA_v0.md",
+    "COMPATIBILITY_CONTRACT.md",
+    "COMPATIBILITY_PROFILES.md",
+    "GOLDEN_TESTS.md",
+    "molar_masses.glazy_v1.json",
+    "molar_masses.digitalfire.json",
+    "golden_tests.expected.glazy_v1.json",
+    "golden_tests.expected.digitalfire_legacy.json"
+  ],
+  "files": {
+    "SPEC.md": {
+      "sha256": "9170f1a0f6554b192fe9996085b16bb9a320146c1b3010b9e5c658f03873cca0"
+    },
+    "ENGINE_CONTRACT.md": {
+      "sha256": "83318ae65643901e22be46fbb47836ef93f147cc2aeb7cbed539164ab086ba27"
+    },
+    "PROJECT_BUNDLE_SCHEMA_v0.md": {
+      "sha256": "0662fb821c18f16518e58eeb6c81a72a5932e6ac30e713849741e38f49aca4b5"
+    },
+    "COMPATIBILITY_CONTRACT.md": {
+      "sha256": "aff7fd05d0d8e783ae2bd29ca06e39f1f4dd008de876c386801404990d34c974"
+    },
+    "COMPATIBILITY_PROFILES.md": {
+      "sha256": "0f5e7ce693a27f556a06f2815bfca3b14df040be34fefd3f5b9bc2cec98a21b6"
+    },
+    "GOLDEN_TESTS.md": {
+      "sha256": "77d10137e2462299cdd6d2e5fa950e742ed7df1ae40d66aa1516ea8b762a0f83"
+    },
+    "molar_masses.glazy_v1.json": {
+      "sha256": "e0a0a7bbcf0b79db5aa534ea6078dacffab23b1c30dbbee2645d641b21b9b503"
+    },
+    "molar_masses.digitalfire.json": {
+      "sha256": "4eb9449cc2c9842e2d982cca08f272ee73967c0b123dacbffb4d7c80d25ae71a"
+    },
+    "golden_tests.expected.glazy_v1.json": {
+      "sha256": "6c1a8a038e091d3abc628eb29357d47a23d7468522861e577d217b3e74910a05"
+    },
+    "golden_tests.expected.digitalfire_legacy.json": {
+      "sha256": "cf429e50d042e001abb9ef87f9f4a20ee7937012bdf3da5cd9161554cac29ba3"
+    }
+  },
+  "missing": [],
+  "notes": "Update this file whenever normative artifacts change. See tools/update_normative_hashes.py."
+}

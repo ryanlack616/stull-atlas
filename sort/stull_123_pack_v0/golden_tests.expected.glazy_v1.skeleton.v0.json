@@ -1,0 +1,146 @@
+{
+  "generated": "2026-01-27",
+  "profile": "glazy_v1",
+  "expected": [
+    {
+      "id": "gt_01_cone6_glossy_base",
+      "name": "Cone 6 Glossy Base",
+      "expect": {
+        "status": null,
+        "diagnostic_codes": [],
+        "umf": {},
+        "stull_point": {
+          "sio2": null,
+          "al2o3": null
+        },
+        "ratio_sio2_al2o3": null
+      }
+    },
+    {
+      "id": "gt_02_cone6_boron_glossy",
+      "name": "Cone 6 Boron Frit Glossy",
+      "expect": {
+        "status": null,
+        "diagnostic_codes": [],
+        "umf": {},
+        "stull_point": {
+          "sio2": null,
+          "al2o3": null
+        },
+        "ratio_sio2_al2o3": null
+      }
+    },
+    {
+      "id": "gt_03_cone6_mg_matte",
+      "name": "Cone 6 Magnesium Matte",
+      "expect": {
+        "status": null,
+        "diagnostic_codes": [],
+        "umf": {},
+        "stull_point": {
+          "sio2": null,
+          "al2o3": null
+        },
+        "ratio_sio2_al2o3": null
+      }
+    },
+    {
+      "id": "gt_04_cone6_ca_matte",
+      "name": "Cone 6 Calcium Matte",
+      "expect": {
+        "status": null,
+        "diagnostic_codes": [],
+        "umf": {},
+        "stull_point": {
+          "sio2": null,
+          "al2o3": null
+        },
+        "ratio_sio2_al2o3": null
+      }
+    },
+    {
+      "id": "gt_05_cone6_zinc_matte",
+      "name": "Cone 6 Zinc Matte",
+      "expect": {
+        "status": null,
+        "diagnostic_codes": [],
+        "umf": {},
+        "stull_point": {
+          "sio2": null,
+          "al2o3": null
+        },
+        "ratio_sio2_al2o3": null
+      }
+    },
+    {
+      "id": "gt_06_cone10_reduc_base",
+      "name": "Cone 10 Reduction Base",
+      "expect": {
+        "status": null,
+        "diagnostic_codes": [],
+        "umf": {},
+        "stull_point": {
+          "sio2": null,
+          "al2o3": null
+        },
+        "ratio_sio2_al2o3": null
+      }
+    },
+    {
+      "id": "gt_07_cone10_iron_sat",
+      "name": "Cone 10 Iron Saturation Base",
+      "expect": {
+        "status": null,
+        "diagnostic_codes": [],
+        "umf": {},
+        "stull_point": {
+          "sio2": null,
+          "al2o3": null
+        },
+        "ratio_sio2_al2o3": null
+      }
+    },
+    {
+      "id": "gt_08_cone04_lowfire_boron",
+      "name": "Cone 04 Low-fire Boron",
+      "expect": {
+        "status": null,
+        "diagnostic_codes": [],
+        "umf": {},
+        "stull_point": {
+          "sio2": null,
+          "al2o3": null
+        },
+        "ratio_sio2_al2o3": null
+      }
+    },
+    {
+      "id": "gt_09_high_expansion",
+      "name": "High Expansion Diagnostic",
+      "expect": {
+        "status": null,
+        "diagnostic_codes": [],
+        "umf": {},
+        "stull_point": {
+          "sio2": null,
+          "al2o3": null
+        },
+        "ratio_sio2_al2o3": null
+      }
+    },
+    {
+      "id": "gt_10_unknown_material",
+      "name": "Unknown Material Case",
+      "expect": {
+        "status": null,
+        "diagnostic_codes": [],
+        "umf": {},
+        "stull_point": {
+          "sio2": null,
+          "al2o3": null
+        },
+        "ratio_sio2_al2o3": null
+      }
+    }
+  ]
+}

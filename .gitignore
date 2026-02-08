@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.venv/
+.playwright-mcp/
+__pycache__/
+*.pyc
+.env
+.env.local
+.DS_Store
+Thumbs.db
+*.log
+coverage/
+.vitest/

@@ -1,0 +1,36 @@
+{
+  "instruments": [
+    {
+      "id": "web_modern",
+      "title": "Web (Modern)",
+      "open_mode": "dock",
+      "capabilities": "full_edit",
+      "layout_preset": "GridLayout",
+      "input_profile": "Web"
+    },
+    {
+      "id": "win95",
+      "title": "Windows 95",
+      "open_mode": "window",
+      "capabilities": "safe_edit",
+      "layout_preset": "SplitPaneLayout",
+      "input_profile": "Win95"
+    },
+    {
+      "id": "mac90s",
+      "title": "Mac 90s",
+      "open_mode": "window",
+      "capabilities": "safe_edit",
+      "layout_preset": "DocumentWindowLayout",
+      "input_profile": "Mac90s"
+    },
+    {
+      "id": "dos",
+      "title": "DOS Terminal",
+      "open_mode": "modal",
+      "capabilities": "view_only",
+      "layout_preset": "TerminalLayout",
+      "input_profile": "DOS"
+    }
+  ]
+}

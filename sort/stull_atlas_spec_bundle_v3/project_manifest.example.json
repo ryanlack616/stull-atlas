@@ -1,0 +1,14 @@
+{
+  "schema_version": "0.1.0",
+  "project_id": "p_<uuid>",
+  "name": "My Studio Project",
+  "created_at": "2026-01-22",
+  "updated_at": "2026-01-22",
+  "default_profile_id": "glazy_v1",
+  "catalog_version": "2026-01-22",
+  "paths": {
+    "model": "model/",
+    "view": "view/",
+    "assets": "assets/"
+  }
+}
