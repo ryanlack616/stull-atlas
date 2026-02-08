@@ -13,7 +13,7 @@ export function UpdatesPage() {
   usePageTitle('v2 Updates')
 
   return (
-    <div className="about-page">
+    <div className="about-page" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
       <div className="about-content">
 
         <section className="about-hero">
