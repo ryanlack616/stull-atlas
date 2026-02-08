@@ -28,6 +28,7 @@ export function Layout() {
             <NavLink to="/timeline">Timeline</NavLink>
             <NavLink to="/guide">Guide</NavLink>
             <NavLink to="/about">About</NavLink>
+            <NavLink to="/updates">What's New</NavLink>
           </nav>
         </div>
         <div className="header-right">

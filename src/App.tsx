@@ -49,6 +49,7 @@ const AboutPage = lazyRetry(() => import('./pages/AboutPage').then(m => ({ defau
 const GuidePage = lazyRetry(() => import('./pages/GuidePage').then(m => ({ default: m.GuidePage })))
 const OptimizerPage = lazyRetry(() => import('./pages/OptimizerPage').then(m => ({ default: m.OptimizerPage })))
 const TimelinePage = lazyRetry(() => import('./pages/TimelinePage').then(m => ({ default: m.TimelinePage })))
+const UpdatesPage = lazyRetry(() => import('./pages/UpdatesPage').then(m => ({ default: m.UpdatesPage })))
 
 // Clear the retry flag on successful load so future failures can retry again
 if (sessionStorage.getItem('stull-chunk-retry')) {
@@ -134,6 +135,7 @@ function App() {
         <Route path="import-export" element={<LazyPage><ImportExportPage /></LazyPage>} />
         <Route path="about" element={<LazyPage><AboutPage /></LazyPage>} />
         <Route path="guide" element={<LazyPage><GuidePage /></LazyPage>} />
+        <Route path="updates" element={<LazyPage><UpdatesPage /></LazyPage>} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
