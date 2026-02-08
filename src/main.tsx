@@ -5,7 +5,7 @@ import App from './App'
 import './index.css'
 
 // HashRouter for static hosting (Porkbun) where server-side rewrites aren't available.
-// Routes become rlv.lol/stull/#/calc instead of rlv.lol/stull/calc — but they survive refresh.
+// Routes become rlv.lol/stullv2/#/calc instead of rlv.lol/stullv2/calc — but they survive refresh.
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <HashRouter>

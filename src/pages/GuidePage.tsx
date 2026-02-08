@@ -1002,6 +1002,29 @@ export function GuidePage() {
             padding: 24px 20px 60px;
           }
         }
+
+        @media (max-width: 480px) {
+          .guide-content {
+            padding: 16px 12px 40px;
+          }
+          .guide-content h2 {
+            font-size: 20px;
+          }
+          .guide-content h3 {
+            font-size: 16px;
+          }
+          .guide-callout {
+            padding: 10px 12px;
+            font-size: 13px;
+          }
+          .glossary-grid {
+            grid-template-columns: 1fr;
+          }
+          .toc-link {
+            font-size: 11px;
+            padding: 4px 8px;
+          }
+        }
       `}</style>
     </div>
   )
