@@ -60,7 +60,15 @@ function loadBlendResults(): SimplexPoint[] {
   try {
     const raw = localStorage.getItem(BLEND_RESULTS_KEY)
     if (!raw) return []
-    return JSON.parse(raw)
+    const parsed = JSON.parse(raw)
+    // Restore Maps in recipe objects
+    return parsed.map((p: any) => ({
+      ...p,
+      recipe: p.recipe ? {
+        ...p.recipe,
+        umf: new Map(Object.entries(p.recipe.umf || {})),
+      } : p.recipe,
+    }))
   } catch {
     return []
   }
@@ -68,7 +76,15 @@ function loadBlendResults(): SimplexPoint[] {
 
 function saveBlendResults(points: SimplexPoint[]) {
   try {
-    localStorage.setItem(BLEND_RESULTS_KEY, JSON.stringify(points))
+    // Serialize Maps in recipe objects
+    const serializable = points.map(p => ({
+      ...p,
+      recipe: p.recipe ? {
+        ...p.recipe,
+        umf: Object.fromEntries(p.recipe.umf),
+      } : p.recipe,
+    }))
+    localStorage.setItem(BLEND_RESULTS_KEY, JSON.stringify(serializable))
   } catch (e) {
     console.warn('Failed to save blend results:', e)
   }

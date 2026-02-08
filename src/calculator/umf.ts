@@ -91,11 +91,22 @@ export function recipeToUMF(
     
     resolved.push({ ingredient: ing, material, analysis })
     
+    // Warn about discontinued materials
+    if (material.discontinued) {
+      warnings.push(`"${material.primaryName}" is discontinued — analysis data may not match current substitutes`)
+    }
+    
+    // Warn about fuzzy matches
+    if (material.primaryName.toLowerCase() !== ing.material.toLowerCase().trim() &&
+        !material.aliases.some(a => a.toLowerCase() === ing.material.toLowerCase().trim())) {
+      warnings.push(`"${ing.material}" resolved to "${material.primaryName}" via fuzzy match — verify this is correct`)
+    }
+    
     trace.push({
       operation: 'material_resolution',
       inputs: { name: ing.material },
       output: 1,
-      note: `Resolved "${ing.material}" → ${material.primaryName}`
+      note: `Resolved "${ing.material}" → ${material.primaryName}${material.discontinued ? ' (DISCONTINUED)' : ''}`
     })
   }
   

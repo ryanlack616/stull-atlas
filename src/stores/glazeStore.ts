@@ -93,9 +93,18 @@ export const useGlazeStore = create<GlazeState & GlazeActions>()(
       const glazes = get().getGlazesArray()
       
       return glazes
-        .filter(g => g.umf.has(datasetId))
         .map(g => {
-          const umf = g.umf.get(datasetId)!
+          // Try requested dataset first, then fall back to any available UMF
+          let umf = g.umf.get(datasetId)
+          if (!umf) {
+            // Try alternative datasets — allows user recipes (digitalfire_2024) 
+            // to show on the glazy_default view and vice versa
+            for (const [, u] of g.umf) {
+              if (u) { umf = u; break }
+            }
+          }
+          if (!umf) return null
+          
           const SiO2 = umf.SiO2?.value ?? 0
           const Al2O3 = umf.Al2O3?.value ?? 0
           
@@ -117,6 +126,7 @@ export const useGlazeStore = create<GlazeState & GlazeActions>()(
             confidence: g.umfConfidence
           }
         })
+        .filter((p): p is GlazePlotPoint => p !== null)
     },
     
     clear: () => set(initialState),

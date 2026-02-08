@@ -45,6 +45,7 @@ export function UMFCalculatorPage() {
   const [cone, setCone] = useState('6')
   const [saved, setSaved] = useState(false)
   const [trace, setTrace] = useState<CalculationStep[]>([])
+  const [resolvedIngredients, setResolvedIngredients] = useState<{ name: string; resolved: string | null; amount: number; discontinued: boolean }[]>([])
 
   const { saveRecipe } = useRecipeStore()
 
@@ -70,6 +71,21 @@ export function UMFCalculatorPage() {
 
     // Calculate UMF
     const result = recipeToUMF(recipe, materialDatabase, 'digitalfire_2024')
+
+    // Build resolved ingredients summary
+    const total = recipe.ingredients.reduce((s, ing) => s + (ing.amount || 0), 0)
+    const resolvedList = recipe.ingredients
+      .filter(ing => ing.material.trim() && ing.amount > 0)
+      .map(ing => {
+        const mat = materialDatabase.resolve(ing.material.trim(), 'digitalfire_2024')
+        return {
+          name: ing.material.trim(),
+          resolved: mat ? mat.primaryName : null,
+          amount: total > 0 ? (ing.amount / total) * 100 : 0,
+          discontinued: mat?.discontinued || false,
+        }
+      })
+    setResolvedIngredients(resolvedList)
 
     // Store trace for "Show Your Work"
     setTrace(result.trace || [])
@@ -272,6 +288,43 @@ export function UMFCalculatorPage() {
                 </table>
               </div>
             </div>
+
+            {/* Resolved Materials */}
+            {resolvedIngredients.length > 0 && (
+              <div className="results-panel">
+                <div className="results-header">
+                  <h3>Recipe Breakdown</h3>
+                </div>
+                <div style={{ padding: '0 16px 16px' }}>
+                  <table className="results-table">
+                    <thead>
+                      <tr>
+                        <th>Ingredient</th>
+                        <th>Resolved As</th>
+                        <th>Weight %</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {resolvedIngredients.map((ri, i) => (
+                        <tr key={i}>
+                          <td style={{ fontFamily: 'inherit' }}>{ri.name}</td>
+                          <td style={{
+                            fontFamily: 'inherit',
+                            color: ri.resolved
+                              ? (ri.discontinued ? '#f59e0b' : 'var(--text-bright)')
+                              : '#ef4444',
+                          }}>
+                            {ri.resolved || '✗ unresolved'}
+                            {ri.discontinued && <span style={{ marginLeft: 6, fontSize: 10, color: '#f59e0b' }}>discontinued</span>}
+                          </td>
+                          <td style={{ fontFamily: "'SF Mono', monospace" }}>{ri.amount.toFixed(1)}%</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
 
             {/* Calculation Trace */}
             {trace.length > 0 && (

@@ -436,9 +436,13 @@ export function StullPlot3D({
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         width: width || '100%', height: height || '100%',
-        color: '#777', fontSize: 13
+        color: '#777', fontSize: 13,
+        background: 'var(--bg-secondary, #1a1a1a)',
+        borderRadius: 8,
+        animation: 'pulse 1.5s ease-in-out infinite',
       }}>
-        Loading 3D plot…
+        <style>{`@keyframes pulse { 0%,100% { opacity: 0.6 } 50% { opacity: 1 } }`}</style>
+        Loading 3D engine…
       </div>
     )
   }

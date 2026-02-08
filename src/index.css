@@ -308,6 +308,59 @@ input[type="range"]::-webkit-slider-thumb {
 
 /* ========= Mobile Responsive ========= */
 
+/* Touch-friendly targets — 44px minimum for potters with clay on their hands */
+@media (pointer: coarse) {
+  .main-nav a,
+  .cat-btn,
+  .sidebar-tab,
+  .theme-toggle,
+  button {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .main-nav a {
+    padding: 10px 14px !important;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+  }
+
+  input[type="number"],
+  input[type="text"],
+  select {
+    min-height: 44px;
+    font-size: 16px; /* prevent iOS zoom on focus */
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (forced-colors: active) {
+  .event-card,
+  .calc-card,
+  .cat-btn {
+    border: 1px solid ButtonText;
+  }
+
+  .year-dot {
+    forced-color-adjust: none;
+  }
+}
+
 /* Tablet & small desktop */
 @media (max-width: 1024px) {
   .controls-panel {

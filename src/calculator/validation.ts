@@ -275,7 +275,10 @@ export function validateRecipe(recipe: GlazeRecipe): ValidationResult {
   }
   
   // Check for flux materials
-  const fluxKeywords = ['feldspar', 'frit', 'whiting', 'dolomite', 'talc', 'zinc', 'calcium', 'wollastonite', 'bone ash']
+  const fluxKeywords = ['feldspar', 'frit', 'whiting', 'dolomite', 'talc', 'zinc',
+    'calcium', 'wollastonite', 'bone ash', 'lithium', 'soda ash', 'pearl ash',
+    'borax', 'colemanite', 'ulexite', 'gerstley', 'strontium', 'barium',
+    'nepheline', 'cornwall', 'petalite', 'spodumene']
   const hasFlux = recipe.ingredients.some(i =>
     fluxKeywords.some(f => i.material.toLowerCase().includes(f))
   )
@@ -293,7 +296,9 @@ export function validateRecipe(recipe: GlazeRecipe): ValidationResult {
   }
   
   // Check for alumina source
-  const aluminaKeywords = ['kaolin', 'clay', 'alumina', 'epk', 'grolleg', 'tile 6']
+  const aluminaKeywords = ['kaolin', 'clay', 'alumina', 'epk', 'grolleg', 'tile 6',
+    'ball clay', 'goldart', 'hawthorne', 'redart', 'fire clay', 'bentonite',
+    'xx sagger', 'calcined']
   const hasAlumina = recipe.ingredients.some(i =>
     aluminaKeywords.some(a => i.material.toLowerCase().includes(a))
   )

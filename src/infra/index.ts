@@ -11,4 +11,3 @@
 
 export * from './glazes'
 export * from './materials'
-export * from './persistence'

@@ -5,7 +5,7 @@
  * Used across all calculator pages.
  */
 
-import React, { useState, useCallback, useRef, useId } from 'react'
+import React, { useState, useCallback, useRef, useId, useMemo } from 'react'
 import { GlazeRecipe, Ingredient, Atmosphere, SurfaceType } from '@/types'
 import { materialDatabase } from '@/domain/material'
 
@@ -22,12 +22,13 @@ interface RecipeInputProps {
 }
 
 const COMMON_MATERIALS = [
-  'Custer Feldspar', 'Nepheline Syenite', 'Wollastonite',
-  'EPK Kaolin', 'Silica', 'Dolomite', 'Talc', 'Whiting',
-  'Gerstley Borate', 'Frit 3134', 'Frit 3110', 'Frit 3124',
-  'Spodumene', 'Bone Ash', 'Zinc Oxide', 'Barium Carbonate',
+  'Custer Feldspar', 'Nepheline Syenite', 'Minspar 200', 'G200 HP Feldspar',
+  'Wollastonite', 'EPK Kaolin', 'Silica', 'Dolomite', 'Talc', 'Whiting',
+  'Gerstley Borate', 'Frit 3134', 'Frit 3110', 'Frit 3124', 'Frit 3195',
+  'Spodumene', 'Petalite', 'Bone Ash', 'Zinc Oxide', 'Barium Carbonate',
   'Ball Clay', 'Red Iron Oxide', 'Tin Oxide', 'Titanium Dioxide',
   'Rutile', 'Cobalt Carbonate', 'Copper Carbonate', 'Manganese Dioxide',
+  'Zircopax', 'Lithium Carbonate', 'Bentonite', 'Colemanite',
 ]
 
 function createEmptyRecipe(label: string): GlazeRecipe {
@@ -55,6 +56,18 @@ const ALL_MATERIAL_NAMES = (() => {
     return COMMON_MATERIALS
   }
 })()
+
+// Pre-compute resolution status for showing match indicators
+function resolveStatus(name: string): { resolved: boolean; match?: string; discontinued?: boolean } {
+  if (!name.trim()) return { resolved: false }
+  const mat = materialDatabase.resolve(name.trim(), 'digitalfire_2024')
+  if (!mat) return { resolved: false }
+  return {
+    resolved: true,
+    match: mat.primaryName,
+    discontinued: mat.discontinued,
+  }
+}
 
 export function RecipeInput({ label, color, recipe, onChange, compact, datalistId }: RecipeInputProps) {
   const generatedId = useId()
@@ -164,35 +177,63 @@ export function RecipeInput({ label, color, recipe, onChange, compact, datalistI
       </div>
 
       <div className="ingredients-list">
-        {current.ingredients.map((ing, i) => (
-          <div key={getStableKey(i, current.ingredients.length)} className="ingredient-row">
-            <input
-              type="text"
-              value={ing.material}
-              onChange={e => updateIngredient(i, 'material', e.target.value)}
-              placeholder="Material..."
-              className="material-input"
-              list={listId}
-            />
-            <input
-              type="number"
-              value={ing.amount || ''}
-              onChange={e => updateIngredient(i, 'amount', parseFloat(e.target.value) || 0)}
-              placeholder="0"
-              min="0"
-              step="0.1"
-              className="amount-input"
-            />
-            <button
-              className="remove-btn"
-              onClick={() => removeIngredient(i)}
-              title="Remove ingredient"
-              disabled={current.ingredients.length <= 1}
-            >
-              ×
-            </button>
-          </div>
-        ))}
+        {current.ingredients.map((ing, i) => {
+          const status = resolveStatus(ing.material)
+          return (
+            <div key={getStableKey(i, current.ingredients.length)} className="ingredient-row">
+              <div style={{ flex: 1, position: 'relative' }}>
+                <input
+                  type="text"
+                  value={ing.material}
+                  onChange={e => updateIngredient(i, 'material', e.target.value)}
+                  placeholder="Material..."
+                  className="material-input"
+                  list={listId}
+                  style={{
+                    borderColor: ing.material.trim()
+                      ? (status.resolved ? (status.discontinued ? '#b45309' : 'var(--border-secondary)') : '#991b1b')
+                      : undefined,
+                    width: '100%',
+                  }}
+                />
+                {ing.material.trim() && (
+                  <div style={{ fontSize: 10, marginTop: 1, minHeight: 14 }}>
+                    {status.resolved ? (
+                      <>
+                        <span style={{ color: '#4caf50' }}>✓</span>
+                        {status.match !== ing.material.trim() && (
+                          <span style={{ color: 'var(--text-muted)', marginLeft: 4 }}>→ {status.match}</span>
+                        )}
+                        {status.discontinued && (
+                          <span style={{ color: '#f59e0b', marginLeft: 4 }}>⚠ discontinued</span>
+                        )}
+                      </>
+                    ) : (
+                      <span style={{ color: '#ef4444' }}>✗ unknown material</span>
+                    )}
+                  </div>
+                )}
+              </div>
+              <input
+                type="number"
+                value={ing.amount || ''}
+                onChange={e => updateIngredient(i, 'amount', parseFloat(e.target.value) || 0)}
+                placeholder="0"
+                min="0"
+                step="0.1"
+                className="amount-input"
+              />
+              <button
+                className="remove-btn"
+                onClick={() => removeIngredient(i)}
+                title="Remove ingredient"
+                disabled={current.ingredients.length <= 1}
+              >
+                ×
+              </button>
+            </div>
+          )
+        })}
       </div>
 
       <div className="recipe-footer">

@@ -37,6 +37,8 @@ export function MaterialsPage() {
   const [categoryFilter, setCategoryFilter] = useState<MaterialCategory | 'all'>('all')
   const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(null)
   const [sortBy, setSortBy] = useState<'name' | 'category'>('name')
+  const [compareIds, setCompareIds] = useState<Set<string>>(new Set())
+  const [showCompare, setShowCompare] = useState(false)
 
   const allMaterials = useMemo(() => materialDatabase.getAllMaterials(), [])
   
@@ -78,6 +80,15 @@ export function MaterialsPage() {
 
   const getAnalysis = (mat: Material): Record<string, number> | null => {
     return materialDatabase.getAnalysis(mat.id, 'digitalfire_2024')
+  }
+
+  const toggleCompare = (id: string) => {
+    setCompareIds(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
   }
 
   return (
@@ -132,10 +143,40 @@ export function MaterialsPage() {
             <button onClick={() => setSortBy('category')} style={catBtnStyle(sortBy === 'category')}>Category</button>
           </div>
         </div>
+
+        {compareIds.size >= 2 && (
+          <div className="calc-section">
+            <button
+              onClick={() => setShowCompare(true)}
+              style={{
+                width: '100%', padding: '10px', background: 'var(--accent)',
+                border: 'none', borderRadius: 6, color: '#fff', fontWeight: 600,
+                cursor: 'pointer', fontSize: 13,
+              }}
+            >
+              Compare {compareIds.size} Materials
+            </button>
+            <button
+              onClick={() => setCompareIds(new Set())}
+              style={{
+                width: '100%', padding: '6px', background: 'transparent',
+                border: '1px solid var(--border-secondary)', borderRadius: 6,
+                color: 'var(--text-muted)', cursor: 'pointer', fontSize: 11, marginTop: 4,
+              }}
+            >
+              Clear Selection
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="calc-main">
-        {selectedMaterial ? (
+        {showCompare && compareIds.size >= 2 ? (
+          <MaterialComparison
+            materialIds={Array.from(compareIds)}
+            onClose={() => setShowCompare(false)}
+          />
+        ) : selectedMaterial ? (
           <MaterialDetail material={selectedMaterial} onClose={() => setSelectedMaterial(null)} />
         ) : (
           <>
@@ -147,6 +188,7 @@ export function MaterialsPage() {
                 <table className="results-table">
                   <thead>
                     <tr>
+                      <th style={{ width: 30 }}></th>
                       <th>Material</th>
                       <th>Category</th>
                       <th>SiO₂</th>
@@ -168,6 +210,15 @@ export function MaterialsPage() {
                           onClick={() => setSelectedMaterial(mat)}
                           style={{ cursor: 'pointer', opacity: mat.discontinued ? 0.6 : 1 }}
                         >
+                          <td onClick={e => e.stopPropagation()} style={{ textAlign: 'center' }}>
+                            <input
+                              type="checkbox"
+                              checked={compareIds.has(mat.id)}
+                              onChange={() => toggleCompare(mat.id)}
+                              aria-label={`Compare ${mat.primaryName}`}
+                              style={{ cursor: 'pointer', accentColor: 'var(--accent)' }}
+                            />
+                          </td>
                           <td style={{ color: 'var(--text-bright)', fontFamily: 'inherit', fontWeight: 500 }}>
                             {mat.primaryName}
                             {mat.discontinued && <span style={{ marginLeft: 6, padding: '1px 5px', background: 'var(--accent-bg)', borderRadius: 3, fontSize: 10, color: 'var(--text-muted)' }}>discontinued</span>}
@@ -192,6 +243,166 @@ export function MaterialsPage() {
       </div>
 
       <style>{calcStyles}</style>
+    </div>
+  )
+}
+
+/* Material Comparison Panel */
+function MaterialComparison({ materialIds, onClose }: { materialIds: string[]; onClose: () => void }) {
+  const materials = materialIds
+    .map(id => materialDatabase.getMaterial(id))
+    .filter((m): m is Material => m !== null)
+
+  const analyses = materials.map(m => materialDatabase.getAnalysis(m.id, 'digitalfire_2024'))
+
+  // Find all oxides present in any material
+  const presentOxides = OXIDE_ORDER.filter(oxide =>
+    analyses.some(a => a && (a as any)[oxide] > 0.01)
+  )
+
+  // Find the max value for each oxide (for highlighting)
+  const maxValues: Record<string, number> = {}
+  for (const oxide of presentOxides) {
+    maxValues[oxide] = Math.max(
+      ...analyses.map(a => (a ? ((a as any)[oxide] ?? 0) : 0))
+    )
+  }
+
+  return (
+    <div>
+      <button
+        onClick={onClose}
+        style={{ background: 'var(--bg-input)', border: '1px solid var(--border-secondary)', borderRadius: 6, color: 'var(--text-label)', padding: '6px 14px', cursor: 'pointer', marginBottom: 16 }}
+      >
+        ← Back to list
+      </button>
+
+      <div className="results-panel">
+        <div className="results-header">
+          <h3>Comparing {materials.length} Materials</h3>
+        </div>
+        <div className="results-scroll" style={{ maxHeight: 'calc(100vh - 220px)' }}>
+          <table className="results-table" style={{ fontSize: 12 }}>
+            <thead>
+              <tr>
+                <th style={{ position: 'sticky', left: 0, background: 'var(--bg-elevated)', zIndex: 1 }}>Oxide</th>
+                {materials.map(m => (
+                  <th key={m.id} style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+                    {m.primaryName}
+                    {m.discontinued && <span style={{ display: 'block', fontSize: 9, color: 'var(--text-muted)' }}>discontinued</span>}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {/* Category row */}
+              <tr style={{ borderBottom: '2px solid var(--border-secondary)' }}>
+                <td style={{ fontWeight: 600, color: 'var(--text-secondary)', position: 'sticky', left: 0, background: 'var(--bg-elevated)' }}>Category</td>
+                {materials.map(m => (
+                  <td key={m.id} style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>
+                    {CATEGORY_LABELS[m.category] || m.category}
+                  </td>
+                ))}
+              </tr>
+
+              {/* Oxide rows */}
+              {presentOxides.map(oxide => (
+                <tr key={oxide}>
+                  <td style={{ fontWeight: 500, position: 'sticky', left: 0, background: 'var(--bg-elevated)' }}>
+                    <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: oxideColor(oxide), marginRight: 6 }} />
+                    {oxide}
+                  </td>
+                  {analyses.map((a, i) => {
+                    const val = a ? ((a as any)[oxide] ?? 0) : 0
+                    const isMax = val > 0.01 && val === maxValues[oxide] && materials.length > 1
+                    return (
+                      <td key={materials[i].id} style={{
+                        textAlign: 'right',
+                        fontFamily: "'SF Mono', 'Fira Code', monospace",
+                        fontWeight: isMax ? 700 : 400,
+                        color: isMax ? 'var(--text-bright)' : val > 0.01 ? 'var(--text-primary)' : 'var(--text-muted)',
+                      }}>
+                        {val > 0.01 ? val.toFixed(2) : '—'}
+                      </td>
+                    )
+                  })}
+                </tr>
+              ))}
+
+              {/* LOI row */}
+              <tr style={{ borderTop: '2px solid var(--border-secondary)' }}>
+                <td style={{ fontWeight: 500, color: 'var(--text-muted)', position: 'sticky', left: 0, background: 'var(--bg-elevated)' }}>LOI</td>
+                {materials.map(m => {
+                  const loi = materialDatabase.getLoi(m.id)
+                  return (
+                    <td key={m.id} style={{ textAlign: 'right', fontFamily: "'SF Mono', 'Fira Code', monospace", color: 'var(--text-muted)' }}>
+                      {loi !== null ? loi.toFixed(2) : '—'}
+                    </td>
+                  )
+                })}
+              </tr>
+
+              {/* Total row */}
+              <tr style={{ borderTop: '1px solid var(--border-secondary)' }}>
+                <td style={{ fontWeight: 600, position: 'sticky', left: 0, background: 'var(--bg-elevated)' }}>Total</td>
+                {analyses.map((a, i) => {
+                  const loi = materialDatabase.getLoi(materials[i].id) ?? 0
+                  const oxideTotal = a
+                    ? Object.values(a).reduce((sum, v) => sum + (v as number), 0)
+                    : 0
+                  const total = oxideTotal + loi
+                  return (
+                    <td key={materials[i].id} style={{
+                      textAlign: 'right',
+                      fontFamily: "'SF Mono', 'Fira Code', monospace",
+                      fontWeight: 600,
+                      color: Math.abs(total - 100) < 1 ? 'var(--text-secondary)' : '#e67e22',
+                    }}>
+                      {total.toFixed(1)}%
+                    </td>
+                  )
+                })}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Visual bar comparison for top oxides */}
+      <div className="results-panel" style={{ marginTop: 16 }}>
+        <div className="results-header">
+          <h3>Visual Comparison</h3>
+        </div>
+        <div style={{ padding: 16 }}>
+          {presentOxides.filter(o => maxValues[o] > 1).map(oxide => (
+            <div key={oxide} style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 4 }}>{oxide}</div>
+              {materials.map((m, i) => {
+                const val = analyses[i] ? ((analyses[i] as any)[oxide] ?? 0) : 0
+                return (
+                  <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
+                    <span style={{ fontSize: 10, color: 'var(--text-muted)', width: 90, textAlign: 'right', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {m.primaryName}
+                    </span>
+                    <div style={{ flex: 1, height: 10, background: 'var(--bg-tertiary)', borderRadius: 5, overflow: 'hidden' }}>
+                      <div style={{
+                        width: `${maxValues[oxide] > 0 ? (val / maxValues[oxide]) * 100 : 0}%`,
+                        height: '100%',
+                        background: oxideColor(oxide),
+                        borderRadius: 5,
+                        transition: 'width 0.3s ease',
+                      }} />
+                    </div>
+                    <span style={{ fontSize: 10, fontFamily: "'SF Mono', 'Fira Code', monospace", color: 'var(--text-label)', width: 40 }}>
+                      {val > 0.01 ? val.toFixed(1) : '—'}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

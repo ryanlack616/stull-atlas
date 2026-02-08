@@ -53,9 +53,13 @@ const DEFAULT_DATASETS: DatasetInfo[] = [
     name: 'Glazy',
     description: 'Glazy community material data',
     materialCount: 8897
+  },
+  {
+    id: 'digitalfire_2024',
+    name: 'Digitalfire',
+    description: 'User recipes calculated with Digitalfire material analyses',
+    materialCount: 62
   }
-  // Wiggle test datasets will be added when we have multiple material analyses
-  // for the same recipes (e.g., recalculating with Digitalfire vs Glazy material data)
 ]
 
 /** Module-level interval handle — avoids stashing state via `as any` casts */
@@ -69,7 +73,7 @@ export const useDatasetStore = create<DatasetState & DatasetActions>((set, get) 
     isAnimating: false,
     animationSpeed: 500,
     currentIndex: 0,
-    datasetsToCompare: ['glazy_default']  // Add more when multiple material analyses available
+    datasetsToCompare: ['glazy_default', 'digitalfire_2024']
   },
   
   setCurrentDataset: (id) => set({ currentDataset: id }),

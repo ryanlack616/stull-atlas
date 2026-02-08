@@ -59,6 +59,13 @@ const calculators = [
     description: 'LHS, Sobol, or Halton sequences across UMF space. Computational exploration.',
     meta: 'bounds → n quasi-random samples',
   },
+  {
+    path: '/calc/optimizer',
+    icon: '🎯',
+    name: 'Recipe Optimizer',
+    description: 'Set target UMF chemistry and let the solver find a recipe from your chosen materials.',
+    meta: 'targets + materials → recipe',
+  },
 ]
 
 export function CalculatorsPage() {

@@ -29,7 +29,6 @@ class MaterialDatabase {
         primaryName: mat.primaryName,
         aliases: mat.aliases || [],
         category: mat.category,
-        analyses: new Map(),
         defaultDataset: 'digitalfire_2024',
         discontinued: mat.discontinued || false,
       }

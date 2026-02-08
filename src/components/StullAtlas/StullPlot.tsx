@@ -331,13 +331,13 @@ export function StullPlot({
       color: colorValues,
       colorscale: colorBy === 'cone' ? CONE_COLORSCALE : (COLOR_SCALES[colorBy] || 'Viridis'),
       reversescale: false,
-      cmin: colorBy === 'cone' ? -4 : undefined,
-      cmax: colorBy === 'cone' ? 10 : undefined,
+      cmin: colorBy === 'cone' ? -6 : undefined,
+      cmax: colorBy === 'cone' ? 12 : undefined,
       colorbar: {
         title: getColorBarTitle(colorBy),
         thickness: 15,
         len: 0.7,
-        tickvals: colorBy === 'cone' ? [-4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] : undefined,
+        tickvals: colorBy === 'cone' ? [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] : undefined,
         ticktext: colorBy === 'cone' ? ['04', '03', '02', '01', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'] : undefined
       },
       line: {
@@ -490,9 +490,13 @@ export function StullPlot({
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         width: width || '100%', height: height || '100%',
-        color: '#777', fontSize: 13
+        color: '#777', fontSize: 13,
+        background: 'var(--bg-secondary, #1a1a1a)',
+        borderRadius: 8,
+        animation: 'pulse 1.5s ease-in-out infinite',
       }}>
-        Loading plot…
+        <style>{`@keyframes pulse { 0%,100% { opacity: 0.6 } 50% { opacity: 1 } }`}</style>
+        Loading chart engine…
       </div>
     )
   }

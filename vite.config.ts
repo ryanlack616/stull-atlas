@@ -11,6 +11,7 @@ export default defineConfig({
     }
   },
   build: {
+    chunkSizeWarningLimit: 2200, // Plotly GL bundles are ~2MB, expected
     rollupOptions: {
       output: {
         manualChunks: (id) => {
