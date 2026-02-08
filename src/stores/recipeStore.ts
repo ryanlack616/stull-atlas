@@ -10,6 +10,19 @@ import { GlazeRecipe, SimplexPoint } from '@/types'
 
 const STORAGE_KEY = 'stull-atlas-recipes'
 const BLEND_RESULTS_KEY = 'stull-atlas-blend-results'
+const STORAGE_VERSION = 1
+
+// ── Serialization helpers ───────────────────────────────────────────
+
+/** Convert a GlazeRecipe's Map fields to plain objects for JSON */
+function serializeRecipe(r: GlazeRecipe): any {
+  return { ...r, umf: Object.fromEntries(r.umf) }
+}
+
+/** Restore Map fields from a deserialized plain object */
+function deserializeRecipe(raw: any): GlazeRecipe {
+  return { ...raw, umf: new Map(Object.entries(raw.umf || {})) }
+}
 
 interface RecipeState {
   recipes: GlazeRecipe[]
@@ -33,11 +46,8 @@ function loadFromStorage(): GlazeRecipe[] {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return []
     const parsed = JSON.parse(raw)
-    // Restore Map from serialized form
-    return parsed.map((r: any) => ({
-      ...r,
-      umf: new Map(Object.entries(r.umf || {})),
-    }))
+    const data = parsed._v ? parsed.recipes : parsed // handle versioned or legacy
+    return (data as any[]).map(deserializeRecipe)
   } catch {
     return []
   }
@@ -45,12 +55,10 @@ function loadFromStorage(): GlazeRecipe[] {
 
 function saveToStorage(recipes: GlazeRecipe[]) {
   try {
-    // Serialize Maps to plain objects
-    const serializable = recipes.map(r => ({
-      ...r,
-      umf: Object.fromEntries(r.umf),
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      _v: STORAGE_VERSION,
+      recipes: recipes.map(serializeRecipe),
     }))
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(serializable))
   } catch (e) {
     console.warn('Failed to save recipes to localStorage:', e)
   }
@@ -61,13 +69,10 @@ function loadBlendResults(): SimplexPoint[] {
     const raw = localStorage.getItem(BLEND_RESULTS_KEY)
     if (!raw) return []
     const parsed = JSON.parse(raw)
-    // Restore Maps in recipe objects
-    return parsed.map((p: any) => ({
+    const data = parsed._v ? parsed.points : parsed // handle versioned or legacy
+    return (data as any[]).map((p: any) => ({
       ...p,
-      recipe: p.recipe ? {
-        ...p.recipe,
-        umf: new Map(Object.entries(p.recipe.umf || {})),
-      } : p.recipe,
+      recipe: p.recipe ? deserializeRecipe(p.recipe) : p.recipe,
     }))
   } catch {
     return []
@@ -76,15 +81,13 @@ function loadBlendResults(): SimplexPoint[] {
 
 function saveBlendResults(points: SimplexPoint[]) {
   try {
-    // Serialize Maps in recipe objects
-    const serializable = points.map(p => ({
-      ...p,
-      recipe: p.recipe ? {
-        ...p.recipe,
-        umf: Object.fromEntries(p.recipe.umf),
-      } : p.recipe,
+    localStorage.setItem(BLEND_RESULTS_KEY, JSON.stringify({
+      _v: STORAGE_VERSION,
+      points: points.map(p => ({
+        ...p,
+        recipe: p.recipe ? serializeRecipe(p.recipe) : p.recipe,
+      })),
     }))
-    localStorage.setItem(BLEND_RESULTS_KEY, JSON.stringify(serializable))
   } catch (e) {
     console.warn('Failed to save blend results:', e)
   }

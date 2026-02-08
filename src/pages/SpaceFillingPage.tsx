@@ -23,7 +23,8 @@ import {
 } from '@/calculator/blends/spacefilling'
 import { getOxideValue } from '@/calculator/umf'
 import { useRecipeStore } from '@/stores'
-import { exportBlendCSV } from '@/utils/export'
+import { exportBlendCSV, printLabels } from '@/utils/export'
+import { formatSiAlRatio, actionBtnStyle } from '@/utils/blend'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { calcStyles } from './calc-styles'
 
@@ -378,7 +379,7 @@ export function SpaceFillingPage() {
                     setBlendResults(asPoints)
                     navigate('/')
                   }}
-                  style={actionBtn}
+                  style={actionBtnStyle}
                 >
                   View on Explorer
                 </button>
@@ -391,9 +392,18 @@ export function SpaceFillingPage() {
                     })),
                     `${method}-${count}-samples.csv`
                   )}
-                  style={actionBtn}
+                  style={actionBtnStyle}
                 >
                   CSV
+                </button>
+                <button
+                  onClick={() => printLabels(results!.map((s, i) => ({
+                    label: `${method.toUpperCase()}-${i + 1}`,
+                    umf: s.umf,
+                  })))}
+                  style={actionBtnStyle}
+                >
+                  Print Labels
                 </button>
               </div>
             </div>
@@ -409,25 +419,15 @@ export function SpaceFillingPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {results.map((pt, i) => {
-                    const siAl = (() => {
-                      const si = pt.umf.SiO2
-                      const al = pt.umf.Al2O3
-                      const siVal = si ? (typeof si === 'number' ? si : si.value) : 0
-                      const alVal = al ? (typeof al === 'number' ? al : al.value) : 0
-                      return alVal > 0 ? (siVal / alVal).toFixed(1) : '—'
-                    })()
-
-                    return (
-                      <tr key={i}>
-                        <td>{i + 1}</td>
-                        {displayOxides.map(o => (
-                          <td key={o}>{getVal(pt.umf, o)}</td>
-                        ))}
-                        <td>{siAl}</td>
-                      </tr>
-                    )
-                  })}
+                  {results.map((pt, i) => (
+                    <tr key={i}>
+                      <td>{i + 1}</td>
+                      {displayOxides.map(o => (
+                        <td key={o}>{getVal(pt.umf, o)}</td>
+                      ))}
+                      <td>{formatSiAlRatio(pt.umf)}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -453,9 +453,4 @@ export default SpaceFillingPage
 const boundInput: React.CSSProperties = {
   background: 'var(--bg-secondary)', border: '1px solid var(--border-primary)', borderRadius: 4,
   padding: '4px 6px', color: 'var(--text-primary)', fontSize: 12, width: '100%',
-}
-
-const actionBtn: React.CSSProperties = {
-  padding: '4px 10px', background: 'var(--bg-input)', border: '1px solid var(--border-secondary)',
-  borderRadius: 4, color: '#aaa', fontSize: 11, cursor: 'pointer',
 }

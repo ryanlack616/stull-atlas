@@ -14,6 +14,7 @@ import { radialBlend } from '@/calculator/blends/grid'
 import { materialDatabase } from '@/domain/material'
 import { useRecipeStore } from '@/stores'
 import { exportBlendCSV, printLabels } from '@/utils/export'
+import { actionBtnStyle } from '@/utils/blend'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { calcStyles } from './calc-styles'
 
@@ -211,7 +212,7 @@ export function RadialBlendPage() {
                     setBlendResults(asPoints)
                     navigate('/')
                   }}
-                  style={actionBtn}
+                  style={actionBtnStyle}
                 >
                   View on Explorer
                 </button>
@@ -227,13 +228,13 @@ export function RadialBlendPage() {
                     })),
                     'radial-blend.csv'
                   )}
-                  style={actionBtn}
+                  style={actionBtnStyle}
                 >
                   CSV
                 </button>
                 <button
                   onClick={() => printLabels(results!.map(pt => ({ label: pt.label || 'Radial', umf: pt.umf, recipe: pt.recipe })))}
-                  style={actionBtn}
+                  style={actionBtnStyle}
                 >
                   Print Labels
                 </button>
@@ -307,11 +308,6 @@ const inputStyle: React.CSSProperties = {
   color: 'var(--text-bright)',
   fontSize: 13,
   width: '100%'
-}
-
-const actionBtn: React.CSSProperties = {
-  padding: '4px 10px', background: 'var(--bg-input)', border: '1px solid var(--border-secondary)',
-  borderRadius: 4, color: '#aaa', fontSize: 11, cursor: 'pointer',
 }
 
 const addBtnStyle: React.CSSProperties = {

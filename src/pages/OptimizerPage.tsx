@@ -133,8 +133,8 @@ export function OptimizerPage() {
     if (selectedMats.length < 2 || targets.length === 0) return
     setRunning(true)
     setRSMAnalysis(null)
-    // Use requestAnimationFrame to let the UI update first
-    requestAnimationFrame(() => {
+    // Use setTimeout so React can render the "Solving..." state before heavy work blocks the thread
+    setTimeout(() => {
       const dbWrapper = {
         resolve(name: string) {
           return materialDatabase.resolve(name, 'digitalfire_2024') ??
@@ -188,7 +188,7 @@ export function OptimizerPage() {
         }
       }
       setRunning(false)
-    })
+    }, 16)
   }, [selectedMats, targets, method])
 
   const canRun = selectedMats.length >= 2 && targets.length > 0 && !running

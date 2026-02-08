@@ -6,7 +6,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { StullPlot } from './StullPlot'
-import { StullPlot3D, ZAxisOption } from './StullPlot3D'
+import { StullPlot3D, ZAxisOption, CameraPreset } from './StullPlot3D'
 import { DatasetSwitcher } from './DatasetSwitcher'
 import { ComparePanel } from './ComparePanel'
 import { AnalysisPanel } from '@/components/AnalysisPanel'
@@ -28,6 +28,9 @@ export function StullAtlas() {
   const [zoom, setZoom] = useState(1)
   const [is3D, setIs3D] = useState(false)
   const [zAxis, setZAxis] = useState<ZAxisOption>('B2O3')
+  const [showSurface, setShowSurface] = useState(true)
+  const [surfaceOpacity, setSurfaceOpacity] = useState(0.35)
+  const [cameraPreset, setCameraPreset] = useState<CameraPreset>('default')
   
   // Auto-switch to z_axis coloring when entering 3D or changing Z axis
   useEffect(() => {
@@ -158,19 +161,72 @@ export function StullAtlas() {
             </button>
             
             {is3D && (
-              <div className="z-axis-control">
-                <label>
-                  Z Axis
-                  <select
-                    value={zAxis}
-                    onChange={(e) => setZAxis(e.target.value as ZAxisOption)}
-                  >
-                    {zAxisOptions.map(opt => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+              <>
+                <div className="z-axis-control">
+                  <label>
+                    Z Axis
+                    <select
+                      value={zAxis}
+                      onChange={(e) => setZAxis(e.target.value as ZAxisOption)}
+                    >
+                      {zAxisOptions.map(opt => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+
+                <div className="three-d-extras">
+                  <label className="surface-toggle">
+                    <input
+                      type="checkbox"
+                      checked={showSurface}
+                      onChange={e => setShowSurface(e.target.checked)}
+                    />
+                    Fitted Surface
+                  </label>
+                  {showSurface && (
+                    <div className="surface-opacity">
+                      <span>Opacity</span>
+                      <input
+                        type="range"
+                        min="0.1"
+                        max="0.8"
+                        step="0.05"
+                        value={surfaceOpacity}
+                        onChange={e => setSurfaceOpacity(Number(e.target.value))}
+                      />
+                      <span className="opacity-value">{Math.round(surfaceOpacity * 100)}%</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="camera-presets">
+                  <span className="presets-label">Camera</span>
+                  <div className="preset-buttons">
+                    {(['default', 'top', 'side-x', 'side-y'] as CameraPreset[]).map(preset => (
+                      <button
+                        key={preset}
+                        className={`preset-btn ${cameraPreset === preset ? 'active' : ''}`}
+                        onClick={() => setCameraPreset(preset)}
+                        title={{
+                          default: 'Perspective view',
+                          top: 'Top-down (birds eye)',
+                          'side-x': 'Side view along Al\u2082O\u2083',
+                          'side-y': 'Side view along SiO\u2082',
+                        }[preset]}
+                      >
+                        {{
+                          default: '\u2B22',
+                          top: '\u2B9D',
+                          'side-x': '\u2B9E',
+                          'side-y': '\u2B9C',
+                        }[preset]}
+                      </button>
                     ))}
-                  </select>
-                </label>
-              </div>
+                  </div>
+                </div>
+              </>
             )}
           </div>
           
@@ -219,6 +275,11 @@ export function StullAtlas() {
               zAxis={zAxis}
               colorBy={colorBy}
               zoom={zoom}
+              highlightPointIds={highlightPointIds}
+              highlightCircle={highlightCircle}
+              showSurface={showSurface}
+              surfaceOpacity={surfaceOpacity}
+              cameraPreset={cameraPreset}
             />
           ) : (
             <StullPlot 

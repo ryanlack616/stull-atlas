@@ -8,12 +8,13 @@
 import React, { useState, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RecipeInput } from '@/components/RecipeInput'
-import { GlazeRecipe, SimplexPoint, OxideSymbol, UMF } from '@/types'
+import { GlazeRecipe, SimplexPoint } from '@/types'
 import { simplexBlend, simplexPointCount } from '@/calculator/blends/simplex'
 import { recipeToUMF } from '@/calculator/umf'
 import { materialDatabase } from '@/domain/material'
 import { useRecipeStore } from '@/stores'
 import { exportBlendCSV, printLabels } from '@/utils/export'
+import { formatSiAlRatio, formatOxideDisplay, actionBtnStyle } from '@/utils/blend'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { calcStyles } from './calc-styles'
 
@@ -74,11 +75,7 @@ export function LineBlendPage() {
     }
   }, [recipes, divisions, canCalculate])
 
-  const formatOxide = (umf: UMF, oxide: OxideSymbol): string => {
-    const oval = umf[oxide]
-    if (!oval) return '—'
-    return oval.value.toFixed(3)
-  }
+
 
   return (
     <div className="calc-page">
@@ -153,7 +150,7 @@ export function LineBlendPage() {
                     setBlendResults(results!)
                     navigate('/')
                   }}
-                  style={actionBtn}
+                  style={actionBtnStyle}
                 >
                   View on Explorer
                 </button>
@@ -166,7 +163,7 @@ export function LineBlendPage() {
                     })),
                     'line-blend.csv'
                   )}
-                  style={actionBtn}
+                  style={actionBtnStyle}
                 >
                   CSV
                 </button>
@@ -177,7 +174,7 @@ export function LineBlendPage() {
                       umf: pt.umf,
                     }))
                   )}
-                  style={actionBtn}
+                  style={actionBtnStyle}
                 >
                   Print Labels
                 </button>
@@ -202,32 +199,22 @@ export function LineBlendPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {results.map((pt, i) => {
-                    const siAl = (() => {
-                      const si = pt.umf.SiO2
-                      const al = pt.umf.Al2O3
-                      const siVal = si ? (typeof si === 'number' ? si : si.value) : 0
-                      const alVal = al ? (typeof al === 'number' ? al : al.value) : 0
-                      return alVal > 0 ? (siVal / alVal).toFixed(1) : '—'
-                    })()
-
-                    return (
-                      <tr key={i}>
-                        <td>{i + 1}</td>
-                        <td>{Math.round(pt.coordinates[0] * 100)}</td>
-                        <td>{Math.round(pt.coordinates[1] * 100)}</td>
-                        <td>{formatOxide(pt.umf, 'SiO2')}</td>
-                        <td>{formatOxide(pt.umf, 'Al2O3')}</td>
-                        <td>{formatOxide(pt.umf, 'B2O3')}</td>
-                        <td>{formatOxide(pt.umf, 'Na2O')}</td>
-                        <td>{formatOxide(pt.umf, 'K2O')}</td>
-                        <td>{formatOxide(pt.umf, 'CaO')}</td>
-                        <td>{formatOxide(pt.umf, 'MgO')}</td>
-                        <td>{formatOxide(pt.umf, 'ZnO')}</td>
-                        <td>{siAl}</td>
-                      </tr>
-                    )
-                  })}
+                  {results.map((pt, i) => (
+                    <tr key={i}>
+                      <td>{i + 1}</td>
+                      <td>{Math.round(pt.coordinates[0] * 100)}</td>
+                      <td>{Math.round(pt.coordinates[1] * 100)}</td>
+                      <td>{formatOxideDisplay(pt.umf, 'SiO2')}</td>
+                      <td>{formatOxideDisplay(pt.umf, 'Al2O3')}</td>
+                      <td>{formatOxideDisplay(pt.umf, 'B2O3')}</td>
+                      <td>{formatOxideDisplay(pt.umf, 'Na2O')}</td>
+                      <td>{formatOxideDisplay(pt.umf, 'K2O')}</td>
+                      <td>{formatOxideDisplay(pt.umf, 'CaO')}</td>
+                      <td>{formatOxideDisplay(pt.umf, 'MgO')}</td>
+                      <td>{formatOxideDisplay(pt.umf, 'ZnO')}</td>
+                      <td>{formatSiAlRatio(pt.umf)}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -249,8 +236,3 @@ export function LineBlendPage() {
 }
 
 export default LineBlendPage
-
-const actionBtn: React.CSSProperties = {
-  padding: '4px 10px', background: 'var(--bg-input)', border: '1px solid var(--border-secondary)',
-  borderRadius: 4, color: '#aaa', fontSize: 11, cursor: 'pointer',
-}

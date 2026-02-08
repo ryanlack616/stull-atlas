@@ -8,3 +8,4 @@
 export * from './density'
 export * from './voids'
 export * from './clustering'
+export * from './surfaceFit'

@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { RecipeInput } from '@/components/RecipeInput'
 import { GlazeRecipe, UMF, OxideSymbol } from '@/types'
 import { recipeToUMF, getOxideValue } from '@/calculator/umf'
@@ -13,6 +14,8 @@ import { materialDatabase } from '@/domain/material'
 import { useRecipeStore } from '@/stores'
 import { ALL_CONES } from '@/calculator/parseCone'
 import { validateUMFAgainstLimits, predictSurface, type StullPrediction } from '@/calculator/validation'
+import { exportBlendCSV, printLabels } from '@/utils/export'
+import { actionBtnStyle } from '@/utils/blend'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { calcStyles } from './calc-styles'
 
@@ -44,6 +47,7 @@ export function BiaxialBlendPage() {
   const [results, setResults] = useState<GridResult[]>([])
   const [cone, setCone] = useState('6')
   const { setBlendResults } = useRecipeStore()
+  const navigate = useNavigate()
 
   const calculate = useCallback(() => {
     if (!baseRecipe) return
@@ -206,6 +210,32 @@ export function BiaxialBlendPage() {
             <div className="results-panel">
               <div className="results-header">
                 <h3>Surface Prediction Grid</h3>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <button
+                    onClick={() => navigate('/')}
+                    style={actionBtnStyle}
+                  >View on Explorer</button>
+                  <button
+                    onClick={() => exportBlendCSV(
+                      results.filter(r => r.umf).map(r => ({
+                        label: `${additionA.material} ${r.addAPercent.toFixed(1)}% + ${additionB.material} ${r.addBPercent.toFixed(1)}%`,
+                        umf: r.umf!,
+                        meta: { [`${additionA.material}%`]: r.addAPercent, [`${additionB.material}%`]: r.addBPercent, surface: r.surface },
+                      })),
+                      'biaxial-blend.csv'
+                    )}
+                    style={actionBtnStyle}
+                  >CSV</button>
+                  <button
+                    onClick={() => printLabels(
+                      results.filter(r => r.umf).map(r => ({
+                        label: `${additionA.material} ${r.addAPercent.toFixed(1)}% / ${additionB.material} ${r.addBPercent.toFixed(1)}%`,
+                        umf: r.umf!,
+                      }))
+                    )}
+                    style={actionBtnStyle}
+                  >Print Labels</button>
+                </div>
               </div>
               <div style={{ padding: 16, overflowX: 'auto' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

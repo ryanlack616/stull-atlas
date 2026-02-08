@@ -17,6 +17,9 @@ interface GlazeState {
   isLoading: boolean
   loadError: string | null
   
+  // Internal version counter for cache invalidation
+  _version: number
+  
   // Statistics
   stats: {
     total: number
@@ -50,12 +53,16 @@ const initialState: GlazeState = {
   glazes: new Map(),
   isLoading: false,
   loadError: null,
+  _version: 0,
   stats: {
     total: 0,
     bySource: {},
     byCone: {}
   }
 }
+
+// Plot-points cache: avoids recomputing on every render
+let _plotCache: { version: number; datasetId: MaterialDatasetId; points: GlazePlotPoint[] } | null = null
 
 export const useGlazeStore = create<GlazeState & GlazeActions>()(
   immer((set, get) => ({
@@ -65,16 +72,19 @@ export const useGlazeStore = create<GlazeState & GlazeActions>()(
       for (const glaze of glazes) {
         state.glazes.set(glaze.id, glaze)
       }
+      state._version++
       updateStats(state)
     }),
     
     addGlaze: (glaze) => set((state) => {
       state.glazes.set(glaze.id, glaze)
+      state._version++
       updateStats(state)
     }),
     
     removeGlaze: (id) => set((state) => {
       state.glazes.delete(id)
+      state._version++
       updateStats(state)
     }),
     
@@ -82,6 +92,7 @@ export const useGlazeStore = create<GlazeState & GlazeActions>()(
       const existing = state.glazes.get(id)
       if (existing) {
         state.glazes.set(id, { ...existing, ...updates })
+        state._version++
       }
     }),
     
@@ -90,9 +101,14 @@ export const useGlazeStore = create<GlazeState & GlazeActions>()(
     },
     
     getPlotPoints: (datasetId) => {
+      const version = get()._version
+      if (_plotCache && _plotCache.version === version && _plotCache.datasetId === datasetId) {
+        return _plotCache.points
+      }
+
       const glazes = get().getGlazesArray()
       
-      return glazes
+      const points = glazes
         .map(g => {
           // Try requested dataset first, then fall back to any available UMF
           let umf = g.umf.get(datasetId)
@@ -127,6 +143,9 @@ export const useGlazeStore = create<GlazeState & GlazeActions>()(
           }
         })
         .filter((p): p is GlazePlotPoint => p !== null)
+
+      _plotCache = { version, datasetId, points }
+      return points
     },
     
     clear: () => set(initialState),

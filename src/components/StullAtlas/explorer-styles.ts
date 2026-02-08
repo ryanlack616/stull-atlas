@@ -144,6 +144,106 @@ export const explorerStyles = `
     color: var(--text-bright);
     font-size: 14px;
   }
+
+  /* 3D-specific controls */
+
+  .three-d-extras {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .surface-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-label);
+    cursor: pointer;
+  }
+
+  .surface-toggle input[type="checkbox"] {
+    accent-color: var(--accent);
+  }
+
+  .surface-opacity {
+    display: grid;
+    grid-template-columns: 50px 1fr 36px;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    padding-left: 2px;
+  }
+
+  .surface-opacity input[type="range"] {
+    width: 100%;
+    height: 4px;
+    -webkit-appearance: none;
+    background: var(--border-secondary);
+    border-radius: 2px;
+  }
+
+  .surface-opacity input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: var(--text-bright);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .opacity-value {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-muted);
+    font-size: 11px;
+  }
+
+  .camera-presets {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .presets-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .preset-buttons {
+    display: flex;
+    gap: 4px;
+  }
+
+  .preset-btn {
+    flex: 1;
+    padding: 6px 0;
+    background: var(--bg-input);
+    border: 1px solid var(--border-secondary);
+    border-radius: 4px;
+    color: var(--text-label);
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .preset-btn:hover {
+    background: var(--border-secondary);
+    color: var(--text-bright);
+  }
+
+  .preset-btn.active {
+    background: var(--accent-bg);
+    border-color: var(--accent);
+    color: var(--text-bright);
+  }
   
   .plot-container {
     flex: 1;
