@@ -4,17 +4,20 @@
  * Main container component for the glaze explorer
  */
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react'
 import { StullPlot } from './StullPlot'
-import { StullPlot3D, ZAxisOption, CameraPreset } from './StullPlot3D'
 import { DatasetSwitcher } from './DatasetSwitcher'
 import { ComparePanel } from './ComparePanel'
-import { AnalysisPanel } from '@/components/AnalysisPanel'
 import { useSelectionStore, useGlazeStore, useDatasetStore } from '@/stores'
 import { useSimilarity } from '@/hooks'
 import { OxideSymbol, GlazeRecipe, MaterialDatasetId } from '@/types'
 import type { DensityMap } from '@/analysis/density'
+import type { ZAxisOption, CameraPreset } from './StullPlot3D'
 import { explorerStyles } from './explorer-styles'
+
+// Lazy-load heavy components that aren't always visible
+const StullPlot3D = lazy(() => import('./StullPlot3D').then(m => ({ default: m.StullPlot3D })))
+const AnalysisPanel = lazy(() => import('@/components/AnalysisPanel').then(m => ({ default: m.AnalysisPanel })))
 
 type ColorByOption = 'cone' | 'surface' | 'source' | 'flux_ratio' | 'confidence' | 'boron' | 'z_axis'
 
@@ -38,8 +41,9 @@ export function StullAtlas() {
   }, [is3D, zAxis])
   
   const { selectedGlaze, showSidebar, sidebarTab, toggleSidebar, setSidebarTab, setSelectedGlaze, addToCompare, compareGlazes, removeFromCompare, clearCompare } = useSelectionStore()
-  const { glazes } = useGlazeStore()
-  const { currentDataset } = useDatasetStore()
+  // Use selectors for frequently-changing state to avoid re-rendering the whole tree
+  const glazes = useGlazeStore(s => s.glazes)
+  const currentDataset = useDatasetStore(s => s.currentDataset)
   
   // Highlight state for analysis panel → plot bridge
   const [highlightPointIds, setHighlightPointIds] = useState<string[]>([])
@@ -271,16 +275,18 @@ export function StullAtlas() {
         
         <main className="plot-container" aria-label="Stull chart visualization">
           {is3D ? (
-            <StullPlot3D
-              zAxis={zAxis}
-              colorBy={colorBy}
-              zoom={zoom}
-              highlightPointIds={highlightPointIds}
-              highlightCircle={highlightCircle}
-              showSurface={showSurface}
-              surfaceOpacity={surfaceOpacity}
-              cameraPreset={cameraPreset}
-            />
+            <Suspense fallback={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, color: 'var(--text-secondary)', fontSize: 14 }}>Loading 3D view...</div>}>
+              <StullPlot3D
+                zAxis={zAxis}
+                colorBy={colorBy}
+                zoom={zoom}
+                highlightPointIds={highlightPointIds}
+                highlightCircle={highlightCircle}
+                showSurface={showSurface}
+                surfaceOpacity={surfaceOpacity}
+                cameraPreset={cameraPreset}
+              />
+            </Suspense>
           ) : (
             <StullPlot 
               xAxis={xAxis}
@@ -519,11 +525,13 @@ export function StullAtlas() {
             )}
             
             {sidebarTab === 'analysis' && (
-              <AnalysisPanel
-                onHighlightCluster={handleHighlightCluster}
-                onHighlightVoid={handleHighlightVoid}
-                onDensityMap={handleDensityMap}
-              />
+              <Suspense fallback={<div style={{ padding: 16, fontSize: 13, color: 'var(--text-secondary)' }}>Loading analysis...</div>}>
+                <AnalysisPanel
+                  onHighlightCluster={handleHighlightCluster}
+                  onHighlightVoid={handleHighlightVoid}
+                  onDensityMap={handleDensityMap}
+                />
+              </Suspense>
             )}
           </aside>
         )}

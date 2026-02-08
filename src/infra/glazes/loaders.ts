@@ -7,7 +7,6 @@
  */
 
 import { GlazeRecipe, UMF, Atmosphere, SurfaceType, EpistemicState } from '@/types'
-import sampleGlazes from '@/data/glazes/sample-glazes.json'
 
 // ── Raw types for the processed Glazy JSON ──────────────────────
 
@@ -32,9 +31,10 @@ export interface RawGlazyGlaze {
 // ── Loaders ─────────────────────────────────────────────────────
 
 /**
- * Load the small bundled sample-glazes.json (synchronous — it's tree-shaken in)
+ * Load the small bundled sample-glazes.json (lazy — only loaded when needed)
  */
-export function loadSampleGlazes(): GlazeRecipe[] {
+export async function loadSampleGlazes(): Promise<GlazeRecipe[]> {
+  const sampleGlazes = (await import('@/data/glazes/sample-glazes.json')).default as any
   const data = sampleGlazes as any
   const recipes: GlazeRecipe[] = []
 
@@ -63,13 +63,17 @@ export function loadSampleGlazes(): GlazeRecipe[] {
 }
 
 /**
- * Load the full Glazy dataset via dynamic import (code-split).
+ * Load the full Glazy dataset via fetch from public directory.
+ * Using fetch + JSON.parse is ~2x faster than JS module evaluation
+ * for large data files (1.2MB+ JSON parsed natively vs interpreted JS).
  * Returns domain-ready GlazeRecipe objects.
  */
 export async function loadGlazyDataset(): Promise<GlazeRecipe[]> {
   try {
-    const response = await import('@/data/glazes/glazy-processed.json')
-    const data = response.default as RawGlazyGlaze[]
+    const base = import.meta.env.BASE_URL || '/stullv2/'
+    const response = await fetch(`${base}glazy-processed.json`)
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+    const data: RawGlazyGlaze[] = await response.json()
 
     return data.map((g): GlazeRecipe => {
       const umf: UMF = {}

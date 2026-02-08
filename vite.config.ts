@@ -15,8 +15,16 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
+          // Plotly GL bundles — huge, loaded on demand
           if (id.includes('plotly.js-gl2d-dist-min')) return 'plotly-gl2d'
           if (id.includes('plotly.js-gl3d-dist-min')) return 'plotly-gl3d'
+          // Vendor chunk — React, router, zustand — changes rarely, caches well
+          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) return 'vendor-react'
+          if (id.includes('node_modules/react-router') || id.includes('node_modules/@remix-run')) return 'vendor-router'
+          if (id.includes('node_modules/zustand') || id.includes('node_modules/immer')) return 'vendor-state'
+          // Analysis libraries — only loaded when analysis tab is opened
+          if (id.includes('node_modules/density-clustering')) return 'vendor-analysis'
+          if (id.includes('node_modules/decimal.js')) return 'vendor-math'
           return undefined
         }
       }
