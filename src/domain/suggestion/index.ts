@@ -17,3 +17,9 @@ export type { ParsedGlazeQuery } from './queryParser'
 
 export { findArchetypes, archetypesForCone, GLAZE_ARCHETYPES } from './archetypes'
 export type { GlazeArchetype, GlazeFamily } from './archetypes'
+
+export { suggestFiringSchedule } from './firingSchedules'
+export type { FiringSchedule, FiringSegment, FiringRecommendation } from './firingSchedules'
+
+export { findSubstitutions, findRecipeSubstitutions, getSubstitutionCategories } from './materialSubstitutions'
+export type { MaterialSubstitution } from './materialSubstitutions'

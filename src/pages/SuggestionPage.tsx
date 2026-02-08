@@ -10,6 +10,7 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import { suggestRecipes, type SuggestionResult, type RecipeSuggestion } from '@/domain/suggestion'
 import { GLAZE_ARCHETYPES, type GlazeArchetype } from '@/domain/suggestion'
+import type { FiringSchedule, FiringRecommendation, MaterialSubstitution } from '@/domain/suggestion'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { calcStyles } from './calc-styles'
 
@@ -41,6 +42,7 @@ export function SuggestionPage() {
   const [method, setMethod] = useState<'gradient' | 'genetic'>('gradient')
   const [maxSuggestions, setMaxSuggestions] = useState(3)
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
+  const [refinement, setRefinement] = useState<{ idx: number; text: string } | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Focus input on mount
@@ -81,6 +83,26 @@ export function SuggestionPage() {
       }, 50)
     }, 100)
   }, [method, maxSuggestions])
+
+  const handleRefine = useCallback((idx: number, refinementText: string) => {
+    if (!result || !result.suggestions[idx]) return
+    const original = result.suggestions[idx]
+    // Build a more specific query from the archetype + refinement
+    const refinedQuery = `${original.archetype.name} ${refinementText}`
+    setQuery(refinedQuery)
+    setRefinement(null)
+    setRunning(true)
+    setTimeout(() => {
+      const res = suggestRecipes({
+        query: refinedQuery,
+        method,
+        maxSuggestions,
+      })
+      setResult(res)
+      setRunning(false)
+      if (res.suggestions.length > 0) setExpandedIdx(0)
+    }, 50)
+  }, [result, method, maxSuggestions])
 
   return (
     <>
@@ -248,6 +270,11 @@ export function SuggestionPage() {
                   index={idx}
                   expanded={expandedIdx === idx}
                   onToggle={() => setExpandedIdx(expandedIdx === idx ? null : idx)}
+                  refinement={refinement?.idx === idx ? refinement.text : null}
+                  onRefineStart={() => setRefinement({ idx, text: '' })}
+                  onRefineChange={(text) => setRefinement({ idx, text })}
+                  onRefineSubmit={() => refinement && handleRefine(idx, refinement.text)}
+                  onRefineCancel={() => setRefinement(null)}
                 />
               ))}
             </div>
@@ -265,13 +292,25 @@ function SuggestionCard({
   index,
   expanded,
   onToggle,
+  refinement,
+  onRefineStart,
+  onRefineChange,
+  onRefineSubmit,
+  onRefineCancel,
 }: {
   suggestion: RecipeSuggestion
   index: number
   expanded: boolean
   onToggle: () => void
+  refinement: string | null
+  onRefineStart: () => void
+  onRefineChange: (text: string) => void
+  onRefineSubmit: () => void
+  onRefineCancel: () => void
 }) {
-  const { archetype, recipe, colorants, relevance, explanation, warnings } = suggestion
+  const { archetype, recipe, colorants, relevance, explanation, warnings, firingSchedule, substitutions } = suggestion
+  const [showFiring, setShowFiring] = useState(false)
+  const [showSubs, setShowSubs] = useState(false)
 
   const recipeRows = useMemo(() => {
     return recipe.materialNames.map((name, i) => ({
@@ -405,8 +444,185 @@ function SuggestionCard({
               </ul>
             </div>
           )}
+
+          {/* Firing Schedule */}
+          {firingSchedule && (
+            <div className="card-section">
+              <h4
+                className="section-toggle"
+                onClick={() => setShowFiring(!showFiring)}
+              >
+                Firing Schedule {showFiring ? '▼' : '▶'}
+              </h4>
+              {showFiring && (
+                <FiringSchedulePanel recommendation={firingSchedule} />
+              )}
+            </div>
+          )}
+
+          {/* Material Substitutions */}
+          {substitutions.size > 0 && (
+            <div className="card-section">
+              <h4
+                className="section-toggle"
+                onClick={() => setShowSubs(!showSubs)}
+              >
+                Material Substitutions {showSubs ? '▼' : '▶'}
+              </h4>
+              {showSubs && (
+                <SubstitutionPanel substitutions={substitutions} />
+              )}
+            </div>
+          )}
+
+          {/* Refinement / Feedback */}
+          <div className="card-section refine-section">
+            {refinement === null ? (
+              <button className="refine-btn" onClick={onRefineStart}>
+                Refine This Recipe
+              </button>
+            ) : (
+              <div className="refine-form">
+                <p className="refine-hint">
+                  Add constraints, e.g. "more matte", "at cone 6", "without zinc"
+                </p>
+                <div className="refine-row">
+                  <input
+                    type="text"
+                    value={refinement}
+                    onChange={e => onRefineChange(e.target.value)}
+                    placeholder="e.g. more matte, without zinc"
+                    className="refine-input"
+                    onKeyDown={e => e.key === 'Enter' && onRefineSubmit()}
+                    autoFocus
+                  />
+                  <button
+                    className="refine-submit"
+                    onClick={onRefineSubmit}
+                    disabled={!refinement.trim()}
+                  >
+                    Go
+                  </button>
+                  <button className="refine-cancel" onClick={onRefineCancel}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
+    </div>
+  )
+}
+
+// ─── Firing Schedule Panel ─────────────────────────────────────
+
+function FiringSchedulePanel({ recommendation }: { recommendation: FiringRecommendation }) {
+  const { glazeFire, bisqueFire, notes } = recommendation
+  const [showBisque, setShowBisque] = useState(false)
+
+  return (
+    <div className="firing-panel">
+      <ScheduleTable schedule={glazeFire} />
+
+      {bisqueFire && (
+        <div className="bisque-toggle">
+          <button
+            className="toggle-btn"
+            onClick={() => setShowBisque(!showBisque)}
+          >
+            {showBisque ? 'Hide' : 'Show'} Bisque Schedule
+          </button>
+          {showBisque && <ScheduleTable schedule={bisqueFire} />}
+        </div>
+      )}
+
+      {notes.length > 0 && (
+        <ul className="firing-notes">
+          {notes.map((n, i) => (
+            <li key={i}>{n}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
+
+function ScheduleTable({ schedule }: { schedule: FiringSchedule }) {
+  return (
+    <div className="schedule-block">
+      <div className="schedule-name">{schedule.name}</div>
+      <p className="schedule-desc">{schedule.description}</p>
+      <table className="recipe-table firing-table">
+        <thead>
+          <tr>
+            <th>Temp (°F / °C)</th>
+            <th>Rate</th>
+            <th>Hold</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          {schedule.segments.map((seg, i) => (
+            <tr key={i}>
+              <td className="temp-cell">{seg.tempF}°F / {seg.tempC}°C</td>
+              <td>
+                {seg.rateF === 0
+                  ? 'Hold'
+                  : seg.rateF === -999
+                    ? 'Crash cool'
+                    : seg.rateF < 0
+                      ? `${Math.abs(seg.rateF)}°F/hr ↓`
+                      : `${seg.rateF}°F/hr`}
+              </td>
+              <td>{seg.holdMinutes > 0 ? `${seg.holdMinutes} min` : '—'}</td>
+              <td className="seg-note">{seg.note}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {schedule.tips.length > 0 && (
+        <ul className="schedule-tips">
+          {schedule.tips.map((tip, i) => (
+            <li key={i}>{tip}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
+
+// ─── Substitution Panel ────────────────────────────────────────
+
+function SubstitutionPanel({
+  substitutions,
+}: {
+  substitutions: Map<string, MaterialSubstitution[]>
+}) {
+  return (
+    <div className="subs-panel">
+      {Array.from(substitutions.entries()).map(([materialName, subs]) => (
+        <div key={materialName} className="subs-group">
+          <div className="subs-material">
+            Don't have <strong>{materialName}</strong>? Try:
+          </div>
+          <div className="subs-list">
+            {subs.slice(0, 3).map(sub => (
+              <div key={sub.substitute} className="sub-item">
+                <div className="sub-header">
+                  <span className="sub-name">{sub.substitute}</span>
+                  <span className={`sub-quality q${sub.quality}`}>
+                    {sub.quality === 1 ? 'Excellent' : sub.quality === 2 ? 'Good' : 'Rough'}
+                  </span>
+                </div>
+                <div className="sub-detail">{sub.adjustment}</div>
+                <div className="sub-reason">{sub.reason}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
@@ -825,5 +1041,247 @@ const suggestionStyles = `
     border-radius: 6px;
     font-size: 13px;
     color: #f39c12;
+  }
+
+  /* Section toggle (expandable) */
+  .section-toggle {
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s;
+  }
+  .section-toggle:hover {
+    color: var(--accent, #3498db);
+  }
+
+  /* Firing schedule */
+  .firing-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .schedule-block {
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    padding: 12px;
+  }
+
+  .schedule-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .schedule-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin: 0 0 10px;
+  }
+
+  .firing-table td {
+    font-size: 13px;
+  }
+
+  .temp-cell {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .seg-note {
+    font-size: 12px !important;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  .schedule-tips {
+    margin: 10px 0 0;
+    padding-left: 18px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .bisque-toggle {
+    margin-top: 4px;
+  }
+
+  .toggle-btn {
+    padding: 4px 10px;
+    border: 1px solid var(--border-primary);
+    border-radius: 6px;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+    margin-bottom: 8px;
+  }
+
+  .toggle-btn:hover {
+    border-color: var(--accent, #3498db);
+    color: var(--accent, #3498db);
+  }
+
+  .firing-notes {
+    margin: 4px 0 0;
+    padding-left: 18px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Material substitutions */
+  .subs-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .subs-group {
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+
+  .subs-material {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .subs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .sub-item {
+    background: var(--bg-primary);
+    border-radius: 6px;
+    padding: 8px 10px;
+    border-left: 3px solid var(--accent, #3498db);
+  }
+
+  .sub-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2px;
+  }
+
+  .sub-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-primary);
+  }
+
+  .sub-quality {
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .sub-quality.q1 { background: #27ae6022; color: #27ae60; }
+  .sub-quality.q2 { background: #f39c1222; color: #f39c12; }
+  .sub-quality.q3 { background: #e74c3c22; color: #e74c3c; }
+
+  .sub-detail {
+    font-size: 12px;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .sub-reason {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    font-style: italic;
+  }
+
+  /* Refinement / Feedback */
+  .refine-section {
+    border-top: 1px solid var(--border-primary);
+    padding-top: 12px;
+  }
+
+  .refine-btn {
+    padding: 8px 16px;
+    border: 1px dashed var(--accent, #3498db);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--accent, #3498db);
+    font-size: 13px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+  }
+
+  .refine-btn:hover {
+    background: var(--accent, #3498db);
+    color: white;
+    border-style: solid;
+  }
+
+  .refine-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .refine-hint {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin: 0;
+    font-style: italic;
+  }
+
+  .refine-row {
+    display: flex;
+    gap: 6px;
+  }
+
+  .refine-input {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid var(--border-primary);
+    border-radius: 6px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 13px;
+  }
+
+  .refine-input:focus {
+    outline: none;
+    border-color: var(--accent, #3498db);
+  }
+
+  .refine-submit {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    background: var(--accent, #3498db);
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .refine-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .refine-cancel {
+    padding: 8px 12px;
+    border: 1px solid var(--border-primary);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .refine-cancel:hover {
+    border-color: var(--text-secondary);
   }
 `

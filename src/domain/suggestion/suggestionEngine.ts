@@ -16,6 +16,8 @@ import { optimizeRecipe, type OxideTarget, type OptimizerResult } from '@/calcul
 import { optimizeRecipeGA, type GAResult } from '@/calculator/geneticOptimizer'
 import { parseGlazeQuery, type ParsedGlazeQuery } from './queryParser'
 import { findArchetypes, archetypesForCone, GLAZE_ARCHETYPES, type GlazeArchetype } from './archetypes'
+import { suggestFiringSchedule, type FiringRecommendation } from './firingSchedules'
+import { findRecipeSubstitutions, type MaterialSubstitution } from './materialSubstitutions'
 
 // ─── Types ─────────────────────────────────────────────────────
 
@@ -45,6 +47,10 @@ export interface RecipeSuggestion {
   explanation: string
   /** Warnings or caveats */
   warnings: string[]
+  /** Recommended firing schedule */
+  firingSchedule?: FiringRecommendation
+  /** Material substitution options */
+  substitutions: Map<string, MaterialSubstitution[]>
 }
 
 export interface ColorantSuggestion {
@@ -328,6 +334,20 @@ function generateSuggestion(
   // Build warnings
   const warnings = buildWarnings(archetype, parsed, recipe)
 
+  // Build firing schedule recommendation
+  const cone = parsed.cone ?? Math.round((archetype.coneRange[0] + archetype.coneRange[1]) / 2)
+  const atmosphere = parsed.atmosphere ?? archetype.atmosphere
+  const firingAtm: 'oxidation' | 'reduction' =
+    (atmosphere === 'reduction') ? 'reduction' : 'oxidation'
+  const firingSchedule = suggestFiringSchedule(
+    cone,
+    firingAtm,
+    archetype.family,
+  )
+
+  // Find material substitutions for the recipe
+  const substitutions = findRecipeSubstitutions(recipe.materialNames)
+
   return {
     archetype,
     recipe,
@@ -336,6 +356,8 @@ function generateSuggestion(
     relevance,
     explanation,
     warnings,
+    firingSchedule,
+    substitutions,
   }
 }
 
