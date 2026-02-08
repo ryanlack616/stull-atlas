@@ -74,7 +74,6 @@ export function RecipeInput({ label, color, recipe, onChange, compact, datalistI
   const listId = datalistId || `materials-${generatedId}`
   // Stable keys for each ingredient row — survives reorder/delete
   const ingredientKeysRef = useRef<Map<number, number>>(new Map())
-  const nextKeyRef = useRef(0)
   
   const getStableKey = useCallback((index: number, ingredientCount: number) => {
     const keyMap = ingredientKeysRef.current

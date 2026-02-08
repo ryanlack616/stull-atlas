@@ -37,14 +37,6 @@ function MiniBar({ value, max, color }: { value: number; max: number; color: str
   )
 }
 
-interface ComparePanelProps {
-  glazes: GlazeRecipe[]
-  currentDataset: MaterialDatasetId
-  onRemove: (id: string) => void
-  onClear: () => void
-  onSelect: (g: GlazeRecipe) => void
-}
-
 export function ComparePanel({ glazes, currentDataset, onRemove, onClear, onSelect }: ComparePanelProps) {
   const [copied, setCopied] = useState(false)
   const [showBars, setShowBars] = useState(true)

@@ -311,7 +311,8 @@ function generateSuggestion(
         tolerance: 0.03,
       }, dbWrapper as any)
     }
-  } catch {
+  } catch (e) {
+    console.warn('Optimizer failed for archetype:', archetype.name, e)
     return null
   }
 

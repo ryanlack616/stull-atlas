@@ -10,20 +10,57 @@ import { Link } from 'react-router-dom'
 import { usePageTitle } from '@/hooks'
 
 export function UpdatesPage() {
-  usePageTitle('v2 Updates')
+  usePageTitle('What\'s New')
 
   return (
     <div className="about-page" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
       <div className="about-content">
 
         <section className="about-hero">
-          <h1>v2 Updates</h1>
+          <h1>What's New</h1>
           <p className="subtitle">
-            Everything new in Stull Atlas v2 — from the ground up.
+            Stull Atlas changelog — latest features and improvements.
           </p>
         </section>
 
+        {/* ══════════════════════════════════════════════════
+            v3 — AI Recipe Suggestions
+            ══════════════════════════════════════════════════ */}
+        <section className="about-section" style={{ borderLeft: '3px solid var(--accent, #3498db)', paddingLeft: 16 }}>
+          <h2>🧪 v3 — AI Recipe Suggestions</h2>
+          <p>
+            Describe the glaze you want in plain English and the{' '}
+            <Link to="/suggest">AI Suggest</Link> page generates optimized recipes
+            automatically.
+          </p>
+          <ul>
+            <li><strong>Natural language input</strong> — "matte celadon cone 10 reduction",
+              "glossy clear cone 6", "copper red cone 10" — just type what you're after.</li>
+            <li><strong>20+ glaze archetypes</strong> — Built-in knowledge base covering
+              celadon, tenmoku, shino, ash, crystalline, majolica, copper red, rutile blue,
+              chun/jun, cobalt blue, crawl texture, and more.</li>
+            <li><strong>Smart query parsing</strong> — Extracts cone temperature, atmosphere,
+              surface type, colors, and glaze-style terms from your description.</li>
+            <li><strong>Dual optimization</strong> — Choose gradient descent for speed or genetic
+              algorithm for broader exploration.</li>
+            <li><strong>Complete recipe cards</strong> — Each suggestion includes ingredient
+              percentages, colorant additions with expected effects, UMF analysis vs. targets,
+              and detailed explanations.</li>
+            <li><strong>Safety warnings</strong> — Automatic alerts for atmosphere mismatches,
+              food-safety concerns, and optimizer convergence notes.</li>
+          </ul>
+          <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+            Everything runs locally in your browser — no API keys or server required.
+          </p>
+        </section>
+
+        <hr style={{ border: 'none', borderTop: '1px solid var(--border-subtle)', margin: '32px 0' }} />
+
+        {/* ══════════════════════════════════════════════════
+            v2 — Full Rewrite
+            ══════════════════════════════════════════════════ */}
         <section className="about-section">
+          <h2>v2 — Full Rewrite</h2>
           <p>
             v2 is a complete rewrite. The original Stull Atlas was a single-page chart viewer.
             This version turns it into a full ceramic chemistry workbench — interactive 3D plots,
@@ -223,8 +260,8 @@ export function UpdatesPage() {
           <ul>
             <li>Full rewrite in React + TypeScript with Vite bundling</li>
             <li>Zustand state management with versioned serialization</li>
-            <li>137 unit tests covering UMF calculations, blending, parsing, validation,
-              and optimization</li>
+            <li>175 unit tests covering UMF calculations, blending, parsing, validation,
+              optimization, and AI suggestion engine</li>
             <li>Genetic algorithm optimizer with response surface analysis</li>
             <li>Nadaraya-Watson kernel regression for surface fitting</li>
             <li>DBSCAN clustering and grid-based void detection algorithms</li>
@@ -241,7 +278,7 @@ export function UpdatesPage() {
             </a>{' '}
             — Howell, Michigan.
           </p>
-          <p className="version">v2.0.0</p>
+          <p className="version">v3.0.0</p>
         </section>
 
       </div>

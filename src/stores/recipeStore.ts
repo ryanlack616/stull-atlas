@@ -48,7 +48,8 @@ function loadFromStorage(): GlazeRecipe[] {
     const parsed = JSON.parse(raw)
     const data = parsed._v ? parsed.recipes : parsed // handle versioned or legacy
     return (data as any[]).map(deserializeRecipe)
-  } catch {
+  } catch (e) {
+    console.warn('Failed to load recipes from localStorage:', e)
     return []
   }
 }
@@ -74,7 +75,8 @@ function loadBlendResults(): SimplexPoint[] {
       ...p,
       recipe: p.recipe ? deserializeRecipe(p.recipe) : p.recipe,
     }))
-  } catch {
+  } catch (e) {
+    console.warn('Failed to load blend results from localStorage:', e)
     return []
   }
 }

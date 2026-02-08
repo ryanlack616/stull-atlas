@@ -345,6 +345,12 @@ export function BiaxialBlendPage() {
       </div>
 
       <style>{calcStyles}</style>
+
+      <datalist id="common-materials">
+        {materialDatabase.getAllMaterials().map(m => (
+          <option key={m.primaryName} value={m.primaryName} />
+        ))}
+      </datalist>
     </div>
   )
 }

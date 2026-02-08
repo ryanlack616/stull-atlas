@@ -5,7 +5,7 @@
  * Calls the domain findSimilarGlazes service.
  */
 
-import { useMemo, useState, useCallback } from 'react'
+import { useMemo, useState, useCallback, useRef, useEffect } from 'react'
 import { GlazeRecipe, OxideSymbol } from '@/types'
 import { findSimilarGlazes, type SimilarityResult } from '@/domain/glaze'
 
@@ -24,10 +24,18 @@ export function useSimilarity(
   )
   const [count, setCount] = useState(6)
 
+  // Debounce weights to avoid re-running expensive similarity on every slider tick
+  const [debouncedWeights, setDebouncedWeights] = useState(weights)
+  const debounceTimer = useRef<ReturnType<typeof setTimeout>>()
+  useEffect(() => {
+    debounceTimer.current = setTimeout(() => setDebouncedWeights(weights), 150)
+    return () => clearTimeout(debounceTimer.current)
+  }, [weights])
+
   const resetWeights = useCallback(() => {
-    setWeights(
-      SIMILARITY_OXIDES.reduce((acc, o) => ({ ...acc, [o]: 1 }), {} as Record<OxideSymbol, number>),
-    )
+    const reset = SIMILARITY_OXIDES.reduce((acc, o) => ({ ...acc, [o]: 1 }), {} as Record<OxideSymbol, number>)
+    setWeights(reset)
+    setDebouncedWeights(reset) // immediate update on reset
   }, [])
 
   const updateWeight = useCallback((oxide: OxideSymbol, value: number) => {
@@ -39,11 +47,11 @@ export function useSimilarity(
     const candidates = Array.from(allGlazes.values())
     return findSimilarGlazes(target, candidates, {
       datasetId,
-      weights,
+      weights: debouncedWeights,
       count,
       oxides: SIMILARITY_OXIDES,
     })
-  }, [target, allGlazes, datasetId, weights, count])
+  }, [target, allGlazes, datasetId, debouncedWeights, count])
 
   return {
     results,
