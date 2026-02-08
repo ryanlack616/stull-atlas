@@ -80,9 +80,7 @@ function createSyntheticRecipe(id: string, name: string): GlazeRecipe {
 function getVal(umf: UMF, oxide: OxideSymbol): string {
   const val = umf[oxide]
   if (!val) return '—'
-  if (typeof val === 'number') return val.toFixed(3)
-  if (val.value !== undefined) return val.value.toFixed(3)
-  return '—'
+  return val.value.toFixed(3)
 }
 
 export function SpaceFillingPage() {

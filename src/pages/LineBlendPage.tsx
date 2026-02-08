@@ -77,9 +77,7 @@ export function LineBlendPage() {
   const formatOxide = (umf: UMF, oxide: OxideSymbol): string => {
     const oval = umf[oxide]
     if (!oval) return '—'
-    if (typeof oval === 'number') return oval.toFixed(3)
-    if (oval.value !== undefined) return oval.value.toFixed(3)
-    return '—'
+    return oval.value.toFixed(3)
   }
 
   return (
