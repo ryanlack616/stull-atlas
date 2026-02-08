@@ -78,12 +78,13 @@ export function ImportExportPage() {
             <div className="calc-section">
               <h3>Import from File</h3>
               <p style={{ fontSize: 12, color: 'var(--text-secondary)', margin: '0 0 12px' }}>
-                Accepts JSON or CSV files with glaze recipes
+                Accepts JSON, CSV, or Insight XML files with glaze recipes.
+                Glazy CSV format is auto-detected.
               </p>
               <input
                 ref={fileInputRef}
                 type="file"
-                accept=".json,.csv"
+                accept=".json,.csv,.xml"
                 onChange={handleFileImport}
                 style={{ display: 'none' }}
               />
@@ -202,7 +203,7 @@ export function ImportExportPage() {
         <div className="empty-state">
           <div className="icon">📦</div>
           <p>Import your glazes or export your work</p>
-          <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 12, textAlign: 'left', maxWidth: 400 }}>
+          <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 12, textAlign: 'left', maxWidth: 500 }}>
             <p><strong>JSON format:</strong></p>
             <pre style={{
               background: 'var(--bg-secondary)', padding: 12, borderRadius: 6,
@@ -226,6 +227,25 @@ export function ImportExportPage() {
               fontSize: 11, color: 'var(--text-secondary)', whiteSpace: 'pre-wrap',
             }}>{`name,cone,Custer Feldspar,Silica,Whiting,EPK Kaolin
 Celadon,10,40,30,15,15`}</pre>
+            <p style={{ marginTop: 12 }}><strong>Glazy CSV:</strong></p>
+            <pre style={{
+              background: 'var(--bg-secondary)', padding: 12, borderRadius: 6,
+              fontSize: 11, color: 'var(--text-secondary)', whiteSpace: 'pre-wrap',
+            }}>{`Directly import glazy-data-glazes-*.csv files.
+Auto-detected by column headers (SiO2_umf, etc).`}</pre>
+            <p style={{ marginTop: 12 }}><strong>Insight XML:</strong></p>
+            <pre style={{
+              background: 'var(--bg-secondary)', padding: 12, borderRadius: 6,
+              fontSize: 11, color: 'var(--text-secondary)', whiteSpace: 'pre-wrap',
+            }}>{`<recipe>
+  <name>Celadon</name>
+  <cone>10</cone>
+  <ingredient>
+    <name>Custer Feldspar</name>
+    <amount>40</amount>
+  </ingredient>
+  ...
+</recipe>`}</pre>
           </div>
         </div>
       </div>

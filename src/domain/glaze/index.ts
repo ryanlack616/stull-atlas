@@ -16,6 +16,8 @@ export {
   importGlazesFromJSON,
   exportGlazesToJSON,
   importGlazesFromCSV,
+  importGlazesFromXML,
+  importGlazesFromFile,
   // UMF
   calculateAllUMF,
   // similarity

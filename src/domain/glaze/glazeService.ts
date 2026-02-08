@@ -19,6 +19,9 @@ import {
   deserializeGlazesJSON,
   serializeGlazesJSON,
   deserializeGlazesCSV,
+  deserializeInsightXML,
+  isGlazyCSV,
+  deserializeGlazyCSV,
 } from '@/infra/glazes'
 import { materialDatabase } from '@/infra/materials'
 
@@ -37,7 +40,33 @@ export function exportGlazesToJSON(recipes: GlazeRecipe[]): string {
 }
 
 export function importGlazesFromCSV(csv: string): GlazeRecipe[] {
+  // Auto-detect Glazy's native CSV format
+  const firstLine = csv.split('\n')[0] ?? ''
+  if (isGlazyCSV(firstLine)) {
+    return deserializeGlazyCSV(csv)
+  }
   return deserializeGlazesCSV(csv)
+}
+
+/**
+ * Import from Insight XML format
+ */
+export function importGlazesFromXML(xml: string): GlazeRecipe[] {
+  return deserializeInsightXML(xml)
+}
+
+/**
+ * Smart import — auto-detect format from file extension + content.
+ */
+export function importGlazesFromFile(text: string, filename: string): GlazeRecipe[] {
+  const lower = filename.toLowerCase()
+  if (lower.endsWith('.xml')) return importGlazesFromXML(text)
+  if (lower.endsWith('.csv')) return importGlazesFromCSV(text)
+  if (lower.endsWith('.json')) return importGlazesFromJSON(text)
+  // Try JSON first, fall back to CSV
+  try { return importGlazesFromJSON(text) } catch { /* ignore */ }
+  try { return importGlazesFromCSV(text) } catch { /* ignore */ }
+  return []
 }
 
 // ── UMF Calculation ───────────────────────────────────────────

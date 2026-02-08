@@ -2,10 +2,11 @@
  * ComparePanel — Side-by-side glaze comparison
  * 
  * Extracted from StullAtlas/index.tsx for maintainability.
- * Shows up to 3 glazes with UMF values, ratios, and recipes.
+ * Shows up to 3 glazes with UMF values, ratios, recipes,
+ * visual bar charts, and delta highlighting.
  */
 
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { GlazeRecipe, MaterialDatasetId, Ingredient } from '@/types'
 
 /** Subscript helper for oxide formulas */
@@ -19,8 +20,34 @@ interface ComparePanelProps {
   onSelect: (g: GlazeRecipe) => void
 }
 
+/** Mini inline bar for visual comparison */
+function MiniBar({ value, max, color }: { value: number; max: number; color: string }) {
+  const pct = max > 0 ? Math.min((value / max) * 100, 100) : 0
+  return (
+    <div style={{
+      width: '100%', height: 3, background: 'var(--bg-tertiary)',
+      borderRadius: 2, marginTop: 2, overflow: 'hidden',
+    }}>
+      <div style={{
+        width: `${pct}%`, height: '100%',
+        background: color, borderRadius: 2,
+        transition: 'width 0.3s ease',
+      }} />
+    </div>
+  )
+}
+
+interface ComparePanelProps {
+  glazes: GlazeRecipe[]
+  currentDataset: MaterialDatasetId
+  onRemove: (id: string) => void
+  onClear: () => void
+  onSelect: (g: GlazeRecipe) => void
+}
+
 export function ComparePanel({ glazes, currentDataset, onRemove, onClear, onSelect }: ComparePanelProps) {
   const [copied, setCopied] = useState(false)
+  const [showBars, setShowBars] = useState(true)
 
   if (glazes.length === 0) {
     return (
@@ -138,6 +165,9 @@ export function ComparePanel({ glazes, currentDataset, onRemove, onClear, onSele
           Comparing {glazes.length} Glaze{glazes.length > 1 ? 's' : ''}
         </h4>
         <div style={{ display: 'flex', gap: 4 }}>
+          <button onClick={() => setShowBars(!showBars)} className="compare-clear-btn" title="Toggle visual bars">
+            {showBars ? '▮ Bars' : '▯ Bars'}
+          </button>
           <button onClick={handleCopyText} className="compare-clear-btn" title="Copy comparison as text">
             {copied ? '✓ Copied' : '📋 Copy'}
           </button>
@@ -190,6 +220,8 @@ export function ComparePanel({ glazes, currentDataset, onRemove, onClear, onSele
                   const values = glazes.map(g => g.umf.get(currentDataset)?.[ox]?.value ?? 0)
                   const max = Math.max(...values)
                   const min = Math.min(...values)
+                  const range = max - min
+                  const barColors = ['#3498db', '#e67e22', '#2ecc71']
                   return (
                     <tr key={ox}>
                       <td dangerouslySetInnerHTML={{ __html: subscript(ox) }} />
@@ -199,6 +231,15 @@ export function ComparePanel({ glazes, currentDataset, onRemove, onClear, onSele
                           color: glazes.length > 1 && val === max && max !== min ? 'var(--accent)' : 'var(--text-primary)',
                         }}>
                           {val.toFixed(3)}
+                          {glazes.length > 1 && range > 0.01 && (
+                            <span style={{
+                              fontSize: 9, marginLeft: 3,
+                              color: val === max ? 'rgba(76,175,80,0.7)' : val === min ? 'rgba(244,67,54,0.6)' : 'var(--text-dim)',
+                            }}>
+                              {val === max ? '▲' : val === min ? '▼' : ''}
+                            </span>
+                          )}
+                          {showBars && <MiniBar value={val} max={max || 1} color={barColors[i % barColors.length]} />}
                         </td>
                       ))}
                     </tr>

@@ -41,11 +41,8 @@ export function useImportExport() {
       try {
         const svc = await getService()
 
-        if (file.name.endsWith('.csv')) {
-          imported = svc.importGlazesFromCSV(text)
-        } else {
-          imported = svc.importGlazesFromJSON(text)
-        }
+        // Smart import — auto-detect format from filename
+        imported = svc.importGlazesFromFile(text, file.name)
 
         if (imported.length === 0) {
           errors.push('No valid glazes found in file')

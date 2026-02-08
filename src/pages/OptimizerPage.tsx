@@ -9,6 +9,8 @@ import React, { useState, useCallback, useMemo } from 'react'
 import { OxideSymbol } from '@/types'
 import { materialDatabase } from '@/domain/material'
 import { optimizeRecipe, type OptimizerInput, type OptimizerResult, type OxideTarget } from '@/calculator/optimizer'
+import { optimizeRecipeGA, type GAResult, type GAConfig } from '@/calculator/geneticOptimizer'
+import { analyzeResponseSurface, type RSMAnalysis } from '@/calculator/responseSurface'
 import { CONE_LIMITS } from '@/calculator/validation'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { calcStyles } from './calc-styles'
@@ -72,7 +74,10 @@ export function OptimizerPage() {
 
   // Result
   const [result, setResult] = useState<OptimizerResult | null>(null)
+  const [gaResult, setGAResult] = useState<GAResult | null>(null)
+  const [rsmAnalysis, setRSMAnalysis] = useState<RSMAnalysis | null>(null)
   const [running, setRunning] = useState(false)
+  const [method, setMethod] = useState<'gradient' | 'genetic'>('gradient')
 
   // Material search
   const filteredMaterials = useMemo(() => {
@@ -127,18 +132,9 @@ export function OptimizerPage() {
   const run = useCallback(() => {
     if (selectedMats.length < 2 || targets.length === 0) return
     setRunning(true)
+    setRSMAnalysis(null)
     // Use requestAnimationFrame to let the UI update first
     requestAnimationFrame(() => {
-      const input: OptimizerInput = {
-        materialIds: selectedMats,
-        targets,
-        datasetId: 'digitalfire_2024',
-        maxIterations: 3000,
-        tolerance: 0.02,
-      }
-
-      // The resolver expects material names not IDs in our database
-      // Build a wrapper that resolves by ID
       const dbWrapper = {
         resolve(name: string) {
           return materialDatabase.resolve(name, 'digitalfire_2024') ??
@@ -149,11 +145,51 @@ export function OptimizerPage() {
         },
       }
 
-      const res = optimizeRecipe(input, dbWrapper as any)
-      setResult(res)
+      if (method === 'genetic') {
+        const gaConfig: GAConfig = {
+          materialIds: selectedMats,
+          targets,
+          datasetId: 'digitalfire_2024',
+          populationSize: 80,
+          generations: 200,
+          tolerance: 0.02,
+        }
+        const ga = optimizeRecipeGA(gaConfig, dbWrapper as any)
+        setGAResult(ga)
+        setResult(ga.best)
+
+        // Also run RSM analysis on the best result
+        if (ga.best.weights.length > 0) {
+          const fractionalWeights = ga.best.weights.map(w => w / 100)
+          const rsm = analyzeResponseSurface(
+            fractionalWeights, selectedMats, targets, 'digitalfire_2024', dbWrapper as any
+          )
+          setRSMAnalysis(rsm)
+        }
+      } else {
+        const input: OptimizerInput = {
+          materialIds: selectedMats,
+          targets,
+          datasetId: 'digitalfire_2024',
+          maxIterations: 3000,
+          tolerance: 0.02,
+        }
+        const res = optimizeRecipe(input, dbWrapper as any)
+        setResult(res)
+        setGAResult(null)
+
+        // RSM analysis
+        if (res.weights.length > 0) {
+          const fractionalWeights = res.weights.map(w => w / 100)
+          const rsm = analyzeResponseSurface(
+            fractionalWeights, selectedMats, targets, 'digitalfire_2024', dbWrapper as any
+          )
+          setRSMAnalysis(rsm)
+        }
+      }
       setRunning(false)
     })
-  }, [selectedMats, targets])
+  }, [selectedMats, targets, method])
 
   const canRun = selectedMats.length >= 2 && targets.length > 0 && !running
 
@@ -291,6 +327,32 @@ export function OptimizerPage() {
             </div>
           </div>
 
+          {/* Method Toggle */}
+          <div className="calc-section">
+            <h3>Method</h3>
+            <div style={{ display: 'flex', gap: 4 }}>
+              <button
+                className={`preset-btn ${method === 'gradient' ? 'preset-active' : ''}`}
+                onClick={() => setMethod('gradient')}
+                style={method === 'gradient' ? { borderColor: 'var(--accent)', color: 'var(--text-bright)', background: 'var(--accent-bg)' } : {}}
+              >
+                Gradient
+              </button>
+              <button
+                className={`preset-btn ${method === 'genetic' ? 'preset-active' : ''}`}
+                onClick={() => setMethod('genetic')}
+                style={method === 'genetic' ? { borderColor: 'var(--accent)', color: 'var(--text-bright)', background: 'var(--accent-bg)' } : {}}
+              >
+                Genetic (GA)
+              </button>
+            </div>
+            <p className="hint" style={{ marginTop: 4 }}>
+              {method === 'gradient'
+                ? 'Fast convergence for well-defined targets'
+                : 'Explores diverse solutions; finds multiple alternatives'}
+            </p>
+          </div>
+
           {/* Run Button */}
           <button
             className="calc-button"
@@ -298,7 +360,7 @@ export function OptimizerPage() {
             disabled={!canRun}
             aria-busy={running}
           >
-            {running ? 'Optimizing...' : 'Find Recipe'}
+            {running ? 'Optimizing...' : method === 'genetic' ? 'Evolve Recipe' : 'Find Recipe'}
           </button>
         </div>
 
@@ -424,6 +486,92 @@ export function OptimizerPage() {
                   </table>
                 </div>
               </div>
+
+              {/* RSM Sensitivity Analysis */}
+              {rsmAnalysis && (
+                <div className="results-panel">
+                  <div className="results-header">
+                    <h3>Sensitivity Analysis (RSM)</h3>
+                  </div>
+                  <div className="results-scroll">
+                    <div style={{ padding: '8px 0', fontSize: 13, color: 'var(--text-secondary)' }}>
+                      {rsmAnalysis.interpretation}
+                    </div>
+                    <div style={{
+                      display: 'inline-block', padding: '4px 10px', borderRadius: 4, fontSize: 12, fontWeight: 600, marginBottom: 8,
+                      background: rsmAnalysis.stabilityLabel === 'very stable' ? 'rgba(76,175,80,.15)' :
+                                  rsmAnalysis.stabilityLabel === 'stable' ? 'rgba(76,175,80,.1)' :
+                                  rsmAnalysis.stabilityLabel === 'moderate' ? 'rgba(230,126,34,.12)' :
+                                  'rgba(244,67,54,.12)',
+                      color: rsmAnalysis.stabilityLabel === 'very stable' || rsmAnalysis.stabilityLabel === 'stable' ? '#4caf50' :
+                             rsmAnalysis.stabilityLabel === 'moderate' ? '#e67e22' : '#e74c3c',
+                    }}>
+                      Stability: {rsmAnalysis.stabilityLabel} ({(rsmAnalysis.stability * 100).toFixed(0)}%)
+                    </div>
+                    <table className="results-table" aria-label="Material sensitivity analysis">
+                      <thead>
+                        <tr>
+                          <th scope="col">Material</th>
+                          <th scope="col" style={{ textAlign: 'right' }}>Sensitivity</th>
+                          <th scope="col" style={{ textAlign: 'center' }}>Direction</th>
+                          <th scope="col">Dominant Oxide</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {rsmAnalysis.sensitivities.filter(s => s.sensitivity > 0.01).map(s => (
+                          <tr key={s.material}>
+                            <td>{s.material}</td>
+                            <td style={{ textAlign: 'right' }}>{s.sensitivity.toFixed(3)}</td>
+                            <td style={{ textAlign: 'center' }}>
+                              {s.direction === 'increase' ? '↑ more' : s.direction === 'decrease' ? '↓ less' : '— stable'}
+                            </td>
+                            <td style={{ color: 'var(--text-muted)' }}>{s.dominantOxide}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* GA Alternatives */}
+              {gaResult && gaResult.alternatives.length > 0 && (
+                <div className="results-panel">
+                  <div className="results-header">
+                    <h3>Alternative Recipes ({gaResult.alternatives.length})</h3>
+                  </div>
+                  <div className="results-scroll">
+                    <p style={{ fontSize: 12, color: 'var(--text-muted)', margin: '0 0 8px' }}>
+                      Diverse solutions found by the genetic algorithm
+                    </p>
+                    {gaResult.alternatives.map((alt, ai) => (
+                      <div key={ai} style={{
+                        padding: '8px 10px', marginBottom: 6,
+                        background: 'var(--bg-tertiary)', border: '1px solid var(--border-primary)',
+                        borderRadius: 6,
+                      }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
+                          <span style={{ fontWeight: 600 }}>Alternative {ai + 1}</span>
+                          <span className={`status-badge ${alt.converged ? 'met' : 'unmet'}`} style={{ fontSize: 10 }}>
+                            {alt.converged ? '✓' : `residual ${alt.residual.toFixed(4)}`}
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, fontSize: 11 }}>
+                          {alt.materialNames
+                            .map((n, i) => ({ name: n, w: alt.weights[i] }))
+                            .filter(r => r.w > 0.5)
+                            .sort((a, b) => b.w - a.w)
+                            .map(r => (
+                              <span key={r.name} style={{ color: 'var(--text-label)' }}>
+                                {r.name} {r.w.toFixed(1)}%
+                              </span>
+                            ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
