@@ -22,6 +22,7 @@ export function Layout() {
           </NavLink>
           <nav className="main-nav" aria-label="Main navigation">
             <NavLink to="/" end>Explorer</NavLink>
+            <NavLink to="/suggest">AI Suggest</NavLink>
             <NavLink to="/calc">Calculators</NavLink>
             <NavLink to="/materials">Materials</NavLink>
             <NavLink to="/import-export">Import/Export</NavLink>
