@@ -12,6 +12,7 @@ class MaterialDatabase {
   private materials: Map<string, Material> = new Map()
   private aliases: Map<string, string> = new Map() // alias → canonical id
   private analyses: Map<string, Map<MaterialDatasetId, Record<OxideSymbol, number>>> = new Map()
+  private lois: Map<string, number> = new Map() // LOI per material
 
   constructor() {
     this.loadDigitalfire()
@@ -30,6 +31,11 @@ class MaterialDatabase {
         category: mat.category,
         analyses: new Map(),
         defaultDataset: 'digitalfire_2024',
+        discontinued: mat.discontinued || false,
+      }
+
+      if (mat.loi !== undefined) {
+        this.lois.set(mat.id, mat.loi)
       }
 
       const analysis: Record<string, number> = {}
@@ -117,6 +123,10 @@ class MaterialDatabase {
 
   getMaterialCount(): number {
     return this.materials.size
+  }
+
+  getLoi(materialId: string): number | null {
+    return this.lois.get(materialId) ?? null
   }
 }
 

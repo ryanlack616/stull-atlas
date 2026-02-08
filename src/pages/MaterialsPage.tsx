@@ -13,7 +13,8 @@ import { calcStyles } from './calc-styles'
 
 const OXIDE_ORDER: OxideSymbol[] = [
   'SiO2', 'Al2O3', 'B2O3', 'Na2O', 'K2O', 'CaO', 'MgO',
-  'ZnO', 'BaO', 'SrO', 'Li2O', 'Fe2O3', 'TiO2', 'MnO', 'P2O5', 'SnO2', 'ZrO2'
+  'ZnO', 'BaO', 'SrO', 'Li2O', 'Fe2O3', 'TiO2', 'MnO', 'MnO2',
+  'P2O5', 'SnO2', 'ZrO2', 'CoO', 'CuO', 'Cr2O3', 'NiO', 'PbO'
 ]
 
 const CATEGORY_LABELS: Record<MaterialCategory, string> = {
@@ -154,18 +155,23 @@ export function MaterialsPage() {
                       <th>Na₂O</th>
                       <th>K₂O</th>
                       <th>MgO</th>
+                      <th>LOI</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filtered.map(mat => {
                       const analysis = getAnalysis(mat)
+                      const loi = materialDatabase.getLoi(mat.id)
                       return (
                         <tr
                           key={mat.id}
                           onClick={() => setSelectedMaterial(mat)}
-                          style={{ cursor: 'pointer' }}
+                          style={{ cursor: 'pointer', opacity: mat.discontinued ? 0.6 : 1 }}
                         >
-                          <td style={{ color: 'var(--text-bright)', fontFamily: 'inherit', fontWeight: 500 }}>{mat.primaryName}</td>
+                          <td style={{ color: 'var(--text-bright)', fontFamily: 'inherit', fontWeight: 500 }}>
+                            {mat.primaryName}
+                            {mat.discontinued && <span style={{ marginLeft: 6, padding: '1px 5px', background: 'var(--accent-bg)', borderRadius: 3, fontSize: 10, color: 'var(--text-muted)' }}>discontinued</span>}
+                          </td>
                           <td style={{ color: 'var(--text-secondary)', fontFamily: 'inherit' }}>{CATEGORY_LABELS[mat.category] || mat.category}</td>
                           <td>{fmtOxide(analysis, 'SiO2')}</td>
                           <td>{fmtOxide(analysis, 'Al2O3')}</td>
@@ -173,6 +179,7 @@ export function MaterialsPage() {
                           <td>{fmtOxide(analysis, 'Na2O')}</td>
                           <td>{fmtOxide(analysis, 'K2O')}</td>
                           <td>{fmtOxide(analysis, 'MgO')}</td>
+                          <td style={{ color: 'var(--text-muted)' }}>{loi !== null ? loi.toFixed(1) : '—'}</td>
                         </tr>
                       )
                     })}
@@ -192,6 +199,7 @@ export function MaterialsPage() {
 /* Material Detail Panel */
 function MaterialDetail({ material, onClose }: { material: Material; onClose: () => void }) {
   const analysis = materialDatabase.getAnalysis(material.id, 'digitalfire_2024')
+  const loi = materialDatabase.getLoi(material.id)
 
   return (
     <div>
@@ -204,7 +212,10 @@ function MaterialDetail({ material, onClose }: { material: Material; onClose: ()
 
       <div className="results-panel" style={{ marginBottom: 16 }}>
         <div className="results-header">
-          <h3>{material.primaryName}</h3>
+          <h3>
+            {material.primaryName}
+            {material.discontinued && <span style={{ marginLeft: 8, padding: '2px 8px', background: '#7f1d1d', borderRadius: 4, fontSize: 11, color: '#fca5a5' }}>Discontinued</span>}
+          </h3>
           <span style={{ color: 'var(--text-secondary)', fontSize: 12 }}>{material.category}</span>
         </div>
         <div style={{ padding: 16 }}>
@@ -255,6 +266,21 @@ function MaterialDetail({ material, onClose }: { material: Material; onClose: ()
                     </tr>
                   )
                 })}
+                {loi !== null && loi > 0 && (
+                  <tr style={{ borderTop: '1px solid var(--border-secondary)' }}>
+                    <td style={{ fontFamily: 'inherit', color: 'var(--text-muted)' }}>LOI</td>
+                    <td style={{ color: 'var(--text-muted)' }}>{loi.toFixed(2)}</td>
+                    <td style={{ width: '50%' }}>
+                      <div style={{
+                        width: `${Math.min(loi, 100)}%`,
+                        height: 8,
+                        background: '#555',
+                        borderRadius: 4,
+                        minWidth: 2,
+                      }} />
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -277,8 +303,10 @@ function oxideColor(oxide: string): string {
     Na2O: '#e74c3c', K2O: '#e67e22', CaO: '#f1c40f',
     MgO: '#1abc9c', ZnO: '#95a5a6', BaO: '#e91e63',
     Fe2O3: '#795548', TiO2: '#607d8b', Li2O: '#ff9800',
-    SrO: '#00bcd4', MnO: '#8bc34a', P2O5: '#ff5722',
-    SnO2: '#cddc39', ZrO2: '#009688',
+    SrO: '#00bcd4', MnO: '#8bc34a', MnO2: '#689f38', P2O5: '#ff5722',
+    SnO2: '#cddc39', ZrO2: '#009688', CoO: '#3f51b5',
+    CuO: '#00897b', Cu2O: '#26a69a', Cr2O3: '#43a047',
+    NiO: '#78909c', PbO: '#8d6e63',
   }
   return colors[oxide] || '#666'
 }
