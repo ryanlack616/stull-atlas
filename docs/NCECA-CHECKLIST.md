@@ -139,15 +139,19 @@
 Howell, MI → Huntington Place, Detroit: ~60 mi / 1 hr each way.
 Plan to commute daily; hotel optional (1 night max if setup runs late).
 
-| Item                          | Est. Cost   |
-|-------------------------------|-------------|
-| Booth fee                     | $1,900      |
-| Booth staff (weekend)         | $320        |
-| Business cards (500)          | ~$100       |
-| Retractable banner            | ~$200       |
-| USB drives (100, printed)     | ~$135       |
-| Gas (4 days × 120 mi @ $0.25) | ~$120      |
-| Parking (convention center)   | ~$80-120    |
-| Hotel (0-1 nights, optional)  | $0-200      |
-| Misc (food, tolls, extras)    | ~$150       |
-| **Total**                     | **~$3,005-3,245** |
+| Item                          | Est. Cost   | Vendor / Notes                              |
+|-------------------------------|-------------|---------------------------------------------|
+| Booth fee                     | $1,900      | NCECA exhibitor registration                |
+| Booth staff (weekend)         | $320        |                                             |
+| Business cards (400, Super)   | $155        | MOO Super 18pt Soft Touch — moo.com/us      |
+| Retractable banner (33×81")   | $110        | Vistaprint Standard vinyl — vistaprint.com  |
+| USB drives (100, printed)     | $120        | Brilliant Promos SFWW0324 — brilliantpromos.com |
+| Gas (4 days × 120 mi @ $0.25) | $120       |                                             |
+| Parking (Huntington Place)    | $100        | Rooftop garage, $25/day × 4, credit card only |
+| Hotel (0-1 nights, optional)  | $0-200      |                                             |
+| Misc (food, tolls, extras)    | $150        |                                             |
+| **Total**                     | **~$2,975-3,175** |                                       |
+
+> **Parking tip:** Wayne State Lot 12 (6050 Woodward) is $5/day + free QLINE
+> streetcar to Huntington Place — saves $80 over 4 days if you don't
+> need to haul gear each morning.
