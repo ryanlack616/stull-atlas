@@ -4,10 +4,10 @@
  * Manages light/dark mode with localStorage persistence.
  * Applies data-theme attribute to document root.
  * 
- * Studio edition adds pottery-inspired skins:
- *   earthen  – warm terracotta/clay tones
- *   celadon  – cool jade/celadon green
- *   shino    – warm cream/rust/carbon
+ * Studio edition adds three skins inspired by the ceramics community:
+ *   normal     – clean neutral slate, no personality
+ *   digitalfire – Tony Hansen's blue/navy academic aesthetic
+ *   glazy      – Derek Au's modern teal open-source vibe
  */
 
 import { create } from 'zustand'
@@ -16,16 +16,16 @@ import { create } from 'zustand'
 type BaseTheme = 'dark' | 'light'
 
 /** Studio-exclusive skins */
-type Skin = 'earthen' | 'celadon' | 'shino'
+type Skin = 'normal' | 'digitalfire' | 'glazy'
 
 /** All theme options */
 export type Theme = BaseTheme | Skin
 
 /** The three Studio-only skins */
 export const STUDIO_SKINS: { id: Skin; label: string; preview: string }[] = [
-  { id: 'earthen', label: 'Earthen', preview: '#8B4513' },
-  { id: 'celadon', label: 'Celadon', preview: '#6B8E6B' },
-  { id: 'shino',   label: 'Shino',   preview: '#D2691E' },
+  { id: 'normal',      label: 'Normal',      preview: '#708090' },
+  { id: 'digitalfire', label: 'Digitalfire', preview: '#2B5797' },
+  { id: 'glazy',       label: 'Glazy',       preview: '#26A69A' },
 ]
 
 interface ThemeState {
@@ -38,7 +38,7 @@ function getInitialTheme(): Theme {
   try {
     const stored = localStorage.getItem('stull-theme')
     if (stored === 'light' || stored === 'dark' ||
-        stored === 'earthen' || stored === 'celadon' || stored === 'shino') {
+        stored === 'normal' || stored === 'digitalfire' || stored === 'glazy') {
       return stored
     }
   } catch { /* ignore */ }

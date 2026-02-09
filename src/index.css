@@ -102,112 +102,112 @@
 
 /* ========= Studio Skins ========= */
 
-/* Earthen — warm terracotta/clay tones */
-[data-theme="earthen"] {
-  --bg-primary: #1a1410;
-  --bg-secondary: #231c15;
-  --bg-tertiary: #2c2318;
-  --bg-elevated: #362b1f;
-  --bg-input: #3d3226;
-  --bg-hover: #2a2016;
+/* Normal — clean neutral slate, no personality */
+[data-theme="normal"] {
+  --bg-primary: #1c1f24;
+  --bg-secondary: #242830;
+  --bg-tertiary: #2c3038;
+  --bg-elevated: #343840;
+  --bg-input: #3a3e48;
+  --bg-hover: #282c34;
 
-  --text-primary: #e8ddd0;
-  --text-secondary: #a08c78;
-  --text-muted: #7a6854;
-  --text-bright: #f5efe6;
-  --text-dim: #5e4e3c;
-  --text-body: #c4b5a2;
-  --text-label: #b0a090;
-  --text-link: #D4896A;
+  --text-primary: #d8dce4;
+  --text-secondary: #8890a0;
+  --text-muted: #6a7080;
+  --text-bright: #f0f2f5;
+  --text-dim: #505868;
+  --text-body: #b0b8c8;
+  --text-label: #a0a8b8;
+  --text-link: #7cadcf;
 
-  --border-primary: #3d3226;
-  --border-secondary: #4d4030;
-  --border-subtle: #2c2318;
-  --border-input: #4a3d2e;
+  --border-primary: #3a3e48;
+  --border-secondary: #484e58;
+  --border-subtle: #2c3038;
+  --border-input: #444a54;
 
-  --accent: #C06030;
-  --accent-bg: #3a2015;
-  --accent-hover: #4a2a1a;
-  --accent-selection: #B85530;
+  --accent: #708090;
+  --accent-bg: #2a3040;
+  --accent-hover: #354050;
+  --accent-selection: #5a6a7a;
 
-  --danger: #c0392b;
-  --warning: #e67e22;
+  --danger: #d9534f;
+  --warning: #e6a23c;
 
-  --scrollbar-track: #1a1410;
-  --scrollbar-thumb: #4d4030;
-  --scrollbar-thumb-hover: #5e4e3c;
+  --scrollbar-track: #1c1f24;
+  --scrollbar-thumb: #484e58;
+  --scrollbar-thumb-hover: #5a6068;
 }
 
-/* Celadon — cool jade/celadon green */
-[data-theme="celadon"] {
-  --bg-primary: #0e1512;
-  --bg-secondary: #141e19;
-  --bg-tertiary: #1a2720;
-  --bg-elevated: #223028;
-  --bg-input: #2a3830;
-  --bg-hover: #182520;
+/* Digitalfire — Tony Hansen's blue/navy academic aesthetic */
+[data-theme="digitalfire"] {
+  --bg-primary: #0e1520;
+  --bg-secondary: #141e2e;
+  --bg-tertiary: #1a2638;
+  --bg-elevated: #223040;
+  --bg-input: #283848;
+  --bg-hover: #182838;
 
-  --text-primary: #d0e4da;
-  --text-secondary: #7a9e8c;
-  --text-muted: #5a7c6a;
-  --text-bright: #e8f5ee;
-  --text-dim: #3e5e4c;
-  --text-body: #a8c8b6;
-  --text-label: #90b8a0;
-  --text-link: #70B890;
+  --text-primary: #d0dce8;
+  --text-secondary: #7a9ab8;
+  --text-muted: #5a7a98;
+  --text-bright: #e8f0f8;
+  --text-dim: #3e5a75;
+  --text-body: #a0bcd0;
+  --text-label: #90a8c0;
+  --text-link: #5B9BD5;
 
-  --border-primary: #2a3830;
-  --border-secondary: #354838;
-  --border-subtle: #1a2720;
-  --border-input: #354838;
+  --border-primary: #283848;
+  --border-secondary: #304860;
+  --border-subtle: #1a2638;
+  --border-input: #304050;
 
-  --accent: #4A8C6A;
-  --accent-bg: #152a20;
-  --accent-hover: #1c3828;
-  --accent-selection: #3D7A5C;
+  --accent: #2B5797;
+  --accent-bg: #142040;
+  --accent-hover: #1c2c55;
+  --accent-selection: #1E4A8A;
 
   --danger: #c0392b;
   --warning: #e67e22;
 
-  --scrollbar-track: #0e1512;
-  --scrollbar-thumb: #354838;
-  --scrollbar-thumb-hover: #4a6050;
+  --scrollbar-track: #0e1520;
+  --scrollbar-thumb: #304860;
+  --scrollbar-thumb-hover: #406080;
 }
 
-/* Shino — warm cream/rust/carbon */
-[data-theme="shino"] {
-  --bg-primary: #181210;
-  --bg-secondary: #201815;
-  --bg-tertiary: #2a201a;
-  --bg-elevated: #342820;
-  --bg-input: #3e3028;
-  --bg-hover: #261e18;
+/* Glazy — Derek Au's modern teal open-source vibe */
+[data-theme="glazy"] {
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --bg-tertiary: #252525;
+  --bg-elevated: #2c2c2c;
+  --bg-input: #333333;
+  --bg-hover: #222222;
 
-  --text-primary: #e8dccf;
-  --text-secondary: #a59080;
-  --text-muted: #7a6858;
-  --text-bright: #f8f0e4;
-  --text-dim: #5e4e40;
-  --text-body: #c8b8a8;
-  --text-label: #b0a090;
-  --text-link: #E8985A;
+  --text-primary: #e0e0e0;
+  --text-secondary: #80a8a0;
+  --text-muted: #608880;
+  --text-bright: #f0f5f4;
+  --text-dim: #506060;
+  --text-body: #b0c8c4;
+  --text-label: #98b8b0;
+  --text-link: #4DB6AC;
 
-  --border-primary: #3e3028;
-  --border-secondary: #504035;
-  --border-subtle: #2a201a;
-  --border-input: #4a3a2e;
+  --border-primary: #333333;
+  --border-secondary: #404040;
+  --border-subtle: #252525;
+  --border-input: #3a3a3a;
 
-  --accent: #D27030;
-  --accent-bg: #3a2010;
-  --accent-hover: #4a2815;
-  --accent-selection: #C06525;
+  --accent: #26A69A;
+  --accent-bg: #122420;
+  --accent-hover: #1a3530;
+  --accent-selection: #00897B;
 
-  --danger: #c0392b;
-  --warning: #e67e22;
+  --danger: #EF5350;
+  --warning: #FFA726;
 
-  --scrollbar-track: #181210;
-  --scrollbar-thumb: #504035;
-  --scrollbar-thumb-hover: #605548;
+  --scrollbar-track: #121212;
+  --scrollbar-thumb: #404040;
+  --scrollbar-thumb-hover: #505050;
 }
 
 /* ========= Typography ========= */
