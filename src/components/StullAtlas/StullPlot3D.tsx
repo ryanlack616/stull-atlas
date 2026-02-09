@@ -25,6 +25,7 @@ import { OxideSymbol, GlazePlotPoint, SurfaceType, EpistemicState } from '@/type
 import { getOxideValue } from '@/calculator/umf'
 import { fitSurface, type SurfaceGrid } from '@/analysis/surfaceFit'
 import { glazeTypeColor, glazeTypeName } from '@/domain/glaze/glazeTypes'
+import { useFilteredPoints } from '@/hooks/useFilteredPoints'
 
 // ─── Public types ──────────────────────────────────────────────
 
@@ -420,9 +421,11 @@ export function StullPlot3D({
 
   // ─── Plot data with Z extraction ─────────────────────────────
 
+  const rawPoints = useMemo(() => getPlotPoints(currentDataset), [getPlotPoints, currentDataset])
+  const filteredPoints = useFilteredPoints(rawPoints)
+
   const plotData = useMemo(() => {
-    const points = getPlotPoints(currentDataset)
-    return points.filter(p =>
+    return filteredPoints.filter(p =>
       p.x != null && p.y != null &&
       !isNaN(p.x) && !isNaN(p.y) &&
       p.x > 0 && p.y > 0 &&
@@ -447,7 +450,7 @@ export function StullPlot3D({
 
       return { ...p, z }
     })
-  }, [getPlotPoints, currentDataset, glazes, zAxis])
+  }, [filteredPoints, glazes, currentDataset, zAxis])
 
   // ─── Color values ─────────────────────────────────────────────
 

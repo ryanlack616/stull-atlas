@@ -123,7 +123,7 @@ export function PricingPage() {
           <TierCard
             name="Free"
             price="$0"
-            description="Explore the Stull chart with 5,000+ community glazes"
+            description="Explore the Stull chart with 3,000+ community glazes"
             features={freeFeatures}
             cta={user ? 'Active' : 'Get Started'}
             onAction={handleFreeAction}

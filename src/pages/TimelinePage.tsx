@@ -202,7 +202,7 @@ const EVENTS: TimelineEvent[] = [
   {
     year: 2026,
     title: 'Stull Atlas — Interactive Explorer',
-    description: 'This application: an interactive Stull chart explorer plotting 6,000+ real-world glaze recipes by UMF, with blend calculators, materials database, recipe optimizer, and similarity tools. Built to preserve and extend the tradition from Wedgwood to Glazy.',
+    description: 'This application: an interactive Stull chart explorer plotting 3,000+ real-world glaze recipes by UMF, with blend calculators, materials database, recipe optimizer, and similarity tools. Built to preserve and extend the tradition from Wedgwood to Glazy.',
     category: 'digital',
     significance: 2,
     links: [

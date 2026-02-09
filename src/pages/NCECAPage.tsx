@@ -52,7 +52,7 @@ export function NCECAPage() {
           <p className="nceca-subtitle">
             A computational glaze explorer — 114 years after Stull's original chart.
             <br />
-            Explore 5,000+ glazes, run blend calculations, and use AI to find your next recipe.
+            Explore 3,000+ glazes, run blend calculations, and use AI to find your next recipe.
           </p>
         </section>
 
@@ -97,7 +97,7 @@ export function NCECAPage() {
           <div className="feature-grid">
             <div className="feature-item">
               <h3>Explore</h3>
-              <p>Map 5,000+ glazes on an interactive Stull chart. Filter by cone, surface, color, and more.</p>
+              <p>Map 3,000+ glazes on an interactive Stull chart. Filter by cone, surface, color, and more.</p>
               <Link to="/">Open Explorer</Link>
             </div>
             <div className="feature-item">
@@ -157,8 +157,8 @@ export function NCECAPage() {
           display: inline-block;
           padding: 4px 16px;
           border-radius: 20px;
-          background: rgba(155, 89, 182, 0.2);
-          color: #a76bcf;
+          background: color-mix(in srgb, var(--accent) 20%, transparent);
+          color: var(--accent);
           font-size: 13px;
           font-weight: 600;
           margin-bottom: 16px;

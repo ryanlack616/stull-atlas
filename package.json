@@ -1,7 +1,7 @@
 {
   "name": "stull-atlas",
   "version": "0.3.0",
-  "description": "A Computational Ceramic Glaze Explorer - 113 years after Stull",
+  "description": "A Computational Ceramic Glaze Explorer — 114 years after Stull",
   "type": "module",
   "scripts": {
     "dev": "vite",

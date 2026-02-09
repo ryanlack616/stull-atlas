@@ -17,6 +17,7 @@ import { materialDatabase } from '@/domain/material'
 import { useRecipeStore } from '@/stores'
 import { exportRecipeCSV } from '@/utils/export'
 import { usePageTitle } from '@/hooks/usePageTitle'
+import { UMFFingerprint, FluxDonut, OxideRadar } from '@/components/UMFVisuals'
 import { calcStyles } from './calc-styles'
 
 const FLUX_OXIDES: OxideSymbol[] = ['Li2O', 'Na2O', 'K2O', 'MgO', 'CaO', 'SrO', 'BaO', 'ZnO', 'PbO']
@@ -257,6 +258,21 @@ export function UMFCalculatorPage() {
                 ))}
               </div>
             )}
+
+            {/* UMF Visuals */}
+            <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', padding: '12px 20px', background: 'var(--bg-secondary)', borderRadius: 8, border: '1px solid var(--border-primary)' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                <FluxDonut umf={umf} size={72} />
+                <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>Flux Unity</span>
+              </div>
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div>
+                  <span style={{ fontSize: 10, color: 'var(--text-muted)', display: 'block', marginBottom: 2 }}>Oxide Fingerprint</span>
+                  <UMFFingerprint umf={umf} showLabels width={280} height={18} />
+                </div>
+                <OxideRadar umf={umf} size={160} />
+              </div>
+            </div>
 
             {/* UMF Table */}
             <div className="results-panel">

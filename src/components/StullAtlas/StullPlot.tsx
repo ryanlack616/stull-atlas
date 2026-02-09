@@ -12,6 +12,7 @@ import { getOxideValue } from '@/calculator/umf'
 import { roundTo } from '@/calculator'
 import { CONE_LIMITS } from '@/calculator/validation'
 import { glazeTypeColor, glazeTypeName } from '@/domain/glaze/glazeTypes'
+import { useFilteredPoints } from '@/hooks/useFilteredPoints'
 
 interface StullPlotProps {
   xAxis?: OxideSymbol
@@ -184,9 +185,10 @@ export function StullPlot({
   }, [theme])
   
   // Get plot data
-  const plotPoints = useMemo(() => {
+  const rawPlotPoints = useMemo(() => {
     return getPlotPoints(currentDataset)
   }, [getPlotPoints, currentDataset])
+  const plotPoints = useFilteredPoints(rawPlotPoints)
   
   // Build blend overlay trace from calculator results
   const blendTrace = useMemo(() => {

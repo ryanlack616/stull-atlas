@@ -8,11 +8,12 @@ import React, { useState, useEffect, useCallback, useMemo, lazy, Suspense } from
 import { StullPlot } from './StullPlot'
 import { DatasetSwitcher } from './DatasetSwitcher'
 import { ComparePanel } from './ComparePanel'
-import { useSelectionStore, useGlazeStore, useDatasetStore } from '@/stores'
+import { useSelectionStore, useGlazeStore, useDatasetStore, useFilterStore } from '@/stores'
 import { useSimilarity } from '@/hooks'
 import { OxideSymbol, GlazeRecipe, MaterialDatasetId } from '@/types'
 import type { DensityMap } from '@/analysis/density'
 import type { ZAxisOption, CameraPreset } from './StullPlot3D'
+import { UMFFingerprint, FluxDonut, OxideRadar, GlazeTypeBadge, ConeRangeBar, MiniStull, DatasetStats, RecipeBar } from '@/components/UMFVisuals'
 import { explorerStyles } from './explorer-styles'
 
 // Lazy-load heavy components that aren't always visible
@@ -23,6 +24,120 @@ type ColorByOption = 'cone' | 'surface' | 'source' | 'flux_ratio' | 'confidence'
 
 /** Subscript helper for oxide formulas */
 const subscript = (s: string) => s.replace(/([A-Z][a-z]?)(\d+)/g, '$1<sub>$2</sub>')
+
+/* ── Filter Panel ── */
+const ATMO_OPTIONS = ['oxidation', 'reduction', 'neutral', 'unknown'] as const
+const SURFACE_OPTIONS = ['gloss', 'satin', 'matte', 'crystalline', 'crawl', 'unknown'] as const
+
+function FilterPanel() {
+  const [open, setOpen] = useState(true)
+  const {
+    atmospheres, surfaces, coneMin, coneMax,
+    hasIngredients, hasImages, activeCount,
+    toggleAtmosphere, toggleSurface, setConeRange,
+    setHasIngredients, setHasImages, clearAll,
+  } = useFilterStore()
+
+  return (
+    <div className="control-group filter-panel">
+      <h3
+        style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, userSelect: 'none' }}
+        onClick={() => setOpen(!open)}
+      >
+        <span style={{ fontSize: 10, transition: 'transform 0.15s', transform: open ? 'rotate(90deg)' : 'rotate(0)' }}>&#9654;</span>
+        Filters
+        {activeCount > 0 && (
+          <span className="filter-badge">{activeCount}</span>
+        )}
+      </h3>
+      {open && (
+        <div className="filter-body">
+          {/* Atmosphere */}
+          <div className="filter-section">
+            <span className="filter-label">Atmosphere</span>
+            <div className="filter-chips">
+              {ATMO_OPTIONS.map(a => (
+                <button
+                  key={a}
+                  className={`filter-chip ${atmospheres.has(a) ? 'active' : ''}`}
+                  onClick={() => toggleAtmosphere(a)}
+                >
+                  {a === 'unknown' ? '?' : a.slice(0, 3)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Surface */}
+          <div className="filter-section">
+            <span className="filter-label">Surface</span>
+            <div className="filter-chips">
+              {SURFACE_OPTIONS.map(s => (
+                <button
+                  key={s}
+                  className={`filter-chip ${surfaces.has(s) ? 'active' : ''}`}
+                  onClick={() => toggleSurface(s)}
+                >
+                  {s === 'unknown' ? '?' : s === 'crystalline' ? 'crys' : s.slice(0, 4)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Cone range */}
+          <div className="filter-section">
+            <span className="filter-label">Cone range</span>
+            <div className="cone-range-inputs">
+              <input
+                type="number"
+                className="cone-input"
+                placeholder="min"
+                value={coneMin ?? ''}
+                onChange={e => {
+                  const v = e.target.value === '' ? null : Number(e.target.value)
+                  setConeRange(v, coneMax)
+                }}
+                min={-4}
+                max={14}
+              />
+              <span style={{ color: 'var(--text-secondary)', fontSize: 12 }}>to</span>
+              <input
+                type="number"
+                className="cone-input"
+                placeholder="max"
+                value={coneMax ?? ''}
+                onChange={e => {
+                  const v = e.target.value === '' ? null : Number(e.target.value)
+                  setConeRange(coneMin, v)
+                }}
+                min={-4}
+                max={14}
+              />
+            </div>
+          </div>
+
+          {/* Flags */}
+          <div className="filter-section">
+            <label className="filter-flag">
+              <input type="checkbox" checked={hasIngredients} onChange={e => setHasIngredients(e.target.checked)} />
+              Has recipe
+            </label>
+            <label className="filter-flag">
+              <input type="checkbox" checked={hasImages} onChange={e => setHasImages(e.target.checked)} />
+              Has photo
+            </label>
+          </div>
+
+          {activeCount > 0 && (
+            <button className="filter-clear" onClick={clearAll}>
+              Clear all filters
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
 
 export function StullAtlas() {
   const [xAxis, setXAxis] = useState<OxideSymbol>('SiO2')
@@ -258,6 +373,10 @@ export function StullAtlas() {
           </div>
           
           <DatasetSwitcher />
+          <DatasetStats />
+
+          {/* ── Filter Panel ── */}
+          <FilterPanel />
           
           {densityMap && (
             <div className="control-group">
@@ -341,6 +460,9 @@ export function StullAtlas() {
                   Selected: {selectedGlaze.name}, Cone {selectedGlaze.coneRange[0]} to {selectedGlaze.coneRange[1]}, {selectedGlaze.surfaceType} surface
                 </div>
                 <h2>{selectedGlaze.name}</h2>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+                  <GlazeTypeBadge glazeTypeId={selectedGlaze.glazeTypeId} showParent />
+                </div>
                 <div className="detail-section">
                   <h4>Source</h4>
                   <p>{selectedGlaze.source}</p>
@@ -349,12 +471,24 @@ export function StullAtlas() {
                       View original →
                     </a>
                   )}
+                  {selectedGlaze.id.startsWith('glazy_') && (
+                    <a
+                      href={`https://glazy.org/recipes/${selectedGlaze.id.replace('glazy_', '')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 12, marginTop: 4 }}
+                    >
+                      View on Glazy →
+                    </a>
+                  )}
                 </div>
                 
                 <div className="detail-section">
                   <h4>Firing</h4>
-                  <p>Cone {selectedGlaze.coneRange[0]} - {selectedGlaze.coneRange[1]}</p>
-                  <p>{selectedGlaze.atmosphere}</p>
+                  <ConeRangeBar coneRange={selectedGlaze.coneRange} />
+                  {selectedGlaze.atmosphere !== 'unknown' && (
+                    <p style={{ margin: '4px 0 0', fontSize: 12, color: 'var(--text-label)' }}>{selectedGlaze.atmosphere}</p>
+                  )}
                 </div>
                 
                 {/* UMF Values */}
@@ -370,6 +504,16 @@ export function StullAtlas() {
                   return (
                     <div className="detail-section">
                       <h4>UMF</h4>
+                      <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start', marginBottom: 8 }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
+                          <FluxDonut umf={umf} size={56} />
+                          <MiniStull x={umf.SiO2?.value ?? 0} y={umf.Al2O3?.value ?? 0} size={56} />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <UMFFingerprint umf={umf} showLabels width={160} />
+                          <OxideRadar umf={umf} size={130} />
+                        </div>
+                      </div>
                       <table className="recipe-table" style={{ fontSize: 12 }}>
                         <tbody>
                           {oxideGroups.map(group => {
@@ -408,18 +552,44 @@ export function StullAtlas() {
                   )
                 })()}
 
+                {/* Glaze Image */}
+                {selectedGlaze.images && selectedGlaze.images.length > 0 && (
+                  <div className="detail-section">
+                    <h4>Photo</h4>
+                    <img
+                      src={selectedGlaze.images[0]}
+                      alt={selectedGlaze.name}
+                      loading="lazy"
+                      style={{
+                        width: '100%',
+                        maxHeight: 180,
+                        objectFit: 'cover',
+                        borderRadius: 6,
+                        border: '1px solid var(--border-primary)',
+                      }}
+                    />
+                  </div>
+                )}
+
                 <div className="detail-section">
                   <h4>Recipe</h4>
-                  <table className="recipe-table">
-                    <tbody>
-                      {selectedGlaze.ingredients.map((ing, i) => (
-                        <tr key={i}>
-                          <td>{ing.material}</td>
-                          <td className="amount">{ing.amount}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  {selectedGlaze.ingredients.length > 0 ? (
+                    <>
+                      <RecipeBar ingredients={selectedGlaze.ingredients} />
+                      <table className="recipe-table" style={{ marginTop: 6 }}>
+                        <tbody>
+                          {selectedGlaze.ingredients.map((ing, i) => (
+                            <tr key={i}>
+                              <td>{ing.material}</td>
+                              <td className="amount">{ing.amount}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </>
+                  ) : (
+                    <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: 0 }}>No recipe data available</p>
+                  )}
                 </div>
 
                 <div className="detail-section">

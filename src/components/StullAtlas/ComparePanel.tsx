@@ -8,6 +8,7 @@
 
 import React, { useState, useMemo } from 'react'
 import { GlazeRecipe, MaterialDatasetId, Ingredient } from '@/types'
+import { UMFFingerprint, FluxDonut, OxideRadar, GlazeTypeBadge, ConeRangeBar } from '@/components/UMFVisuals'
 
 /** Subscript helper for oxide formulas */
 const subscript = (s: string) => s.replace(/([A-Z][a-z]?)(\d+)/g, '$1<sub>$2</sub>')
@@ -187,8 +188,12 @@ export function ComparePanel({ glazes, currentDataset, onRemove, onClear, onSele
         </thead>
         <tbody>
           <tr className="compare-meta-row">
+            <td>Type</td>
+            {glazes.map(g => <td key={g.id}><GlazeTypeBadge glazeTypeId={g.glazeTypeId} size="sm" /></td>)}
+          </tr>
+          <tr className="compare-meta-row">
             <td>Cone</td>
-            {glazes.map(g => <td key={g.id}>{g.coneRange[0]}–{g.coneRange[1]}</td>)}
+            {glazes.map(g => <td key={g.id}><ConeRangeBar coneRange={g.coneRange} width={100} height={16} /></td>)}
           </tr>
           <tr className="compare-meta-row">
             <td>Surface</td>
@@ -197,6 +202,32 @@ export function ComparePanel({ glazes, currentDataset, onRemove, onClear, onSele
           <tr className="compare-meta-row">
             <td>Atmosphere</td>
             {glazes.map(g => <td key={g.id}>{g.atmosphere}</td>)}
+          </tr>
+
+          {/* UMF Fingerprint bars */}
+          <tr className="compare-meta-row">
+            <td>UMF</td>
+            {glazes.map(g => {
+              const umf = g.umf.get(currentDataset)
+              return <td key={g.id}>{umf ? <UMFFingerprint umf={umf} width={100} compact /> : '—'}</td>
+            })}
+          </tr>
+
+          {/* Flux Donut + Oxide Radar */}
+          <tr className="compare-meta-row">
+            <td>Fluxes</td>
+            {glazes.map(g => {
+              const umf = g.umf.get(currentDataset)
+              return <td key={g.id}>{umf ? <FluxDonut umf={umf} size={64} /> : '—'}</td>
+            })}
+          </tr>
+          <tr className="compare-meta-row">
+            <td>Profile</td>
+            {glazes.map((g, i) => {
+              const umf = g.umf.get(currentDataset)
+              const compareUmf = i > 0 ? glazes[0].umf.get(currentDataset) : undefined
+              return <td key={g.id}>{umf ? <OxideRadar umf={umf} compareUmf={compareUmf} size={100} /> : '—'}</td>
+            })}
           </tr>
 
           {/* UMF comparison by oxide group */}

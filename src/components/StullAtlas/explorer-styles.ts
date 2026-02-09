@@ -495,4 +495,122 @@ export const explorerStyles = `
     padding-top: 10px !important;
     border-bottom: 1px solid var(--border-secondary) !important;
   }
+
+  /* ── Filter Panel ── */
+  .filter-panel h3 {
+    margin-bottom: 8px !important;
+  }
+
+  .filter-badge {
+    background: var(--accent-primary, #4a9eff);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    text-transform: none;
+  }
+
+  .filter-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .filter-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .filter-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .filter-chip {
+    padding: 3px 8px;
+    font-size: 11px;
+    border: 1px solid var(--border-secondary);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.12s;
+    text-transform: capitalize;
+  }
+
+  .filter-chip:hover {
+    border-color: var(--accent-primary, #4a9eff);
+    color: var(--text-bright);
+  }
+
+  .filter-chip.active {
+    background: var(--accent-primary, #4a9eff);
+    border-color: var(--accent-primary, #4a9eff);
+    color: #fff;
+  }
+
+  .cone-range-inputs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .cone-input {
+    width: 56px;
+    padding: 4px 6px;
+    font-size: 12px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-secondary);
+    border-radius: 4px;
+    color: var(--text-bright);
+    text-align: center;
+  }
+
+  .cone-input:focus {
+    outline: none;
+    border-color: var(--accent-primary, #4a9eff);
+  }
+
+  .filter-flag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+
+  .filter-flag:hover {
+    color: var(--text-bright);
+  }
+
+  .filter-clear {
+    padding: 5px 0;
+    font-size: 11px;
+    color: var(--accent-primary, #4a9eff);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .filter-clear:hover {
+    text-decoration: underline;
+  }
 `

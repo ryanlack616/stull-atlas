@@ -27,7 +27,8 @@ export function UpdatesPage() {
             v3 — AI Recipe Suggestions
             ══════════════════════════════════════════════════ */}
         <section className="about-section" style={{ borderLeft: '3px solid var(--accent, #3498db)', paddingLeft: 16 }}>
-          <h2>🧪 v3 — AI Recipe Suggestions</h2>
+          <h2>🧪 v0.3.0 — AI Recipe Suggestions</h2>
+          <p style={{ fontSize: 13, color: 'var(--text-dim)', margin: '0 0 12px' }}>June 2025</p>
           <p>
             Describe the glaze you want in plain English and the{' '}
             <Link to="/suggest">AI Suggest</Link> page generates optimized recipes
@@ -60,7 +61,8 @@ export function UpdatesPage() {
             v2 — Full Rewrite
             ══════════════════════════════════════════════════ */}
         <section className="about-section">
-          <h2>v2 — Full Rewrite</h2>
+          <h2>v0.2.0 — Full Rewrite</h2>
+          <p style={{ fontSize: 13, color: 'var(--text-dim)', margin: '0 0 12px' }}>May 2025</p>
           <p>
             v2 is a complete rewrite. The original Stull Atlas was a single-page chart viewer.
             This version turns it into a full ceramic chemistry workbench — interactive 3D plots,
@@ -179,7 +181,7 @@ export function UpdatesPage() {
 
         {/* ── Data & Filtering ── */}
         <section className="about-section">
-          <h2>10,000+ Glazes</h2>
+          <h2>3,000+ Glazes</h2>
           <p>
             The dataset is sourced from <a href="https://glazy.org" target="_blank"
             rel="noopener noreferrer">Glazy</a> — the open ceramic recipe database.
@@ -278,7 +280,7 @@ export function UpdatesPage() {
             </a>{' '}
             — Howell, Michigan.
           </p>
-          <p className="version">v3.0.0</p>
+          <p className="version">v0.3.0</p>
         </section>
 
       </div>

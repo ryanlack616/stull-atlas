@@ -103,10 +103,17 @@ class ChunkErrorBoundary extends Component<{ children: ReactNode }, { hasError: 
 function PageLoader() {
   return (
     <div style={{
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      flex: 1, color: 'var(--text-secondary)', fontSize: 14
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      flex: 1, color: 'var(--text-secondary)', fontSize: 14, gap: 16,
     }}>
-      Loading...
+      <div style={{
+        width: 32, height: 32,
+        border: '3px solid var(--border-primary, #333)',
+        borderTopColor: 'var(--accent, #3498db)',
+        borderRadius: '50%',
+        animation: 'page-spin 0.8s linear infinite',
+      }} />
+      <style>{`@keyframes page-spin { to { transform: rotate(360deg) } }`}</style>
     </div>
   )
 }
