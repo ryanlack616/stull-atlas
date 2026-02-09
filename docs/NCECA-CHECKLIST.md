@@ -9,7 +9,7 @@
 
 ### Print Orders (long lead time — do first)
 - [ ] **Business cards** — Finalize artwork from `marketing/print/nceca-card.md`
-  - Export QR codes (300 unique, one per card)
+  - QR code → stullatlas.app (same on every card)
   - Upload to MOO — Super Soft Touch, 18pt
   - 300 qty (flyer covers most handout needs)
   - Budget: ~$115
@@ -40,11 +40,12 @@
 ## Week 2: Feb 16–22 (4 weeks out)
 
 ### Data & Backend
-- [ ] Load 500 trial codes into Supabase: `generate_trial_codes('NCECA_2026_A', 500)`
-- [ ] Test QR → trial code redemption flow end-to-end
-- [ ] Verify trial expiry logic (30 days)
+- [ ] Implement free-month flag: all verified signups get Pro access Mar 15 – Apr 18
+  - Add `FREE_UNTIL` date check in auth / tier logic
+  - No trial codes needed — just sign up with verified email → full access
+- [ ] Test signup → email verification → Pro features unlock flow
 - [ ] Set up email templates in transactional provider (Resend/Postmark)
-  - Welcome, trial-activated, trial-expiring, trial-expired, nceca-followup
+  - Welcome ("free through April 18"), nceca-followup, free-period-ending
 
 ### USB Prep
 - [ ] Flash script dry run: `.\scripts\flash-usb.ps1` with 1 test USB
@@ -56,7 +57,7 @@
 ## Week 3: Feb 23–Mar 1 (3 weeks out)
 
 ### Print Arrives (check tracking)
-- [ ] Business cards received — spot check QR codes (scan 5 random)
+- [ ] Business cards received — spot check QR code scans to stullatlas.app
 - [ ] Quarter-sheet flyers received — check colors, QR code scans, text accuracy
 - [ ] Banner received — unroll, check colors and text
 - [ ] USB drives received — test imprint quality
@@ -68,7 +69,7 @@
 
 ### Web Deploy
 - [ ] Final web deploy to stullatlas.app — `.\scripts\deploy.ps1`
-- [ ] Smoke test: sign up, redeem trial code, verify Pro features unlock
+- [ ] Smoke test: sign up → verify email → confirm Pro features unlocked
 - [ ] Check Plausible analytics is tracking
 
 ---
@@ -134,9 +135,10 @@
 
 ## Post-Conference: Mar 23–27
 
-- [ ] Send NCECA follow-up email to anyone who redeemed a trial code
+- [ ] Send NCECA follow-up email to new signups from the free period
 - [ ] Review Plausible analytics — traffic spike from conference?
-- [ ] Check Supabase — how many trial codes redeemed?
+- [ ] Check Supabase — how many new verified signups during free window?
+- [ ] Plan conversion: free period ends Apr 18 — send "thanks, here's what Pro costs" email
 - [ ] Write up lessons learned (what worked, what to change next time)
 - [ ] Reorder materials if planning more events
 
