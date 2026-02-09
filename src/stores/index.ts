@@ -7,6 +7,7 @@ enableMapSet()
 
 export { useGlazeStore } from './glazeStore'
 export { useDatasetStore } from './datasetStore'
+export { useMolarWeightStore } from './molarWeightStore'
 export { useSelectionStore } from './selectionStore'
 export { useRecipeStore } from './recipeStore'
 export { useThemeStore } from './themeStore'

@@ -1,16 +1,24 @@
 /**
  * Calculator Constants
  * 
- * Molecular weights, oxide classifications, and precision rules
+ * Molecular weights, oxide classifications, and precision rules.
+ * 
+ * ARCHITECTURE NOTE (2025-02):
+ * MOLECULAR_WEIGHTS is now dynamic — backed by the molarWeightStore.
+ * The `getActiveWeights()` function returns whatever weight set the
+ * user has selected (IUPAC 2023, CRC 2003, Glazy, etc.).
+ * The `MOLECULAR_WEIGHTS` constant is kept as the DEFAULT / fallback
+ * and is used during app init before the store hydrates.
  */
 
 import { OxideSymbol, OXIDE_CLASSES as _OXIDE_CLASSES, FLUX_OXIDES as _FLUX_OXIDES } from '@/types'
 
 /**
- * Molecular weights (g/mol) for all ceramic oxides
- * Source: Standard atomic weights
+ * Default molecular weights (g/mol) for all ceramic oxides.
+ * Close to IUPAC 2023 with practical rounding.
+ * Used as fallback when the store hasn't loaded yet.
  */
-export const MOLECULAR_WEIGHTS: Record<OxideSymbol, number> = {
+export const DEFAULT_MOLECULAR_WEIGHTS: Record<OxideSymbol, number> = {
   // Fluxes - R2O (alkalis)
   Li2O:   29.88,
   Na2O:   61.98,
@@ -46,6 +54,56 @@ export const MOLECULAR_WEIGHTS: Record<OxideSymbol, number> = {
   P2O5:  141.94,
   F:      19.00,
 }
+
+/**
+ * Module-level reference to the active weight set.
+ * Updated by `setActiveWeights()` whenever the molarWeightStore changes.
+ * Starts as DEFAULT_MOLECULAR_WEIGHTS.
+ */
+let _activeWeights: Record<OxideSymbol, number> = DEFAULT_MOLECULAR_WEIGHTS
+
+/**
+ * Get the currently active molecular weights.
+ * This is the primary access point for all calculator functions.
+ */
+export function getActiveWeights(): Record<OxideSymbol, number> {
+  return _activeWeights
+}
+
+/**
+ * Set the active molecular weights.
+ * Called by the molarWeightStore subscription (see stores/molarWeightStore.ts).
+ * Do NOT call this from calculator functions — it's a store concern.
+ */
+export function setActiveWeights(weights: Record<OxideSymbol, number>): void {
+  _activeWeights = weights
+}
+
+/**
+ * Live reference — consumers that read MOLECULAR_WEIGHTS get the active set.
+ * Uses a Proxy so existing code like `MOLECULAR_WEIGHTS[oxide]` and
+ * `Object.keys(MOLECULAR_WEIGHTS)` continue to work without changes.
+ */
+export const MOLECULAR_WEIGHTS: Record<OxideSymbol, number> = new Proxy(
+  DEFAULT_MOLECULAR_WEIGHTS,
+  {
+    get(_target, prop, receiver) {
+      if (prop === Symbol.toPrimitive || prop === Symbol.iterator) {
+        return Reflect.get(_activeWeights, prop, receiver)
+      }
+      return Reflect.get(_activeWeights, prop as string)
+    },
+    ownKeys() {
+      return Reflect.ownKeys(_activeWeights)
+    },
+    getOwnPropertyDescriptor(_target, prop) {
+      return Object.getOwnPropertyDescriptor(_activeWeights, prop)
+    },
+    has(_target, prop) {
+      return prop in _activeWeights
+    },
+  }
+) as Record<OxideSymbol, number>
 
 /**
  * Oxide classifications — re-exported from types for backward compat

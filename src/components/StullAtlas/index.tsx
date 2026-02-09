@@ -7,6 +7,7 @@
 import React, { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react'
 import { StullPlot } from './StullPlot'
 import { DatasetSwitcher } from './DatasetSwitcher'
+import { MolarSetPicker } from './MolarSetPicker'
 import { ComparePanel } from './ComparePanel'
 import { useSelectionStore, useGlazeStore, useDatasetStore, useFilterStore } from '@/stores'
 import { useSimilarity } from '@/hooks'
@@ -387,6 +388,7 @@ export function StullAtlas() {
           </div>
           
           <DatasetSwitcher />
+          <MolarSetPicker />
           <DatasetStats />
 
           {/* ── Filter Panel ── */}

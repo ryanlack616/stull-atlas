@@ -221,25 +221,39 @@ export function AboutPage() {
           <h2>Temperature Contours</h2>
           <p>
             The faint contour lines on the chart show approximate temperature zones (1240°C–1280°C) 
-            based on empirical data collected by Derek Philip Au. These indicate where glazes at a 
-            given UMF position tend to mature. They're guides, not guarantees — your kiln, your 
-            firing schedule, and your materials will shift these boundaries.
+            based on empirical data collected by{' '}
+            <a href="https://glazy.org" target="_blank" rel="noopener noreferrer">Derek Philip Au</a>.
+            These indicate where glazes at a given UMF position tend to mature. They're guides, 
+            not guarantees — your kiln, your firing schedule, and your materials will shift 
+            these boundaries.
           </p>
         </section>
 
         <section className="about-section">
           <h2>Credits & Sources</h2>
+          <p style={{ marginBottom: 16, fontStyle: 'italic', opacity: 0.85 }}>
+            Every tool is built from what came before it. The potters and researchers listed 
+            here didn't just advance ceramic chemistry — they gave their work away so others 
+            could build on it. Stull Atlas is our attempt to carry that forward.
+          </p>
           <ul className="credits-list">
             <li>
               <strong>Ray T. Stull</strong> (1912) — Original SiO₂/Al₂O₃ diagram and zone classifications
             </li>
             <li>
-              <strong><a href="https://glazy.org" target="_blank" rel="noopener noreferrer">Glazy</a></strong> (Derek Philip Au) — 
-              Open glaze recipe database and processed UMF data
-            </li>
-            <li>
-              <strong><a href="https://github.com/derekphilipau/ceramic-chemistry-visualization" target="_blank" rel="noopener noreferrer">ceramic-chemistry-visualization</a></strong> — 
-              Temperature contour data and Stull region geometry (GPL-3.0)
+              <strong><a href="https://glazy.org" target="_blank" rel="noopener noreferrer">Derek Philip Au</a></strong> — 
+              Derek's contributions to open-source ceramic chemistry tools are extraordinary.
+              He created{' '}
+              <a href="https://glazy.org" target="_blank" rel="noopener noreferrer">Glazy</a>,
+              the largest open glaze recipe database in the world, giving potters free access 
+              to thousands of recipes with full UMF analysis. His{' '}
+              <a href="https://github.com/derekphilipau/ceramic-chemistry-visualization" target="_blank" rel="noopener noreferrer">ceramic-chemistry-visualization</a>{' '}
+              project (GPL-3.0) provided the empirical Stull region boundary geometry, 
+              temperature contour data, and Q-line coordinates that form the foundation of 
+              both the 2D and 3D plots in Stull Atlas. Before Derek's work, this kind of 
+              data-driven glaze visualization was locked away in academic papers and proprietary 
+              software. He made it accessible to everyone. The entire Stull Atlas dataset of 
+              3,200+ glazes comes from Glazy's open data. Thank you, Derek.
             </li>
             <li>
               <strong><a href="https://digitalfire.com" target="_blank" rel="noopener noreferrer">Digitalfire Reference Library</a></strong> (Tony Hansen) — 

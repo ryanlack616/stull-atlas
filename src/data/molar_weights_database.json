@@ -1,0 +1,676 @@
+{
+  "metadata": {
+    "title": "Comprehensive Molar Weight Database for Ceramics: 1912-2024",
+    "version": "2.0",
+    "created": "2026-02-09",
+    "description": "Complete historical database of atomic and molecular weights used in ceramic glaze chemistry, spanning 112 years from R.T. Stull's original research to current IUPAC standards",
+    "purpose": "Enable accurate cross-era glaze calculations, historical recipe reproduction, and academic research in computational ceramics",
+    "author": "Ryan - ConduitBridge / Ceramics Computing",
+    "last_updated": "2026-02-09T05:57:46.588343"
+  },
+  "historical_context": {
+    "eras": [
+      {
+        "name": "Pre-IUPAC Era",
+        "period": "1882-1920",
+        "standard": "O = 16",
+        "authority": "International Committee on Atomic Weights (formed 1899)",
+        "significance": "Foundation of systematic atomic weight determination",
+        "key_events": [
+          { "year": 1882, "event": "F.W. Clarke's first systematic recalculation" },
+          { "year": 1899, "event": "International Committee formed (56 delegates, 11 countries)" },
+          { "year": 1902, "event": "First International Atomic Weight Table published" },
+          { "year": 1903, "event": "Oxygen = 16 adopted as standard" },
+          { "year": 1912, "event": "R.T. Stull publishes revolutionary glaze research" }
+        ]
+      },
+      {
+        "name": "Early IUPAC Era",
+        "period": "1920-1961",
+        "standard": "O = 16",
+        "authority": "IUPAC Commission on Atomic Weights",
+        "significance": "International standardization begins",
+        "key_events": [
+          { "year": 1920, "event": "IUPAC formally established" },
+          { "year": 1929, "event": "Oxygen isotopes discovered - O-16, O-17, O-18" },
+          { "year": 1960, "event": "Last publications using O=16 standard" }
+        ]
+      },
+      {
+        "name": "Carbon-12 Era",
+        "period": "1961-2009",
+        "standard": "C-12 = 12",
+        "authority": "IUPAC CIAAW",
+        "significance": "Modern precision measurements enabled",
+        "key_events": [
+          { "year": 1961, "event": "MAJOR CHANGE: Switch from O=16 to C-12 standard" },
+          { "year": 1969, "event": "Gadolinium revised (not updated again until 2024!)" },
+          { "year": 1983, "event": "Zirconium revised (not updated again until 2024!)" },
+          { "year": 2007, "event": "Lutetium revised" }
+        ]
+      },
+      {
+        "name": "Interval Notation Era",
+        "period": "2009-Present",
+        "standard": "C-12 = 12 (with intervals)",
+        "authority": "IUPAC CIAAW",
+        "significance": "Recognition of natural isotopic variation",
+        "key_events": [
+          { "year": 2009, "event": "Interval notation introduced for 10 elements" },
+          { "year": 2011, "event": "Br and Mg added to interval list" },
+          { "year": 2021, "event": "Ar and Pb changed to intervals" },
+          { "year": 2024, "event": "Gd, Lu, Zr revised after decades" }
+        ]
+      }
+    ],
+    "stull_1912_significance": {
+      "researcher": {
+        "name": "Ray Thomas Stull",
+        "life": "1875-1944",
+        "position": "Professor of Ceramic Engineering, University of Illinois"
+      },
+      "publication": {
+        "title": "Influences of Variable Silica and Alumina on Porcelain Glazes of Constant RO",
+        "journal": "Transactions of the American Ceramic Society",
+        "year": 1912,
+        "pages": "62-70"
+      },
+      "methodology": {
+        "firing_cone": 11,
+        "firing_temp_f": 2340,
+        "firing_temp_c": 1282,
+        "flux_composition": "0.3 K\u2082O : 0.7 CaO (constant)",
+        "flux_ratio_significance": "Represents highest durability (research-proven)",
+        "variables": "Only SiO\u2082 and Al\u2082O\u2083 amounts varied",
+        "formula_system": "Unity Molecular Formula (UMF)"
+      },
+      "impact": {
+        "revolutionary": true,
+        "description": "Moved glaze formulation from trial-and-error to predictive science",
+        "continuous_use_years": 112,
+        "modern_software": ["Glazy", "DigitalFire Insight-live", "Ceramic Materials Workshop", "HyperGlaze"]
+      },
+      "historical_atomic_weights_used": {
+        "standard": "O = 16 (1903-1961)",
+        "note": "Using 1912 atomic weights vs modern weights causes glaze plots to shift on Stull chart"
+      }
+    },
+    "atomic_weight_evolution": {
+      "1912_vs_2023_key_differences": {
+        "Si": { "1912_O16": 28.3, "1912_C12_equiv": 28.28, "2023": 28.085, "difference": -0.195, "percent_change": -0.69, "impact": "Higher 1912 value shifts SiO\u2082 calculations" },
+        "Al": { "1912_O16": 27.1, "1912_C12_equiv": 27.08, "2023": 26.982, "difference": -0.098, "percent_change": -0.36, "impact": "Higher 1912 value shifts Al\u2082O\u2083 calculations" },
+        "Ca": { "1912_O16": 40.1, "2023": 40.078, "difference": 0.022, "note": "Minimal change" },
+        "K": { "1912_O16": 39.1, "2023": 39.098, "difference": -0.002, "note": "Essentially unchanged" }
+      },
+      "oxide_calculations_1912_vs_2023": {
+        "SiO2": { "1912_approx": 60.3, "2023": 60.083, "difference": 0.217, "percent_diff": 0.36 },
+        "Al2O3": { "1912_approx": 102.2, "2023": 101.96, "difference": 0.24, "percent_diff": 0.24 },
+        "CaO": { "1912_approx": 56.1, "2023": 56.077, "difference": 0.023, "percent_diff": 0.04 },
+        "K2O": { "1912_approx": 94.2, "2023": 94.196, "difference": 0.004, "percent_diff": 0.0 }
+      },
+      "stull_chart_impact": {
+        "description": "Plotting historical glazes with modern atomic weights causes coordinate shifts",
+        "sio2_axis": "Shifted LEFT (lower apparent silica)",
+        "al2o3_axis": "Shifted DOWN (lower apparent alumina)",
+        "practical_result": "A 1912 'glossy' glaze might plot as 'matte' with 2023 weights",
+        "solution": "Use era-appropriate atomic weights for historical recipe reproduction"
+      }
+    }
+  },
+  "molar_weight_sets": [
+    {
+      "set_id": "stull_1912",
+      "name": "Stull 1912 Era (International Committee)",
+      "year": 1912,
+      "source": "International Committee on Atomic Weights",
+      "authority": "primary_historical",
+      "standard": "O = 16",
+      "status": "to_be_reconstructed",
+      "url": "https://ciaaw.org/historical-atomic-weights.htm",
+      "notes": "Atomic weights used by R.T. Stull in his original glaze research. Based on O=16 standard. Values approximate - need reconstruction from 1912 Int'l Committee report.",
+      "significance": "Foundation of systematic glaze chemistry - essential for reproducing historical glazes",
+      "elements": {},
+      "oxides": {},
+      "reconstruction_priority": "HIGH"
+    },
+    {
+      "set_id": "iupac_1961",
+      "name": "IUPAC 1961 (First C-12 Standard)",
+      "year": 1961,
+      "source": "IUPAC Commission on Atomic Weights",
+      "authority": "primary",
+      "standard": "C-12 = 12",
+      "status": "to_be_added",
+      "notes": "Historic milestone - first atomic weights based on Carbon-12 = 12 standard (switched from O=16). All values from prior years need conversion.",
+      "significance": "Major transition point - essential for understanding mid-20th century ceramics literature",
+      "elements": {},
+      "oxides": {},
+      "reconstruction_priority": "HIGH"
+    },
+    {
+      "set_id": "parmelee_1973",
+      "name": "Parmelee 'Ceramic Glazes' (1973, 3rd Edition)",
+      "year": 1973,
+      "source": "Cullen W. Parmelee textbook",
+      "authority": "ceramics_reference",
+      "status": "to_be_extracted",
+      "notes": "Classic American ceramics textbook. Widely used baseline for American potters. Uses IUPAC values from late 1960s / early 1970s.",
+      "significance": "Historical baseline for traditional American studio pottery",
+      "elements": {},
+      "oxides": {},
+      "reconstruction_priority": "HIGH"
+    },
+    {
+      "set_id": "iupac_1993",
+      "name": "IUPAC 1993 Standard Atomic Weights",
+      "year": 1993,
+      "source": "IUPAC Commission on Isotopic Abundances and Atomic Weights",
+      "authority": "primary",
+      "standard": "C-12 = 12",
+      "status": "available_from_iupac",
+      "url": "https://iupac.qmul.ac.uk/AtWt/AtWt93.html",
+      "notes": "Early 90s baseline for digital era ceramics",
+      "elements": {},
+      "oxides": {}
+    },
+    {
+      "set_id": "iupac_1995",
+      "name": "IUPAC 1995 Standard Atomic Weights",
+      "year": 1995,
+      "source": "IUPAC CIAAW",
+      "authority": "primary",
+      "standard": "C-12 = 12",
+      "status": "available_from_iupac",
+      "url": "https://iupac.qmul.ac.uk/AtWt/AtWt95.html",
+      "publication": "Pure Appl. Chem. 68, 2339-2359 (1996)",
+      "elements": {},
+      "oxides": {}
+    },
+    {
+      "set_id": "iupac_1997",
+      "name": "IUPAC 1997 Standard Atomic Weights",
+      "year": 1997,
+      "source": "IUPAC CIAAW",
+      "authority": "primary",
+      "standard": "C-12 = 12",
+      "status": "available_from_iupac",
+      "url": "https://iupac.qmul.ac.uk/AtWt/AtWt97.html",
+      "publication": "Pure Appl. Chem. 71, 1593-1607 (1999)",
+      "elements": {},
+      "oxides": {}
+    },
+    {
+      "set_id": "iupac_1999",
+      "name": "IUPAC 1999 Standard Atomic Weights",
+      "year": 1999,
+      "source": "IUPAC CIAAW",
+      "authority": "primary",
+      "standard": "C-12 = 12",
+      "status": "available_from_iupac",
+      "url": "https://iupac.qmul.ac.uk/AtWt/AtWt99.html",
+      "publication": "Pure Appl. Chem. 73, 667-683 (2001)",
+      "elements": {},
+      "oxides": {}
+    },
+    {
+      "set_id": "iupac_2001",
+      "name": "IUPAC 2001 Standard Atomic Weights",
+      "year": 2001,
+      "source": "IUPAC CIAAW",
+      "authority": "primary",
+      "standard": "C-12 = 12",
+      "status": "available_from_iupac",
+      "url": "https://iupac.qmul.ac.uk/AtWt/AtWt01.html",
+      "publication": "Pure Appl. Chem. 75, 1107-1122 (2003)",
+      "notes": "Early digital era - likely used by early DigitalFire versions",
+      "elements": {},
+      "oxides": {}
+    },
+    {
+      "set_id": "crc_2003",
+      "name": "CRC Handbook 84th Edition (2003-2004)",
+      "year": 2003,
+      "source": "CRC Handbook of Chemistry and Physics",
+      "authority": "reference",
+      "standard": "C-12 = 12",
+      "status": "populated",
+      "url": "https://pubs.acs.org/doi/10.1021/ja0336372",
+      "notes": "American chemical reference standard, widely used in US universities and ceramics programs. Different rounding conventions than IUPAC.",
+      "significance": "Common baseline for American ceramics education",
+      "elements": {},
+      "oxides": {
+        "Al2O3": 101.961,
+        "B2O3": 69.62,
+        "BaO": 153.326,
+        "BeO": 25.011,
+        "CaO": 56.077,
+        "CdO": 128.41,
+        "CoO": 74.932,
+        "Cr2O3": 151.99,
+        "Cu2O": 143.091,
+        "CuO": 79.545,
+        "Fe2O3": 159.688,
+        "FeO": 71.844,
+        "K2O": 94.196,
+        "Li2O": 29.881,
+        "MgO": 40.304,
+        "MnO": 70.937,
+        "MnO2": 86.937,
+        "Na2O": 61.979,
+        "NiO": 74.692,
+        "P2O5": 141.945,
+        "PbO": 223.2,
+        "SiO2": 60.085,
+        "SnO2": 150.709,
+        "SrO": 103.62,
+        "TiO2": 79.866,
+        "V2O5": 181.88,
+        "ZnO": 81.39,
+        "ZrO2": 123.223
+      }
+    },
+    {
+      "set_id": "hamer_hamer_2004",
+      "name": "The Potter's Dictionary (Hamer & Hamer, 2004)",
+      "year": 2004,
+      "source": "Frank and Janet Hamer",
+      "authority": "ceramics_reference",
+      "status": "to_be_extracted",
+      "notes": "Authoritative British ceramics reference. Likely uses IUPAC late 1990s / early 2000s values",
+      "significance": "International ceramics authority - British perspective",
+      "elements": {},
+      "oxides": {},
+      "reconstruction_priority": "HIGH"
+    },
+    {
+      "set_id": "iupac_2005",
+      "name": "IUPAC 2005 Standard Atomic Weights",
+      "year": 2005,
+      "source": "IUPAC CIAAW",
+      "authority": "primary",
+      "standard": "C-12 = 12",
+      "status": "available_from_iupac",
+      "url": "https://iupac.qmul.ac.uk/AtWt/AtWt05.html",
+      "publication": "Pure Appl. Chem. 78, 2051-2066 (2006)",
+      "elements": {},
+      "oxides": {}
+    },
+    {
+      "set_id": "iupac_2007",
+      "name": "IUPAC 2007 Standard Atomic Weights",
+      "year": 2007,
+      "source": "IUPAC CIAAW",
+      "authority": "primary",
+      "standard": "C-12 = 12",
+      "status": "available_from_iupac",
+      "url": "https://iupac.qmul.ac.uk/AtWt/AtWt07.html",
+      "publication": "Pure Appl. Chem. 81, 2131-2156 (2009)",
+      "notes": "Last revision of Lutetium until 2024",
+      "elements": {},
+      "oxides": {}
+    },
+    {
+      "set_id": "iupac_2009",
+      "name": "IUPAC 2009 Standard Atomic Weights (Interval Notation Introduced)",
+      "year": 2009,
+      "source": "IUPAC CIAAW",
+      "authority": "primary",
+      "standard": "C-12 = 12 (with intervals)",
+      "status": "available_from_iupac",
+      "url": "https://iupac.qmul.ac.uk/AtWt/AtWt09.html",
+      "publication": "Pure Appl. Chem. 83, 359-396 (2011)",
+      "notes": "PARADIGM SHIFT: Introduced interval notation for 10 elements with variable isotopic composition",
+      "significance": "Revolutionary change - recognized natural variation in atomic weights",
+      "interval_elements_introduced": ["H", "Li", "B", "C", "N", "O", "Si", "S", "Cl", "Tl"],
+      "example": "Lithium changed from 6.941\u00b10.002 to [6.938, 6.997]",
+      "elements": {},
+      "oxides": {},
+      "reconstruction_priority": "CRITICAL"
+    },
+    {
+      "set_id": "iupac_2011",
+      "name": "IUPAC 2011 Standard Atomic Weights",
+      "year": 2011,
+      "source": "IUPAC CIAAW",
+      "authority": "primary",
+      "standard": "C-12 = 12 (with intervals)",
+      "status": "available_from_iupac",
+      "url": "https://iupac.qmul.ac.uk/AtWt/AtWt11.html",
+      "publication": "Pure Appl. Chem. 85, 1047-1078 (2013)",
+      "notes": "Expanded interval notation - added Br (Bromine) and Mg (Magnesium) to interval list",
+      "elements": {},
+      "oxides": {}
+    },
+    {
+      "set_id": "iupac_2013",
+      "name": "IUPAC 2013 Standard Atomic Weights",
+      "year": 2013,
+      "source": "IUPAC CIAAW",
+      "authority": "primary",
+      "standard": "C-12 = 12 (with intervals)",
+      "status": "available_from_iupac",
+      "url": "https://iupac.qmul.ac.uk/AtWt/AtWt13.html",
+      "publication": "Pure Appl. Chem. 88, 265-291 (2016)",
+      "notes": "Major revision: Br, Mg, Ge, In, Hg changes. Yb: 173.054(5) \u2192 173.045(10)",
+      "elements": {},
+      "oxides": {},
+      "reconstruction_priority": "HIGH"
+    },
+    {
+      "set_id": "iupac_2015",
+      "name": "IUPAC 2015 Standard Atomic Weights",
+      "year": 2015,
+      "source": "IUPAC CIAAW",
+      "authority": "primary",
+      "standard": "C-12 = 12 (with intervals)",
+      "status": "available_from_iupac",
+      "url": "https://iupac.qmul.ac.uk/AtWt/AtWt15.html",
+      "notes": "Ytterbium revision",
+      "elements": {},
+      "oxides": {}
+    },
+    {
+      "set_id": "iupac_2019",
+      "name": "IUPAC 2019 Standard Atomic Weights",
+      "year": 2019,
+      "source": "IUPAC CIAAW",
+      "authority": "primary",
+      "standard": "C-12 = 12 (with intervals)",
+      "status": "available_from_iupac",
+      "url": "https://iupac.qmul.ac.uk/AtWt/AtWt19.html",
+      "notes": "Multiple element revisions",
+      "elements": {},
+      "oxides": {}
+    },
+    {
+      "set_id": "iupac_2021",
+      "name": "IUPAC 2021 Standard Atomic Weights",
+      "year": 2021,
+      "source": "IUPAC Commission on Isotopic Abundances and Atomic Weights",
+      "authority": "primary",
+      "standard": "C-12 = 12 (with intervals)",
+      "status": "populated",
+      "url": "https://iupac.qmul.ac.uk/AtWt/AtWt21.html",
+      "publication": "Pure Appl. Chem. 94, 573-600 (2022)",
+      "notes": "Major changes: Ar and Pb changed to intervals. Hf, Ir, Yb revised. Predecessor to 2023.",
+      "major_changes": {
+        "Ar": "Changed to interval [39.792, 39.963]",
+        "Pb": "Changed to interval [206.14, 207.94]",
+        "Hf": "178.49\u00b10.02 \u2192 178.486\u00b10.006",
+        "Ir": "Uncertainty reduced",
+        "Yb": "173.054\u00b10.005 \u2192 173.045\u00b10.010"
+      },
+      "elements": {
+        "H": 1.008, "Li": 6.94, "B": 10.81, "C": 12.011, "N": 14.007, "O": 15.999,
+        "F": 18.998403162, "Na": 22.98976928, "Mg": 24.305, "Al": 26.9815384,
+        "Si": 28.085, "P": 30.973761998, "S": 32.06, "K": 39.0983, "Ca": 40.078,
+        "Ti": 47.867, "V": 50.9415, "Cr": 51.9961, "Mn": 54.938043, "Fe": 55.845,
+        "Co": 58.933194, "Ni": 58.6934, "Cu": 63.546, "Zn": 65.38, "As": 74.921595,
+        "Sr": 87.62, "Zr": 91.224, "Mo": 95.95, "Ag": 107.8682, "Cd": 112.414,
+        "Sn": 118.71, "Sb": 121.76, "Ba": 137.327, "La": 138.90547, "Ce": 140.116,
+        "Pr": 140.90766, "Nd": 144.242, "Sm": 150.36, "Gd": 157.25, "Dy": 162.5,
+        "Er": 167.259, "Yb": 173.045, "Lu": 174.9668, "Hf": 178.486, "Ta": 180.94788,
+        "W": 183.84, "Pb": 207.2, "Bi": 208.9804, "Th": 232.0377, "U": 238.02891
+      },
+      "oxides": {
+        "SiO2": 60.083, "Al2O3": 101.9601, "Fe2O3": 159.687, "FeO": 71.844,
+        "CaO": 56.077, "MgO": 40.304, "K2O": 94.1956, "Na2O": 61.9785,
+        "TiO2": 79.865, "P2O5": 141.9425, "MnO": 70.937, "MnO2": 86.936,
+        "ZnO": 81.379, "Li2O": 29.879, "BaO": 153.326, "SrO": 103.619,
+        "CoO": 74.9322, "Co2O3": 165.8634, "Co3O4": 240.7956, "NiO": 74.6924,
+        "Cr2O3": 151.9892, "CuO": 79.545, "Cu2O": 143.091, "ZrO2": 123.222,
+        "V2O5": 181.878, "B2O3": 69.617, "PbO": 223.199, "SnO2": 150.708,
+        "Sb2O3": 291.517, "CdO": 128.413, "As2O3": 197.8402, "HfO2": 210.484,
+        "La2O3": 325.8079, "CeO2": 172.114, "Pr2O3": 329.8123, "Nd2O3": 336.481,
+        "Ta2O5": 441.8908, "WO3": 231.837, "MoO3": 143.947, "Bi2O3": 465.9578,
+        "ThO2": 264.0357, "UO2": 270.0269, "U3O8": 842.0787
+      }
+    },
+    {
+      "set_id": "iupac_2023",
+      "name": "IUPAC 2023 Standard Atomic Weights (Current)",
+      "year": 2023,
+      "source": "IUPAC Commission on Isotopic Abundances and Atomic Weights",
+      "authority": "primary",
+      "standard": "C-12 = 12 (with intervals)",
+      "status": "populated",
+      "url": "https://iupac.qmul.ac.uk/AtWt/",
+      "notes": "Current international standard. Based on 2021 with 2024 revisions for Gd, Lu, Zr",
+      "latest_revisions_2024": {
+        "Gd": { "old": 157.25, "new": 157.249, "last_revised_before": 1969, "note": "Not updated for 55 years!" },
+        "Lu": { "old": 174.9668, "new": 174.96669, "last_revised_before": 2007, "note": "Improved precision" },
+        "Zr": { "old": 91.224, "new": 91.222, "last_revised_before": 1983, "note": "Not updated for 41 years! Affects ZrO\u2082 in ceramics" }
+      },
+      "elements": {
+        "H": 1.008, "Li": 6.94, "B": 10.81, "C": 12.011, "N": 14.007, "O": 15.999,
+        "F": 18.998403162, "Na": 22.98976928, "Mg": 24.305, "Al": 26.9815384,
+        "Si": 28.085, "P": 30.973761998, "S": 32.06, "K": 39.0983, "Ca": 40.078,
+        "Ti": 47.867, "V": 50.9415, "Cr": 51.9961, "Mn": 54.938043, "Fe": 55.845,
+        "Co": 58.933194, "Ni": 58.6934, "Cu": 63.546, "Zn": 65.38, "As": 74.921595,
+        "Sr": 87.62, "Zr": 91.222, "Mo": 95.95, "Ag": 107.8682, "Cd": 112.414,
+        "Sn": 118.71, "Sb": 121.76, "Ba": 137.327, "La": 138.90547, "Ce": 140.116,
+        "Pr": 140.90766, "Nd": 144.242, "Sm": 150.36, "Gd": 157.249, "Dy": 162.5,
+        "Er": 167.259, "Yb": 173.045, "Lu": 174.96669, "Hf": 178.486, "Ta": 180.94788,
+        "W": 183.84, "Pb": 207.2, "Bi": 208.9804, "Th": 232.0377, "U": 238.02891
+      },
+      "oxides": {
+        "SiO2": 60.083, "Al2O3": 101.9601, "Fe2O3": 159.687, "FeO": 71.844,
+        "CaO": 56.077, "MgO": 40.304, "K2O": 94.1956, "Na2O": 61.9785,
+        "TiO2": 79.865, "P2O5": 141.9425, "MnO": 70.937, "MnO2": 86.936,
+        "ZnO": 81.379, "Li2O": 29.879, "BaO": 153.326, "SrO": 103.619,
+        "CoO": 74.9322, "Co2O3": 165.8634, "Co3O4": 240.7956, "NiO": 74.6924,
+        "Cr2O3": 151.9892, "CuO": 79.545, "Cu2O": 143.091, "ZrO2": 123.22,
+        "V2O5": 181.878, "B2O3": 69.617, "PbO": 223.199, "SnO2": 150.708,
+        "Sb2O3": 291.517, "CdO": 128.413, "As2O3": 197.8402, "HfO2": 210.484,
+        "La2O3": 325.8079, "CeO2": 172.114, "Pr2O3": 329.8123, "Nd2O3": 336.481,
+        "Ta2O5": 441.8908, "WO3": 231.837, "MoO3": 143.947, "Bi2O3": 465.9578,
+        "ThO2": 264.0357, "UO2": 270.0269, "U3O8": 842.0787
+      }
+    },
+    {
+      "set_id": "glazy_current",
+      "name": "Glazy.org v1 (2024)",
+      "year": 2024,
+      "source": "Glazy.org / Derek Au",
+      "authority": "industry",
+      "standard": "C-12 = 12",
+      "status": "populated",
+      "url": "https://glazy.org",
+      "notes": "Mix of PubChem and CRC Handbook 2003-2004 values with high precision (5+ decimals). Used in popular Glazy ceramics database.",
+      "comparison_sources": ["PubChem", "CRC Handbook 84th Ed"],
+      "precision": "5+ decimal places",
+      "elements": {},
+      "oxides": {
+        "Al2O3": 101.96137, "B2O3": 69.6217, "BaO": 153.3271, "BeO": 25.01158,
+        "CaO": 56.0778, "CdO": 128.4104, "CoO": 74.93263, "Cr2O3": 151.99061,
+        "Cu2O": 143.0914, "CuO": 79.5454, "Fe2O3": 159.6887, "FeO": 71.8446,
+        "K2O": 94.19605, "Li2O": 29.8818, "MgO": 40.30449, "MnO": 70.93748,
+        "MnO2": 86.93691, "Na2O": 61.97897, "NiO": 74.69287, "P2O5": 141.94467,
+        "PbO": 223.2094, "SiO2": 60.08439, "SnO2": 150.7096, "SrO": 103.6204,
+        "TiO2": 79.866, "V2O5": 181.88, "ZnO": 81.3814, "ZrO": 107.2234,
+        "ZrO2": 123.2231
+      }
+    },
+    {
+      "set_id": "digitalfire_current",
+      "name": "DigitalFire / Insight-live (Tony Hansen)",
+      "year": 2024,
+      "source": "DigitalFire / Tony Hansen",
+      "authority": "industry",
+      "status": "populated",
+      "url": "https://digitalfire.com",
+      "notes": "Extracted from DigitalFire 7,730-page database (Feb 2026). Industry-standard values used by Insight-live glaze software. Based on IUPAC 1990s-2000s era values with practical rounding. 11 oxides extracted directly from pure-material Oxide Weight fields; Fe2O3 from comparison table; remaining reconstructed via DigitalFire rounding convention. Contains confirmed FeO error (81.8 vs correct 71.844).",
+      "extraction_source": "Ryan's DigitalFire database (7,730 pages) - single-oxide material pages",
+      "extraction_date": "2026-02-09",
+      "significance": "Major computational ceramics authority - Tony Hansen is leading figure in field",
+      "rounding_pattern": "Practical rounding to 1-2 decimals, tendency toward simpler numbers",
+      "known_discrepancies": {
+        "FeO": {
+          "digitalfire_value": 81.8,
+          "correct_value": 71.844,
+          "difference": 9.956,
+          "percent_error": 13.86,
+          "note": "Confirmed data entry error - all other sources agree on ~71.844"
+        }
+      },
+      "data_provenance": {
+        "direct_from_db": ["SiO2", "Al2O3", "MgO", "ZnO", "TiO2", "SnO2", "MnO2", "CuO", "Cr2O3"],
+        "from_comparison_table": ["Fe2O3", "ZrO2"],
+        "known_error_preserved": ["FeO"],
+        "reconstructed_via_rounding": ["Li2O", "Na2O", "K2O", "CaO", "SrO", "BaO", "PbO", "B2O3", "MnO", "NiO", "Cu2O", "CoO", "P2O5", "F"]
+      },
+      "elements": {},
+      "oxides": {
+        "SiO2": 60.10,
+        "Al2O3": 102.00,
+        "Fe2O3": 160.00,
+        "FeO": 81.80,
+        "CaO": 56.10,
+        "MgO": 40.30,
+        "K2O": 94.20,
+        "Na2O": 62.00,
+        "TiO2": 79.90,
+        "P2O5": 141.94,
+        "MnO": 70.94,
+        "MnO2": 86.90,
+        "ZnO": 81.40,
+        "Li2O": 29.90,
+        "BaO": 153.33,
+        "SrO": 103.62,
+        "CoO": 74.93,
+        "NiO": 74.70,
+        "Cr2O3": 152.00,
+        "CuO": 79.54,
+        "Cu2O": 143.10,
+        "ZrO2": 123.22,
+        "B2O3": 69.62,
+        "PbO": 223.20,
+        "SnO2": 150.71,
+        "V2O5": 181.88,
+        "F": 19.00
+      }
+    },
+    {
+      "set_id": "pubchem_current",
+      "name": "PubChem (NIST)",
+      "year": 2024,
+      "source": "PubChem / National Institute of Standards and Technology",
+      "authority": "reference",
+      "standard": "C-12 = 12",
+      "status": "documented",
+      "url": "https://pubchem.ncbi.nlm.nih.gov",
+      "notes": "US NIST free online database. Generally matches IUPAC but with different precision. Documented in Glazy comparison table.",
+      "elements": {},
+      "oxides": {}
+    }
+  ],
+  "comparison_analysis": {
+    "major_discrepancies": {
+      "description": "Key differences between major ceramics sources",
+      "source": "Glazy.org comparison table",
+      "table": [
+        { "oxide": "SiO2", "pubchem": 60.083, "crc": 60.085, "digitalfire": 60.1, "glazy": 60.084, "iupac_2023": 60.083, "max_difference": 0.017 },
+        { "oxide": "Al2O3", "pubchem": 101.96, "crc": 101.961, "digitalfire": 102.0, "glazy": 101.961, "iupac_2023": 101.96, "max_difference": 0.04 },
+        { "oxide": "Fe2O3", "pubchem": 159.687, "crc": 159.688, "digitalfire": 160.0, "glazy": 159.689, "iupac_2023": 159.687, "max_difference": 0.313 },
+        { "oxide": "FeO", "pubchem": 71.844, "crc": 71.844, "digitalfire": 81.8, "glazy": 71.844, "iupac_2023": 71.844, "max_difference": 9.956, "note": "DigitalFire value appears to be ERROR - all other sources agree on ~71.844" },
+        { "oxide": "ZrO2", "pubchem": 123.222, "crc": 123.223, "digitalfire": 123.22, "glazy": 123.223, "iupac_2023": 123.22, "max_difference": 0.003, "note": "Changed in 2024: 123.222 (2021) \u2192 123.220 (2023)" }
+      ]
+    },
+    "rounding_patterns": {
+      "digitalfire": {
+        "style": "Round UP slightly for convenience",
+        "precision": "1-2 decimals",
+        "examples": { "SiO2": "60.100 instead of 60.083", "Al2O3": "102.000 instead of 101.960" },
+        "rationale": "Practical ceramics use - simpler numbers"
+      },
+      "glazy": {
+        "style": "High precision scientific",
+        "precision": "5+ decimals",
+        "source": "Modern computational methods",
+        "rationale": "Scientific accuracy"
+      },
+      "crc": {
+        "style": "American chemical standard",
+        "precision": "3 decimals",
+        "rationale": "US university standard"
+      }
+    }
+  },
+  "practical_applications": {
+    "stull_atlas": {
+      "essential_feature": "Multi-Era Calculation Mode",
+      "recommended_options": [
+        "Stull 1912 (Historical)",
+        "IUPAC 1961 (C-12 Transition)",
+        "IUPAC 1973 (Parmelee Era)",
+        "IUPAC 2001 (Early Digital Era)",
+        "IUPAC 2023 (Current)",
+        "DigitalFire (Industry Standard)",
+        "Glazy (High Precision)"
+      ],
+      "why_it_matters": "Historical glazes calculated with old atomic weights plot DIFFERENTLY on modern Stull chart. Points shift left (SiO\u2082) and down (Al\u2082O\u2083). A 1912 'glossy' glaze might appear 'matte' with 2023 weights.",
+      "recipe_time_machine": "Show how same recipe plots across different eras"
+    },
+    "digitalfire_integration": {
+      "challenge": "Database likely contains recipes spanning decades, each calculated with different atomic weights",
+      "solution": "Add metadata field to each recipe",
+      "metadata_example": {
+        "recipe_id": "xyz123",
+        "calculated_with": "iupac_2001",
+        "entry_date": "2005-03-15",
+        "source_book": "Parmelee 1973"
+      },
+      "conversion_tool": "Build converter to translate UMF between any two atomic weight sets"
+    },
+    "academic_publications": {
+      "citation_requirement": "MUST specify which atomic weight set used",
+      "example": "All UMF calculations performed using IUPAC 2023 standard atomic weights (with 2024 revisions for Gd, Lu, Zr).",
+      "importance": "Essential for reproducibility and scientific rigor"
+    }
+  },
+  "elements_with_variable_composition": {
+    "description": "Elements with intervals rather than single values",
+    "introduced": 2009,
+    "total_count": 14,
+    "reason": "Natural isotopic composition varies in terrestrial materials",
+    "elements": [
+      { "symbol": "H", "name": "Hydrogen", "range": [1.00784, 1.00811] },
+      { "symbol": "Li", "name": "Lithium", "range": [6.938, 6.997] },
+      { "symbol": "B", "name": "Boron", "range": [10.806, 10.821] },
+      { "symbol": "C", "name": "Carbon", "range": [12.0096, 12.0116] },
+      { "symbol": "N", "name": "Nitrogen", "range": [14.00643, 14.00728] },
+      { "symbol": "O", "name": "Oxygen", "range": [15.99903, 15.99977] },
+      { "symbol": "Mg", "name": "Magnesium", "range": [24.304, 24.307], "added": 2011 },
+      { "symbol": "Si", "name": "Silicon", "range": [28.084, 28.086] },
+      { "symbol": "S", "name": "Sulfur", "range": [32.059, 32.076] },
+      { "symbol": "Cl", "name": "Chlorine", "range": [35.446, 35.457] },
+      { "symbol": "Ar", "name": "Argon", "range": [39.792, 39.963], "added": 2021 },
+      { "symbol": "Br", "name": "Bromine", "range": [79.901, 79.907], "added": 2011 },
+      { "symbol": "Tl", "name": "Thallium", "range": [204.382, 204.385] },
+      { "symbol": "Pb", "name": "Lead", "range": [206.14, 207.94], "added": 2021 }
+    ],
+    "conventional_values": "IUPAC provides midpoint values for practical calculations",
+    "ceramics_impact": "Affects Si, O, Mg calculations - use conventional values for UMF"
+  },
+  "references": {
+    "primary_sources": [
+      { "title": "IUPAC Commission on Isotopic Abundances and Atomic Weights", "url": "https://ciaaw.org", "type": "Primary authority" },
+      { "title": "IUPAC Historical Atomic Weights Database", "url": "https://ciaaw.org/historical-atomic-weights.htm", "type": "Historical data" },
+      { "title": "IUPAC Atomic Weights 2023", "url": "https://iupac.qmul.ac.uk/AtWt/", "type": "Current standard" }
+    ],
+    "ceramics_sources": [
+      { "title": "DigitalFire", "url": "https://digitalfire.com", "authority": "Tony Hansen", "type": "Industry standard" },
+      { "title": "Glazy.org", "url": "https://glazy.org", "authority": "Derek Au / Matt Katz", "type": "Community database" },
+      { "title": "Ceramic Materials Workshop", "url": "https://ceramicmaterialsworkshop.com", "authority": "Matt Katz", "type": "Education" }
+    ],
+    "historical_papers": [
+      { "author": "R.T. Stull", "title": "Influences of Variable Silica and Alumina on Porcelain Glazes of Constant RO", "journal": "Transactions of the American Ceramic Society", "year": 1912, "pages": "62-70" },
+      { "authors": "T.B. Coplen and H.S. Peiser", "title": "History of the recommended atomic-weight values from 1882 to 1997", "journal": "Pure Appl. Chem.", "volume": 70, "pages": "237-257", "year": 1998, "url": "https://ciaaw.org/pubs/atomic-weight-history.pdf" }
+    ],
+    "textbooks": [
+      { "author": "Cullen W. Parmelee", "title": "Ceramic Glazes", "edition": "3rd", "year": 1973, "significance": "Classic American textbook - historical baseline" },
+      { "authors": "Frank and Janet Hamer", "title": "The Potter's Dictionary of Materials and Techniques", "edition": "5th", "year": 2004, "significance": "Authoritative international reference" },
+      { "author": "Daniel Rhodes", "title": "Clay and Glazes for the Potter", "editions": "Multiple (1957-2000)", "significance": "Spans multiple atomic weight eras" }
+    ]
+  }
+}
