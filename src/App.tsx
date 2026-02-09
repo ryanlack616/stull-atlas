@@ -9,8 +9,6 @@
 import React, { Suspense, lazy, Component, ReactNode } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { Layout } from './components/Layout'
-import { ExplorerPage } from './pages/ExplorerPage'
-import { NotFoundPage } from './pages/NotFoundPage'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { TierGate } from './components/Auth'
 
@@ -55,6 +53,8 @@ const SuggestionPage = lazyRetry(() => import('./pages/SuggestionPage').then(m =
 const PricingPage = lazyRetry(() => import('./pages/PricingPage').then(m => ({ default: m.PricingPage })))
 const NCECAPage = lazyRetry(() => import('./pages/NCECAPage').then(m => ({ default: m.NCECAPage })))
 const VariabilityPage = lazyRetry(() => import('./pages/VariabilityPage').then(m => ({ default: m.VariabilityPage })))
+const ExplorerPage = lazyRetry(() => import('./pages/ExplorerPage').then(m => ({ default: m.ExplorerPage })))
+const NotFoundPage = lazyRetry(() => import('./pages/NotFoundPage').then(m => ({ default: m.NotFoundPage })))
 
 // Clear the retry flag on successful load so future failures can retry again
 if (sessionStorage.getItem('stull-chunk-retry')) {
@@ -132,7 +132,7 @@ function App() {
     <ErrorBoundary>
     <Routes>
       <Route element={<Layout />}>
-        <Route index element={<ExplorerPage />} />
+        <Route index element={<LazyPage><ExplorerPage /></LazyPage>} />
         <Route path="calc" element={<LazyPage><CalculatorsPage /></LazyPage>} />
         <Route path="calc/umf" element={<LazyPage><UMFCalculatorPage /></LazyPage>} />
         <Route path="calc/line-blend" element={<LazyPage><TierGate feature="line_blend" title="Line Blend Calculator" description="Two recipes, n steps between them â€” the classic line blend test."><LineBlendPage /></TierGate></LazyPage>} />
@@ -152,7 +152,7 @@ function App() {
         <Route path="pricing" element={<LazyPage><PricingPage /></LazyPage>} />
         <Route path="nceca" element={<LazyPage><NCECAPage /></LazyPage>} />
         <Route path="help/variability" element={<LazyPage><VariabilityPage /></LazyPage>} />
-        <Route path="*" element={<NotFoundPage />} />
+        <Route path="*" element={<LazyPage><NotFoundPage /></LazyPage>} />
       </Route>
     </Routes>
     </ErrorBoundary>

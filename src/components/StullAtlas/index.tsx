@@ -8,7 +8,7 @@ import React, { useState, useEffect, useCallback, useMemo, lazy, Suspense } from
 import { StullPlot } from './StullPlot'
 import { DatasetSwitcher } from './DatasetSwitcher'
 import { MolarSetPicker } from './MolarSetPicker'
-import { ComparePanel } from './ComparePanel'
+
 import { useSelectionStore, useGlazeStore, useDatasetStore, useFilterStore } from '@/stores'
 import { useSimilarity } from '@/hooks'
 import { OxideSymbol, GlazeRecipe, MaterialDatasetId } from '@/types'
@@ -19,6 +19,7 @@ import { explorerStyles } from './explorer-styles'
 
 // Lazy-load heavy components that aren't always visible
 const StullPlot3D = lazy(() => import('./StullPlot3D').then(m => ({ default: m.StullPlot3D })))
+const ComparePanel = lazy(() => import('./ComparePanel').then(m => ({ default: m.ComparePanel })))
 const AnalysisPanel = lazy(() => import('@/components/AnalysisPanel').then(m => ({ default: m.AnalysisPanel })))
 const DigitalfirePanel = lazy(() => import('@/components/DigitalfirePanel').then(m => ({ default: m.DigitalfirePanel })))
 
@@ -711,13 +712,15 @@ export function StullAtlas() {
             )}
             
             {sidebarTab === 'compare' && (
-              <ComparePanel
-                glazes={compareGlazes}
-                currentDataset={currentDataset}
-                onRemove={removeFromCompare}
-                onClear={clearCompare}
-                onSelect={setSelectedGlaze}
-              />
+              <Suspense fallback={<div style={{ padding: 16, fontSize: 13, color: 'var(--text-secondary)' }}>Loading compare...</div>}>
+                <ComparePanel
+                  glazes={compareGlazes}
+                  currentDataset={currentDataset}
+                  onRemove={removeFromCompare}
+                  onClear={clearCompare}
+                  onSelect={setSelectedGlaze}
+                />
+              </Suspense>
             )}
             
             {sidebarTab === 'analysis' && (
