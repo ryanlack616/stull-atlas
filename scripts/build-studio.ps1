@@ -38,6 +38,7 @@ Write-Host "`n[1/4] Building with all features unlocked..." -ForegroundColor Yel
 Push-Location $projectRoot
 try {
     $env:VITE_DEMO_MODE = "true"
+    $env:VITE_OFFLINE_DATA = "true"
     $env:FORCE_COLOR = "0"
 
     # Type check
@@ -65,6 +66,7 @@ try {
     Write-Host "  Service worker assets injected" -ForegroundColor DarkGray
 
     $env:VITE_DEMO_MODE = $null
+    $env:VITE_OFFLINE_DATA = $null
     $env:FORCE_COLOR = $null
 } finally {
     Pop-Location

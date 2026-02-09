@@ -22,8 +22,14 @@ import re
 from collections import Counter
 
 DB_PATH = r'C:\home\claude\digitalfire\digitalfire.db'
-# Goes to public/data/digitalfire/ so it's served as a static asset
-OUT_PATH = os.path.join(os.path.dirname(__file__), '..', 'public', 'data', 'digitalfire', 'pages.json')
+_SCRIPT_DIR = os.path.dirname(__file__)
+_ROOT = os.path.join(_SCRIPT_DIR, '..')
+
+# Two output paths — same content, different purposes:
+#   public/  → served as a static asset for web edition (fetch at runtime)
+#   src/data/→ bundled into JS for Studio edition (dynamic import)
+OUT_PUBLIC = os.path.join(_ROOT, 'public', 'data', 'digitalfire', 'pages.json')
+OUT_SRC    = os.path.join(_ROOT, 'src', 'data', 'digitalfire', 'pages.json')
 
 URL_PREFIX = 'https://digitalfire.com/'
 PICTURE_BODY_LIMIT = 300   # chars — enough for search hits
@@ -122,23 +128,24 @@ def main():
     print(f'Pages extracted: {len(pages)}')
 
     # Write JSON with short keys, no extra whitespace
-    os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
-    with open(OUT_PATH, 'w', encoding='utf-8') as f:
-        json.dump(pages, f, ensure_ascii=False, separators=(',', ':'))
+    json_str = json.dumps(pages, ensure_ascii=False, separators=(',', ':'))
 
-    size_mb = os.path.getsize(OUT_PATH) / (1024 * 1024)
-    print(f'\nOutput: {OUT_PATH}')
+    for out_path in (OUT_PUBLIC, OUT_SRC):
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+        with open(out_path, 'w', encoding='utf-8') as f:
+            f.write(json_str)
+
+    size_mb = len(json_str.encode('utf-8')) / (1024 * 1024)
+    print(f'\nOutput written to:')
+    print(f'  {OUT_PUBLIC}')
+    print(f'  {OUT_SRC}')
     print(f'Size: {size_mb:.1f} MB')
 
     # Check gzip compression (what the browser would actually download)
     import gzip
-    gz_path = OUT_PATH + '.gz'
-    with open(OUT_PATH, 'rb') as f_in:
-        with gzip.open(gz_path, 'wb', compresslevel=9) as f_out:
-            f_out.write(f_in.read())
-    gz_size_mb = os.path.getsize(gz_path) / (1024 * 1024)
+    gz_data = gzip.compress(json_str.encode('utf-8'), compresslevel=9)
+    gz_size_mb = len(gz_data) / (1024 * 1024)
     print(f'Gzipped: {gz_size_mb:.1f} MB (what the browser actually downloads)')
-    os.remove(gz_path)
 
 if __name__ == '__main__':
     main()
