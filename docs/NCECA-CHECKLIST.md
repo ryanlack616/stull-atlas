@@ -1,11 +1,16 @@
 # NCECA 2026 — Countdown Checklist
 
-**Conference**: March 18–21, 2026 | Detroit, MI (Huntington Place)
-**Today**: February 9, 2026 | **37 days out**
+**Conference**: March 25–28, 2026 | Detroit, MI (Huntington Place)
+**Exhibitor Check-In/Setup**: March 24 (Tuesday)
+**Resource Hall Open**: March 25–27 (Wed–Fri) | Closed Saturday
+**Today**: February 9, 2026 | **44 days out**
+
+> **Booth includes**: 3 four-day rep passes, 6' draped table, 2 chairs,
+> wastebasket, ID signage, 8' back drape, 3' side drapes.
 
 ---
 
-## Week 1: Feb 9–15 (5 weeks out)
+## Week 1: Feb 9–15 (6.5 weeks out)
 
 ### Print Orders (long lead time — do first)
 - [ ] **Business cards** — Finalize artwork from `marketing/print/nceca-card.md`
@@ -37,13 +42,17 @@
 
 ---
 
-## Week 2: Feb 16–22 (4 weeks out)
+## Week 2: Feb 16–22 (5.5 weeks out)
 
 ### Data & Backend
-- [ ] Implement free-month flag: all verified signups get Pro access Mar 15 – Apr 30
-  - Add `FREE_UNTIL` date check in auth / tier logic
+- [x] Implement free-month flag: all verified signups get Pro access Mar 15 – Apr 30
+  - `FREE_UNTIL` date check in authStore.ts — committed `1d4dff5`
   - No trial codes needed — just sign up with verified email → full access
 - [ ] Test signup → email verification → Pro features unlock flow
+- [ ] **Set up custom SMTP in Supabase** (Authentication → Emails → SMTP Settings)
+  - Built-in email service has 3 emails/hr rate limit — will fail at conference
+  - Resend free tier: 100 emails/day, easy setup
+  - Or use Postmark (free dev tier)
 - [ ] Set up email templates in transactional provider (Resend/Postmark)
   - Welcome ("free through April"), nceca-followup, free-period-ending
 
@@ -54,7 +63,7 @@
 
 ---
 
-## Week 3: Feb 23–Mar 1 (3 weeks out)
+## Week 3: Feb 23–Mar 1 (4.5 weeks out)
 
 ### Print Arrives (check tracking)
 - [ ] Business cards received — spot check QR code scans to stullatlas.app
@@ -74,14 +83,14 @@
 
 ---
 
-## Week 4: Mar 2–8 (2 weeks out)
+## Week 4: Mar 2–8 (3.5 weeks out)
 
 ### Booth Logistics
 - [ ] Confirm booth assignment / floor plan from NCECA
 - [ ] Driving from Howell (~60 min) — plan to leave by 7 AM each day
 - [ ] Optional: book 1 hotel night near Huntington Place (setup eve or late teardown)
 - [ ] Research parking at/near Huntington Place (prepay if possible)
-- [ ] Booth furnishing — do you need a table, chair, monitor, power strip?
+- [ ] Booth furnishing — table + 2 chairs included; do you need a monitor, power strip?
 - [ ] Laptop for live demo (charged, offline data works, good screen)
 - [ ] Extension cord + power strip (booths sometimes only get 1 outlet)
 
@@ -95,7 +104,17 @@
 
 ---
 
-## Week 5: Mar 9–15 (1 week out)
+## Week 5: Mar 9–15 (2.5 weeks out)
+
+### Dry Run
+- [ ] Full signup test: new email → verify → sign in → confirm Pro features
+- [ ] Test on phone (mobile Safari / Chrome)
+- [ ] Verify SMTP delivery speed (should be < 30 sec)
+- [ ] Deploy final web build to stullatlas.app
+
+---
+
+## Week 6: Mar 16–22 (1 week out)
 
 ### Final Checks
 - [ ] Pack checklist:
@@ -113,27 +132,32 @@
 
 ---
 
-## Conference: Mar 18–21
+## Conference: Mar 24–28
 
-### Day 0 — Setup (Mar 17 or early Mar 18)
+### Day 0 — Setup (Tue Mar 24, 12:00–6:00 PM)
+- [ ] Exhibitor check-in / badge printing (10 AM–6 PM)
 - [ ] Set up booth: banner, table, laptop, cards, USB tray
 - [ ] Test WiFi at venue (have offline fallback ready)
 - [ ] Open Explorer on laptop, Cone 6 view ready
 
-### Each Day
+### Resource Hall Days (Wed–Fri, Mar 25–27)
+**Hours**: Wed & Thu 9 AM – 5 PM, Fri 9 AM – 4:30 PM
 - [ ] Restock cards, flyers, and USBs at booth
 - [ ] Track how many cards/flyers/USBs handed out (rough count)
 - [ ] Note any feature requests or common questions
 - [ ] Post 1 photo/update to social media if you want
 
-### Day 4 — Teardown (Mar 21)
+### Fri Mar 27 — Teardown (4:30–10:30 PM)
 - [ ] Pack everything
 - [ ] Note remaining card/flyer/USB counts
 - [ ] Send follow-up email blast (nceca-followup template) within 48 hours
 
+### Sat Mar 28 — Resource Hall CLOSED
+Conference programming continues but no booth duty.
+
 ---
 
-## Post-Conference: Mar 23–27
+## Post-Conference: Mar 30 – Apr 3
 
 - [ ] Send NCECA follow-up email to new signups from the free period
 - [ ] Review Plausible analytics — traffic spike from conference?
