@@ -19,9 +19,104 @@ export function UpdatesPage() {
         <section className="about-hero">
           <h1>What's New</h1>
           <p className="subtitle">
-            Stull Atlas changelog â€” latest features and improvements.
+            Stull Atlas changelog — latest features and improvements.
           </p>
         </section>
+
+        {/* v3.4.0 */}
+        <section className="about-section" style={{ borderLeft: '3px solid var(--accent, #6366F1)', paddingLeft: 16 }}>
+          <h2>🧪 v3.4.0 — Presets, What-If, Export & Glazy Import</h2>
+          <p style={{ fontSize: 13, color: 'var(--text-dim)', margin: '0 0 12px' }}>February 2026</p>
+          
+          <h3 style={{ fontSize: 15, marginTop: 16, color: 'var(--text-bright)' }}>Preset Recipes</h3>
+          <p>
+            The UMF Calculator now has a <strong>Load a Preset</strong> dropdown with 10 iconic
+            glaze recipes ready to calculate instantly:
+          </p>
+          <ul>
+            <li><strong>High Fire (Cone 10):</strong> Leach 4321, Tenmoku, Carbon Trap Shino,
+              Celadon, Wood Ash Glaze, Crystalline Base</li>
+            <li><strong>Mid Fire (Cone 6):</strong> Cone 6 Clear Base, Matte Base, Floating Blue</li>
+            <li><strong>Low Fire (Cone 04):</strong> Majolica</li>
+          </ul>
+          <p>
+            Each preset includes complete ingredient lists, cone/atmosphere settings, and detailed
+            notes about the glaze's character and behavior. Select one and hit Calculate to see
+            its UMF instantly.
+          </p>
+
+          <h3 style={{ fontSize: 15, marginTop: 16, color: 'var(--text-bright)' }}>What-If Panel</h3>
+          <p>
+            After calculating a recipe's UMF, a new <strong>What If...?</strong> panel appears with
+            sliders for every oxide. Drag any oxide up or down and see:
+          </p>
+          <ul>
+            <li>Real-time surface prediction changes (matte → satin → gloss)</li>
+            <li>Updated SiO₂:Al₂O₃ ratio</li>
+            <li>Stull chart position shift</li>
+            <li>Live cone-limit validation warnings</li>
+          </ul>
+          <p>
+            This is the fastest way to build intuition about how oxide changes affect a glaze —
+            no mixing required.
+          </p>
+
+          <h3 style={{ fontSize: 15, marginTop: 16, color: 'var(--text-bright)' }}>Export Improvements</h3>
+          <ul>
+            <li><strong>Image export</strong> — Save the Stull chart as PNG or SVG from the
+              Explorer controls panel. 2x retina resolution for crisp prints.</li>
+            <li><strong>Print / PDF</strong> — Print any calculator page directly from the browser
+              with clean, print-optimized layouts. Save as PDF from the print dialog.</li>
+            <li><strong>Blend sheets</strong> — Export blend grid results as printable sheets
+              with UMF tables and optional chart overlay.</li>
+          </ul>
+
+          <h3 style={{ fontSize: 15, marginTop: 16, color: 'var(--text-bright)' }}>Glazy Import</h3>
+          <p>
+            The <Link to="/import-export">Import/Export page</Link> now has a dedicated
+            <strong> Glazy</strong> tab with:
+          </p>
+          <ul>
+            <li>Step-by-step instructions for exporting your Glazy collection</li>
+            <li>Direct Glazy CSV upload with auto-detection</li>
+            <li>Recipe URL pasting for individual recipe import</li>
+            <li>Support for bulk collections — import hundreds of recipes at once</li>
+          </ul>
+
+          <h3 style={{ fontSize: 15, marginTop: 16, color: 'var(--text-bright)' }}>Help & Documentation</h3>
+          <ul>
+            <li><strong>Expanded variability guide</strong> — New sections on reading the Stull chart,
+              understanding UMF oxide classes, and a ceramic chemistry glossary</li>
+            <li><strong>This changelog</strong> — Comprehensive record of every release</li>
+          </ul>
+        </section>
+
+        <hr style={{ border: 'none', borderTop: '1px solid var(--border-subtle)', margin: '32px 0' }} />
+
+        {/* v3.3.2 */}
+        <section className="about-section" style={{ borderLeft: '3px solid var(--accent, #6366F1)', paddingLeft: 16 }}>
+          <h2>🎟 v3.3.2 — Tier Gating & NCECA Prep</h2>
+          <p style={{ fontSize: 13, color: 'var(--text-dim)', margin: '0 0 12px' }}>February 2026</p>
+          <ul>
+            <li><strong>Tier system</strong> — Free, Solo ($8/mo), Pro ($18/mo), and Education
+              tiers with feature gating. TierGate component wraps premium routes.</li>
+            <li><strong>Demo mode</strong> — <code>?demo=1</code> URL parameter or
+              VITE_DEMO_MODE=true unlocks everything with a fake Pro profile. Built for
+              the NCECA booth.</li>
+            <li><strong>Free period</strong> — All features free through April 30, 2026 for
+              early adopters.</li>
+            <li><strong>Pricing page</strong> — Complete <Link to="/pricing">pricing page</Link> with
+              monthly/annual billing toggle, education tiers, and Stripe integration.</li>
+            <li><strong>NCECA landing page</strong> — Dedicated <Link to="/nceca">NCECA page</Link> for
+              conference visitors.</li>
+            <li><strong>Variability help</strong> — New <Link to="/help/variability">help page</Link> explaining
+              why glaze results vary.</li>
+            <li><strong>200 tests passing</strong> — Full test suite covering calculators, blending,
+              optimization, and validation.</li>
+          </ul>
+        </section>
+
+        <hr style={{ border: 'none', borderTop: '1px solid var(--border-subtle)', margin: '32px 0' }} />
 
         {/* v3.3.1 */}
         <section className="about-section" style={{ borderLeft: '3px solid var(--accent, #6366F1)', paddingLeft: 16 }}>
@@ -303,7 +398,7 @@ export function UpdatesPage() {
             </a>{' '}
             â€” Howell, Michigan.
           </p>
-          <p className="version">v3.3.1</p>
+          <p className="version">v3.4.0</p>
         </section>
 
       </div>

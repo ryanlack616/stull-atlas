@@ -89,6 +89,17 @@ export function NCECAPage() {
           </div>
         </section>
 
+        <section className="nceca-deal">
+          <h2>NCECA Deal — $29 for 3 Months of Pro</h2>
+          <p className="deal-subtitle">Full Pro access through your spring firing season. That's <strong>46% off</strong> the monthly rate.</p>
+          <div className="deal-details">
+            <div className="deal-features">
+              <p>✓ All blend calculators · ✓ Recipe optimizer · ✓ AI suggestions · ✓ Full analysis suite</p>
+            </div>
+            <p className="deal-fine">Available at the booth or online through March 28, 2026.</p>
+          </div>
+        </section>
+
         <section className="nceca-cta">
           <p>
             Questions? Email <a href="mailto:hello@stullatlas.app">hello@stullatlas.app</a> or check out our{' '}
@@ -257,6 +268,40 @@ export function NCECAPage() {
 
         .feature-item a:hover {
           text-decoration: underline;
+        }
+
+        .nceca-deal {
+          background: var(--bg-secondary);
+          border: 2px solid var(--accent);
+          border-radius: 12px;
+          padding: 28px 32px;
+          text-align: center;
+          margin-bottom: 48px;
+        }
+
+        .nceca-deal h2 {
+          font-size: 22px;
+          font-weight: 700;
+          margin: 0 0 8px;
+          color: var(--text-bright);
+        }
+
+        .deal-subtitle {
+          font-size: 15px;
+          color: var(--text-secondary);
+          margin: 0 0 16px;
+        }
+
+        .deal-features p {
+          font-size: 13px;
+          color: var(--text-primary);
+          margin: 0 0 12px;
+        }
+
+        .deal-fine {
+          font-size: 12px;
+          color: var(--text-tertiary);
+          margin: 0;
         }
 
         .nceca-cta {

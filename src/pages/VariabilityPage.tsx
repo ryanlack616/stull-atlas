@@ -143,6 +143,134 @@ export function VariabilityPage() {
           </ul>
         </section>
 
+        <section className="variability-section">
+          <h2>Reading the Stull Chart</h2>
+          <p>
+            The Stull diagram maps glazes by their SiO₂ (silica) and Al₂O₃ (alumina) content
+            in Unity Molecular Formula. R.T. Stull published the original version in 1912
+            by systematically testing hundreds of glaze compositions at cone 11.
+          </p>
+          <div className="factor-list">
+            <div className="factor">
+              <h3>X-Axis: SiO₂ (Silica)</h3>
+              <p>
+                The glass former. Higher silica = higher viscosity melt, better chemical durability,
+                higher thermal expansion (if too high → crazing). Typical range: 1.5–5.5 mol depending on cone.
+              </p>
+            </div>
+            <div className="factor">
+              <h3>Y-Axis: Al₂O₃ (Alumina)</h3>
+              <p>
+                The stabilizer. Alumina stiffens the melt, prevents running, and promotes matte surfaces
+                at lower ratios. Too little → glaze runs off the pot. Too much → dry, rough surface.
+              </p>
+            </div>
+            <div className="factor">
+              <h3>The Si:Al Ratio</h3>
+              <p>
+                The ratio of SiO₂ to Al₂O₃ is the single most useful predictor of surface quality.
+                Below ~5:1 → matte. Between 5–8:1 → satin. Above 8:1 → gloss. Above 12:1 → typically
+                underfired or excessively glassy. This ratio holds across a wide range of temperatures.
+              </p>
+            </div>
+            <div className="factor">
+              <h3>Stull Regions</h3>
+              <p>
+                The chart displays empirical boundaries: unfused, matte, semi-matte, bright gloss,
+                underfired, and crazed zones. These come from Stull's original research and subsequent
+                verification by ceramic researchers. They represent tendencies, not absolutes.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="variability-section">
+          <h2>Understanding UMF (Unity Molecular Formula)</h2>
+          <p>
+            UMF normalizes all flux oxides (R₂O + RO) to sum to 1.0, then expresses every other
+            oxide relative to that. This lets you compare glazes regardless of batch size,
+            and makes the relationship between chemistry and behavior visible.
+          </p>
+          <div className="factor-list">
+            <div className="factor">
+              <h3>Fluxes: R₂O (Alkalis) + RO (Alkaline Earths)</h3>
+              <p>
+                <strong>R₂O:</strong> Na₂O, K₂O, Li₂O — powerful low-temp fluxes, expand the glass.
+                Too much → crazing, solubility.<br/>
+                <strong>RO:</strong> CaO, MgO, ZnO, BaO, SrO — higher-temp fluxes, generally more stable.
+                CaO is the workhorse flux in most high-fire glazes.<br/>
+                The R₂O:RO ratio affects everything from color response to thermal expansion.
+              </p>
+            </div>
+            <div className="factor">
+              <h3>Stabilizers: R₂O₃</h3>
+              <p>
+                Al₂O₃ (from kaolin/clay) and B₂O₃ (from frits/colemanite). Alumina stiffens;
+                boron lowers melting temperature and adds gloss. B₂O₃ is crucial for cone 6 and below.
+              </p>
+            </div>
+            <div className="factor">
+              <h3>Glass Formers: RO₂</h3>
+              <p>
+                SiO₂ (from silica, feldspar, clay). The backbone of the glass network.
+                TiO₂, ZrO₂ are secondary — ZrO₂ opacifies, TiO₂ promotes crystallization.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="variability-section">
+          <h2>Glossary</h2>
+          <div className="factor-list">
+            <div className="factor">
+              <h3>Cone</h3>
+              <p>
+                A measure of heat-work, not temperature. Pyrometric cones bend at specific 
+                combinations of time and temperature. Cone 6 ≈ 1222°C (2232°F) at standard ramp rate.
+                Faster firing = higher temperature needed for same cone.
+              </p>
+            </div>
+            <div className="factor">
+              <h3>Crazing</h3>
+              <p>
+                A network of fine cracks in the glaze surface caused by the glaze contracting more than 
+                the clay body during cooling. Usually from too much alkali flux (Na₂O + K₂O) relative to 
+                silica. The glaze is under tension.
+              </p>
+            </div>
+            <div className="factor">
+              <h3>Crawling</h3>
+              <p>
+                The glaze beads up and pulls away from the clay surface during firing, leaving bare spots. 
+                Causes: high surface tension, dusty bisque, too-thick application, high-alumina recipes 
+                without enough flux.
+              </p>
+            </div>
+            <div className="factor">
+              <h3>Running</h3>
+              <p>
+                The glaze flows down the pot during firing. Causes: too much flux, too little alumina, 
+                over-firing. Sometimes desirable (ash glazes, crystalline glazes) but usually a problem.
+              </p>
+            </div>
+            <div className="factor">
+              <h3>LOI (Loss on Ignition)</h3>
+              <p>
+                The weight percentage a material loses during firing — water, carbonates, organics.
+                Whiting (CaCO₃) has ~44% LOI. Materials with high LOI can cause pinholes if the 
+                glaze seals before gases escape.
+              </p>
+            </div>
+            <div className="factor">
+              <h3>Specific Gravity</h3>
+              <p>
+                The density of a glaze slurry measured with a hydrometer. Typical dipping gravity: 
+                1.45–1.50. Too thick → crawling, running. Too thin → underfired appearance.
+              </p>
+            </div>
+          </div>
+        </section>
+
         <section className="variability-cta">
           <p>
             Questions? Reach us at{' '}

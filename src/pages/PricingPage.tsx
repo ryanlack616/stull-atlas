@@ -253,7 +253,7 @@ export function PricingPage() {
 
           <details>
             <summary>Do you offer a conference discount?</summary>
-            <p>Yes! At NCECA 2026 in Detroit (March 25–28), Pro annual plans are available for $110/year — visit us in the Resource Hall.</p>
+            <p>Yes! At NCECA 2026 in Detroit (March 25–28): <strong>3 months of Pro for $29</strong> (46% off) — sign up at the booth or online through March 28. Pro annual plans are also available for $110/year.</p>
           </details>
         </section>
       </div>

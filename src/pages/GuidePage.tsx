@@ -23,6 +23,8 @@ const SECTIONS = [
   { id: 'import-export', label: 'Import / Export' },
   { id: 'tips',          label: 'Tips & Settings' },
   { id: 'workflows',     label: 'Workflow Examples' },
+  { id: 'from-glazy',    label: 'Switching from Glazy' },
+  { id: 'from-insight',  label: 'Switching from Insight' },
   { id: 'glossary',      label: 'Glossary' },
 ] as const
 
@@ -733,6 +735,98 @@ export function GuidePage() {
           </ol>
         </section>
 
+        {/* ── Switching from Glazy ──────────────────────────── */}
+        <section id="from-glazy" className="guide-section">
+          <h2>Switching from Glazy</h2>
+          <p>
+            If you've been using <strong>Glazy</strong> for glaze research, Stull Atlas will feel familiar — it uses
+            the same Glazy dataset. Here's how the features map:
+          </p>
+
+          <h3>Feature Map: Glazy → Stull Atlas</h3>
+          <table className="guide-table">
+            <thead><tr><th>In Glazy</th><th>In Stull Atlas</th></tr></thead>
+            <tbody>
+              <tr><td>SiO₂:Al₂O₃ scatter plot</td><td><Link to="/">Explorer</Link> — same axes by default, but you can switch to any oxide pair</td></tr>
+              <tr><td>Color-coding by cone</td><td>Color By dropdown → "Cone" (default), plus Surface, Glaze Type, Flux Ratio, Boron</td></tr>
+              <tr><td>Clicking a dot to see UMF</td><td>Click any dot → Detail sidebar with full UMF, recipe, ingredients, and oxide breakdown</td></tr>
+              <tr><td>Search by name / cone / type</td><td><strong>OmniSearch</strong> (Ctrl+K) — search by name, oxide, cone, surface, material, or atmosphere</td></tr>
+              <tr><td>Recipes page</td><td><Link to="/calc">UMF Calculator</Link> — enter ingredients, see real-time UMF with validation warnings</td></tr>
+              <tr><td>Limit formulas (cone ranges)</td><td>Explorer → <strong>Show Limits</strong> toggle in controls panel — safe oxide ranges for each cone</td></tr>
+              <tr><td>Collections / bookmarks</td><td><Link to="/import-export">Saved Recipes</Link> tab — persisted locally or to cloud with a free account</td></tr>
+              <tr><td>Export CSV</td><td>Import/Export → Glazy tab → "Export Glazy CSV" — same column format Glazy uses</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Importing Your Glazy Data</h3>
+          <ol>
+            <li>On glazy.org, go to the search page and filter to the glazes you want</li>
+            <li>Click "Export" → "Download CSV"</li>
+            <li>In Stull Atlas, go to <Link to="/import-export">Import/Export</Link> → Glazy tab → "Upload Glazy CSV"</li>
+            <li>Your glazes appear on the chart immediately</li>
+          </ol>
+          <p>
+            Alternatively, copy a Glazy search URL (e.g. <code>glazy.org/search?base_type=460&cone=5,7</code>) and 
+            paste it into the "Glazy Search URL" field — we'll filter our 3,000+ pre-loaded Glazy glazes to match 
+            those same filters.
+          </p>
+
+          <h3>What Stull Atlas Adds</h3>
+          <ul>
+            <li><strong>3D visualization</strong> — add a third oxide axis (boron, calcium, etc.) to see depth in the data</li>
+            <li><strong>Blend calculators</strong> — line, triaxial, biaxial, quadaxial, radial, and space-filling blends</li>
+            <li><strong>Recipe optimizer</strong> — set a UMF target and let gradient descent find material combinations</li>
+            <li><strong>AI suggestions</strong> — describe a glaze in plain English and get a recipe</li>
+            <li><strong>Similarity search</strong> — click any glaze and find the most chemically similar ones, with tunable oxide weights</li>
+            <li><strong>Density & cluster analysis</strong> — see where the explored chemistry concentrates and where the gaps are</li>
+          </ul>
+        </section>
+
+        {/* ── Switching from Insight ────────────────────────── */}
+        <section id="from-insight" className="guide-section">
+          <h2>Switching from Insight</h2>
+          <p>
+            If you've been using <strong>Digitalfire Insight</strong>, you'll recognize the chemistry concepts. 
+            Stull Atlas extends Insight's recipe-to-formula workflow with interactive plotting and exploration.
+          </p>
+
+          <h3>Feature Map: Insight → Stull Atlas</h3>
+          <table className="guide-table">
+            <thead><tr><th>In Insight</th><th>In Stull Atlas</th></tr></thead>
+            <tbody>
+              <tr><td>Recipe input (materials + amounts)</td><td><Link to="/calc">UMF Calculator</Link> — same concept: pick materials, enter amounts, see UMF instantly</td></tr>
+              <tr><td>"Recipe to Formula" conversion</td><td>Automatic — entering ingredients immediately shows the UMF breakdown with live updates</td></tr>
+              <tr><td>Limit formula checker</td><td>UMF Calculator shows red/yellow warnings when oxides fall outside safe ranges for the selected cone</td></tr>
+              <tr><td>Limit formula chart</td><td>Explorer → <strong>Show Limits</strong> button — overlays limit rectangles for ∆06 through ∆11</td></tr>
+              <tr><td>Material lookup + oxide analysis</td><td><Link to="/materials">Materials</Link> page — browse 300+ materials with full oxide breakdowns</td></tr>
+              <tr><td>Material substitution</td><td><Link to="/suggestions">Suggestions</Link> page — AI-powered substitution recommendations</td></tr>
+              <tr><td>Batch line blends</td><td><Link to="/line-blend">Line Blend</Link> calculator — plus triaxial, biaxial, quadaxial, radial, and space-filling</td></tr>
+              <tr><td>Glaze chemistry reports</td><td>Export → "Print / PDF" or "Save Image" from the Explorer chart</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Importing Your Insight Recipes</h3>
+          <ol>
+            <li>In Insight, select a recipe and export it as XML (File → Export XML)</li>
+            <li>In Stull Atlas, go to <Link to="/import-export">Import/Export</Link> → Import tab → "Choose File"</li>
+            <li>Select the .xml file — Stull Atlas auto-detects Insight XML format</li>
+            <li>The recipe, including materials and amounts, is imported and plotted on the chart</li>
+          </ol>
+
+          <h3>Key Differences</h3>
+          <div className="guide-callout">
+            <strong>Stull Atlas is web-based and visual-first.</strong> Where Insight focuses on formula calculation
+            for individual recipes, Stull Atlas lets you see your recipe in context — plotted among thousands of other
+            glazes. This makes it easy to see how your chemistry compares to working glazes at your cone and surface target.
+          </div>
+          <ul>
+            <li><strong>No installation</strong> — runs in any modern browser</li>
+            <li><strong>Comparative analysis</strong> — your recipe is always shown alongside the full Glazy dataset</li>
+            <li><strong>Optimizer</strong> — instead of manually tweaking ingredients, set a UMF target and let the algorithm find recipes</li>
+            <li><strong>Cloud sync</strong> — save recipes to your account and access them from any device</li>
+          </ul>
+        </section>
+
         {/* ── Glossary ───────────────────────────────────────── */}
         <section id="glossary" className="guide-section">
           <h2>Glossary</h2>
@@ -951,6 +1045,38 @@ export function GuidePage() {
 
         .guide-section {
           scroll-margin-top: 16px;
+        }
+
+        .guide-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 12px 0 20px;
+          font-size: 13px;
+        }
+
+        .guide-table th,
+        .guide-table td {
+          padding: 8px 12px;
+          border: 1px solid var(--border-subtle);
+          text-align: left;
+          line-height: 1.5;
+        }
+
+        .guide-table th {
+          background: var(--bg-secondary);
+          font-weight: 600;
+          color: var(--text-primary);
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .guide-table td {
+          color: var(--text-body);
+        }
+
+        .guide-table tr:nth-child(even) td {
+          background: var(--bg-secondary);
         }
 
         .glossary-grid {

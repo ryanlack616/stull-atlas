@@ -13,7 +13,7 @@ import React, { useRef, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useOmniSearch, type OmniResult, type ResultCategory } from '@/hooks'
 import { useSelectionStore, useGlazeStore } from '@/stores'
-import { DIGITALFIRE_ATTRIBUTION } from '@/data/digitalfire'
+import { DIGITALFIRE_ATTRIBUTION } from '@/data/digitalfire/attribution'
 
 // ─── Category labels & icons ────────────────────────────────────
 

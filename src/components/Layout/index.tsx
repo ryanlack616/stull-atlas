@@ -13,6 +13,7 @@ import { WelcomeOverlay, useWelcome } from '@/components/Welcome'
 import { GuidedTour, useTour } from '@/components/GuidedTour'
 import { useGlazeLoader } from '@/hooks'
 import { useOmniSearch } from '@/hooks'
+import { useOnlineStatus } from '@/hooks'
 import { edition } from '@/edition'
 
 const OmniSearch = lazy(() => import('@/components/OmniSearch'))
@@ -30,6 +31,7 @@ export function Layout() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
   const { open: omniOpen, toggle: toggleOmni } = useOmniSearch()
+  const { isOnline, hasUpdate, applyUpdate } = useOnlineStatus()
 
   // Close mobile menu on route change
   useEffect(() => { setMenuOpen(false) }, [location.pathname])
@@ -130,6 +132,20 @@ export function Layout() {
           </span>
         </div>
       </header>
+
+      {/* Offline / update banners */}
+      {!isOnline && (
+        <div className="offline-banner" role="alert">
+          <span className="offline-icon">⚡</span>
+          You're offline — cached data is still available
+        </div>
+      )}
+      {hasUpdate && (
+        <div className="update-banner" role="alert">
+          <span>A new version of Stull Atlas is available</span>
+          <button className="update-btn" onClick={applyUpdate}>Refresh</button>
+        </div>
+      )}
 
       <main id="main-content" className="page-content">
         <Outlet />
@@ -476,6 +492,58 @@ export function Layout() {
 
         .skip-link:focus {
           top: 0;
+        }
+
+        /* ── Offline / update banners ── */
+        .offline-banner,
+        .update-banner {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 8px 16px;
+          font-size: 13px;
+          font-weight: 500;
+          text-align: center;
+          flex-shrink: 0;
+          animation: bannerSlideDown 0.25s ease-out;
+        }
+
+        @keyframes bannerSlideDown {
+          from { transform: translateY(-100%); opacity: 0; }
+          to   { transform: translateY(0);     opacity: 1; }
+        }
+
+        .offline-banner {
+          background: rgba(231, 76, 60, 0.15);
+          color: #e74c3c;
+          border-bottom: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .offline-icon {
+          font-size: 16px;
+        }
+
+        .update-banner {
+          background: rgba(52, 152, 219, 0.15);
+          color: #3498db;
+          border-bottom: 1px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .update-btn {
+          background: #3498db;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          padding: 4px 12px;
+          font-size: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.15s;
+        }
+
+        .update-btn:hover {
+          background: #2980b9;
         }
       `}</style>
     </div>

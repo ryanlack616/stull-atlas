@@ -11,8 +11,15 @@
 
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import { useGlazeStore } from '@/stores'
-import { searchKnowledge, lookupOxide, lookupMaterial, type DigitalfireRef } from '@/domain/digitalfire'
 import type { GlazeRecipe } from '@/types'
+
+// Lazy-loaded to keep ~700 KB of digitalfire JSON out of the initial bundle.
+// The data is only needed when the user actually types a search query.
+let dfModule: typeof import('@/domain/digitalfire') | null = null
+async function getDf() {
+  if (!dfModule) dfModule = await import('@/domain/digitalfire')
+  return dfModule
+}
 
 // ─── Result types ───────────────────────────────────────────────
 
@@ -130,17 +137,22 @@ function searchPages(query: string): OmniResult[] {
   return results.slice(0, 4)
 }
 
-function searchDigitalfire(query: string, limit = 8): OmniResult[] {
-  const refs = searchKnowledge(query, limit)
-  return refs.map((ref, i) => ({
-    id: `df-${ref.category}-${i}`,
-    title: ref.title,
-    subtitle: ref.excerpt?.slice(0, 120) || '',
-    category: 'knowledge' as ResultCategory,
-    action: ref.url,
-    badge: ref.category,
-    score: 50 - i, // preserve searchKnowledge's own ranking
-  }))
+async function searchDigitalfire(query: string, limit = 8): Promise<OmniResult[]> {
+  try {
+    const df = await getDf()
+    const refs = df.searchKnowledge(query, limit)
+    return refs.map((ref, i) => ({
+      id: `df-${ref.category}-${i}`,
+      title: ref.title,
+      subtitle: ref.excerpt?.slice(0, 120) || '',
+      category: 'knowledge' as ResultCategory,
+      action: ref.url,
+      badge: ref.category,
+      score: 50 - i, // preserve searchKnowledge's own ranking
+    }))
+  } catch {
+    return [] // graceful fallback if lazy load fails
+  }
 }
 
 // ─── Hook ───────────────────────────────────────────────────────
@@ -154,6 +166,7 @@ export function useOmniSearch() {
 
   // Debounced query for expensive searches
   const [debouncedQuery, setDebouncedQuery] = useState('')
+  const [knowledgeResults, setKnowledgeResults] = useState<OmniResult[]>([])
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
@@ -164,18 +177,26 @@ export function useOmniSearch() {
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
   }, [query])
 
-  // Combined results
+  // Async digitalfire search (lazy-loaded)
+  useEffect(() => {
+    const q = debouncedQuery.trim()
+    if (q.length < 2) { setKnowledgeResults([]); return }
+    let stale = false
+    searchDigitalfire(q).then(r => { if (!stale) setKnowledgeResults(r) })
+    return () => { stale = true }
+  }, [debouncedQuery])
+
+  // Combined results (glaze + page are sync, knowledge comes from state)
   const results = useMemo(() => {
     const q = debouncedQuery.trim()
     if (q.length < 2) return []
 
     const glazes = getGlazesArray()
     const glazeResults = searchGlazes(q, glazes)
-    const knowledgeResults = searchDigitalfire(q)
     const pageResults = searchPages(q)
 
     return [...pageResults, ...glazeResults, ...knowledgeResults]
-  }, [debouncedQuery, getGlazesArray])
+  }, [debouncedQuery, getGlazesArray, knowledgeResults])
 
   // Group results by category for display
   const grouped = useMemo(() => {

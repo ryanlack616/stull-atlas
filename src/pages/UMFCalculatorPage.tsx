@@ -16,10 +16,12 @@ import { ALL_CONES } from '@/calculator/parseCone'
 import { validateUMFAgainstLimits, validateRecipe, predictSurface, type StullPrediction } from '@/calculator/validation'
 import { materialDatabase } from '@/domain/material'
 import { useRecipeStore } from '@/stores'
-import { exportRecipeCSV } from '@/utils'
+import { exportRecipeCSV, exportAsPrintPDF } from '@/utils'
 import { usePageTitle } from '@/hooks'
 import { UMFFingerprint, FluxDonut, OxideRadar } from '@/components/UMFVisuals'
 import { calcStyles } from './calc-styles'
+import { PRESET_RECIPES, PRESET_CATEGORIES } from '@/data/glazes/presets'
+import { WhatIfPanel } from '@/components/WhatIfPanel'
 
 const FLUX_OXIDES: OxideSymbol[] = ['Li2O', 'Na2O', 'K2O', 'MgO', 'CaO', 'SrO', 'BaO', 'ZnO', 'PbO']
 const STABILIZER_OXIDES: OxideSymbol[] = ['Al2O3', 'B2O3', 'Fe2O3']
@@ -148,6 +150,40 @@ export function UMFCalculatorPage() {
           </p>
         </div>
 
+        {/* Preset Recipe Selector */}
+        <div className="calc-section">
+          <h3>Load a Preset</h3>
+          <select
+            onChange={e => {
+              const id = e.target.value
+              if (!id) return
+              const preset = PRESET_RECIPES.find(r => r.id === `preset_${id}`)
+              if (preset) {
+                // Deep clone so edits don't mutate the preset
+                const clone = JSON.parse(JSON.stringify(preset)) as GlazeRecipe
+                clone.id = `input_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`
+                setRecipe(clone)
+                setCone(String(clone.coneRange[0]))
+                setUMF(null)
+                setSaved(false)
+              }
+              e.target.value = ''
+            }}
+            style={{ width: '100%', padding: '8px 10px', background: 'var(--bg-input)', border: '1px solid var(--border-secondary)', borderRadius: 6, color: 'var(--text-bright)', fontSize: 13 }}
+            defaultValue=""
+          >
+            <option value="" disabled>Select a classic recipe...</option>
+            {Object.entries(PRESET_CATEGORIES).map(([category, ids]) => (
+              <optgroup key={category} label={category}>
+                {ids.map(id => {
+                  const p = PRESET_RECIPES.find(r => r.id === `preset_${id}`)
+                  return p ? <option key={id} value={id}>{p.name}</option> : null
+                })}
+              </optgroup>
+            ))}
+          </select>
+        </div>
+
         <div className="calc-section">
           <h3>Recipe</h3>
           <RecipeInput
@@ -220,6 +256,16 @@ export function UMFCalculatorPage() {
             style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)', marginTop: 4 }}
           >
             Export CSV
+          </button>
+        )}
+
+        {umf && (
+          <button
+            className="calc-button"
+            onClick={() => exportAsPrintPDF(`UMF — ${recipe?.name || 'Recipe'}`)}
+            style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)', marginTop: 4 }}
+          >
+            Print / Save PDF
           </button>
         )}
       </div>
@@ -347,6 +393,9 @@ export function UMFCalculatorPage() {
             {trace.length > 0 && (
               <TraceViewer trace={trace} />
             )}
+
+            {/* What-If Slider Panel */}
+            <WhatIfPanel baseUMF={umf} cone={cone} />
 
             {/* Limit issues summary */}
             {limitsIssues.length > 0 && (

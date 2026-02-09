@@ -29,7 +29,9 @@ export function TimelinePage() {
   const [onlyInflections, setOnlyInflections] = useState(false)
   const [readingLevel, setReadingLevel] = useState<ReadingLevel>('standard')
   const [density, setDensity] = useState<Density>('standard')
+  const [showAncient, setShowAncient] = useState(false)
   const timelineRef = useRef<HTMLDivElement>(null)
+  const ancientCutoff = 1750
 
   const filtered = useMemo(() => {
     let events = filter === 'all' ? EVENTS : EVENTS.filter(e => e.category === filter)
@@ -37,6 +39,11 @@ export function TimelinePage() {
     else events = filterByDensity(events, density)
     return events.sort((a, b) => a.year - b.year)
   }, [filter, onlyInflections, density])
+
+  const ancientEvents = useMemo(() => filtered.filter(e => e.year < ancientCutoff), [filtered])
+  const modernEvents = useMemo(() => filtered.filter(e => e.year >= ancientCutoff), [filtered])
+  const ancientEras = useMemo(() => ERAS.filter(e => e.end <= ancientCutoff), [])  
+  const modernEras = useMemo(() => ERAS.filter(e => e.end > ancientCutoff), [])
 
   const eventKey = (event: TimelineEvent) => `${event.year}-${event.title}`
 
@@ -66,8 +73,9 @@ export function TimelinePage() {
         <div className="timeline-header">
           <h2>History of Ceramic Science</h2>
           <p className="subtitle">
-            From the first fired clay (~18,000 BCE) to the digital age — showing {filtered.length} of {TOTAL_EVENTS} events spanning
-            20,000 years of people, publications, and breakthroughs that built our understanding of glaze chemistry.
+            From the Industrial Revolution to the digital age — showing {modernEvents.length} of {TOTAL_EVENTS} events.
+            {ancientEvents.length > 0 && !showAncient && ` ${ancientEvents.length} earlier events (pre-1750) hidden.`}
+            {showAncient && ` Including ${ancientEvents.length} ancient & medieval events.`}
           </p>
 
           {/* Controls row */}
@@ -173,8 +181,110 @@ export function TimelinePage() {
         {/* Timeline */}
         <div className="timeline-scroll" ref={timelineRef}>
           <div className="timeline-track" role="list" aria-label="Historical events">
-            {/* Era backgrounds */}
-            {ERAS.map(era => (
+
+            {/* Pre-1750: collapsed by default */}
+            {ancientEvents.length > 0 && (
+              <div className="ancient-section">
+                <button
+                  className={`ancient-toggle ${showAncient ? 'open' : ''}`}
+                  onClick={() => setShowAncient(v => !v)}
+                  aria-expanded={showAncient}
+                >
+                  <span className="ancient-icon">🏺</span>
+                  <span>
+                    {showAncient ? 'Hide' : 'Show'} Pre-1750: Ancient & Medieval Origins
+                  </span>
+                  <span className="ancient-count">
+                    {ancientEvents.length} event{ancientEvents.length !== 1 ? 's' : ''} &middot; 18,000 BCE – 1750
+                  </span>
+                  <span className="ancient-chevron">{showAncient ? '▴' : '▾'}</span>
+                </button>
+
+                {showAncient && (
+                  <div className="ancient-events">
+                    {ancientEras.map(era => (
+                      <div
+                        key={era.label}
+                        className="era-label"
+                        style={{ '--era-color': era.color } as React.CSSProperties}
+                      >
+                        <span>{era.label}</span>
+                        <span className="era-years">{formatEraRange(era.start, era.end)}</span>
+                      </div>
+                    ))}
+                    {ancientEvents.map((event, i) => {
+                      const meta = CATEGORY_META[event.category]
+                      const key = eventKey(event)
+                      const isExpanded = expandedKey === key
+                      const isLeft = i % 2 === 0
+                      const yearDisplay = formatYear(event.year, event.approximate)
+                      const endYearDisplay = event.endYear ? `–${formatYear(event.endYear, false)}` : ''
+                      return (
+                        <div
+                          key={key}
+                          className={[
+                            'timeline-event',
+                            isLeft ? 'left' : 'right',
+                            `sig-${event.significance}`,
+                            isExpanded ? 'expanded' : '',
+                            event.inflectionPoint ? 'inflection' : '',
+                          ].filter(Boolean).join(' ')}
+                          role="listitem"
+                        >
+                          <div className="year-dot" style={{ background: meta.color }} aria-hidden="true">
+                            {event.inflectionPoint && <span className="inflection-ring" />}
+                          </div>
+                          <div className="year-label">{yearDisplay}{endYearDisplay}</div>
+                          <button
+                            className="event-card"
+                            onClick={() => toggle(key)}
+                            aria-expanded={isExpanded}
+                            style={{ '--card-accent': meta.color } as React.CSSProperties}
+                          >
+                            <div className="event-head">
+                              <span className="event-icon" aria-hidden="true">{meta.icon}</span>
+                              <h3 className="event-title">
+                                {event.inflectionPoint && <span className="inflection-marker" title="Inflection point">⚡</span>}
+                                {event.title}
+                              </h3>
+                            </div>
+                            {isExpanded && (
+                              <div className="event-detail">
+                                {event.image && (
+                                  <figure className="event-image">
+                                    <img src={event.image.src} alt={event.image.alt} loading="lazy" />
+                                    {event.image.credit && <figcaption>{event.image.credit}</figcaption>}
+                                  </figure>
+                                )}
+                                <p>{getDescription(event, readingLevel)}</p>
+                                {event.people && event.people.length > 0 && (
+                                  <div className="event-people">
+                                    {event.people.map(p => <span key={p} className="person-tag">{p}</span>)}
+                                  </div>
+                                )}
+                                {event.links && event.links.length > 0 && (
+                                  <div className="event-links">
+                                    {event.links.map(l => (
+                                      <a key={l.url} href={l.url} target="_blank" rel="noopener noreferrer"
+                                         onClick={e => e.stopPropagation()}>
+                                        {l.label} ↗
+                                      </a>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </button>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Modern eras (1750+) */}
+            {modernEras.map(era => (
               <div
                 key={era.label}
                 className="era-label"
@@ -185,8 +295,8 @@ export function TimelinePage() {
               </div>
             ))}
 
-            {/* Events */}
-            {filtered.map((event, i) => {
+            {/* Modern events (1750+) */}
+            {modernEvents.map((event, i) => {
               const meta = CATEGORY_META[event.category]
               const key = eventKey(event)
               const isExpanded = expandedKey === key
@@ -232,6 +342,12 @@ export function TimelinePage() {
 
                     {isExpanded && (
                       <div className="event-detail">
+                        {event.image && (
+                          <figure className="event-image">
+                            <img src={event.image.src} alt={event.image.alt} loading="lazy" />
+                            {event.image.credit && <figcaption>{event.image.credit}</figcaption>}
+                          </figure>
+                        )}
                         <p>{getDescription(event, readingLevel)}</p>
                         {event.people && event.people.length > 0 && (
                           <div className="event-people">
@@ -531,6 +647,67 @@ const timelineStyles = `
     padding: 32px 40px;
   }
 
+  /* Ancient section toggle */
+  .ancient-section {
+    margin-bottom: 24px;
+  }
+
+  .ancient-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 20px;
+    background: var(--bg-tertiary);
+    border: 1px dashed var(--border-secondary);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+
+  .ancient-toggle:hover {
+    border-color: var(--accent);
+    color: var(--text-bright);
+    background: var(--bg-hover);
+  }
+
+  .ancient-toggle.open {
+    border-style: solid;
+    border-color: var(--accent);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-bottom: 0;
+  }
+
+  .ancient-icon {
+    font-size: 18px;
+  }
+
+  .ancient-count {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .ancient-chevron {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .ancient-events {
+    border: 1px solid var(--accent);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 16px 0 8px;
+    margin-bottom: 24px;
+    background: var(--bg-secondary);
+  }
+
   .timeline-track {
     position: relative;
     max-width: 800px;
@@ -700,6 +877,30 @@ const timelineStyles = `
     border-radius: 12px;
     font-size: 11px;
     color: var(--text-label);
+  }
+
+  .event-image {
+    margin: 0 0 12px 0;
+    padding: 0;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .event-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 6px;
+    max-height: 320px;
+    object-fit: cover;
+  }
+
+  .event-image figcaption {
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.4;
   }
 
   .event-links {
