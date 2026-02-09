@@ -112,6 +112,18 @@ export function WelcomeOverlay({ onDismiss }: WelcomeOverlayProps) {
               Built by a potter, for potters. Free to explore.
             </p>
 
+            <div className="welcome-migration">
+              <span className="welcome-migration-label">Coming from another tool?</span>
+              <div className="welcome-migration-links">
+                <button className="welcome-migration-btn" onClick={() => { onDismiss(); navigate('/guide#from-glazy') }}>
+                  Switching from Glazy →
+                </button>
+                <button className="welcome-migration-btn" onClick={() => { onDismiss(); navigate('/guide#from-insight') }}>
+                  Switching from Insight →
+                </button>
+              </div>
+            </div>
+
             <div className="welcome-actions">
               <button className="welcome-btn welcome-btn-primary" onClick={() => setStep(1)}>
                 See What's Inside →
@@ -311,6 +323,46 @@ export function WelcomeOverlay({ onDismiss }: WelcomeOverlayProps) {
           font-size: 12px;
           color: var(--text-muted);
           margin: 16px 0 0;
+        }
+
+        .welcome-migration {
+          margin: 16px 0 0;
+          padding: 12px 16px;
+          background: var(--bg-tertiary, rgba(255,255,255,0.03));
+          border: 1px solid var(--border-subtle, rgba(255,255,255,0.06));
+          border-radius: 8px;
+        }
+
+        .welcome-migration-label {
+          display: block;
+          font-size: 12px;
+          color: var(--text-secondary);
+          margin-bottom: 8px;
+          font-weight: 500;
+        }
+
+        .welcome-migration-links {
+          display: flex;
+          gap: 8px;
+        }
+
+        .welcome-migration-btn {
+          flex: 1;
+          padding: 8px 12px;
+          border-radius: 6px;
+          font-size: 12px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          background: transparent;
+          color: var(--accent);
+          border: 1px solid var(--accent);
+          opacity: 0.7;
+        }
+
+        .welcome-migration-btn:hover {
+          opacity: 1;
+          background: var(--accent-bg, rgba(59,130,246,0.1));
         }
 
         @media (max-width: 480px) {

@@ -12,6 +12,7 @@
  *   usePageTitle       – dynamic <title> tag per route
  *   useFilteredPoints  – apply filter store to GlazePlotPoint[]
  *   useOmniSearch      – Ctrl+K command palette search across all domains
+ *   useOnlineStatus    – online/offline detection + SW update notifications
  */
 
 export { useGlazeLoader } from './useGlazeLoader'
@@ -23,3 +24,5 @@ export { usePageTitle } from './usePageTitle'
 export { useFilteredPoints } from './useFilteredPoints'
 export { useOmniSearch } from './useOmniSearch'
 export type { OmniResult, ResultCategory } from './useOmniSearch'
+export { useOnlineStatus } from './useOnlineStatus'
+export type { OnlineStatus } from './useOnlineStatus'
