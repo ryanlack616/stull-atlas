@@ -10,7 +10,7 @@
  * which treats unknown columns as materials.
  */
 
-import { GlazeRecipe, UMF, Atmosphere, SurfaceType, EpistemicState } from '@/types'
+import { GlazeRecipe, UMF, Atmosphere, SurfaceType, Transparency, EpistemicState, BASE_TYPE_IDS } from '@/types'
 import { classifyGlazeByName } from '@/domain/glaze'
 
 const GLAZY_UMF_FIELDS = [
@@ -27,6 +27,18 @@ const SURFACE_MAP: Record<number, SurfaceType> = {
   4: 'unknown',  // dry
   5: 'crystalline',
   6: 'crawl',
+}
+
+const TRANSPARENCY_MAP: Record<number, Transparency> = {
+  1: 'transparent',
+  2: 'translucent',
+  3: 'opaque',
+}
+
+const ATMOSPHERE_MAP: Record<number, Atmosphere> = {
+  1: 'oxidation',
+  2: 'reduction',
+  3: 'neutral',
 }
 
 /**
@@ -143,6 +155,28 @@ export function deserializeGlazyCSV(csv: string): GlazeRecipe[] {
       const surfaceNum = parseInt(col(row, 'surface_type'), 10)
       const surfaceType: SurfaceType = SURFACE_MAP[surfaceNum] || 'unknown'
 
+      // Transparency
+      const transpNum = parseInt(col(row, 'transparency_type'), 10)
+      const transparency: Transparency | undefined = TRANSPARENCY_MAP[transpNum] || undefined
+
+      // Atmosphere
+      const atmosNum = parseInt(col(row, 'atmosphere'), 10)
+      const atmosphere: Atmosphere = ATMOSPHERE_MAP[atmosNum] || 'unknown'
+
+      // Glazy taxonomy IDs
+      const baseTypeIdRaw = parseInt(col(row, 'base_type_id'), 10)
+      const baseTypeId = !isNaN(baseTypeIdRaw) ? baseTypeIdRaw : 460
+      const typeIdRaw = parseInt(col(row, 'type_id'), 10)
+      const typeId = !isNaN(typeIdRaw) ? typeIdRaw : null
+      const subtypeIdRaw = parseInt(col(row, 'subtype_id'), 10)
+      const subtypeId = !isNaN(subtypeIdRaw) ? subtypeIdRaw : null
+
+      // Use Glazy's type IDs if present, fall back to name classification
+      const glazeTypeId = subtypeId ?? typeId ?? classifyGlazeByName(name)
+
+      // Country
+      const country = col(row, 'country') || undefined
+
       recipes.push({
         id: `glazy_${id}`,
         name,
@@ -151,9 +185,14 @@ export function deserializeGlazyCSV(csv: string): GlazeRecipe[] {
         ingredients: [], // Glazy CSV doesn't include ingredient lists
         umf,
         coneRange,
-        atmosphere: 'unknown' as Atmosphere,
+        atmosphere,
         surfaceType,
-        glazeTypeId: classifyGlazeByName(name),
+        transparency,
+        baseType: BASE_TYPE_IDS[baseTypeId] ?? 'glaze',
+        baseTypeId,
+        glazeTypeId,
+        subtypeId,
+        country,
         umfConfidence: 'inferred' as EpistemicState,
         verified: false,
       })

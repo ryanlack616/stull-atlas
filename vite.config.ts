@@ -43,6 +43,10 @@ export default defineConfig({
           // Analysis libraries — only loaded when analysis tab is opened
           if (id.includes('node_modules/density-clustering')) return 'vendor-analysis'
           if (id.includes('node_modules/decimal.js')) return 'vendor-math'
+          // Digitalfire reference data — lazy-loaded on first OmniSearch query
+          if (id.includes('/data/digitalfire/') && !id.includes('attribution')) return 'data-digitalfire'
+          // Digitalfire domain logic — also lazy, split from data
+          if (id.includes('/domain/digitalfire/') && !id.includes('fullTextStore')) return 'domain-digitalfire'
           return undefined
         }
       }

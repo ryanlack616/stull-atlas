@@ -36,3 +36,12 @@ export {
 } from './glazeTypes'
 
 export type { GlazeTypeInfo, GlazeTypeGroup } from './glazeTypes'
+
+// Glazy search URL parsing and filtering
+export {
+  parseGlazySearchURL,
+  isGlazySearchURL,
+  filterByGlazyParams,
+  describeGlazySearch,
+} from '@/infra/glazes/glazySearch'
+export type { GlazySearchParams } from '@/infra/glazes/glazySearch'

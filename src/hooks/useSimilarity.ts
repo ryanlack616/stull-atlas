@@ -7,7 +7,7 @@
 
 import { useMemo, useState, useCallback, useRef, useEffect } from 'react'
 import { GlazeRecipe, OxideSymbol } from '@/types'
-import { findSimilarGlazes, type SimilarityResult } from '@/domain/glaze'
+import { findSimilarGlazes, type SimilarityResult } from '@/domain/glaze/glazeService'
 
 const SIMILARITY_OXIDES: OxideSymbol[] = [
   'SiO2', 'Al2O3', 'B2O3', 'Na2O', 'K2O',

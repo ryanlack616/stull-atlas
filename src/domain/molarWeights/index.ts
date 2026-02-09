@@ -52,35 +52,35 @@ const APP_OXIDES: OxideSymbol[] = [
 ]
 
 /**
- * Current hardcoded values from constants.ts — the implicit "app default".
+ * Current hardcoded values from constants.ts — IUPAC 2023 standard.
  * Serves as fallback when a database set is missing an oxide.
  */
 const APP_DEFAULT_WEIGHTS: MolarWeights = {
-  Li2O:   29.88,
-  Na2O:   61.98,
-  K2O:    94.20,
-  MgO:    40.30,
-  CaO:    56.08,
-  SrO:   103.62,
-  BaO:   153.33,
-  ZnO:    81.38,
-  PbO:   223.20,
-  Al2O3: 101.96,
-  B2O3:   69.62,
-  Fe2O3: 159.69,
-  SiO2:   60.08,
-  TiO2:   79.87,
+  Li2O:   29.879,
+  Na2O:   61.9785,
+  K2O:    94.1956,
+  MgO:    40.304,
+  CaO:    56.077,
+  SrO:   103.619,
+  BaO:   153.326,
+  ZnO:    81.379,
+  PbO:   223.199,
+  Al2O3: 101.9601,
+  B2O3:   69.617,
+  Fe2O3: 159.687,
+  SiO2:   60.083,
+  TiO2:   79.865,
   ZrO2:  123.22,
-  SnO2:  150.71,
-  MnO:    70.94,
-  MnO2:   86.94,
-  NiO:    74.69,
-  CuO:    79.55,
-  Cu2O:  143.09,
-  CoO:    74.93,
-  Cr2O3: 151.99,
-  P2O5:  141.94,
-  F:      19.00,
+  SnO2:  150.708,
+  MnO:    70.937,
+  MnO2:   86.936,
+  NiO:    74.6924,
+  CuO:    79.545,
+  Cu2O:  143.091,
+  CoO:    74.9322,
+  Cr2O3: 151.9892,
+  P2O5:  141.9425,
+  F:      18.998,
 }
 
 // ─── Database access ───────────────────────────────────────────
@@ -143,11 +143,11 @@ export function getMolarWeightSetInfos(): MolarWeightSetInfo[] {
   const infos: MolarWeightSetInfo[] = [
     {
       id: 'app_default',
-      name: 'App Default (≈ IUPAC 2023 Rounded)',
+      name: 'IUPAC 2023 (Standard)',
       year: 2023,
-      source: 'Stull Atlas',
-      authority: 'app',
-      notes: 'Current hardcoded values — close to IUPAC 2023 with practical rounding',
+      source: 'IUPAC',
+      authority: 'IUPAC',
+      notes: 'IUPAC 2023 Standard Atomic Weights with 2024 revisions — current international standard',
       oxideCount: APP_OXIDES.length,
     },
   ]

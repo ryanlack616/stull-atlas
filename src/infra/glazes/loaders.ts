@@ -6,9 +6,8 @@
  * the domain layer consumes the results without caring how they arrived.
  */
 
-import { GlazeRecipe, UMF, Atmosphere, SurfaceType, EpistemicState } from '@/types'
+import { GlazeRecipe, UMF, Atmosphere, SurfaceType, Transparency, EpistemicState, BASE_TYPE_IDS } from '@/types'
 import { classifyGlazeByName } from '@/domain/glaze'
-import { edition } from '@/edition'
 
 // ── Raw types for the processed Glazy JSON ──────────────────────
 
@@ -21,6 +20,7 @@ export interface RawGlazyGlaze {
   transparency: string | null
   atmosphere?: string
   ingredients: Array<{
+    id?: number
     name: string
     percentage: number
     isAddition?: boolean
@@ -32,6 +32,14 @@ export interface RawGlazyGlaze {
   imageUrl: string | null
   thumbnailUrl?: string | null
   imageUrls?: string[]
+  // Glazy taxonomy fields (may be present in richer exports)
+  base_type_id?: number
+  type_id?: number
+  subtype_id?: number
+  country?: string
+  status?: string
+  description?: string
+  specific_gravity?: number
 }
 
 // ── Loaders ─────────────────────────────────────────────────────
@@ -115,9 +123,11 @@ export async function loadGlazyDataset(): Promise<GlazeRecipe[]> {
   try {
     let data: RawGlazyGlaze[]
 
-    if (edition.offlineData) {
+    if (import.meta.env.VITE_OFFLINE_DATA === 'true') {
       // Studio: bundled JSON — no network needed
-      const mod = await import('@/data/glazes/glazy-processed.json')
+      // Dynamic path prevents Rollup from emitting a phantom chunk in web builds
+      const p = '@/data/glazes/' + 'glazy-processed.json'
+      const mod = await import(/* @vite-ignore */ p)
       data = (mod.default ?? mod) as RawGlazyGlaze[]
     } else {
       // Web: fetch from public directory
@@ -147,6 +157,15 @@ export async function loadGlazyDataset(): Promise<GlazeRecipe[]> {
         images.push(g.imageUrl)
       }
 
+      // Use Glazy's type_id if present, otherwise fall back to name-based classification
+      const glazeTypeId = g.type_id ?? g.subtype_id ?? classifyGlazeByName(g.name)
+
+      // Map transparency string
+      const transparency: Transparency | undefined =
+        g.transparency === 'opaque' || g.transparency === 'translucent' || g.transparency === 'transparent'
+          ? g.transparency
+          : g.transparency ? 'unknown' : undefined
+
       return {
         id: g.id,
         name: g.name,
@@ -154,16 +173,30 @@ export async function loadGlazyDataset(): Promise<GlazeRecipe[]> {
         sourceUrl: `https://glazy.org/recipes/${g.id.replace('glazy_', '')}`,
         ingredients: g.ingredients.map((ing) => ({
           material: ing.name,
+          glazyMaterialId: ing.id,
           amount: ing.percentage,
           unit: 'weight' as const,
+          isAdditional: ing.isAdditional ?? ing.isAddition ?? false,
         })),
         umf,
         coneRange: g.cone !== null ? [g.cone, g.cone] : ['?', '?'],
         atmosphere: (g.atmosphere || 'unknown') as Atmosphere,
         surfaceType: g.surface as SurfaceType,
-        glazeTypeId: classifyGlazeByName(g.name),
+        transparency,
+        baseType: g.base_type_id ? (BASE_TYPE_IDS[g.base_type_id] ?? 'glaze') : 'glaze',
+        baseTypeId: g.base_type_id ?? 460,
+        glazeTypeId,
+        subtypeId: g.subtype_id ?? null,
+        country: g.country,
+        description: g.description,
+        status: g.status === 'Production' ? 'production'
+              : g.status === 'Testing' ? 'testing'
+              : g.status === 'Discontinued' ? 'discontinued'
+              : g.status === 'Draft' ? 'draft'
+              : undefined,
+        specificGravity: g.specific_gravity,
         images: images.length > 0 ? images : undefined,
-        notes: g.transparency || undefined,
+        notes: !transparency && g.transparency ? g.transparency : undefined,
         umfConfidence: 'inferred' as EpistemicState,
         verified: false,
         _plotX: g.x,
