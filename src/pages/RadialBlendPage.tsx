@@ -127,7 +127,7 @@ export function RadialBlendPage() {
           <h3>Center Recipe</h3>
           <RecipeInput
             label="Center Glaze"
-            color="#3498db"
+            color="#6366F1"
             recipe={centerRecipe}
             onChange={setCenterRecipe}
           />

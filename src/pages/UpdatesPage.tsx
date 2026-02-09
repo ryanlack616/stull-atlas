@@ -2,7 +2,7 @@
  * UpdatesPage
  *
  * Changelog documenting the meaningful improvements from
- * Stull Atlas v1 (rlv.lol/stull) → v2 (rlv.lol/stullv2).
+ * Stull Atlas v1 (rlv.lol/stull) â†’ v2 (rlv.lol/stullv2).
  */
 
 import React from 'react'
@@ -19,15 +19,15 @@ export function UpdatesPage() {
         <section className="about-hero">
           <h1>What's New</h1>
           <p className="subtitle">
-            Stull Atlas changelog — latest features and improvements.
+            Stull Atlas changelog â€” latest features and improvements.
           </p>
         </section>
 
-        {/* ══════════════════════════════════════════════════
-            v3 — AI Recipe Suggestions
-            ══════════════════════════════════════════════════ */}
-        <section className="about-section" style={{ borderLeft: '3px solid var(--accent, #3498db)', paddingLeft: 16 }}>
-          <h2>🧪 v0.3.0 — AI Recipe Suggestions</h2>
+        {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+            v3 â€” AI Recipe Suggestions
+            â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+        <section className="about-section" style={{ borderLeft: '3px solid var(--accent, #6366F1)', paddingLeft: 16 }}>
+          <h2>ðŸ§ª v0.3.0 â€” AI Recipe Suggestions</h2>
           <p style={{ fontSize: 13, color: 'var(--text-dim)', margin: '0 0 12px' }}>June 2025</p>
           <p>
             Describe the glaze you want in plain English and the{' '}
@@ -35,42 +35,42 @@ export function UpdatesPage() {
             automatically.
           </p>
           <ul>
-            <li><strong>Natural language input</strong> — "matte celadon cone 10 reduction",
-              "glossy clear cone 6", "copper red cone 10" — just type what you're after.</li>
-            <li><strong>20+ glaze archetypes</strong> — Built-in knowledge base covering
+            <li><strong>Natural language input</strong> â€” "matte celadon cone 10 reduction",
+              "glossy clear cone 6", "copper red cone 10" â€” just type what you're after.</li>
+            <li><strong>20+ glaze archetypes</strong> â€” Built-in knowledge base covering
               celadon, tenmoku, shino, ash, crystalline, majolica, copper red, rutile blue,
               chun/jun, cobalt blue, crawl texture, and more.</li>
-            <li><strong>Smart query parsing</strong> — Extracts cone temperature, atmosphere,
+            <li><strong>Smart query parsing</strong> â€” Extracts cone temperature, atmosphere,
               surface type, colors, and glaze-style terms from your description.</li>
-            <li><strong>Dual optimization</strong> — Choose gradient descent for speed or genetic
+            <li><strong>Dual optimization</strong> â€” Choose gradient descent for speed or genetic
               algorithm for broader exploration.</li>
-            <li><strong>Complete recipe cards</strong> — Each suggestion includes ingredient
+            <li><strong>Complete recipe cards</strong> â€” Each suggestion includes ingredient
               percentages, colorant additions with expected effects, UMF analysis vs. targets,
               and detailed explanations.</li>
-            <li><strong>Safety warnings</strong> — Automatic alerts for atmosphere mismatches,
+            <li><strong>Safety warnings</strong> â€” Automatic alerts for atmosphere mismatches,
               food-safety concerns, and optimizer convergence notes.</li>
           </ul>
           <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>
-            Everything runs locally in your browser — no API keys or server required.
+            Everything runs locally in your browser â€” no API keys or server required.
           </p>
         </section>
 
         <hr style={{ border: 'none', borderTop: '1px solid var(--border-subtle)', margin: '32px 0' }} />
 
-        {/* ══════════════════════════════════════════════════
-            v2 — Full Rewrite
-            ══════════════════════════════════════════════════ */}
+        {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+            v2 â€” Full Rewrite
+            â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
         <section className="about-section">
-          <h2>v0.2.0 — Full Rewrite</h2>
+          <h2>v0.2.0 â€” Full Rewrite</h2>
           <p style={{ fontSize: 13, color: 'var(--text-dim)', margin: '0 0 12px' }}>May 2025</p>
           <p>
             v2 is a complete rewrite. The original Stull Atlas was a single-page chart viewer.
-            This version turns it into a full ceramic chemistry workbench — interactive 3D plots,
+            This version turns it into a full ceramic chemistry workbench â€” interactive 3D plots,
             blend calculators, recipe optimization, material databases, and more.
           </p>
         </section>
 
-        {/* ── 3D Visualization ── */}
+        {/* â”€â”€ 3D Visualization â”€â”€ */}
         <section className="about-section">
           <h2>3D Stull Plot</h2>
           <p>
@@ -79,24 +79,24 @@ export function UpdatesPage() {
             three dimensions.
           </p>
           <ul>
-            <li><strong>Surface fitting</strong> — Nadaraya-Watson kernel regression generates a
+            <li><strong>Surface fitting</strong> â€” Nadaraya-Watson kernel regression generates a
               smooth surface over the data, showing trends in the chemistry landscape.</li>
-            <li><strong>Camera presets</strong> — One-click views: Top-down, Front, Side,
+            <li><strong>Camera presets</strong> â€” One-click views: Top-down, Front, Side,
               Perspective, and Orbital auto-rotation for presentations.</li>
-            <li><strong>Drop lines</strong> — Vertical lines from each point to the floor for
+            <li><strong>Drop lines</strong> â€” Vertical lines from each point to the floor for
               easier spatial reading.</li>
-            <li><strong>Cluster highlights</strong> — DBSCAN clustering colors groups of similar
+            <li><strong>Cluster highlights</strong> â€” DBSCAN clustering colors groups of similar
               glazes so you can see natural groupings in 3D space.</li>
-            <li><strong>Void detection</strong> — Highlights empty regions of chemistry space
-              where no one has tested glazes yet — your exploration targets.</li>
-            <li><strong>Adjustable surface opacity</strong> — Slider to dial the fitted surface
+            <li><strong>Void detection</strong> â€” Highlights empty regions of chemistry space
+              where no one has tested glazes yet â€” your exploration targets.</li>
+            <li><strong>Adjustable surface opacity</strong> â€” Slider to dial the fitted surface
               from transparent to solid.</li>
-            <li><strong>Toggle controls</strong> — Show/hide drop lines, surface, clusters, and
+            <li><strong>Toggle controls</strong> â€” Show/hide drop lines, surface, clusters, and
               voids independently.</li>
           </ul>
         </section>
 
-        {/* ── Blend Calculators ── */}
+        {/* â”€â”€ Blend Calculators â”€â”€ */}
         <section className="about-section">
           <h2>Blend Calculators</h2>
           <p>
@@ -135,7 +135,7 @@ export function UpdatesPage() {
           </div>
         </section>
 
-        {/* ── Recipe Optimizer ── */}
+        {/* â”€â”€ Recipe Optimizer â”€â”€ */}
         <section className="about-section">
           <h2>Recipe Optimizer</h2>
           <p>
@@ -146,13 +146,13 @@ export function UpdatesPage() {
           </p>
           <ul>
             <li>Cone-specific UMF validation against Stull surface predictions</li>
-            <li>Multi-objective targeting (SiO₂, Al₂O₃, flux ratios simultaneously)</li>
+            <li>Multi-objective targeting (SiOâ‚‚, Alâ‚‚Oâ‚ƒ, flux ratios simultaneously)</li>
             <li>Material constraint support (min/max percentages per ingredient)</li>
-            <li>Visual convergence tracking — watch the optimizer zero in on solutions</li>
+            <li>Visual convergence tracking â€” watch the optimizer zero in on solutions</li>
           </ul>
         </section>
 
-        {/* ── Analysis Tools ── */}
+        {/* â”€â”€ Analysis Tools â”€â”€ */}
         <section className="about-section">
           <h2>Analysis Tools</h2>
           <p>
@@ -160,16 +160,16 @@ export function UpdatesPage() {
             the shape of the dataset:
           </p>
           <ul>
-            <li><strong>DBSCAN Clustering</strong> — Automatic detection of glaze groups based
+            <li><strong>DBSCAN Clustering</strong> â€” Automatic detection of glaze groups based
               on oxide proximity. Shows cluster boundaries and membership.</li>
-            <li><strong>Density Heatmap</strong> — Kernel density estimation shows where recipes
-              concentrate — popular chemistry regions light up.</li>
-            <li><strong>Void Detection</strong> — Grid-based detection of unexplored chemistry
+            <li><strong>Density Heatmap</strong> â€” Kernel density estimation shows where recipes
+              concentrate â€” popular chemistry regions light up.</li>
+            <li><strong>Void Detection</strong> â€” Grid-based detection of unexplored chemistry
               regions. Find the gaps nobody has filled yet.</li>
           </ul>
         </section>
 
-        {/* ── Compare Mode ── */}
+        {/* â”€â”€ Compare Mode â”€â”€ */}
         <section className="about-section">
           <h2>Compare Mode</h2>
           <p>
@@ -179,13 +179,13 @@ export function UpdatesPage() {
           </p>
         </section>
 
-        {/* ── Data & Filtering ── */}
+        {/* â”€â”€ Data & Filtering â”€â”€ */}
         <section className="about-section">
           <h2>3,000+ Glazes</h2>
           <p>
             The dataset is sourced from <a href="https://glazy.org" target="_blank"
-            rel="noopener noreferrer">Glazy</a> — the open ceramic recipe database.
-            Color-code points by cone temperature, surface type, source, flux ratio (R₂O:RO),
+            rel="noopener noreferrer">Glazy</a> â€” the open ceramic recipe database.
+            Color-code points by cone temperature, surface type, source, flux ratio (Râ‚‚O:RO),
             boron content, or data confidence level.
           </p>
           <p>
@@ -194,7 +194,7 @@ export function UpdatesPage() {
           </p>
         </section>
 
-        {/* ── Materials Database ── */}
+        {/* â”€â”€ Materials Database â”€â”€ */}
         <section className="about-section">
           <h2>Materials Database</h2>
           <p>
@@ -204,59 +204,59 @@ export function UpdatesPage() {
           </p>
         </section>
 
-        {/* ── Import / Export ── */}
+        {/* â”€â”€ Import / Export â”€â”€ */}
         <section className="about-section">
           <h2>Import &amp; Export</h2>
           <p>
             <Link to="/import-export">Import</Link> your own recipes from Glazy CSV exports,
             Insight XML files, or JSON. Export saved recipes to CSV for your studio notebook.
-            Recipe serialization includes versioning — your data stays portable.
+            Recipe serialization includes versioning â€” your data stays portable.
           </p>
         </section>
 
-        {/* ── Timeline ── */}
+        {/* â”€â”€ Timeline â”€â”€ */}
         <section className="about-section">
           <h2>Historical Timeline</h2>
           <p>
             A new <Link to="/timeline">Timeline</Link> page traces the history of glaze
-            chemistry — from ancient Egyptian faience to Stull's 1912 diagram and modern
+            chemistry â€” from ancient Egyptian faience to Stull's 1912 diagram and modern
             computational ceramics.
           </p>
         </section>
 
-        {/* ── WebGL Performance ── */}
+        {/* â”€â”€ WebGL Performance â”€â”€ */}
         <section className="about-section">
           <h2>WebGL-Accelerated Plots</h2>
           <p>
             Both 2D and 3D charts use WebGL rendering via Plotly's <code>scattergl</code> and{' '}
             <code>scatter3d</code> trace types. Ten thousand points render smoothly with
-            interactive zoom, pan, and hover — no canvas bottleneck.
+            interactive zoom, pan, and hover â€” no canvas bottleneck.
           </p>
           <p>
-            Plotly bundles are code-split — 2D and 3D packages load independently so you
+            Plotly bundles are code-split â€” 2D and 3D packages load independently so you
             only download what you need.
           </p>
         </section>
 
-        {/* ── UX Improvements ── */}
+        {/* â”€â”€ UX Improvements â”€â”€ */}
         <section className="about-section">
           <h2>UX &amp; Quality of Life</h2>
           <ul>
-            <li><strong>Dark / Light mode</strong> — Theme toggle with persistent preference.</li>
-            <li><strong>Lazy-loaded pages</strong> — Each page loads as a separate chunk with
+            <li><strong>Dark / Light mode</strong> â€” Theme toggle with persistent preference.</li>
+            <li><strong>Lazy-loaded pages</strong> â€” Each page loads as a separate chunk with
               automatic retry on stale deploys.</li>
-            <li><strong>Print support</strong> — Clean print layouts for every page, including
+            <li><strong>Print support</strong> â€” Clean print layouts for every page, including
               blend results and labels.</li>
-            <li><strong>Keyboard accessible</strong> — Full keyboard navigation, ARIA labels,
+            <li><strong>Keyboard accessible</strong> â€” Full keyboard navigation, ARIA labels,
               focus indicators, skip-to-content link.</li>
-            <li><strong>Similarity search</strong> — Click any glaze to find the closest matches
+            <li><strong>Similarity search</strong> â€” Click any glaze to find the closest matches
               ranked by oxide distance.</li>
-            <li><strong>In-app guide</strong> — Comprehensive <Link to="/guide">documentation</Link> for
+            <li><strong>In-app guide</strong> â€” Comprehensive <Link to="/guide">documentation</Link> for
               every feature.</li>
           </ul>
         </section>
 
-        {/* ── Under the Hood ── */}
+        {/* â”€â”€ Under the Hood â”€â”€ */}
         <section className="about-section">
           <h2>Under the Hood</h2>
           <ul>
@@ -278,7 +278,7 @@ export function UpdatesPage() {
             <a href="https://myclaycorner.com" target="_blank" rel="noopener noreferrer">
               My Clay Corner Studio
             </a>{' '}
-            — Howell, Michigan.
+            â€” Howell, Michigan.
           </p>
           <p className="version">v0.3.0</p>
         </section>

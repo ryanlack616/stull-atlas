@@ -151,7 +151,7 @@ export function UMFCalculatorPage() {
           <h3>Recipe</h3>
           <RecipeInput
             label="My Glaze"
-            color="#3498db"
+            color="#6366F1"
             recipe={recipe}
             onChange={setRecipe}
           />
@@ -185,7 +185,7 @@ export function UMFCalculatorPage() {
         {recipeSuggestions.length > 0 && (
           <div className="calc-section">
             {recipeSuggestions.map((s, i) => (
-              <p key={i} style={{ color: '#3498db', fontSize: 12, margin: '4px 0' }}>💡 {s}</p>
+              <p key={i} style={{ color: '#818CF8', fontSize: 12, margin: '4px 0' }}>💡 {s}</p>
             ))}
           </div>
         )}

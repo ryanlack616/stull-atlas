@@ -11,6 +11,8 @@ import { useAuthStore } from '@/stores'
 import { tierDisplayName, featuresForTier, type Feature } from '@/domain/tier'
 import { AuthModal } from '@/components/Auth'
 
+type UpgradeNotice = { tier: string; email: string } | null
+
 const FEATURE_LABELS: Record<Feature, string> = {
   explorer_2d: '2D Stull Chart Explorer',
   explorer_detail: 'Glaze Detail Panel',
@@ -76,6 +78,7 @@ export function PricingPage() {
   usePageTitle('Pricing')
   const { user, profile } = useAuthStore()
   const [showAuth, setShowAuth] = useState(false)
+  const [upgradeNotice, setUpgradeNotice] = useState<UpgradeNotice>(null)
   const currentTier = profile?.tier ?? 'free'
 
   const freeFeatures = featuresForTier('free')
@@ -105,7 +108,7 @@ export function PricingPage() {
       if (user.email) url.searchParams.set('prefilled_email', user.email)
       window.open(url.toString(), '_blank')
     } else {
-      alert(`Stripe payment links are not yet configured. Contact us for ${tier} access.`)
+      setUpgradeNotice({ tier, email: user.email ?? '' })
     }
   }
 
@@ -194,6 +197,25 @@ export function PricingPage() {
       </div>
 
       <AuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} defaultTab="signup" />
+
+      {upgradeNotice && (
+        <div className="upgrade-overlay" onClick={() => setUpgradeNotice(null)}>
+          <div className="upgrade-notice" onClick={e => e.stopPropagation()}>
+            <h3>Subscriptions launching soon</h3>
+            <p>
+              {upgradeNotice.tier === 'pro' ? 'Pro' : 'Solo'} subscriptions are coming soon.
+              In the meantime, grab a free trial code at our NCECA booth — or drop us a note and we'll get you set up.
+            </p>
+            <a
+              href={`mailto:stullatlas@rlv.lol?subject=${encodeURIComponent(`${upgradeNotice.tier.charAt(0).toUpperCase() + upgradeNotice.tier.slice(1)} Access Request`)}&body=${encodeURIComponent(`Hi, I'd like to upgrade to ${upgradeNotice.tier}.\n\nEmail: ${upgradeNotice.email}`)}`}
+              className="upgrade-notice-cta"
+            >
+              Request Access
+            </a>
+            <button className="upgrade-notice-close" onClick={() => setUpgradeNotice(null)}>Maybe later</button>
+          </div>
+        </div>
+      )}
 
       <style>{`
         .pricing-page {
@@ -388,6 +410,72 @@ export function PricingPage() {
 
         .pricing-faq details a {
           color: var(--text-link);
+        }
+
+        .upgrade-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(0,0,0,0.6);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+        }
+
+        .upgrade-notice {
+          background: var(--bg-secondary);
+          border: 1px solid var(--border-primary);
+          border-radius: 12px;
+          padding: 32px;
+          max-width: 420px;
+          width: 90%;
+          text-align: center;
+        }
+
+        .upgrade-notice h3 {
+          font-family: var(--font-display);
+          font-size: 20px;
+          font-weight: 600;
+          color: var(--text-bright);
+          margin: 0 0 12px;
+        }
+
+        .upgrade-notice p {
+          font-size: 14px;
+          color: var(--text-secondary);
+          line-height: 1.6;
+          margin: 0 0 24px;
+        }
+
+        .upgrade-notice-cta {
+          display: block;
+          width: 100%;
+          padding: 10px;
+          border-radius: 6px;
+          background: var(--accent);
+          color: #fff;
+          font-size: 14px;
+          font-weight: 500;
+          text-decoration: none;
+          text-align: center;
+          margin-bottom: 10px;
+        }
+
+        .upgrade-notice-cta:hover {
+          opacity: 0.9;
+        }
+
+        .upgrade-notice-close {
+          background: none;
+          border: none;
+          color: var(--text-muted);
+          font-size: 13px;
+          cursor: pointer;
+          padding: 6px;
+        }
+
+        .upgrade-notice-close:hover {
+          color: var(--text-secondary);
         }
       `}</style>
     </div>

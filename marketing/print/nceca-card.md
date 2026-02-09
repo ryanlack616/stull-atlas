@@ -32,7 +32,7 @@
 ┌──────────────────────────────────┐
 │                                  │
 │  ✓ Interactive Stull Charts      │
-│  ✓ 10,000+ glaze recipes        │
+│  ✓ 3,000+ glaze recipes         │
 │  ✓ Blend calculators             │
 │  ✓ AI-powered suggestions        │
 │                                  │

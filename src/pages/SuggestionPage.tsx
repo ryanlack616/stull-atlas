@@ -1,10 +1,10 @@
 /**
  * AI Recipe Suggestion Page
  *
- * "I want a celadon at cone 10" → optimized recipes with explanations.
+ * "I want a celadon at cone 10" â†’ optimized recipes with explanations.
  *
- * v3 flagship feature: natural language → glaze archetype matching →
- * automated optimizer → ranked recipe suggestions.
+ * v3 flagship feature: natural language â†’ glaze archetype matching â†’
+ * automated optimizer â†’ ranked recipe suggestions.
  */
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
@@ -14,7 +14,7 @@ import type { FiringSchedule, FiringRecommendation, MaterialSubstitution } from 
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { calcStyles } from './calc-styles'
 
-// ─── Example queries for inspiration ───────────────────────────
+// â”€â”€â”€ Example queries for inspiration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const EXAMPLE_QUERIES = [
   'celadon at cone 10',
@@ -31,7 +31,7 @@ const EXAMPLE_QUERIES = [
   'ash glaze cone 10',
 ]
 
-// ─── Component ─────────────────────────────────────────────────
+// â”€â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function SuggestionPage() {
   usePageTitle('Recipe Suggestions')
@@ -285,7 +285,7 @@ export function SuggestionPage() {
   )
 }
 
-// ─── Suggestion Card ───────────────────────────────────────────
+// â”€â”€â”€ Suggestion Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function SuggestionCard({
   suggestion,
@@ -334,7 +334,7 @@ function SuggestionCard({
           <div className="card-badges">
             <span className="badge surface">{archetype.surface}</span>
             <span className="badge cone">
-              Cone {archetype.coneRange[0]}–{archetype.coneRange[1]}
+              Cone {archetype.coneRange[0]}â€“{archetype.coneRange[1]}
             </span>
             <span className="badge atmosphere">{archetype.atmosphere}</span>
             {recipe.converged && <span className="badge converged">Converged</span>}
@@ -343,7 +343,7 @@ function SuggestionCard({
             </span>
           </div>
         </div>
-        <div className="card-expand">{expanded ? '▼' : '▶'}</div>
+        <div className="card-expand">{expanded ? 'â–¼' : 'â–¶'}</div>
       </div>
 
       {expanded && (
@@ -389,7 +389,7 @@ function SuggestionCard({
                   {colorants.map(c => (
                     <tr key={c.materialId}>
                       <td>{c.materialName}</td>
-                      <td>{c.minPercent}–{c.maxPercent}%</td>
+                      <td>{c.minPercent}â€“{c.maxPercent}%</td>
                       <td className="colorant-effect">{c.effect}</td>
                     </tr>
                   ))}
@@ -412,11 +412,11 @@ function SuggestionCard({
                   <span className="umf-target">
                     {tr.target !== null
                       ? `target: ${tr.target.toFixed(2)}`
-                      : `${tr.min?.toFixed(2) ?? '?'}–${tr.max?.toFixed(2) ?? '?'}`
+                      : `${tr.min?.toFixed(2) ?? '?'}â€“${tr.max?.toFixed(2) ?? '?'}`
                     }
                   </span>
                   <span className={`umf-status ${tr.satisfied ? 'ok' : 'miss'}`}>
-                    {tr.satisfied ? '✓' : `Δ${tr.delta > 0 ? '+' : ''}${tr.delta.toFixed(3)}`}
+                    {tr.satisfied ? 'âœ“' : `Î”${tr.delta > 0 ? '+' : ''}${tr.delta.toFixed(3)}`}
                   </span>
                 </div>
               ))}
@@ -439,7 +439,7 @@ function SuggestionCard({
               <h4>Notes &amp; Warnings</h4>
               <ul className="warnings-list">
                 {warnings.map((w, i) => (
-                  <li key={i} className="warning-item">⚠ {w}</li>
+                  <li key={i} className="warning-item">âš  {w}</li>
                 ))}
               </ul>
             </div>
@@ -452,7 +452,7 @@ function SuggestionCard({
                 className="section-toggle"
                 onClick={() => setShowFiring(!showFiring)}
               >
-                Firing Schedule {showFiring ? '▼' : '▶'}
+                Firing Schedule {showFiring ? 'â–¼' : 'â–¶'}
               </h4>
               {showFiring && (
                 <FiringSchedulePanel recommendation={firingSchedule} />
@@ -467,7 +467,7 @@ function SuggestionCard({
                 className="section-toggle"
                 onClick={() => setShowSubs(!showSubs)}
               >
-                Material Substitutions {showSubs ? '▼' : '▶'}
+                Material Substitutions {showSubs ? 'â–¼' : 'â–¶'}
               </h4>
               {showSubs && (
                 <SubstitutionPanel substitutions={substitutions} />
@@ -516,7 +516,7 @@ function SuggestionCard({
   )
 }
 
-// ─── Firing Schedule Panel ─────────────────────────────────────
+// â”€â”€â”€ Firing Schedule Panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function FiringSchedulePanel({ recommendation }: { recommendation: FiringRecommendation }) {
   const { glazeFire, bisqueFire, notes } = recommendation
@@ -557,7 +557,7 @@ function ScheduleTable({ schedule }: { schedule: FiringSchedule }) {
       <table className="recipe-table firing-table">
         <thead>
           <tr>
-            <th>Temp (°F / °C)</th>
+            <th>Temp (Â°F / Â°C)</th>
             <th>Rate</th>
             <th>Hold</th>
             <th>Note</th>
@@ -566,17 +566,17 @@ function ScheduleTable({ schedule }: { schedule: FiringSchedule }) {
         <tbody>
           {schedule.segments.map((seg, i) => (
             <tr key={i}>
-              <td className="temp-cell">{seg.tempF}°F / {seg.tempC}°C</td>
+              <td className="temp-cell">{seg.tempF}Â°F / {seg.tempC}Â°C</td>
               <td>
                 {seg.rateF === 0
                   ? 'Hold'
                   : seg.rateF === -999
                     ? 'Crash cool'
                     : seg.rateF < 0
-                      ? `${Math.abs(seg.rateF)}°F/hr ↓`
-                      : `${seg.rateF}°F/hr`}
+                      ? `${Math.abs(seg.rateF)}Â°F/hr â†“`
+                      : `${seg.rateF}Â°F/hr`}
               </td>
-              <td>{seg.holdMinutes > 0 ? `${seg.holdMinutes} min` : '—'}</td>
+              <td>{seg.holdMinutes > 0 ? `${seg.holdMinutes} min` : 'â€”'}</td>
               <td className="seg-note">{seg.note}</td>
             </tr>
           ))}
@@ -593,7 +593,7 @@ function ScheduleTable({ schedule }: { schedule: FiringSchedule }) {
   )
 }
 
-// ─── Substitution Panel ────────────────────────────────────────
+// â”€â”€â”€ Substitution Panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function SubstitutionPanel({
   substitutions,
@@ -627,7 +627,7 @@ function SubstitutionPanel({
   )
 }
 
-// ─── Styles ────────────────────────────────────────────────────
+// â”€â”€â”€ Styles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const suggestionStyles = `
   .suggestion-form {
@@ -650,7 +650,7 @@ const suggestionStyles = `
 
   .suggestion-input:focus {
     outline: none;
-    border-color: var(--accent, #3498db);
+    border-color: var(--accent, #6366F1);
   }
 
   .suggestion-input::placeholder {
@@ -662,7 +662,7 @@ const suggestionStyles = `
     padding: 10px 16px;
     border: none;
     border-radius: 8px;
-    background: var(--accent, #3498db);
+    background: var(--accent, #6366F1);
     color: white;
     font-size: 14px;
     font-weight: 600;
@@ -671,7 +671,7 @@ const suggestionStyles = `
   }
 
   .suggestion-submit:hover:not(:disabled) {
-    background: var(--accent-hover, #2980b9);
+    background: var(--accent-hover, #363380);
     transform: translateY(-1px);
   }
 
@@ -719,9 +719,9 @@ const suggestionStyles = `
   }
 
   .example-chip:hover:not(:disabled) {
-    background: var(--accent, #3498db);
+    background: var(--accent, #6366F1);
     color: white;
-    border-color: var(--accent, #3498db);
+    border-color: var(--accent, #6366F1);
   }
 
   .parsed-query {
@@ -801,7 +801,7 @@ const suggestionStyles = `
     width: 40px;
     height: 40px;
     border: 3px solid var(--border-primary);
-    border-top-color: var(--accent, #3498db);
+    border-top-color: var(--accent, #6366F1);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin-bottom: 16px;
@@ -856,11 +856,11 @@ const suggestionStyles = `
   }
 
   .suggestion-card:hover {
-    border-color: var(--accent, #3498db);
+    border-color: var(--accent, #6366F1);
   }
 
   .suggestion-card.expanded {
-    border-color: var(--accent, #3498db);
+    border-color: var(--accent, #6366F1);
   }
 
   .card-header {
@@ -874,7 +874,7 @@ const suggestionStyles = `
   .card-rank {
     font-size: 20px;
     font-weight: 700;
-    color: var(--accent, #3498db);
+    color: var(--accent, #6366F1);
     min-width: 32px;
   }
 
@@ -903,7 +903,7 @@ const suggestionStyles = `
 
   .badge.surface { background: #8e44ad22; color: #8e44ad; }
   .badge.cone { background: #e67e2222; color: #e67e22; }
-  .badge.atmosphere { background: #2980b922; color: #2980b9; }
+  .badge.atmosphere { background: #6366F122; color: #6366F1; }
   .badge.converged { background: #27ae6022; color: #27ae60; }
   .badge.relevance.high { background: #27ae6022; color: #27ae60; }
   .badge.relevance.medium { background: #f39c1222; color: #f39c12; }
@@ -1050,7 +1050,7 @@ const suggestionStyles = `
     transition: color 0.2s;
   }
   .section-toggle:hover {
-    color: var(--accent, #3498db);
+    color: var(--accent, #6366F1);
   }
 
   /* Firing schedule */
@@ -1118,8 +1118,8 @@ const suggestionStyles = `
   }
 
   .toggle-btn:hover {
-    border-color: var(--accent, #3498db);
-    color: var(--accent, #3498db);
+    border-color: var(--accent, #6366F1);
+    color: var(--accent, #6366F1);
   }
 
   .firing-notes {
@@ -1159,7 +1159,7 @@ const suggestionStyles = `
     background: var(--bg-primary);
     border-radius: 6px;
     padding: 8px 10px;
-    border-left: 3px solid var(--accent, #3498db);
+    border-left: 3px solid var(--accent, #6366F1);
   }
 
   .sub-header {
@@ -1206,10 +1206,10 @@ const suggestionStyles = `
 
   .refine-btn {
     padding: 8px 16px;
-    border: 1px dashed var(--accent, #3498db);
+    border: 1px dashed var(--accent, #6366F1);
     border-radius: 8px;
     background: transparent;
-    color: var(--accent, #3498db);
+    color: var(--accent, #6366F1);
     font-size: 13px;
     cursor: pointer;
     width: 100%;
@@ -1217,7 +1217,7 @@ const suggestionStyles = `
   }
 
   .refine-btn:hover {
-    background: var(--accent, #3498db);
+    background: var(--accent, #6366F1);
     color: white;
     border-style: solid;
   }
@@ -1252,14 +1252,14 @@ const suggestionStyles = `
 
   .refine-input:focus {
     outline: none;
-    border-color: var(--accent, #3498db);
+    border-color: var(--accent, #6366F1);
   }
 
   .refine-submit {
     padding: 8px 14px;
     border: none;
     border-radius: 6px;
-    background: var(--accent, #3498db);
+    background: var(--accent, #6366F1);
     color: white;
     font-size: 13px;
     font-weight: 600;

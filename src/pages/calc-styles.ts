@@ -75,7 +75,7 @@ export const calcStyles = `
   }
 
   .recipe-label {
-    border-left: 3px solid var(--accent, #3498db);
+    border-left: 3px solid var(--accent, #6366F1);
     padding-left: 8px;
     flex: 1;
   }
@@ -140,7 +140,7 @@ export const calcStyles = `
   }
 
   .material-input:focus {
-    border-color: var(--accent, #3498db);
+    border-color: var(--accent, #6366F1);
     outline: none;
   }
 
@@ -156,7 +156,7 @@ export const calcStyles = `
   }
 
   .amount-input:focus {
-    border-color: var(--accent, #3498db);
+    border-color: var(--accent, #6366F1);
     outline: none;
   }
 

@@ -39,5 +39,9 @@ marketing/
 
 - **Product Name**: Stull Atlas
 - **Tagline**: "Navigate the chemistry of ceramics."
-- **Colors**: Indigo (#4F46E5) primary, Amber (#F59E0B) accent
+- **Primary Color**: Indigo (#4F46E5) — dark UI uses lighter Indigo-500 (#6366F1)
+- **Accent Color**: Amber (#F59E0B)
+- **Dark Background**: #1E1B4B (deep indigo for print), #121212 (app dark mode)
 - **Tone**: Expert but approachable. Like a knowledgeable studio mate, not a textbook.
+- **Display Font**: Source Serif 4 (headings), system sans-serif (body)
+- **Logos**: `assets/logos/` — wordmark-dark.svg, wordmark-light.svg, icon-mark.svg

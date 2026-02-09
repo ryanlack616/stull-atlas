@@ -39,7 +39,7 @@ export class ErrorBoundary extends Component<Props, State> {
           color: 'var(--text-primary, #e0e0e0)', fontFamily: '-apple-system, sans-serif',
           padding: 40,
         }}>
-          <h1 style={{ fontSize: 48, margin: '0 0 16px', opacity: 0.3 }}>⚗</h1>
+          <h1 style={{ fontSize: 48, margin: '0 0 16px', opacity: 0.3 }}>âš—</h1>
           <h2 style={{ margin: '0 0 12px', fontSize: 20 }}>Something went wrong</h2>
           <p style={{ color: 'var(--text-secondary, #888)', fontSize: 14, maxWidth: 500, textAlign: 'center', margin: '0 0 24px' }}>
             {this.state.error?.message || 'An unexpected error occurred'}
@@ -50,7 +50,7 @@ export class ErrorBoundary extends Component<Props, State> {
               window.location.href = import.meta.env.BASE_URL || '/'
             }}
             style={{
-              padding: '10px 24px', background: 'var(--accent-bg, #2a4a6a)', border: '1px solid var(--accent, #3498db)',
+              padding: '10px 24px', background: 'var(--accent-bg, #282560)', border: '1px solid var(--accent, #6366F1)',
               borderRadius: 6, color: 'var(--text-bright, #fff)', fontSize: 14, cursor: 'pointer',
             }}
           >

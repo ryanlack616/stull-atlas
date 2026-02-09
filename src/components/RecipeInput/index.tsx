@@ -139,9 +139,9 @@ export function RecipeInput({ label, color, recipe, onChange, compact, datalistI
   const totalAmount = current.ingredients.reduce((sum, ing) => sum + (ing.amount || 0), 0)
 
   return (
-    <div className="recipe-input" style={{ '--accent': color || '#3498db' } as React.CSSProperties}>
+    <div className="recipe-input" style={{ '--accent': color || '#6366F1' } as React.CSSProperties}>
       <div className="recipe-header">
-        <div className="recipe-label" style={{ borderLeftColor: color || '#3498db' }}>
+        <div className="recipe-label" style={{ borderLeftColor: color || '#6366F1' }}>
           <input
             type="text"
             value={current.name}

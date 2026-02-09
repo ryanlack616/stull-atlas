@@ -2,9 +2,10 @@
 
 ## Conference Details
 - **Event**: NCECA 2026 Annual Conference
-- **Location**: Detroit, MI
-- **Booth**: TBD
-- **Dates**: TBD (typically March)
+- **Location**: Detroit, MI (Huntington Place)
+- **Dates**: March 18–21, 2026
+- **Booth**: Commercial Booth, 10' × 10'
+- **Booth Cost**: ~$1,900
 
 ## Card / QR Code
 - **URL**: `https://rlv.lol/stullv2/#/nceca?code=NCECA-XXXX-XXXX`
@@ -23,7 +24,7 @@ Scan for 30 days free Pro access →
 ## Card Copy (Back)
 ```
 ✓ Interactive Stull Charts (2D & 3D)
-✓ 10,000+ analyzed glaze recipes
+✓ 3,000+ analyzed glaze recipes
 ✓ Blend calculators & optimizer
 ✓ AI-powered suggestions
 

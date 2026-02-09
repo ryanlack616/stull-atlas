@@ -35,7 +35,7 @@ function lazyRetry<T extends React.ComponentType<any>>(
   )
 }
 
-// Lazy-loaded pages — split into separate chunks
+// Lazy-loaded pages â€” split into separate chunks
 const CalculatorsPage = lazyRetry(() => import('./pages/CalculatorsPage').then(m => ({ default: m.CalculatorsPage })))
 const UMFCalculatorPage = lazyRetry(() => import('./pages/UMFCalculatorPage').then(m => ({ default: m.UMFCalculatorPage })))
 const LineBlendPage = lazyRetry(() => import('./pages/LineBlendPage').then(m => ({ default: m.LineBlendPage })))
@@ -63,7 +63,7 @@ if (sessionStorage.getItem('stull-chunk-retry')) {
 
 /**
  * Error boundary specifically for chunk load failures.
- * Shows a "page failed to load — click to reload" message instead of blank white.
+ * Shows a "page failed to load â€” click to reload" message instead of blank white.
  */
 class ChunkErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   constructor(props: { children: ReactNode }) {
@@ -82,12 +82,12 @@ class ChunkErrorBoundary extends Component<{ children: ReactNode }, { hasError: 
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
           flex: 1, gap: 12, color: 'var(--text-secondary)', fontSize: 14, padding: 40,
         }}>
-          <p>This page failed to load — the app may have been updated.</p>
+          <p>This page failed to load â€” the app may have been updated.</p>
           <button
             onClick={() => window.location.reload()}
             style={{
-              padding: '8px 20px', background: 'var(--accent-bg, #2a4a6a)',
-              border: '1px solid var(--accent, #3498db)', borderRadius: 6,
+              padding: '8px 20px', background: 'var(--accent-bg, #282560)',
+              border: '1px solid var(--accent, #6366F1)', borderRadius: 6,
               color: 'var(--text-bright, #fff)', fontSize: 13, cursor: 'pointer',
             }}
           >
@@ -109,7 +109,7 @@ function PageLoader() {
       <div style={{
         width: 32, height: 32,
         border: '3px solid var(--border-primary, #333)',
-        borderTopColor: 'var(--accent, #3498db)',
+        borderTopColor: 'var(--accent, #6366F1)',
         borderRadius: '50%',
         animation: 'page-spin 0.8s linear infinite',
       }} />
@@ -135,10 +135,10 @@ function App() {
         <Route index element={<ExplorerPage />} />
         <Route path="calc" element={<LazyPage><CalculatorsPage /></LazyPage>} />
         <Route path="calc/umf" element={<LazyPage><UMFCalculatorPage /></LazyPage>} />
-        <Route path="calc/line-blend" element={<LazyPage><TierGate feature="line_blend" title="Line Blend Calculator" description="Two recipes, n steps between them — the classic line blend test."><LineBlendPage /></TierGate></LazyPage>} />
-        <Route path="calc/triaxial" element={<LazyPage><TierGate feature="triaxial_blend" title="Triaxial Blend Calculator" description="Three corner recipes on a simplex triangle — the classic triaxial test tile layout."><TriaxialBlendPage /></TierGate></LazyPage>} />
-        <Route path="calc/quadaxial" element={<LazyPage><TierGate feature="quadaxial_blend" title="Quadaxial Blend Calculator" description="Four corner recipes — explore a wider material space."><QuadaxialBlendPage /></TierGate></LazyPage>} />
-        <Route path="calc/biaxial" element={<LazyPage><TierGate feature="biaxial_blend" title="Biaxial Blend Calculator" description="Grid blend of two axes — systematic variation of two recipe pairs."><BiaxialBlendPage /></TierGate></LazyPage>} />
+        <Route path="calc/line-blend" element={<LazyPage><TierGate feature="line_blend" title="Line Blend Calculator" description="Two recipes, n steps between them â€” the classic line blend test."><LineBlendPage /></TierGate></LazyPage>} />
+        <Route path="calc/triaxial" element={<LazyPage><TierGate feature="triaxial_blend" title="Triaxial Blend Calculator" description="Three corner recipes on a simplex triangle â€” the classic triaxial test tile layout."><TriaxialBlendPage /></TierGate></LazyPage>} />
+        <Route path="calc/quadaxial" element={<LazyPage><TierGate feature="quadaxial_blend" title="Quadaxial Blend Calculator" description="Four corner recipes â€” explore a wider material space."><QuadaxialBlendPage /></TierGate></LazyPage>} />
+        <Route path="calc/biaxial" element={<LazyPage><TierGate feature="biaxial_blend" title="Biaxial Blend Calculator" description="Grid blend of two axes â€” systematic variation of two recipe pairs."><BiaxialBlendPage /></TierGate></LazyPage>} />
         <Route path="calc/radial" element={<LazyPage><TierGate feature="radial_blend" title="Radial Blend Calculator" description="Radial variation around a center recipe."><RadialBlendPage /></TierGate></LazyPage>} />
         <Route path="calc/space-filling" element={<LazyPage><TierGate feature="space_filling" title="Space-Filling Design" description="Maximize coverage of the oxide space with minimal test tiles."><SpaceFillingPage /></TierGate></LazyPage>} />
         <Route path="calc/optimizer" element={<LazyPage><TierGate feature="optimizer" title="Recipe Optimizer" description="Set UMF targets and let gradient descent or genetic algorithms find recipes that hit them."><OptimizerPage /></TierGate></LazyPage>} />
@@ -147,7 +147,7 @@ function App() {
         <Route path="import-export" element={<LazyPage><TierGate feature="import_export" title="Import / Export" description="Import glazes from JSON/CSV, export your saved recipes and collections."><ImportExportPage /></TierGate></LazyPage>} />
         <Route path="about" element={<LazyPage><AboutPage /></LazyPage>} />
         <Route path="guide" element={<LazyPage><GuidePage /></LazyPage>} />
-        <Route path="suggest" element={<LazyPage><TierGate feature="suggestion_engine" title="AI Recipe Suggestions" description="Describe the glaze you want in plain English — get optimized recipes with full UMF analysis."><SuggestionPage /></TierGate></LazyPage>} />
+        <Route path="suggest" element={<LazyPage><TierGate feature="suggestion_engine" title="AI Recipe Suggestions" description="Describe the glaze you want in plain English â€” get optimized recipes with full UMF analysis."><SuggestionPage /></TierGate></LazyPage>} />
         <Route path="updates" element={<LazyPage><UpdatesPage /></LazyPage>} />
         <Route path="pricing" element={<LazyPage><PricingPage /></LazyPage>} />
         <Route path="nceca" element={<LazyPage><NCECAPage /></LazyPage>} />

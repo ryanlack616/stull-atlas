@@ -29,7 +29,7 @@
 │   │              │ │
 │   └──────────────┘ │
 │                    │
-│  ✓ 10K+ glazes    │
+│  ✓ 3,000+ glazes  │
 │  ✓ Blend calcs    │
 │  ✓ AI suggestions │
 │  ✓ Free to start  │

@@ -18,7 +18,7 @@
   --text-dim: #555;
   --text-body: #bbb;
   --text-label: #aaa;
-  --text-link: #5ba3d9;
+  --text-link: #818CF8;
 
   /* Borders */
   --border-primary: #333;
@@ -26,11 +26,11 @@
   --border-subtle: #2a2a2a;
   --border-input: #3a3a3a;
 
-  /* Accent */
-  --accent: #3498db;
-  --accent-bg: #2a4a6a;
-  --accent-hover: #345a7a;
-  --accent-selection: #2980b9;
+  /* Accent — Indigo brand family */
+  --accent: #6366F1;
+  --accent-bg: #282560;
+  --accent-hover: #363380;
+  --accent-selection: #4F46E5;
 
   /* Status */
   --danger: #e74c3c;
@@ -57,17 +57,17 @@
   --text-dim: #aaa;
   --text-body: #444;
   --text-label: #555;
-  --text-link: #2980b9;
+  --text-link: #4338CA;
 
   --border-primary: #ddd;
   --border-secondary: #ccc;
   --border-subtle: #e0e0e0;
   --border-input: #bbb;
 
-  --accent: #2980b9;
-  --accent-bg: #d4e6f9;
-  --accent-hover: #bdd8f0;
-  --accent-selection: #3498db;
+  --accent: #4F46E5;
+  --accent-bg: #EEF2FF;
+  --accent-hover: #E0E7FF;
+  --accent-selection: #6366F1;
 
   --danger: #c0392b;
   --warning: #d35400;

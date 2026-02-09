@@ -115,7 +115,7 @@ export function BiaxialBlendPage() {
           <h3>Base Recipe</h3>
           <RecipeInput
             label="Base Glaze"
-            color="#3498db"
+            color="#6366F1"
             recipe={baseRecipe}
             onChange={setBaseRecipe}
           />
