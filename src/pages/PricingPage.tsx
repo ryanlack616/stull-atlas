@@ -220,6 +220,7 @@ export function PricingPage() {
               <a className="edu-cta" href="mailto:contact@stullatlas.app?subject=Department%20License%20Inquiry">Request Department License</a>
             </div>
           </div>
+          <p className="edu-footnote">Budget tight? If you're a professor who wants to use Stull Atlas in the classroom but can't swing the license fee, <a href="mailto:contact@stullatlas.app?subject=Edu%20Budget%20Request">just reach out</a>. We'll figure it out.</p>
         </section>
 
         <section className="pricing-faq">
@@ -629,6 +630,18 @@ export function PricingPage() {
         .edu-card-highlight .edu-cta {
           background: var(--accent);
           color: #fff;
+        }
+
+        .edu-footnote {
+          margin-top: 20px;
+          font-size: 13px;
+          color: var(--text-secondary);
+          text-align: center;
+          opacity: 0.85;
+        }
+
+        .edu-footnote a {
+          color: var(--accent);
         }
 
         .upgrade-overlay {
