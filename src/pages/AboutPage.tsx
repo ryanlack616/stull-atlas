@@ -7,6 +7,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { usePageTitle } from '@/hooks'
+import { edition } from '@/edition'
 
 export function AboutPage() {
   usePageTitle('About')
@@ -269,6 +270,71 @@ export function AboutPage() {
           </ul>
         </section>
 
+        {edition.id === 'studio' && (
+          <section className="about-section studio-appreciation">
+            <h2>Standing on Shoulders</h2>
+            <p className="appreciation-intro">
+              Stull Atlas Studio wouldn't exist without the generosity of the ceramics 
+              community. Two projects in particular made this tool possible — both built by 
+              individuals who chose to share their life's work openly.
+            </p>
+
+            <div className="appreciation-cards">
+              <a href="https://digitalfire.com" target="_blank" rel="noopener noreferrer" className="appreciation-card">
+                <div className="card-logo digitalfire-logo">
+                  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="24" cy="24" r="22" stroke="#2B5797" strokeWidth="2" fill="none" />
+                    <path d="M24 8 C20 16, 14 20, 14 28 C14 34, 18 40, 24 40 C30 40, 34 34, 34 28 C34 20, 28 16, 24 8Z" fill="#2B5797" opacity="0.9" />
+                    <path d="M24 14 C22 20, 18 23, 18 28 C18 32, 20 36, 24 36 C28 36, 30 32, 30 28 C30 23, 26 20, 24 14Z" fill="#4A90D9" opacity="0.7" />
+                    <path d="M24 22 C23 25, 21 27, 21 30 C21 32, 22 34, 24 34 C26 34, 27 32, 27 30 C27 27, 25 25, 24 22Z" fill="#7AB8F5" opacity="0.6" />
+                  </svg>
+                </div>
+                <div className="card-text">
+                  <h3>Digitalfire</h3>
+                  <p className="card-author">Tony Hansen</p>
+                  <p className="card-desc">
+                    Over 30 years of ceramic chemistry reference material, freely shared. 
+                    The materials database, oxide data, and troubleshooting knowledge that 
+                    powers Stull Atlas all trace back to Tony's extraordinary library. 
+                    Every potter who understands why their glaze crazes, or how to read a 
+                    unity formula, owes something to this work.
+                  </p>
+                </div>
+              </a>
+
+              <a href="https://glazy.org" target="_blank" rel="noopener noreferrer" className="appreciation-card">
+                <div className="card-logo glazy-logo">
+                  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="24" cy="24" r="22" stroke="#26A69A" strokeWidth="2" fill="none" />
+                    <path d="M16 14 L16 32 C16 36, 19 40, 24 40 C29 40, 32 36, 32 32 L32 14" stroke="#26A69A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+                    <path d="M12 14 L36 14" stroke="#26A69A" strokeWidth="2.5" strokeLinecap="round" />
+                    <ellipse cx="24" cy="30" rx="6" ry="3" fill="#26A69A" opacity="0.3" />
+                    <circle cx="21" cy="24" r="1.5" fill="#4DB6AC" opacity="0.7" />
+                    <circle cx="27" cy="22" r="1" fill="#4DB6AC" opacity="0.5" />
+                    <circle cx="24" cy="26" r="1.2" fill="#4DB6AC" opacity="0.6" />
+                  </svg>
+                </div>
+                <div className="card-text">
+                  <h3>Glazy</h3>
+                  <p className="card-author">Derek Philip Au</p>
+                  <p className="card-desc">
+                    The world's largest open glaze recipe database — 3,200+ recipes with full 
+                    UMF analysis, all CC BY-NC-SA 4.0 licensed. Derek's Stull region geometry, 
+                    temperature contours, and ceramic-chemistry-visualization project made 
+                    data-driven glaze exploration possible for everyone. The entire dataset 
+                    in Stull Atlas comes from Glazy.
+                  </p>
+                </div>
+              </a>
+            </div>
+
+            <p className="appreciation-closing">
+              These two projects represent decades of work given freely to the ceramics community. 
+              Stull Atlas Studio is proud to stand on their shoulders.
+            </p>
+          </section>
+        )}
+
         <section className="about-section about-footer">
           <p>
             Built by Ryan Lack at <a href="https://myclaycorner.com" target="_blank" rel="noopener noreferrer">My Clay Corner Studio</a> — 
@@ -276,8 +342,7 @@ export function AboutPage() {
           </p>
           <p style={{ marginTop: 8 }}>
             <Link to="/nceca" style={{ color: 'var(--text-link)' }}>NCECA 2026 — Detroit</Link>
-            {' · '}
-            <Link to="/pricing" style={{ color: 'var(--text-link)' }}>Plans & Pricing</Link>
+            {edition.showPricing && <>{' · '}<Link to="/pricing" style={{ color: 'var(--text-link)' }}>Plans & Pricing</Link></>}
             {' · '}
             <Link to="/help/variability" style={{ color: 'var(--text-link)' }}>Understanding Variability</Link>
           </p>
@@ -460,6 +525,103 @@ export function AboutPage() {
         .about-footer .version {
           font-size: 12px;
           color: var(--text-dim);
+        }
+
+        /* ── Studio Appreciation Section ──────────── */
+        .studio-appreciation {
+          margin-top: 48px;
+          padding-top: 32px;
+          border-top: 2px solid var(--accent);
+        }
+
+        .studio-appreciation h2 {
+          text-align: center;
+          font-size: 22px;
+          margin-bottom: 8px;
+        }
+
+        .appreciation-intro {
+          text-align: center;
+          font-style: italic;
+          opacity: 0.85;
+          max-width: 560px;
+          margin: 0 auto 28px;
+        }
+
+        .appreciation-cards {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          margin-bottom: 24px;
+        }
+
+        .appreciation-card {
+          display: flex;
+          gap: 20px;
+          padding: 24px;
+          background: var(--bg-secondary);
+          border: 1px solid var(--border-primary);
+          border-radius: 10px;
+          text-decoration: none;
+          color: inherit;
+          transition: all 0.2s;
+          align-items: flex-start;
+        }
+
+        .appreciation-card:hover {
+          border-color: var(--accent);
+          background: var(--bg-elevated);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .card-logo {
+          flex-shrink: 0;
+          width: 56px;
+          height: 56px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 12px;
+          background: var(--bg-tertiary);
+          padding: 4px;
+        }
+
+        .card-text h3 {
+          margin: 0 0 2px;
+          font-size: 18px;
+          font-family: var(--font-display);
+          color: var(--text-bright);
+        }
+
+        .card-author {
+          font-size: 13px;
+          color: var(--text-secondary);
+          margin: 0 0 8px;
+          font-style: italic;
+        }
+
+        .card-desc {
+          font-size: 14px;
+          line-height: 1.65;
+          color: var(--text-body);
+          margin: 0;
+        }
+
+        .appreciation-closing {
+          text-align: center;
+          font-size: 14px;
+          color: var(--text-secondary);
+          font-style: italic;
+        }
+
+        @media (max-width: 480px) {
+          .appreciation-card {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 20px 16px;
+          }
         }
       `}</style>
     </div>
