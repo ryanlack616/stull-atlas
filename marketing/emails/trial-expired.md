@@ -1,7 +1,7 @@
 # Trial Expired Email
 
 **Trigger**: Day trial ends  
-**From**: Stull Atlas <hello@rlv.lol>  
+**From**: Stull Atlas <hello@stullatlas.app>  
 **Subject**: Your Pro trial has ended — but your data is safe
 
 ---
@@ -26,7 +26,7 @@ Your Stull Atlas Pro trial ended today. Your account is now on the **Free** tier
 | Solo | $8/mo | Line blends, save recipes, import/export |
 | Pro  | $18/mo | Full blend suite, optimizer, AI suggestions |
 
-[See plans →](https://rlv.lol/stullv2/#/pricing)
+[See plans →](https://stullatlas.app/#/pricing)
 
 Thanks for trying Pro. We hope it made your glaze work easier.
 

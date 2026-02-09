@@ -40,7 +40,7 @@
 │   └─────┘ free    │
 │           trial   │
 │                    │
-│  rlv.lol/stullv2  │
+│  stullatlas.app  │
 │                    │
 └────────────────────┘
 ```

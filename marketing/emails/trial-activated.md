@@ -1,7 +1,7 @@
 # Trial Activated Email
 
 **Trigger**: User redeems a trial code or starts a free trial  
-**From**: Stull Atlas <hello@rlv.lol>  
+**From**: Stull Atlas <hello@stullatlas.app>  
 **Subject**: Your Pro trial is live — here's where to start
 
 ---
@@ -24,7 +24,7 @@ Your **{{trial_days}}-day Pro trial** is now active! Here's what you've unlocked
 **Analysis Tools**
 - DBSCAN clustering, density maps, void detection, surface fitting
 
-[Start exploring Pro features →](https://rlv.lol/stullv2/#/explorer)
+[Start exploring Pro features →](https://stullatlas.app/#/explorer)
 
 Your trial runs until **{{trial_end_date}}**. No credit card on file — it simply reverts to Free when it ends.
 

@@ -1,7 +1,7 @@
 # Welcome Email
 
 **Trigger**: User creates an account (any method)  
-**From**: Stull Atlas <hello@rlv.lol>  
+**From**: Stull Atlas <hello@stullatlas.app>  
 **Subject**: Welcome to Stull Atlas — let's explore some glazes
 
 ---
@@ -21,9 +21,9 @@ Welcome to Stull Atlas! You've just unlocked a new way to understand your glazes
 {{#if has_trial}}
 🎉 **Your Pro trial is active** — You have {{trial_days}} days to try everything: blends, optimizer, AI suggestions, and more.
 
-[Open Stull Atlas →](https://rlv.lol/stullv2)
+[Open Stull Atlas →](https://stullatlas.app)
 {{else}}
-Want to go further? [Start a free 7-day Pro trial →](https://rlv.lol/stullv2/#/pricing)
+Want to go further? [Start a free 7-day Pro trial →](https://stullatlas.app/#/pricing)
 {{/if}}
 
 Happy glazing,  
@@ -31,4 +31,4 @@ The Stull Atlas Team
 
 ---
 
-*You're receiving this because you signed up at rlv.lol/stullv2. [Unsubscribe]({{unsubscribe_url}})*
+*You're receiving this because you signed up at stullatlas.app. [Unsubscribe]({{unsubscribe_url}})*

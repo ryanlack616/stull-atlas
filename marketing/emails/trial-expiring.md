@@ -1,7 +1,7 @@
 # Trial Expiring Email
 
 **Trigger**: 3 days before trial end  
-**From**: Stull Atlas <hello@rlv.lol>  
+**From**: Stull Atlas <hello@stullatlas.app>  
 **Subject**: Your Pro trial ends in 3 days
 
 ---
@@ -27,7 +27,7 @@ If Pro has been useful, you can lock in your access:
 - **Solo** — $8/mo (line blends, save recipes, import/export)
 - **Pro** — $18/mo (everything)
 
-[Upgrade now →](https://rlv.lol/stullv2/#/pricing)
+[Upgrade now →](https://stullatlas.app/#/pricing)
 
 No pressure — Free is still fully functional for exploring and calculating.
 

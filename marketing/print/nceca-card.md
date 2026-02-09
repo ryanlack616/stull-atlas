@@ -25,7 +25,7 @@
 - Background: Dark indigo (#1E1B4B)
 - Text: White (#F5F3FF)
 - QR Code: White on indigo, 0.75" × 0.75"
-- QR URL: `https://rlv.lol/stullv2/#/nceca?code=NCECA-XXXX-XXXX`
+- QR URL: `https://stullatlas.app/#/nceca?code=NCECA-XXXX-XXXX`
 
 ## Back Layout
 ```
@@ -36,7 +36,7 @@
 │  ✓ Blend calculators             │
 │  ✓ AI-powered suggestions        │
 │                                  │
-│  rlv.lol/stullv2                 │
+│  stullatlas.app                 │
 │                                  │
 └──────────────────────────────────┘
 ```
@@ -54,7 +54,7 @@
 ## QR Code Generation
 Use `qrcode` npm package or similar:
 ```
-URL pattern: https://rlv.lol/stullv2/#/nceca?code=NCECA-{4char}-{4char}
+URL pattern: https://stullatlas.app/#/nceca?code=NCECA-{4char}-{4char}
 Error correction: M (15%)
 Size: 0.75" at 300dpi = 225×225 pixels minimum
 Format: SVG preferred for print

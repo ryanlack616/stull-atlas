@@ -25,7 +25,9 @@ marketing/
 │   └── nceca-followup.md  ← Post-conference follow-up
 └── print/                 ← Physical collateral
     ├── nceca-card.md       ← Business card spec (QR → /#/nceca?code=)
-    └── booth-banner.md     ← Banner/poster specs
+    ├── booth-banner.md     ← Banner/poster specs
+    ├── usb-drive.md        ← USB drive spec (Studio Edition handout)
+    └── usb-readme.html     ← Branded README page pre-loaded on USB
 ```
 
 ## Usage

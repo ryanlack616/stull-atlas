@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stull Atlas Studio</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    background: linear-gradient(145deg, #1E1B4B 0%, #312E81 50%, #1E1B4B 100%);
+    color: #E0E7FF;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+  }
+
+  .card {
+    max-width: 640px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 48px 40px;
+    backdrop-filter: blur(12px);
+  }
+
+  .logo {
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+
+  .logo span {
+    color: #F59E0B;
+  }
+
+  .edition {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #A5B4FC;
+    margin-bottom: 28px;
+  }
+
+  .tagline {
+    font-size: 18px;
+    color: #C7D2FE;
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+
+  .steps {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 32px;
+  }
+
+  .steps h2 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #F59E0B;
+    margin-bottom: 16px;
+  }
+
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .step:last-child { margin-bottom: 0; }
+
+  .step-num {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    background: #4F46E5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .step-text {
+    font-size: 15px;
+    color: #E0E7FF;
+    line-height: 1.5;
+    padding-top: 3px;
+  }
+
+  .step-text code {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+    font-size: 13px;
+    color: #F59E0B;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+    margin-bottom: 32px;
+  }
+
+  .feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #C7D2FE;
+  }
+
+  .check {
+    color: #F59E0B;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .links {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .links a {
+    color: #A5B4FC;
+    text-decoration: none;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(165, 180, 252, 0.3);
+    transition: color 0.2s;
+  }
+
+  .links a:hover {
+    color: #F59E0B;
+    border-color: #F59E0B;
+  }
+
+  .appreciation {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .appreciation a {
+    font-size: 12px;
+    color: #818CF8;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .appreciation a:hover { color: #F59E0B; }
+
+  @media (max-width: 500px) {
+    .card { padding: 32px 24px; }
+    .features { grid-template-columns: 1fr; }
+    .logo { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Stull Atlas<span>.</span></div>
+  <div class="edition">Studio Edition</div>
+  <p class="tagline">
+    Navigate the chemistry of ceramics &mdash; everything unlocked, fully offline, no account needed.
+  </p>
+
+  <div class="steps">
+    <h2>Quick Start</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text">Run <code>Stull-Atlas-Studio-Setup.exe</code> from this USB drive</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text">Open <strong>Stull Atlas Studio</strong> from your Start Menu or Desktop</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text">Explore 3,000+ glazes on the interactive Stull chart</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-text">(Optional) Import <code>sample-glazes.json</code> from File &gt; Import for starter recipes</div>
+    </div>
+  </div>
+
+  <div class="features">
+    <div class="feature"><span class="check">&#10003;</span> Interactive 2D &amp; 3D Stull Charts</div>
+    <div class="feature"><span class="check">&#10003;</span> 3,200+ analyzed glaze recipes</div>
+    <div class="feature"><span class="check">&#10003;</span> UMF calculator &amp; recipe input</div>
+    <div class="feature"><span class="check">&#10003;</span> Line, triaxial &amp; radial blends</div>
+    <div class="feature"><span class="check">&#10003;</span> Space-filling experimental designs</div>
+    <div class="feature"><span class="check">&#10003;</span> AI-powered glaze suggestions</div>
+    <div class="feature"><span class="check">&#10003;</span> Similarity search &amp; clustering</div>
+    <div class="feature"><span class="check">&#10003;</span> Works offline &mdash; no internet needed</div>
+  </div>
+
+  <div class="links">
+    <a href="https://stullatlas.app">stullatlas.app</a>
+    <a href="https://digitalfire.com">Digitalfire Reference</a>
+    <a href="https://glazy.org">Glazy Open Recipes</a>
+  </div>
+
+  <div class="appreciation">
+    <a href="https://digitalfire.com">Built on Digitalfire&rsquo;s ceramic chemistry references</a>
+    <span style="color: rgba(255,255,255,0.15);">&bull;</span>
+    <a href="https://glazy.org">Powered by Glazy&rsquo;s open recipe database</a>
+  </div>
+</div>
+</body>
+</html>

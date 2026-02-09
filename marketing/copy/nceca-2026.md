@@ -8,7 +8,7 @@
 - **Booth Cost**: ~$1,900
 
 ## Card / QR Code
-- **URL**: `https://rlv.lol/stullv2/#/nceca?code=NCECA-XXXX-XXXX`
+- **URL**: `https://stullatlas.app/#/nceca?code=NCECA-XXXX-XXXX`
 - **QR Content**: Same URL with unique code per card
 - **Card Size**: Standard business card (3.5" × 2")
 
@@ -28,7 +28,7 @@ Scan for 30 days free Pro access →
 ✓ Blend calculators & optimizer
 ✓ AI-powered suggestions
 
-rlv.lol/stullv2
+stullatlas.app
 ```
 
 ## Booth Talking Points

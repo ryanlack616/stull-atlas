@@ -1,7 +1,7 @@
 # NCECA Follow-Up Email
 
 **Trigger**: 2 days after NCECA conference ends  
-**From**: Stull Atlas <hello@rlv.lol>  
+**From**: Stull Atlas <hello@stullatlas.app>  
 **Subject**: Great meeting you at NCECA — your Pro access is waiting
 
 ---
@@ -15,7 +15,7 @@ Your **30-day Pro trial** is already active — nice work. Here are some things 
 {{else}}
 Haven't redeemed your trial code yet? You still can:
 
-[Activate your code →](https://rlv.lol/stullv2/#/nceca?code={{trial_code}})
+[Activate your code →](https://stullatlas.app/#/nceca?code={{trial_code}})
 {{/if}}
 
 **Recommended first steps:**
@@ -26,9 +26,9 @@ Haven't redeemed your trial code yet? You still can:
 4. **Try the AI** — Go to Suggest and type "a satin white for cone 10 reduction"
 
 **Resources:**
-- [Interactive Guide](https://rlv.lol/stullv2/#/guide) — Learn the Stull chart basics
-- [About Stull Atlas](https://rlv.lol/stullv2/#/about) — The story behind the tool
-- [Pricing](https://rlv.lol/stullv2/#/pricing) — Plans and features
+- [Interactive Guide](https://stullatlas.app/#/guide) — Learn the Stull chart basics
+- [About Stull Atlas](https://stullatlas.app/#/about) — The story behind the tool
+- [Pricing](https://stullatlas.app/#/pricing) — Plans and features
 
 Questions about anything you saw at the booth? Just reply to this email.
 
