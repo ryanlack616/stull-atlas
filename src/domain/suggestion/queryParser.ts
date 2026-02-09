@@ -8,7 +8,7 @@
  * Examples:
  *   "celadon at cone 10"              → { type: 'celadon', cone: 10 }
  *   "matte white cone 6 oxidation"    → { type: 'matte', color: 'white', cone: 6, atmosphere: 'oxidation' }
- *   "food safe clear for dinnerware"  → { type: 'clear', tags: ['food safe', 'dinnerware'] }
+ *   "copper red reduction"            → { type: 'copper red', atmosphere: 'reduction' }
  *   "I want something like copper red" → { type: 'copper red' }
  */
 
@@ -118,7 +118,7 @@ const GLAZE_TYPE_TERMS = [
   'clear', 'transparent', 'liner',
   'matte', 'matt', 'satin', 'gloss',
   'white', 'black',
-  'food safe', 'food-safe', 'functional', 'dinnerware', 'tableware',
+  'functional',
   'crawl', 'lichen', 'texture', 'volcanic',
   'porcelain', 'stoneware', 'earthenware',
   'hares fur', "hare's fur", 'oil spot',

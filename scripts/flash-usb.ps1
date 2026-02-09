@@ -37,11 +37,16 @@ if (-not $installer) {
 $readmeHtml   = Join-Path $RepoRoot "marketing\print\usb-readme.html"
 $sampleGlazes = Join-Path $RepoRoot "src\data\glazes\sample-glazes.json"
 
+# Read version from package.json
+$pkgJson  = Get-Content (Join-Path $RepoRoot "package.json") -Raw | ConvertFrom-Json
+$version  = $pkgJson.version
+$exeName  = "stull-atlas-v$version.exe"
+
 # Quick-start text (inline — no separate file needed)
 $quickStart = @"
-STULL ATLAS STUDIO - Quick Start
+STULL ATLAS STUDIO v$version - Quick Start
 ================================
-1. Run "Stull-Atlas-Studio-Setup.exe" from this drive
+1. Run "$exeName" from this drive
 2. Open Stull Atlas Studio from your Start Menu or Desktop
 3. Explore 3,000+ glazes on the interactive Stull chart
 4. (Optional) Import "sample-glazes.json" via File > Import
@@ -87,10 +92,10 @@ foreach ($drive in $usbDrives) {
   Write-Host "--- Flashing $($drive.DeviceID) ($($drive.VolumeName)) ---" -ForegroundColor Green
 
   try {
-    # Copy installer (rename to clean name)
-    $dest = Join-Path $root "Stull-Atlas-Studio-Setup.exe"
+    # Copy installer with versioned name
+    $dest = Join-Path $root $exeName
     Copy-Item $installer.FullName $dest -Force
-    Write-Host "  [OK] Installer" -ForegroundColor DarkGreen
+    Write-Host "  [OK] $exeName" -ForegroundColor DarkGreen
 
     # Copy README.html
     if (Test-Path $readmeHtml) {

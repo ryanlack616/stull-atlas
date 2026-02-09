@@ -507,19 +507,6 @@ function buildWarnings(
     )
   }
 
-  // Food safety
-  const unsafeOxides: OxideSymbol[] = ['BaO', 'PbO']
-  for (const oxide of unsafeOxides) {
-    const actual = recipe.umf[oxide]
-    if (actual && actual > 0.05) {
-      const troubleRef = getTroubleRef('food safe')
-      const link = troubleRef ? ` Learn more: ${troubleRef.url}` : ''
-      warnings.push(
-        `Contains significant ${oxide} (${actual.toFixed(2)} moles). May not be food-safe.${link}`,
-      )
-    }
-  }
-
   // Non-convergence
   if (!recipe.converged) {
     warnings.push(
@@ -554,7 +541,7 @@ function noMatchMessage(parsed: ParsedGlazeQuery): string {
   parts.push('  • An atmosphere: oxidation, reduction...')
   parts.push('\nExamples:')
   parts.push('  "celadon at cone 10"')
-  parts.push('  "food safe clear gloss cone 6"')
+  parts.push('  "matte white stoneware cone 6"')
   parts.push('  "floating blue satin"')
   parts.push('  "copper red reduction"')
 

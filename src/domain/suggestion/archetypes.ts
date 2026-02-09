@@ -298,7 +298,7 @@ export const GLAZE_ARCHETYPES: GlazeArchetype[] = [
     aliases: ['clear', 'transparent', 'clear gloss', 'liner', 'cone 6 clear'],
     family: 'clear',
     description:
-      'Workhorse clear glaze for mid-fire. Balanced flux, medium-high silica. Food-safe base for stains and oxides.',
+      'Workhorse clear glaze for mid-fire. Balanced flux, medium-high silica. Reliable base for stains and oxides.',
     targets: [
       { oxide: 'SiO2', min: 3.2, max: 4.0, weight: 3 },
       { oxide: 'Al2O3', min: 0.3, max: 0.4, weight: 3 },
@@ -312,7 +312,7 @@ export const GLAZE_ARCHETYPES: GlazeArchetype[] = [
     atmosphere: 'either',
     surface: 'gloss',
     keyMaterials: ['custer-feldspar', 'silica', 'whiting', 'epk', 'talc', 'ferro-frit-3134'],
-    tags: ['clear', 'transparent', 'gloss', 'functional', 'liner', 'food safe', 'cone 6', 'base'],
+    tags: ['clear', 'transparent', 'gloss', 'functional', 'liner', 'cone 6', 'base'],
   },
 
   {
@@ -606,31 +606,7 @@ export const GLAZE_ARCHETYPES: GlazeArchetype[] = [
     tags: ['crawl', 'lichen', 'texture', 'volcanic', 'crater', 'decorative', 'thick'],
   },
 
-  // ── Functional Bases ───────────────────────────────────────
 
-  {
-    id: 'food-safe-cone6',
-    name: 'Food-Safe Functional (Cone 6)',
-    aliases: ['food safe', 'dinnerware', 'functional', 'tableware', 'durable'],
-    family: 'functional',
-    description:
-      'Durable, food-safe base optimized for dinnerware. Balanced SiO2:Al2O3 ratio, moderate fluxes, good thermal shock resistance.',
-    targets: [
-      { oxide: 'SiO2', min: 3.2, max: 4.0, weight: 3 },
-      { oxide: 'Al2O3', min: 0.3, max: 0.45, weight: 3 },
-      { oxide: 'CaO', min: 0.25, max: 0.45, weight: 2 },
-      { oxide: 'Na2O', min: 0.1, max: 0.2, weight: 1 },
-      { oxide: 'K2O', min: 0.05, max: 0.15, weight: 1 },
-      { oxide: 'MgO', min: 0.05, max: 0.15, weight: 1 },
-      { oxide: 'B2O3', min: 0.0, max: 0.1, weight: 1 },
-    ],
-    coneRange: [5, 7],
-    atmosphere: 'either',
-    surface: 'gloss',
-    keyMaterials: ['custer-feldspar', 'silica', 'whiting', 'epk', 'talc'],
-    notes: 'Avoid BaO, PbO, lithium, and high colorant amounts for food safety. Keep SiO2:Al2O3 around 8-10:1.',
-    tags: ['food safe', 'functional', 'dinnerware', 'tableware', 'durable', 'cone 6', 'safe'],
-  },
 ]
 
 // ─── Lookup Helpers ─────────────────────────────────────────────

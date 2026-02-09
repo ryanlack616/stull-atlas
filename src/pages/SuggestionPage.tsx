@@ -19,7 +19,6 @@ import { OxideLink } from '@/components/UMFVisuals/OxideLink'
 
 const EXAMPLE_QUERIES = [
   'celadon at cone 10',
-  'food safe clear gloss cone 6',
   'copper red reduction',
   'floating blue satin cone 6',
   'matte white stoneware',
@@ -235,7 +234,7 @@ export function SuggestionPage() {
                 and optimize a recipe for you.
               </p>
               <p className="empty-hint">
-                Try: <em>"celadon at cone 10"</em> or <em>"food safe clear gloss cone 6"</em>
+                Try: <em>"celadon at cone 10"</em> or <em>"floating blue satin cone 6"</em>
               </p>
             </div>
           )}

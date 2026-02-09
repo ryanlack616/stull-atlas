@@ -78,11 +78,6 @@ describe('parseGlazeQuery', () => {
     expect(q.glazeTerms).toContain('floating blue')
   })
 
-  it('extracts "food safe" as a glaze term', () => {
-    const q = parseGlazeQuery('food safe clear cone 6')
-    expect(q.glazeTerms).toContain('food safe')
-  })
-
   it('has higher confidence with more info', () => {
     const sparse = parseGlazeQuery('blue')
     const rich = parseGlazeQuery('cobalt blue cone 6 oxidation gloss')
@@ -256,12 +251,6 @@ describe('suggestRecipes', () => {
   it('works with genetic method', () => {
     const result = suggestRecipes({ query: 'matte cone 6', method: 'genetic' })
     expect(result.suggestions.length).toBeGreaterThan(0)
-  })
-
-  it('suggests food-safe recipes', () => {
-    const result = suggestRecipes({ query: 'food safe dinnerware cone 6', maxSuggestions: 5 })
-    expect(result.suggestions.length).toBeGreaterThan(0)
-    expect(result.status).toBe('success')
   })
 
   it('generates explanation text', () => {
