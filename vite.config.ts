@@ -2,6 +2,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'node:path'
 
+// https://v2.tauri.app/start/frontend/vite/
+const host = process.env.TAURI_DEV_HOST
+
 export default defineConfig({
   base: '/',
   plugins: [react()],
@@ -10,6 +13,20 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src')
     }
   },
+  // Prevent Vite from obscuring Rust errors
+  clearScreen: false,
+  server: {
+    port: 5173,
+    strictPort: true,
+    host: host || false,
+    hmr: host
+      ? { protocol: 'ws', host, port: 1421 }
+      : undefined,
+    watch: {
+      ignored: ['**/src-tauri/**'],
+    },
+  },
+  envPrefix: ['VITE_', 'TAURI_ENV_*'],
   build: {
     manifest: true, // generates .vite/manifest.json for SW pre-caching
     chunkSizeWarningLimit: 2200, // Plotly GL bundles are ~2MB, expected

@@ -9,3 +9,4 @@
 
 export * from './blend'
 export * from './export'
+export * from './platform'

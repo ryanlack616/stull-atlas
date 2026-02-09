@@ -1,16 +1,16 @@
-# Stull Atlas - Gift Edition Builder
+# Stull Atlas - Studio Edition Builder
 #
 # Builds a fully unlocked, offline-capable PWA for distribution
 # on micro SD cards. All features enabled, no auth required.
 #
 # Usage:
-#   .\scripts\build-gift.ps1
-#   .\scripts\build-gift.ps1 -OutputDir "D:\my-sd-card\StullAtlas"
+#   .\scripts\build-studio.ps1
+#   .\scripts\build-studio.ps1 -OutputDir "D:\my-sd-card\StullAtlas"
 #
 # Output: A self-contained folder with:
 #   - All built web assets (HTML, JS, CSS, fonts, data)
-#   - serve.bat / serve.sh — one-click portable launcher
-#   - README.txt — instructions for the recipient
+#   - serve.bat / serve.sh - one-click portable launcher
+#   - README.txt - instructions for the recipient
 
 param(
     [string]$OutputDir = ""
@@ -25,12 +25,12 @@ if (-not (Test-Path "$projectRoot\package.json")) {
     $projectRoot = $PSScriptRoot
 }
 
-Write-Host "`n=== Stull Atlas - Gift Edition ===" -ForegroundColor Magenta
+Write-Host "`n=== Stull Atlas - Studio Edition ===" -ForegroundColor Magenta
 Write-Host "  Building fully unlocked offline PWA..." -ForegroundColor DarkGray
 
 # Default output directory
 if (-not $OutputDir) {
-    $OutputDir = Join-Path $projectRoot "gift-edition"
+    $OutputDir = Join-Path $projectRoot "studio-edition"
 }
 
 # Step 1: Build with VITE_DEMO_MODE=true
@@ -77,7 +77,7 @@ if (-not (Test-Path $distDir)) {
 }
 
 # Step 2: Prepare output directory
-Write-Host "`n[2/4] Preparing gift package..." -ForegroundColor Yellow
+Write-Host "`n[2/4] Preparing studio package..." -ForegroundColor Yellow
 
 if (Test-Path $OutputDir) {
     Remove-Item $OutputDir -Recurse -Force
@@ -105,10 +105,10 @@ Write-Host "`n[3/4] Creating launcher scripts..." -ForegroundColor Yellow
 # Windows launcher (batch file)
 $batLines = @(
     '@echo off'
-    'title Stull Atlas - Gift Edition'
+    'title Stull Atlas - Studio Edition'
     'echo.'
     'echo  ========================================'
-    'echo   Stull Atlas - Gift Edition'
+    'echo   Stull Atlas - Studio Edition'
     'echo   Ceramic Glaze Explorer'
     'echo  ========================================'
     'echo.'
@@ -145,7 +145,7 @@ $shLines = @(
     '#!/bin/bash'
     'echo ""'
     'echo "  ========================================"'
-    'echo "   Stull Atlas - Gift Edition"'
+    'echo "   Stull Atlas - Studio Edition"'
     'echo "   Ceramic Glaze Explorer"'
     'echo "  ========================================"'
     'echo ""'
@@ -180,7 +180,7 @@ Write-Host "`n[4/4] Creating README..." -ForegroundColor Yellow
 
 $readmeLines = @(
     '==========================================='
-    '  STULL ATLAS - GIFT EDITION'
+    '  STULL ATLAS - STUDIO EDITION'
     '  Ceramic Glaze Chemistry Explorer'
     '==========================================='
     ''
@@ -243,7 +243,7 @@ $files = Get-ChildItem -Path $OutputDir -Recurse -File
 $totalSize = ($files | Measure-Object -Sum Length).Sum
 $sizeMB = [math]::Round($totalSize / 1MB, 1)
 
-Write-Host "`n=== Gift Edition Ready ===" -ForegroundColor Green
+Write-Host "`n=== Studio Edition Ready ===" -ForegroundColor Green
 Write-Host "  Location: $OutputDir" -ForegroundColor Cyan
 Write-Host "  Files:    $($files.Count)" -ForegroundColor Cyan
 Write-Host "  Size:     $sizeMB MB" -ForegroundColor Cyan

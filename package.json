@@ -16,10 +16,14 @@
     "e2e:headed": "playwright test --headed",
     "deploy": "powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1",
     "deploy:skip-build": "powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1 -SkipBuild",
-    "setup": "powershell -ExecutionPolicy Bypass -File scripts/setup-supabase.ps1"
+    "setup": "powershell -ExecutionPolicy Bypass -File scripts/setup-supabase.ps1",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.95.3",
+    "@tauri-apps/api": "^2.10.1",
     "decimal.js": "^10.4.3",
     "density-clustering": "^1.3.0",
     "immer": "^10.0.3",
