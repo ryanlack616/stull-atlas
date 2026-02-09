@@ -1,0 +1,184 @@
+/**
+ * Digitalfire Full-Text Store
+ *
+ * Lazy-loads the complete Digitalfire Reference Library (~4,800 pages)
+ * from a sidecar JSON file. Not bundled into the main JS — fetched
+ * on-demand when the user opens the Library tab.
+ *
+ * The JSON lives at /data/digitalfire/pages.json and is generated
+ * by scripts/extract-digitalfire.py from the SQLite database.
+ */
+
+// ─── Types ──────────────────────────────────────────────────────
+
+export interface DigitalfirePage {
+  url: string
+  title: string
+  category: string
+  description?: string
+  body: string
+}
+
+/** Raw JSON shape (short keys to save bandwidth) */
+interface RawPage {
+  u: string  // url
+  t: string  // title
+  c: string  // category
+  d?: string // description
+  b: string  // body text
+}
+
+// ─── State ──────────────────────────────────────────────────────
+
+let pages: DigitalfirePage[] | null = null
+let urlIndex: Map<string, DigitalfirePage> | null = null
+let loadPromise: Promise<DigitalfirePage[]> | null = null
+let loadError: string | null = null
+
+// ─── Public API ─────────────────────────────────────────────────
+
+/** Whether the full library data has been loaded */
+export function isLoaded(): boolean {
+  return pages !== null
+}
+
+/** Whether there was an error loading (e.g. file not present) */
+export function getLoadError(): string | null {
+  return loadError
+}
+
+/** Total pages in the library (0 if not loaded) */
+export function getPageCount(): number {
+  return pages?.length ?? 0
+}
+
+/**
+ * Load the full library. Returns the pages array.
+ * Safe to call multiple times — only fetches once.
+ */
+export async function loadLibrary(): Promise<DigitalfirePage[]> {
+  if (pages) return pages
+  if (loadPromise) return loadPromise
+
+  loadPromise = (async () => {
+    try {
+      const resp = await fetch('/data/digitalfire/pages.json')
+      if (!resp.ok) {
+        throw new Error(`Failed to load library: ${resp.status}`)
+      }
+      const raw: RawPage[] = await resp.json()
+
+      // Expand short keys
+      pages = raw.map(r => ({
+        url: r.u,
+        title: r.t,
+        category: r.c,
+        description: r.d,
+        body: r.b,
+      }))
+
+      // Build URL index
+      urlIndex = new Map()
+      for (const p of pages) {
+        urlIndex.set(p.url, p)
+      }
+
+      loadError = null
+      return pages
+    } catch (err) {
+      loadError = err instanceof Error ? err.message : 'Unknown error'
+      loadPromise = null // Allow retry
+      throw err
+    }
+  })()
+
+  return loadPromise
+}
+
+/**
+ * Get full article text by URL.
+ * Returns null if not loaded or URL not found.
+ */
+export function getArticle(url: string): DigitalfirePage | null {
+  if (!urlIndex) return null
+  return urlIndex.get(url) ?? null
+}
+
+/**
+ * Simple, fast full-text search across the complete library.
+ * Searches title, description, and body text.
+ * Returns results sorted by relevance.
+ */
+export function searchFullText(query: string, limit = 20): DigitalfirePage[] {
+  if (!pages || !query.trim()) return []
+
+  const q = query.toLowerCase().trim()
+  const words = q.split(/\s+/).filter(w => w.length >= 2)
+  if (words.length === 0) return []
+
+  const scored: { page: DigitalfirePage; score: number }[] = []
+
+  for (const page of pages) {
+    const titleLower = page.title.toLowerCase()
+    const bodyLower = page.body.toLowerCase()
+    const descLower = (page.description || '').toLowerCase()
+
+    let score = 0
+
+    // Exact title match
+    if (titleLower === q) score += 200
+    // Title starts with query
+    else if (titleLower.startsWith(q)) score += 100
+    // Title contains query
+    else if (titleLower.includes(q)) score += 60
+
+    // Description match
+    if (descLower.includes(q)) score += 30
+
+    // Word-level matching
+    for (const word of words) {
+      if (titleLower.includes(word)) score += 15
+      if (descLower.includes(word)) score += 8
+
+      // Body matching — check first 2000 chars more heavily
+      const bodyStart = bodyLower.slice(0, 2000)
+      if (bodyStart.includes(word)) score += 5
+      else if (bodyLower.includes(word)) score += 2
+    }
+
+    // Category boost — articles and glossary are higher value
+    if (score > 0) {
+      const catBoost: Record<string, number> = {
+        glossary: 10, trouble: 8, article: 6, oxide: 5,
+        material: 4, test: 3, recipe: 3, hazard: 2,
+      }
+      score += catBoost[page.category] || 0
+      scored.push({ page, score })
+    }
+  }
+
+  scored.sort((a, b) => b.score - a.score)
+  return scored.slice(0, limit).map(s => s.page)
+}
+
+/**
+ * Get all pages in a given category.
+ */
+export function getByCategory(category: string): DigitalfirePage[] {
+  if (!pages) return []
+  return pages.filter(p => p.category === category)
+}
+
+/**
+ * Get all unique categories with page counts.
+ */
+export function getCategories(): { category: string; count: number }[] {
+  if (!pages) return []
+  const counts = new Map<string, number>()
+  for (const p of pages) {
+    counts.set(p.category, (counts.get(p.category) || 0) + 1)
+  }
+  return [...counts.entries()]
+    .map(([category, count]) => ({ category, count }))
+    .sort((a, b) => b.count - a.count)
+}
