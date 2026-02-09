@@ -6,12 +6,12 @@
  */
 
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { usePageTitle } from '@/hooks'
-import { useAuthStore } from '@/stores'
+import { useAuthStore, isFreePeriodActive } from '@/stores'
 import { tierDisplayName, featuresForTier, type Feature } from '@/domain/tier'
 import { AuthModal } from '@/components/Auth'
 
+type BillingPeriod = 'monthly' | 'annual'
 type UpgradeNotice = { tier: string; email: string } | null
 
 const FEATURE_LABELS: Record<Feature, string> = {
@@ -80,7 +80,9 @@ export function PricingPage() {
   const { user, profile } = useAuthStore()
   const [showAuth, setShowAuth] = useState(false)
   const [upgradeNotice, setUpgradeNotice] = useState<UpgradeNotice>(null)
+  const [billing, setBilling] = useState<BillingPeriod>('annual')
   const currentTier = profile?.tier ?? 'free'
+  const freePeriod = isFreePeriodActive()
 
   const freeFeatures = featuresForTier('free')
   const soloFeatures = featuresForTier('solo')
@@ -97,14 +99,18 @@ export function PricingPage() {
       setShowAuth(true)
       return
     }
-    // Stripe payment links — will be env vars or hardcoded after Stripe setup
-    const links: Record<string, string> = {
+    // Stripe/Square payment links — will be env vars or hardcoded after setup
+    const monthlyLinks: Record<string, string> = {
       solo: import.meta.env.VITE_STRIPE_LINK_SOLO ?? '#',
       pro: import.meta.env.VITE_STRIPE_LINK_PRO ?? '#',
     }
+    const annualLinks: Record<string, string> = {
+      solo: import.meta.env.VITE_STRIPE_LINK_SOLO_ANNUAL ?? '#',
+      pro: import.meta.env.VITE_STRIPE_LINK_PRO_ANNUAL ?? '#',
+    }
+    const links = billing === 'annual' ? annualLinks : monthlyLinks
     const link = links[tier]
     if (link && link !== '#') {
-      // Append email for pre-fill
       const url = new URL(link)
       if (user.email) url.searchParams.set('prefilled_email', user.email)
       window.open(url.toString(), '_blank')
@@ -121,7 +127,28 @@ export function PricingPage() {
           <p className="pricing-subtitle">
             Stull Atlas is free for basic exploration. Upgrade for advanced tools, saving, and analysis.
           </p>
+          {freePeriod && (
+            <div className="pricing-free-banner">
+              All features free through April 30 — <button className="pricing-free-link" onClick={() => setShowAuth(true)}>sign up</button> to unlock everything.
+            </div>
+          )}
         </section>
+
+        {/* Billing toggle */}
+        <div className="billing-toggle">
+          <button
+            className={`billing-btn ${billing === 'monthly' ? 'billing-active' : ''}`}
+            onClick={() => setBilling('monthly')}
+          >
+            Monthly
+          </button>
+          <button
+            className={`billing-btn ${billing === 'annual' ? 'billing-active' : ''}`}
+            onClick={() => setBilling('annual')}
+          >
+            Annual <span className="billing-save">Save 2 months</span>
+          </button>
+        </div>
 
         <div className="tier-grid">
           <TierCard
@@ -135,37 +162,65 @@ export function PricingPage() {
           />
           <TierCard
             name="Solo"
-            price="$8"
-            period="month"
+            price={billing === 'annual' ? '$72' : '$8'}
+            period={billing === 'annual' ? 'year' : 'month'}
             description="For the studio potter who wants deeper glaze analysis"
             features={soloFeatures}
-            cta="Upgrade to Solo"
-            onAction={() => handlePaidAction('solo')}
+            cta={freePeriod ? 'Free Through April' : 'Upgrade to Solo'}
+            onAction={() => freePeriod ? setShowAuth(true) : handlePaidAction('solo')}
             current={currentTier === 'solo'}
           />
           <TierCard
             name="Pro"
-            price="$18"
-            period="month"
+            price={billing === 'annual' ? '$156' : '$18'}
+            period={billing === 'annual' ? 'year' : 'month'}
             description="Full toolset — optimizer, AI suggestions, advanced analysis"
             features={proFeatures}
             highlight
-            cta="Upgrade to Pro"
-            onAction={() => handlePaidAction('pro')}
+            cta={freePeriod ? 'Free Through April' : 'Upgrade to Pro'}
+            onAction={() => freePeriod ? setShowAuth(true) : handlePaidAction('pro')}
             current={currentTier === 'pro'}
           />
           <TierCard
             name="Education"
-            price="Contact us"
-            description="Classroom licenses for ceramic arts programs — request a quote"
+            price="Free – $500"
+            period="year"
+            description="Student, classroom, and department licenses for ceramic arts programs"
             features={proFeatures}
-            cta="Request Info"
+            cta="See Edu Plans"
             onAction={() => {
-              window.location.href = 'mailto:contact@stullatlas.app?subject=Edu%20License%20Inquiry'
+              document.getElementById('edu-section')?.scrollIntoView({ behavior: 'smooth' })
             }}
             current={currentTier === 'edu_individual' || currentTier === 'edu_classroom'}
           />
         </div>
+
+        {/* Education tiers */}
+        <section className="edu-section" id="edu-section">
+          <h2>Education Pricing</h2>
+          <p className="edu-subtitle">Special rates for students, professors, and ceramic arts departments.</p>
+
+          <div className="edu-grid">
+            <div className="edu-card">
+              <h3>Student</h3>
+              <div className="edu-price">Free</div>
+              <p className="edu-desc">Solo-level access for students with a .edu email address. Auto-verified on signup.</p>
+              <button className="edu-cta" onClick={() => setShowAuth(true)}>Sign Up with .edu</button>
+            </div>
+            <div className="edu-card edu-card-highlight">
+              <h3>Classroom</h3>
+              <div className="edu-price">$200<span className="edu-period">/year</span></div>
+              <p className="edu-desc">Pro access for up to 30 students. Perfect for a single course section in glaze calculation or ceramic chemistry.</p>
+              <a className="edu-cta" href="mailto:contact@stullatlas.app?subject=Classroom%20License%20Inquiry">Request Classroom License</a>
+            </div>
+            <div className="edu-card">
+              <h3>Department</h3>
+              <div className="edu-price">$500<span className="edu-period">/year</span></div>
+              <p className="edu-desc">Pro access for unlimited seats across your entire ceramics program. All students and faculty.</p>
+              <a className="edu-cta" href="mailto:contact@stullatlas.app?subject=Department%20License%20Inquiry">Request Department License</a>
+            </div>
+          </div>
+        </section>
 
         <section className="pricing-faq">
           <h2>Frequently Asked</h2>
@@ -176,23 +231,28 @@ export function PricingPage() {
           </details>
 
           <details>
-            <summary>What's included in a trial code?</summary>
-            <p>Trial codes from events like NCECA grant full Pro access for 30 days. No credit card required.</p>
+            <summary>What does "free through April" mean?</summary>
+            <p>Through April 30, 2026, all features are unlocked for anyone who signs up with a verified email. No credit card required. After the free period, you can continue on the Free plan or upgrade to Solo or Pro.</p>
           </details>
 
           <details>
             <summary>Can I cancel anytime?</summary>
-            <p>Yes. Cancel through your Stripe subscription portal. You keep access until the end of your billing period.</p>
+            <p>Yes. Cancel from your account settings. You keep access until the end of your billing period.</p>
           </details>
 
           <details>
-            <summary>Do you offer educational discounts?</summary>
-            <p>Yes. We offer classroom licenses for ceramic arts programs at a substantial discount. <a href="mailto:contact@stullatlas.app?subject=Edu%20License%20Inquiry">Get in touch</a> for pricing.</p>
+            <summary>How do educational licenses work?</summary>
+            <p>Students get free Solo access with any .edu email. Professors can purchase a Classroom license ($200/yr, up to 30 seats) or a Department license ($500/yr, unlimited seats). <a href="mailto:contact@stullatlas.app?subject=Edu%20License%20Inquiry">Email us</a> to get started.</p>
           </details>
 
           <details>
             <summary>Is my data safe?</summary>
             <p>Your recipes and settings are stored in a secure database. We never share your data. Export your data at any time.</p>
+          </details>
+
+          <details>
+            <summary>Do you offer a conference discount?</summary>
+            <p>Yes! At NCECA 2026 in Detroit (March 25–28), Pro annual plans are available for $110/year — visit us in the Resource Hall.</p>
           </details>
         </section>
       </div>
@@ -202,20 +262,22 @@ export function PricingPage() {
       {upgradeNotice && (
         <div className="upgrade-overlay" onClick={() => setUpgradeNotice(null)}>
           <div className="upgrade-notice" onClick={e => e.stopPropagation()}>
-            <h3>Get started today</h3>
+            <h3>{freePeriod ? 'Free Through April' : 'Get Started Today'}</h3>
             <p>
-              Visit us at the NCECA booth for a free 30-day trial code,
-              or request instant access by email.
+              {freePeriod
+                ? 'Sign up with a verified email to unlock all Pro features through April 30, 2026. No credit card needed.'
+                : 'Online payments coming soon — request access by email and we\'ll get you set up.'}
             </p>
-            <Link to="/nceca" style={{ display: 'block', marginBottom: 12, color: 'var(--accent)', fontSize: 14 }}>
-              → Get a trial code at NCECA 2026
-            </Link>
-            <a
-              href={`mailto:contact@stullatlas.app?subject=${encodeURIComponent(`${upgradeNotice.tier.charAt(0).toUpperCase() + upgradeNotice.tier.slice(1)} Access Request`)}&body=${encodeURIComponent(`Hi, I'd like to upgrade to ${upgradeNotice.tier}.\n\nEmail: ${upgradeNotice.email}`)}`}
-              className="upgrade-notice-cta"
-            >
-              Request Access
-            </a>
+            {freePeriod ? (
+              <button className="upgrade-notice-cta" style={{ border: 'none', cursor: 'pointer' }} onClick={() => { setUpgradeNotice(null); setShowAuth(true) }}>Sign Up Free</button>
+            ) : (
+              <a
+                href={`mailto:contact@stullatlas.app?subject=${encodeURIComponent(`${upgradeNotice.tier.charAt(0).toUpperCase() + upgradeNotice.tier.slice(1)} Access Request`)}&body=${encodeURIComponent(`Hi, I'd like to upgrade to ${upgradeNotice.tier}.\n\nEmail: ${upgradeNotice.email}`)}`}
+                className="upgrade-notice-cta"
+              >
+                Request Access
+              </a>
+            )}
             <button className="upgrade-notice-close" onClick={() => setUpgradeNotice(null)}>Maybe later</button>
           </div>
         </div>
@@ -251,6 +313,66 @@ export function PricingPage() {
           font-size: 16px;
           color: var(--text-secondary);
           margin: 0;
+        }
+
+        .pricing-free-banner {
+          margin-top: 16px;
+          padding: 10px 20px;
+          border-radius: 8px;
+          background: rgba(46, 204, 113, 0.12);
+          border: 1px solid rgba(46, 204, 113, 0.3);
+          color: #2ecc71;
+          font-size: 14px;
+          font-weight: 500;
+        }
+
+        .pricing-free-link {
+          background: none;
+          border: none;
+          color: #2ecc71;
+          text-decoration: underline;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 600;
+          padding: 0;
+        }
+
+        .billing-toggle {
+          display: flex;
+          justify-content: center;
+          gap: 4px;
+          margin-bottom: 32px;
+          background: var(--bg-tertiary, var(--bg-secondary));
+          border-radius: 8px;
+          padding: 4px;
+          width: fit-content;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .billing-btn {
+          padding: 8px 20px;
+          border-radius: 6px;
+          border: none;
+          background: transparent;
+          color: var(--text-secondary);
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.15s;
+        }
+
+        .billing-active {
+          background: var(--bg-secondary);
+          color: var(--text-bright);
+          box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+
+        .billing-save {
+          font-size: 11px;
+          color: #2ecc71;
+          font-weight: 600;
+          margin-left: 6px;
         }
 
         .tier-grid {
@@ -414,6 +536,99 @@ export function PricingPage() {
 
         .pricing-faq details a {
           color: var(--text-link);
+        }
+
+        .edu-section {
+          max-width: 900px;
+          margin: 0 auto 60px;
+        }
+
+        .edu-section h2 {
+          font-size: 22px;
+          font-weight: 600;
+          color: var(--text-bright);
+          margin: 0 0 8px;
+          text-align: center;
+        }
+
+        .edu-subtitle {
+          font-size: 14px;
+          color: var(--text-secondary);
+          margin: 0 0 24px;
+          text-align: center;
+        }
+
+        .edu-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+        }
+
+        @media (max-width: 700px) {
+          .edu-grid { grid-template-columns: 1fr; }
+        }
+
+        .edu-card {
+          background: var(--bg-secondary);
+          border: 1px solid var(--border-primary);
+          border-radius: 10px;
+          padding: 24px 20px;
+          text-align: center;
+        }
+
+        .edu-card-highlight {
+          border-color: var(--accent);
+          box-shadow: 0 0 0 1px var(--accent);
+        }
+
+        .edu-card h3 {
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--text-bright);
+          margin: 0 0 8px;
+        }
+
+        .edu-price {
+          font-size: 28px;
+          font-weight: 700;
+          color: var(--text-bright);
+          margin-bottom: 8px;
+        }
+
+        .edu-period {
+          font-size: 14px;
+          color: var(--text-secondary);
+          font-weight: 400;
+        }
+
+        .edu-desc {
+          font-size: 13px;
+          color: var(--text-secondary);
+          line-height: 1.5;
+          margin: 0 0 16px;
+        }
+
+        .edu-cta {
+          display: inline-block;
+          padding: 8px 24px;
+          border-radius: 6px;
+          border: 1px solid var(--accent);
+          background: var(--accent-bg);
+          color: var(--text-bright);
+          font-size: 13px;
+          font-weight: 500;
+          cursor: pointer;
+          text-decoration: none;
+          transition: all 0.15s;
+        }
+
+        .edu-cta:hover {
+          background: var(--accent-hover);
+        }
+
+        .edu-card-highlight .edu-cta {
+          background: var(--accent);
+          color: #fff;
         }
 
         .upgrade-overlay {
