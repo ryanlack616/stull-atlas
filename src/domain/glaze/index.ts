@@ -25,3 +25,16 @@ export {
 } from './glazeService'
 
 export type { SimilarityResult, SimilarityOptions } from './glazeService'
+
+// Glaze type taxonomy
+export {
+  GLAZE_TYPE_CATALOG,
+  GLAZE_TYPE_BY_ID,
+  getGlazeTypeGroups,
+  classifyGlazeByName,
+  glazeTypeName,
+  glazeTypeColor,
+  glazeTypeRoot,
+} from './glazeTypes'
+
+export type { GlazeTypeInfo, GlazeTypeGroup } from './glazeTypes'

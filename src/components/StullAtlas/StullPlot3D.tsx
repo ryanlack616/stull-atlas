@@ -24,6 +24,7 @@ import { useGlazeStore, useDatasetStore, useSelectionStore, useRecipeStore, useT
 import { OxideSymbol, GlazePlotPoint, SurfaceType, EpistemicState } from '@/types'
 import { getOxideValue } from '@/calculator/umf'
 import { fitSurface, type SurfaceGrid } from '@/analysis/surfaceFit'
+import { glazeTypeColor, glazeTypeName } from '@/domain/glaze/glazeTypes'
 
 // ─── Public types ──────────────────────────────────────────────
 
@@ -33,7 +34,7 @@ export type ZAxisOption =
 
 export type CameraPreset = 'default' | 'top' | 'side-x' | 'side-y'
 
-type ColorByOption = 'cone' | 'surface' | 'source' | 'flux_ratio' | 'confidence' | 'boron' | 'z_axis'
+type ColorByOption = 'cone' | 'surface' | 'source' | 'flux_ratio' | 'confidence' | 'boron' | 'z_axis' | 'glaze_type'
 
 interface StullPlot3DProps {
   zAxis?: ZAxisOption
@@ -450,8 +451,11 @@ export function StullPlot3D({
 
   // ─── Color values ─────────────────────────────────────────────
 
-  const colorValues = useMemo(() =>
-    plotData.map(p => {
+  const colorValues = useMemo(() => {
+    if (colorBy === 'glaze_type') {
+      return plotData.map(p => glazeTypeColor(p.glazeTypeId))
+    }
+    return plotData.map(p => {
       switch (colorBy) {
         case 'z_axis': return p.z
         case 'cone': return p.cone ?? 6
@@ -462,7 +466,8 @@ export function StullPlot3D({
         case 'boron': return p.boron
         default: return 0
       }
-    }),
+    })
+  },
   [plotData, colorBy])
 
   // ─── Z range and floor ────────────────────────────────────────
@@ -507,17 +512,19 @@ export function StullPlot3D({
         size: 2.5,
         opacity: showSurface ? 0.65 : 0.8,
         color: colorValues,
-        colorscale: isCone ? CONE_COLORSCALE : (COLOR_SCALES[colorBy] || 'Viridis'),
-        reversescale: false,
-        cmin: isCone ? -4 : undefined,
-        cmax: isCone ? 10 : undefined,
-        colorbar: {
-          title: colorBy === 'z_axis' ? zAxisLabel(zAxis) : getColorBarTitle(colorBy),
-          thickness: 15,
-          len: 0.5,
-          tickvals: isCone ? [-4, -2, 0, 2, 4, 6, 8, 10] : undefined,
-          ticktext: isCone ? ['04', '02', '0', '2', '4', '6', '8', '10'] : undefined,
-        },
+        ...(colorBy === 'glaze_type' ? {} : {
+          colorscale: isCone ? CONE_COLORSCALE : (COLOR_SCALES[colorBy] || 'Viridis'),
+          reversescale: false,
+          cmin: isCone ? -4 : undefined,
+          cmax: isCone ? 10 : undefined,
+          colorbar: {
+            title: colorBy === 'z_axis' ? zAxisLabel(zAxis) : getColorBarTitle(colorBy),
+            thickness: 15,
+            len: 0.5,
+            tickvals: isCone ? [-4, -2, 0, 2, 4, 6, 8, 10] : undefined,
+            ticktext: isCone ? ['04', '02', '0', '2', '4', '6', '8', '10'] : undefined,
+          },
+        }),
         line: { width: 0 },
       },
       hoverinfo: 'text' as const,
@@ -818,6 +825,7 @@ export function StullPlot3D({
         fluxRatio: 0,
         boron: 0,
         confidence: 'inferred',
+        glazeTypeId: null
       })
     }
   }, [setHoveredPoint])

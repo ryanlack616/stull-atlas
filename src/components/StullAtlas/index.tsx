@@ -19,7 +19,7 @@ import { explorerStyles } from './explorer-styles'
 const StullPlot3D = lazy(() => import('./StullPlot3D').then(m => ({ default: m.StullPlot3D })))
 const AnalysisPanel = lazy(() => import('@/components/AnalysisPanel').then(m => ({ default: m.AnalysisPanel })))
 
-type ColorByOption = 'cone' | 'surface' | 'source' | 'flux_ratio' | 'confidence' | 'boron' | 'z_axis'
+type ColorByOption = 'cone' | 'surface' | 'source' | 'flux_ratio' | 'confidence' | 'boron' | 'z_axis' | 'glaze_type'
 
 /** Subscript helper for oxide formulas */
 const subscript = (s: string) => s.replace(/([A-Z][a-z]?)(\d+)/g, '$1<sub>$2</sub>')
@@ -88,6 +88,7 @@ export function StullAtlas() {
   const colorOptions: { value: ColorByOption; label: string }[] = [
     ...(is3D ? [{ value: 'z_axis' as ColorByOption, label: '↕ Z Axis' }] : []),
     { value: 'cone', label: 'Cone' },
+    { value: 'glaze_type', label: 'Glaze Type' },
     { value: 'surface', label: 'Surface' },
     { value: 'source', label: 'Source' },
     { value: 'flux_ratio', label: 'R2O:RO Ratio' },

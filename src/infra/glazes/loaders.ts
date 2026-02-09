@@ -7,6 +7,7 @@
  */
 
 import { GlazeRecipe, UMF, Atmosphere, SurfaceType, EpistemicState } from '@/types'
+import { classifyGlazeByName } from '@/domain/glaze/glazeTypes'
 
 // ── Raw types for the processed Glazy JSON ──────────────────────
 
@@ -102,6 +103,7 @@ export async function loadGlazyDataset(): Promise<GlazeRecipe[]> {
         coneRange: g.cone !== null ? [g.cone, g.cone] : ['?', '?'],
         atmosphere: 'unknown' as Atmosphere,
         surfaceType: g.surface as SurfaceType,
+        glazeTypeId: classifyGlazeByName(g.name),
         notes: g.transparency || undefined,
         umfConfidence: 'inferred' as EpistemicState,
         verified: false,

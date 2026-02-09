@@ -11,11 +11,12 @@ import { OxideSymbol, GlazePlotPoint, SurfaceType, EpistemicState } from '@/type
 import { getOxideValue } from '@/calculator/umf'
 import { roundTo } from '@/calculator'
 import { CONE_LIMITS } from '@/calculator/validation'
+import { glazeTypeColor, glazeTypeName } from '@/domain/glaze/glazeTypes'
 
 interface StullPlotProps {
   xAxis?: OxideSymbol
   yAxis?: OxideSymbol
-  colorBy?: 'cone' | 'surface' | 'source' | 'flux_ratio' | 'confidence' | 'boron' | 'z_axis'
+  colorBy?: 'cone' | 'surface' | 'source' | 'flux_ratio' | 'confidence' | 'boron' | 'z_axis' | 'glaze_type'
   zoom?: number
   width?: number
   height?: number
@@ -297,6 +298,10 @@ export function StullPlot({
   
   // Calculate color values
   const colorValues = useMemo(() => {
+    if (colorBy === 'glaze_type') {
+      // Discrete per-point hex colors from the taxonomy
+      return validPoints.map(p => glazeTypeColor(p.glazeTypeId))
+    }
     return validPoints.map(p => {
       switch (colorBy) {
         case 'cone':
@@ -329,17 +334,19 @@ export function StullPlot({
       size: 5,
       opacity: 0.7,
       color: colorValues,
-      colorscale: colorBy === 'cone' ? CONE_COLORSCALE : (COLOR_SCALES[colorBy] || 'Viridis'),
-      reversescale: false,
-      cmin: colorBy === 'cone' ? -6 : undefined,
-      cmax: colorBy === 'cone' ? 12 : undefined,
-      colorbar: {
-        title: getColorBarTitle(colorBy),
-        thickness: 15,
-        len: 0.7,
-        tickvals: colorBy === 'cone' ? [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] : undefined,
-        ticktext: colorBy === 'cone' ? ['04', '03', '02', '01', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'] : undefined
-      },
+      ...(colorBy === 'glaze_type' ? {} : {
+        colorscale: colorBy === 'cone' ? CONE_COLORSCALE : (COLOR_SCALES[colorBy] || 'Viridis'),
+        reversescale: false,
+        cmin: colorBy === 'cone' ? -6 : undefined,
+        cmax: colorBy === 'cone' ? 12 : undefined,
+        colorbar: {
+          title: getColorBarTitle(colorBy),
+          thickness: 15,
+          len: 0.7,
+          tickvals: colorBy === 'cone' ? [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] : undefined,
+          ticktext: colorBy === 'cone' ? ['04', '03', '02', '01', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'] : undefined
+        },
+      }),
       line: {
         width: validPoints.map(p => {
           if (selectedGlaze?.id === p.id) return 2
@@ -358,7 +365,9 @@ export function StullPlot({
       '<b>%{text}</b><br>' +
       `${xAxis}: %{x:.2f}<br>` +
       `${yAxis}: %{y:.2f}<br>` +
-      '<extra></extra>'
+      (colorBy === 'glaze_type' ? '%{meta}<br>' : '') +
+      '<extra></extra>',
+    meta: colorBy === 'glaze_type' ? validPoints.map(p => glazeTypeName(p.glazeTypeId)) : undefined
   }), [validPoints, colorValues, colorBy, xAxis, yAxis, selectedGlaze, selectedForBlend])
   
   // Calculate zoomed axis ranges — Stull chart canonical range
@@ -473,7 +482,8 @@ export function StullPlot({
         surfaceType: 'unknown',
         fluxRatio: 0,
         boron: 0,
-        confidence: 'inferred'
+        confidence: 'inferred',
+        glazeTypeId: null
       })
     }
   }, [setHoveredPoint])

@@ -76,6 +76,9 @@ export interface GlazeRecipe {
   surfaceType: SurfaceType
   colorFamily?: string
   colorDescription?: string
+
+  // Glaze type classification (Derek Philipau taxonomy)
+  glazeTypeId?: number | null
   
   // Images if available
   images?: string[]
@@ -107,6 +110,7 @@ export interface GlazePlotPoint {
   // For coloring/filtering
   cone: number | null
   surfaceType: SurfaceType
+  glazeTypeId: number | null
   fluxRatio: number  // R2O:RO
   boron: number
   

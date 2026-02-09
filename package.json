@@ -1,6 +1,6 @@
 {
   "name": "stull-atlas",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "A Computational Ceramic Glaze Explorer - 113 years after Stull",
   "type": "module",
   "scripts": {
@@ -12,6 +12,8 @@
     "test:coverage": "vitest --coverage",
     "lint": "eslint src --ext ts,tsx",
     "type-check": "tsc --noEmit",
+    "e2e": "playwright test",
+    "e2e:headed": "playwright test --headed",
     "deploy": "powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1",
     "deploy:skip-build": "powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1 -SkipBuild",
     "setup": "powershell -ExecutionPolicy Bypass -File scripts/setup-supabase.ps1"
@@ -30,6 +32,7 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@types/node": "^20.10.4",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",

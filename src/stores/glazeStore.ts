@@ -137,6 +137,7 @@ export const useGlazeStore = create<GlazeState & GlazeActions>()(
             y: Al2O3,
             cone: parseCone(g.coneRange[0]),
             surfaceType: g.surfaceType,
+            glazeTypeId: g.glazeTypeId ?? null,
             fluxRatio: RO > 0.001 ? R2O / RO : 0,
             boron: umf.B2O3?.value ?? 0,
             confidence: g.umfConfidence

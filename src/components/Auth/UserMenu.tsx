@@ -89,6 +89,24 @@ export function UserMenu() {
             </span>
           </div>
           <div className="user-dropdown-divider" />
+          {(effectiveTier === 'solo' || effectiveTier === 'pro') && (
+            <button
+              className="user-dropdown-item"
+              onClick={() => {
+                const portalUrl = import.meta.env.VITE_STRIPE_PORTAL_URL
+                if (portalUrl) {
+                  const url = new URL(portalUrl)
+                  if (user.email) url.searchParams.set('prefilled_email', user.email)
+                  window.open(url.toString(), '_blank')
+                } else {
+                  window.location.href = 'mailto:stullatlas@rlv.lol?subject=Billing%20Inquiry'
+                }
+                setShowDropdown(false)
+              }}
+            >
+              Manage Subscription
+            </button>
+          )}
           <button className="user-dropdown-item" onClick={() => { signOut(); setShowDropdown(false) }}>
             Sign Out
           </button>
