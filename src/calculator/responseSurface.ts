@@ -119,7 +119,6 @@ function cost(umf: Partial<Record<OxideSymbol, number>>, targets: OxideTarget[])
  * @param weights - Material fractions (summing to 1)
  * @param materialIds - Material IDs
  * @param targets - Optimization targets
- * @param datasetId - Material dataset
  * @param db - Material database
  */
 export function analyzeResponseSurface(

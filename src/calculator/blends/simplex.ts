@@ -117,7 +117,7 @@ export function interpolateRecipes(
     name: `Blend: ${label}`,
     source: 'calculated',
     ingredients,
-    umf: new Map(),
+    umf: null,
     coneRange: [
       Math.min(...recipes.map(r => parseCone(r.coneRange[0]))),
       Math.max(...recipes.map(r => parseCone(r.coneRange[1])))

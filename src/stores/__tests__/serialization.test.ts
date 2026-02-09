@@ -1,57 +1,19 @@
-import { describe, expect, it, beforeEach } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { GlazeRecipe, SimplexPoint } from '@/types'
 
 /**
- * Tests for recipe serialization logic (Map ↔ Object).
- * These test the pure serialization helpers extracted from recipeStore.
+ * Tests for recipe serialization logic.
+ * Now that UMF is a plain object (UMF | null) instead of a Map,
+ * serialization is straightforward JSON.stringify/parse.
  */
 
-// Replicate the serialization logic from recipeStore (pure functions)
-function serializeRecipes(recipes: GlazeRecipe[]): string {
-  const serializable = recipes.map(r => ({
-    ...r,
-    umf: Object.fromEntries(r.umf),
-  }))
-  return JSON.stringify(serializable)
-}
-
-function deserializeRecipes(raw: string): GlazeRecipe[] {
-  const parsed = JSON.parse(raw)
-  return parsed.map((r: any) => ({
-    ...r,
-    umf: new Map(Object.entries(r.umf || {})),
-  }))
-}
-
-function serializeBlendResults(points: SimplexPoint[]): string {
-  const serializable = points.map(p => ({
-    ...p,
-    recipe: p.recipe ? {
-      ...p.recipe,
-      umf: Object.fromEntries(p.recipe.umf),
-    } : p.recipe,
-  }))
-  return JSON.stringify(serializable)
-}
-
-function deserializeBlendResults(raw: string): SimplexPoint[] {
-  const parsed = JSON.parse(raw)
-  return parsed.map((p: any) => ({
-    ...p,
-    recipe: p.recipe ? {
-      ...p.recipe,
-      umf: new Map(Object.entries(p.recipe.umf || {})),
-    } : p.recipe,
-  }))
-}
-
-function makeRecipe(id: string, umfEntries: [string, any][]): GlazeRecipe {
+function makeRecipe(id: string, umf: any): GlazeRecipe {
   return {
     id,
     name: `Test ${id}`,
     source: 'user',
     ingredients: [{ material: 'Silica', amount: 100, unit: 'weight' as const }],
-    umf: new Map(umfEntries),
+    umf,
     coneRange: [6, 6],
     atmosphere: 'oxidation',
     surfaceType: 'unknown',
@@ -61,64 +23,56 @@ function makeRecipe(id: string, umfEntries: [string, any][]): GlazeRecipe {
 }
 
 describe('Recipe serialization', () => {
-  it('round-trips a recipe with UMF Map', () => {
-    const recipe = makeRecipe('r1', [
-      ['digitalfire_2024', { SiO2: { value: 3.5 }, Al2O3: { value: 0.35 } }],
-    ])
+  it('round-trips a recipe with UMF object', () => {
+    const recipe = makeRecipe('r1', { SiO2: { value: 3.5 }, Al2O3: { value: 0.35 } })
 
-    const json = serializeRecipes([recipe])
-    const restored = deserializeRecipes(json)
+    const json = JSON.stringify([recipe])
+    const restored: GlazeRecipe[] = JSON.parse(json)
 
     expect(restored).toHaveLength(1)
-    expect(restored[0].umf).toBeInstanceOf(Map)
-    expect(restored[0].umf.size).toBe(1)
-    expect(restored[0].umf.get('digitalfire_2024')).toEqual({
+    expect(restored[0].umf).toEqual({
       SiO2: { value: 3.5 },
       Al2O3: { value: 0.35 },
     })
   })
 
-  it('handles empty UMF Map', () => {
-    const recipe = makeRecipe('r2', [])
-    const json = serializeRecipes([recipe])
-    const restored = deserializeRecipes(json)
+  it('handles null UMF', () => {
+    const recipe = makeRecipe('r2', null)
+    const json = JSON.stringify([recipe])
+    const restored: GlazeRecipe[] = JSON.parse(json)
 
-    expect(restored[0].umf).toBeInstanceOf(Map)
-    expect(restored[0].umf.size).toBe(0)
+    expect(restored[0].umf).toBeNull()
   })
 
-  it('handles multiple UMF dataset entries', () => {
-    const recipe = makeRecipe('r3', [
-      ['digitalfire_2024', { SiO2: { value: 3.5 } }],
-      ['glazy_default', { SiO2: { value: 3.6 } }],
-    ])
+  it('preserves all oxide values through round-trip', () => {
+    const umf = {
+      SiO2: { value: 3.5 },
+      Al2O3: { value: 0.35 },
+      CaO: { value: 0.4 },
+      K2O: { value: 0.2 },
+    }
+    const recipe = makeRecipe('r3', umf)
+    const json = JSON.stringify([recipe])
+    const restored: GlazeRecipe[] = JSON.parse(json)
 
-    const json = serializeRecipes([recipe])
-    const restored = deserializeRecipes(json)
-
-    expect(restored[0].umf.size).toBe(2)
-    expect(restored[0].umf.has('digitalfire_2024')).toBe(true)
-    expect(restored[0].umf.has('glazy_default')).toBe(true)
+    expect(restored[0].umf).toEqual(umf)
   })
 })
 
 describe('Blend results serialization', () => {
-  it('round-trips SimplexPoints with recipe Maps', () => {
+  it('round-trips SimplexPoints with recipe UMF', () => {
     const points: SimplexPoint[] = [
       {
         coords: [0.5, 0.3, 0.2],
-        recipe: makeRecipe('blend-1', [
-          ['digitalfire_2024', { SiO2: { value: 3.0 }, CaO: { value: 0.4 } }],
-        ]),
+        recipe: makeRecipe('blend-1', { SiO2: { value: 3.0 }, CaO: { value: 0.4 } }),
       } as any,
     ]
 
-    const json = serializeBlendResults(points)
-    const restored = deserializeBlendResults(json)
+    const json = JSON.stringify(points)
+    const restored: SimplexPoint[] = JSON.parse(json)
 
     expect(restored).toHaveLength(1)
-    expect(restored[0].recipe.umf).toBeInstanceOf(Map)
-    expect(restored[0].recipe.umf.get('digitalfire_2024')).toEqual({
+    expect(restored[0].recipe.umf).toEqual({
       SiO2: { value: 3.0 },
       CaO: { value: 0.4 },
     })
@@ -129,18 +83,9 @@ describe('Blend results serialization', () => {
       { coords: [1, 0, 0], recipe: undefined } as any,
     ]
 
-    const json = serializeBlendResults(points)
-    const restored = deserializeBlendResults(json)
+    const json = JSON.stringify(points)
+    const restored: SimplexPoint[] = JSON.parse(json)
 
     expect(restored).toHaveLength(1)
-    expect(restored[0].recipe).toBeUndefined()
-  })
-
-  it('JSON.stringify of a Map yields {} without serialization helper', () => {
-    // This proves why the serialization fix was needed
-    const map = new Map([['foo', 'bar']])
-    expect(JSON.stringify(map)).toBe('{}')
-    // But Object.fromEntries preserves it
-    expect(JSON.stringify(Object.fromEntries(map))).toBe('{"foo":"bar"}')
   })
 })

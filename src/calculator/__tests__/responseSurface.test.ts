@@ -35,7 +35,7 @@ describe('Response Surface Analysis', () => {
 
   it('returns sensitivities for each material', () => {
     const result = analyzeResponseSurface(
-      weights, materialIds, targets, 'digitalfire_2024', mockDB as any
+      weights, materialIds, targets, mockDB as any
     )
     expect(result.sensitivities.length).toBe(4)
     expect(result.sensitivities[0]).toHaveProperty('material')
@@ -46,7 +46,7 @@ describe('Response Surface Analysis', () => {
 
   it('returns a valid stability score', () => {
     const result = analyzeResponseSurface(
-      weights, materialIds, targets, 'digitalfire_2024', mockDB as any
+      weights, materialIds, targets, mockDB as any
     )
     expect(result.stability).toBeGreaterThanOrEqual(0)
     expect(result.stability).toBeLessThanOrEqual(1)
@@ -55,14 +55,14 @@ describe('Response Surface Analysis', () => {
 
   it('provides curvature for each material', () => {
     const result = analyzeResponseSurface(
-      weights, materialIds, targets, 'digitalfire_2024', mockDB as any
+      weights, materialIds, targets, mockDB as any
     )
     expect(result.curvatures.length).toBe(4)
   })
 
   it('generates a human-readable interpretation', () => {
     const result = analyzeResponseSurface(
-      weights, materialIds, targets, 'digitalfire_2024', mockDB as any
+      weights, materialIds, targets, mockDB as any
     )
     expect(typeof result.interpretation).toBe('string')
     expect(result.interpretation.length).toBeGreaterThan(10)
@@ -70,7 +70,7 @@ describe('Response Surface Analysis', () => {
 
   it('sensitivities are sorted by magnitude (highest first)', () => {
     const result = analyzeResponseSurface(
-      weights, materialIds, targets, 'digitalfire_2024', mockDB as any
+      weights, materialIds, targets, mockDB as any
     )
     for (let i = 1; i < result.sensitivities.length; i++) {
       expect(result.sensitivities[i].sensitivity)

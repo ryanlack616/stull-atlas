@@ -23,7 +23,7 @@ function makeRecipe(id: string, umfValues?: Partial<Record<keyof UMF, number>>):
     name: `Glaze ${id}`,
     source: 'user',
     ingredients: [],
-    umf: new Map([['digitalfire_2024', umf]]),
+    umf,
     coneRange: [6, 6],
     atmosphere: 'oxidation',
     surfaceType: 'gloss',
@@ -80,7 +80,7 @@ describe('findSimilarGlazes', () => {
   const far   = makeRecipe('far',   { SiO2: 5.0, Al2O3: 1.0, CaO: 0.1 })
   const mid   = makeRecipe('mid',   { SiO2: 3.5, Al2O3: 0.5, CaO: 0.5 })
 
-  const opts: SimilarityOptions = { datasetId: 'digitalfire_2024' }
+  const opts: SimilarityOptions = {}
 
   it('returns candidates sorted by distance', () => {
     const results = findSimilarGlazes(target, [target, close, far, mid], opts)
@@ -97,13 +97,13 @@ describe('findSimilarGlazes', () => {
   })
 
   it('returns empty if target has no UMF for dataset', () => {
-    const noUmf: GlazeRecipe = { ...target, umf: new Map() }
+    const noUmf: GlazeRecipe = { ...target, umf: null }
     const results = findSimilarGlazes(noUmf, [close], opts)
     expect(results).toEqual([])
   })
 
   it('skips candidates with no UMF', () => {
-    const noUmf: GlazeRecipe = { ...close, umf: new Map() }
+    const noUmf: GlazeRecipe = { ...close, umf: null }
     const results = findSimilarGlazes(target, [noUmf, mid], opts)
     expect(results.length).toBe(1)
     expect(results[0].glaze.id).toBe('mid')

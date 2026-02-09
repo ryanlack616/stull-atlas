@@ -81,7 +81,7 @@ export function DigitalfirePanel({ selectedGlaze }: DigitalfirePanelProps) {
       atmosphere: selectedGlaze.atmosphere,
       glazeFamily: selectedGlaze.glazeTypeId != null ? String(selectedGlaze.glazeTypeId) : undefined,
     })
-  }, [selectedGlaze, currentDataset])
+  }, [selectedGlaze])
 
   // Search results
   const searchResults = useMemo(() => {

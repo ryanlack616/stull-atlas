@@ -34,7 +34,7 @@ function makeRecipe(ingredients: { material: string; amount: number }[]): GlazeR
     name: 'Test Glaze',
     source: 'user',
     ingredients: ingredients.map(i => ({ ...i, unit: 'weight' as const })),
-    umf: new Map(),
+    umf: null,
     coneRange: [6, 6],
     atmosphere: 'oxidation',
     surfaceType: 'gloss',

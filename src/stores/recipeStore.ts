@@ -14,14 +14,22 @@ const STORAGE_VERSION = 1
 
 // ── Serialization helpers ───────────────────────────────────────────
 
-/** Convert a GlazeRecipe's Map fields to plain objects for JSON */
+/** Convert a GlazeRecipe to a plain object for JSON (now a no-op since UMF is already a plain object) */
 function serializeRecipe(r: GlazeRecipe): any {
-  return { ...r, umf: Object.fromEntries(r.umf) }
+  return r
 }
 
-/** Restore Map fields from a deserialized plain object */
+/** Restore a GlazeRecipe from a deserialized plain object */
 function deserializeRecipe(raw: any): GlazeRecipe {
-  return { ...raw, umf: new Map(Object.entries(raw.umf || {})) }
+  // Handle legacy Map-serialized data: if umf is an object with dataset keys, flatten it
+  if (raw.umf && typeof raw.umf === 'object' && !raw.umf.SiO2 && !raw.umf._meta) {
+    // Legacy format: { digitalfire_2024: { SiO2: ..., Al2O3: ... } }
+    const keys = Object.keys(raw.umf)
+    if (keys.length > 0 && typeof raw.umf[keys[0]] === 'object') {
+      raw.umf = raw.umf[keys[0]]  // take first dataset's UMF
+    }
+  }
+  return { ...raw, umf: raw.umf ?? null }
 }
 
 interface RecipeState {

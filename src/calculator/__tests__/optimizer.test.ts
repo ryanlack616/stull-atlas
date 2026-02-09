@@ -34,7 +34,6 @@ describe('optimizeRecipe', () => {
     const input: OptimizerInput = {
       materialIds: [],
       targets: [{ oxide: 'SiO2', target: 3.5 }],
-      datasetId: 'digitalfire_2024',
     }
     const result = optimizeRecipe(input, mockDb as any)
     expect(result.converged).toBe(false)
@@ -49,7 +48,6 @@ describe('optimizeRecipe', () => {
         { oxide: 'Al2O3', target: 0.35, weight: 2 },
         { oxide: 'CaO', min: 0.3, max: 0.5 },
       ],
-      datasetId: 'digitalfire_2024',
       maxIterations: 3000,
       tolerance: 0.05,
     }
@@ -78,7 +76,6 @@ describe('optimizeRecipe', () => {
       targets: [
         { oxide: 'SiO2', target: 3.0 },
       ],
-      datasetId: 'digitalfire_2024',
       locks: { 2: 0.2 }, // lock whiting at 20%
     }
 
@@ -93,7 +90,6 @@ describe('optimizeRecipe', () => {
         { oxide: 'SiO2', target: 4.0 },
         { oxide: 'Al2O3', min: 0.2, max: 0.5 },
       ],
-      datasetId: 'digitalfire_2024',
     }
 
     const result = optimizeRecipe(input, mockDb as any)

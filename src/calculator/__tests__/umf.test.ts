@@ -49,7 +49,7 @@ function recipe(name: string, ingredients: { material: string; amount: number }[
     name,
     source: 'user',
     ingredients: ingredients.map(i => ({ ...i, unit: 'weight' as const })),
-    umf: new Map(),
+    umf: null,
     coneRange: [6, 6],
     atmosphere: 'oxidation',
     surfaceType: 'unknown',
@@ -72,7 +72,7 @@ describe('recipeToUMF', () => {
       { material: 'Silica', amount: 50 },
     ])
 
-    const result = recipeToUMF(r, testMaterials, 'digitalfire_2024')
+    const result = recipeToUMF(r, testMaterials)
 
     expect(result.errors).toHaveLength(0)
     expect(result.value).not.toBeNull()
@@ -102,7 +102,7 @@ describe('recipeToUMF', () => {
       { material: 'EPK', amount: 15 },
     ])
 
-    const result = recipeToUMF(r, testMaterials, 'digitalfire_2024')
+    const result = recipeToUMF(r, testMaterials)
 
     expect(result.errors).toHaveLength(0)
     const umf = result.value!
@@ -130,7 +130,7 @@ describe('recipeToUMF', () => {
       { material: 'Wollastonite', amount: 100 },
     ])
 
-    const result = recipeToUMF(r, testMaterials, 'digitalfire_2024')
+    const result = recipeToUMF(r, testMaterials)
     expect(result.errors).toHaveLength(0)
     const umf = result.value!
 
@@ -149,7 +149,7 @@ describe('recipeToUMF', () => {
       { material: 'Silica', amount: 25 },
     ])
 
-    const result = recipeToUMF(r, testMaterials, 'digitalfire_2024')
+    const result = recipeToUMF(r, testMaterials)
     expect(result.errors).toHaveLength(0)
     const umf = result.value!
 
@@ -170,11 +170,11 @@ describe('recipeToUMF', () => {
       { material: 'Custer Feldspar', amount: 100 },
     ])
 
-    const result = recipeToUMF(r, testMaterials, 'digitalfire_2024')
+    const result = recipeToUMF(r, testMaterials)
     const umf = result.value!
 
     expect(umf.SiO2?.state).toBe('inferred')
-    expect(umf.SiO2?.source).toContain('digitalfire_2024')
+    expect(umf.SiO2?.source).toContain('calculated from recipe')
     expect(umf.K2O?.precision).toBeDefined()
   })
 
@@ -184,7 +184,7 @@ describe('recipeToUMF', () => {
       { material: 'Whiting', amount: 50 },
     ])
 
-    const result = recipeToUMF(r, testMaterials, 'digitalfire_2024')
+    const result = recipeToUMF(r, testMaterials)
     expect(result.trace.length).toBeGreaterThan(0)
 
     // Should include begin, material_resolution, oxide_contribution, normalize, verify steps
@@ -203,7 +203,7 @@ describe('recipeToUMF', () => {
       { material: 'Unobtainium', amount: 100 },
     ])
 
-    const result = recipeToUMF(r, testMaterials, 'digitalfire_2024')
+    const result = recipeToUMF(r, testMaterials)
     expect(result.value).toBeNull()
     expect(result.errors.length).toBeGreaterThan(0)
     expect(result.errors[0]).toContain('Unobtainium')
@@ -214,7 +214,7 @@ describe('recipeToUMF', () => {
       { material: 'Silica', amount: 100 },
     ])
 
-    const result = recipeToUMF(r, testMaterials, 'digitalfire_2024')
+    const result = recipeToUMF(r, testMaterials)
     expect(result.value).toBeNull()
     expect(result.errors.length).toBeGreaterThan(0)
     expect(result.errors[0]).toContain('flux')
@@ -223,7 +223,7 @@ describe('recipeToUMF', () => {
   it('returns error for empty ingredient list', () => {
     const r = recipe('Empty', [])
 
-    const result = recipeToUMF(r, testMaterials, 'digitalfire_2024')
+    const result = recipeToUMF(r, testMaterials)
     expect(result.value).toBeNull()
     expect(result.errors.length).toBeGreaterThan(0)
   })
@@ -231,10 +231,10 @@ describe('recipeToUMF', () => {
   it('warns but succeeds when missing analysis for one material', () => {
     // Create a database where EPK has no analysis
     const partialDb: MaterialDatabase = {
-      resolve(name) { return testMaterials.resolve(name, 'digitalfire_2024') },
+      resolve(name) { return testMaterials.resolve(name) },
       getAnalysis(materialId) {
         if (materialId === 'epk') return null
-        return testMaterials.getAnalysis(materialId, 'digitalfire_2024')
+        return testMaterials.getAnalysis(materialId)
       },
     }
 
@@ -244,7 +244,7 @@ describe('recipeToUMF', () => {
       { material: 'Silica', amount: 20 },
     ])
 
-    const result = recipeToUMF(r, partialDb, 'digitalfire_2024')
+    const result = recipeToUMF(r, partialDb)
     // Should succeed (feldspar has flux) but warn about EPK
     expect(result.value).not.toBeNull()
     expect(result.warnings.length).toBeGreaterThan(0)
@@ -260,8 +260,8 @@ describe('recipeToUMF', () => {
       { material: 'EPK', amount: 10 },
     ])
 
-    const a = recipeToUMF(r, testMaterials, 'digitalfire_2024')
-    const b = recipeToUMF(r, testMaterials, 'digitalfire_2024')
+    const a = recipeToUMF(r, testMaterials)
+    const b = recipeToUMF(r, testMaterials)
 
     expect(a.value!.SiO2?.value).toBe(b.value!.SiO2?.value)
     expect(a.value!.Al2O3?.value).toBe(b.value!.Al2O3?.value)
@@ -281,8 +281,8 @@ describe('recipeToUMF', () => {
       { material: 'Whiting', amount: 30 },
     ])
 
-    const a = recipeToUMF(r1, testMaterials, 'digitalfire_2024')
-    const b = recipeToUMF(r2, testMaterials, 'digitalfire_2024')
+    const a = recipeToUMF(r1, testMaterials)
+    const b = recipeToUMF(r2, testMaterials)
 
     expect(a.value!.SiO2?.value).toBeCloseTo(b.value!.SiO2?.value!, 3)
     expect(a.value!.Al2O3?.value).toBeCloseTo(b.value!.Al2O3?.value!, 3)

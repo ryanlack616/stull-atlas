@@ -224,7 +224,7 @@ export function ComparePanel({ glazes, onRemove, onClear, onSelect }: ComparePan
             <td>Profile</td>
             {glazes.map((g, i) => {
               const umf = g.umf
-              const compareUmf = i > 0 ? glazes[0].umf : undefined
+              const compareUmf = i > 0 ? glazes[0].umf ?? undefined : undefined
               return <td key={g.id}>{umf ? <OxideRadar umf={umf} compareUmf={compareUmf} size={100} /> : '—'}</td>
             })}
           </tr>

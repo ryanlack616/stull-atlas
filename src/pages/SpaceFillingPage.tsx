@@ -69,7 +69,7 @@ function createSyntheticRecipe(id: string, name: string): GlazeRecipe {
     name,
     source: 'calculated',
     ingredients: [],
-    umf: new Map(),
+    umf: null,
     coneRange: [0, 0],
     atmosphere: 'unknown',
     surfaceType: 'unknown',

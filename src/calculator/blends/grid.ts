@@ -137,7 +137,7 @@ export function gridBlend(
     modified.name = `${baseRecipe.name} ${additionLabels.join(' ')}`
     
     // Calculate UMF for the modified recipe
-    const umfResult = recipeToUMF(modified, materials, datasetId)
+    const umfResult = recipeToUMF(modified, materials)
     
     if (umfResult.errors.length > 0) {
       warnings.push(`Could not calculate UMF for point ${index}: ${umfResult.errors.join(', ')}`)

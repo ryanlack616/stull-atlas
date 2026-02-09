@@ -34,7 +34,6 @@ describe('Genetic Algorithm Optimizer', () => {
         { oxide: 'SiO2', target: 3.5, weight: 2 },
         { oxide: 'Al2O3', target: 0.35, weight: 2 },
       ],
-      datasetId: 'digitalfire_2024',
       populationSize: 20,
       generations: 50,
     }, mockDB as any)
@@ -52,7 +51,6 @@ describe('Genetic Algorithm Optimizer', () => {
     const result = optimizeRecipeGA({
       materialIds: [],
       targets: [{ oxide: 'SiO2', target: 3.5 }],
-      datasetId: 'digitalfire_2024',
     }, mockDB as any)
 
     expect(result.best.converged).toBe(false)
@@ -67,7 +65,6 @@ describe('Genetic Algorithm Optimizer', () => {
         { oxide: 'Al2O3', target: 0.4, weight: 2 },
         { oxide: 'CaO', min: 0.2, max: 0.5 },
       ],
-      datasetId: 'digitalfire_2024',
       populationSize: 40,
       generations: 150,
       tolerance: 0.1,
@@ -85,7 +82,6 @@ describe('Genetic Algorithm Optimizer', () => {
       targets: [
         { oxide: 'SiO2', target: 3.5, weight: 1 },
       ],
-      datasetId: 'digitalfire_2024',
       populationSize: 40,
       generations: 100,
       topK: 3,

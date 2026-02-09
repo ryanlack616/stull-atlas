@@ -74,9 +74,9 @@ describe('deserializeInsightXML', () => {
     `
     const recipes = deserializeInsightXML(xml)
     expect(recipes).toHaveLength(1)
-    const umf = (recipes[0].umf as Map<string, any>).get('insight_legacy')
-    expect(umf.SiO2.value).toBe(3.5)
-    expect(umf.Al2O3.value).toBe(0.35)
+    const umf = recipes[0].umf!
+    expect(umf.SiO2!.value).toBe(3.5)
+    expect(umf.Al2O3!.value).toBe(0.35)
   })
 
   it('returns empty array for empty ingredients', () => {
@@ -134,10 +134,10 @@ describe('deserializeGlazyCSV', () => {
     expect(recipes).toHaveLength(1)
     expect(recipes[0].name).toBe('Clear Gloss')
     expect(recipes[0].id).toBe('glazy_123')
-    const umf = (recipes[0].umf as Map<string, any>).get('glazy_default')
-    expect(umf.SiO2.value).toBe(3.5)
-    expect(umf.Al2O3.value).toBe(0.35)
-    expect(umf.CaO.value).toBe(0.6)
+    const umf = recipes[0].umf!
+    expect(umf.SiO2!.value).toBe(3.5)
+    expect(umf.Al2O3!.value).toBe(0.35)
+    expect(umf.CaO!.value).toBe(0.6)
   })
 
   it('skips rows without UMF data', () => {

@@ -22,7 +22,7 @@ function baseRecipe(): GlazeRecipe {
     name: 'Base',
     source: 'user',
     ingredients: [{ material: 'Silica', amount: 100, unit: 'weight' }],
-    umf: new Map(),
+    umf: null,
     coneRange: [6, 6],
     atmosphere: 'oxidation',
     surfaceType: 'unknown',
@@ -54,7 +54,6 @@ describe('radialBlend', () => {
       ],
       3,
       materials,
-      'digitalfire_2024'
     )
 
     expect(result.value).not.toBeNull()

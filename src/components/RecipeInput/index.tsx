@@ -39,7 +39,7 @@ function createEmptyRecipe(label: string): GlazeRecipe {
     ingredients: [
       { material: '', amount: 0, unit: 'weight' },
     ],
-    umf: new Map(),
+    umf: null,
     coneRange: [6, 6],
     atmosphere: 'oxidation',
     surfaceType: 'unknown',
