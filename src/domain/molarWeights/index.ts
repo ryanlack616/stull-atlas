@@ -10,7 +10,7 @@
  * lets the calculator layer swap weight sets dynamically.
  */
 
-import { OxideSymbol } from '@/types'
+import { OxideSymbol, UMF } from '@/types'
 import database from '@/data/molar_weights_database.json'
 
 // ─── Types ─────────────────────────────────────────────────────
@@ -214,3 +214,61 @@ export function compareWeightSets(
     }
   }).filter(d => Math.abs(d.diff) > 0.0001)
 }
+
+// ─── UMF Recomputation ────────────────────────────────────────
+
+/**
+ * Recompute a UMF from one molar-weight set to another.
+ *
+ * Math: Given a UMF computed with MW_from, recover relative oxide
+ * weights (weight_i ∝ UMF_i × MW_from_i), then re-derive moles
+ * with MW_to and re-normalise so that flux oxides sum to 1.0.
+ *
+ *   moles_new_i  = UMF_old_i × MW_from_i / MW_to_i
+ *   Σ_flux_new   = Σ(moles_new for flux oxides)
+ *   UMF_new_i    = moles_new_i / Σ_flux_new
+ */
+export function recomputeUMF(
+  umf: UMF,
+  fromSetId: MolarWeightSetId,
+  toSetId: MolarWeightSetId,
+): UMF {
+  if (fromSetId === toSetId) return umf
+
+  const fromW = getMolarWeights(fromSetId)
+  const toW   = getMolarWeights(toSetId)
+
+  // Step 1: compute raw moles under the new weight set
+  const rawMoles: Partial<Record<OxideSymbol, number>> = {}
+  for (const oxide of APP_OXIDES) {
+    const ov = umf[oxide]
+    if (!ov || ov.value === 0) continue
+    rawMoles[oxide] = ov.value * (fromW[oxide] / toW[oxide])
+  }
+
+  // Step 2: sum flux moles for re-normalisation
+  let fluxSum = 0
+  for (const oxide of RECOMPUTE_FLUX_OXIDES) {
+    fluxSum += rawMoles[oxide] ?? 0
+  }
+  if (fluxSum === 0) fluxSum = 1 // degenerate — no flux
+
+  // Step 3: build new UMF
+  const result: UMF = {}
+  for (const oxide of APP_OXIDES) {
+    const ov = umf[oxide]
+    if (!ov || ov.value === 0) continue
+    result[oxide] = {
+      ...ov,
+      value: (rawMoles[oxide] ?? 0) / fluxSum,
+    }
+  }
+
+  return result
+}
+
+/** Flux oxides used for UMF normalisation — must match types/umf.ts FLUX_OXIDES */
+const RECOMPUTE_FLUX_OXIDES: OxideSymbol[] = [
+  'Li2O', 'Na2O', 'K2O',
+  'MgO', 'CaO', 'SrO', 'BaO', 'ZnO', 'PbO',
+]

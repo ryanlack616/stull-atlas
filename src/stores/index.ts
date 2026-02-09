@@ -5,7 +5,7 @@
 import { enableMapSet } from 'immer'
 enableMapSet()
 
-export { useGlazeStore } from './glazeStore'
+export { useGlazeStore, precomputeAllMolarVariants } from './glazeStore'
 export { useDatasetStore } from './datasetStore'
 export { useMolarWeightStore } from './molarWeightStore'
 export { useSelectionStore } from './selectionStore'

@@ -20,7 +20,7 @@
 
 import React, { useMemo, useCallback, useEffect, useState, useRef } from 'react'
 import createPlotlyComponent from 'react-plotly.js/factory'
-import { useGlazeStore, useDatasetStore, useSelectionStore, useRecipeStore, useThemeStore } from '@/stores'
+import { useGlazeStore, useDatasetStore, useSelectionStore, useRecipeStore, useThemeStore, useMolarWeightStore } from '@/stores'
 import { OxideSymbol, GlazePlotPoint, SurfaceType, EpistemicState } from '@/types'
 import { getOxideValue } from '@/calculator/umf'
 import { fitSurface, type SurfaceGrid } from '@/analysis/surfaceFit'
@@ -411,6 +411,7 @@ export function StullPlot3D({
 
   const currentDataset = useDatasetStore(s => s.currentDataset)
   const getPlotPoints = useGlazeStore(s => s.getPlotPoints)
+  const activeWeightSetId = useMolarWeightStore(s => s.currentSetId)
   const glazes = useGlazeStore(s => s.glazes)
   const selectedGlaze = useSelectionStore(s => s.selectedGlaze)
   const setSelectedGlaze = useSelectionStore(s => s.setSelectedGlaze)
@@ -435,7 +436,7 @@ export function StullPlot3D({
 
   // ─── Plot data with Z extraction ─────────────────────────────
 
-  const rawPoints = useMemo(() => getPlotPoints(currentDataset), [getPlotPoints, currentDataset])
+  const rawPoints = useMemo(() => getPlotPoints(currentDataset, activeWeightSetId), [getPlotPoints, currentDataset, activeWeightSetId])
   const filteredPoints = useFilteredPoints(rawPoints)
 
   const plotData = useMemo(() => {
