@@ -6,6 +6,7 @@
  */
 
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { useAuthStore } from '@/stores'
 import { tierDisplayName, featuresForTier, type Feature } from '@/domain/tier'
@@ -201,11 +202,14 @@ export function PricingPage() {
       {upgradeNotice && (
         <div className="upgrade-overlay" onClick={() => setUpgradeNotice(null)}>
           <div className="upgrade-notice" onClick={e => e.stopPropagation()}>
-            <h3>Subscriptions launching soon</h3>
+            <h3>Get started today</h3>
             <p>
-              {upgradeNotice.tier === 'pro' ? 'Pro' : 'Solo'} subscriptions are coming soon.
-              In the meantime, grab a free trial code at our NCECA booth — or drop us a note and we'll get you set up.
+              Visit us at the NCECA booth for a free 30-day trial code,
+              or request instant access by email.
             </p>
+            <Link to="/nceca" style={{ display: 'block', marginBottom: 12, color: 'var(--accent)', fontSize: 14 }}>
+              → Get a trial code at NCECA 2026
+            </Link>
             <a
               href={`mailto:stullatlas@rlv.lol?subject=${encodeURIComponent(`${upgradeNotice.tier.charAt(0).toUpperCase() + upgradeNotice.tier.slice(1)} Access Request`)}&body=${encodeURIComponent(`Hi, I'd like to upgrade to ${upgradeNotice.tier}.\n\nEmail: ${upgradeNotice.email}`)}`}
               className="upgrade-notice-cta"

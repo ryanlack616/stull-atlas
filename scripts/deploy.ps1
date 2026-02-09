@@ -75,6 +75,8 @@ if (-not $SkipBuild) {
             Write-Host "Build failed!" -ForegroundColor Red
             exit 1
         }
+        # Inject hashed asset URLs into sw.js for offline pre-caching
+        node scripts/postbuild-sw.js dist 2>&1 | ForEach-Object { Write-Host "  $_" }
     } finally {
         Pop-Location
     }

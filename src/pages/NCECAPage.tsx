@@ -9,6 +9,7 @@ import React, { useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { useAuthStore } from '@/stores'
+import { isDemoMode } from '@/stores'
 import { AuthModal } from '@/components/Auth'
 
 export function NCECAPage() {
@@ -52,11 +53,21 @@ export function NCECAPage() {
           <p className="nceca-subtitle">
             A computational glaze explorer — 114 years after Stull's original chart.
             <br />
-            Explore 3,000+ glazes, run blend calculations, and use AI to find your next recipe.
+            Explore 3,200+ glazes, run blend calculations, and use AI to find your next recipe.
           </p>
         </section>
 
         <section className="nceca-trial">
+          {isDemoMode ? (
+            <>
+              <h2>Demo Mode Active</h2>
+              <p>All Pro features are unlocked. Explore freely!</p>
+              <Link to="/" className="trial-submit" style={{ display: 'inline-block', textDecoration: 'none', textAlign: 'center' }}>
+                Open Explorer
+              </Link>
+            </>
+          ) : (
+          <>
           <h2>Activate Your Trial</h2>
           <p>Enter the code from your card for <strong>30 days of free Pro access</strong> — no credit card required.</p>
           
@@ -90,6 +101,8 @@ export function NCECAPage() {
               You'll need to create a free account to redeem your code.
             </p>
           )}
+          </>
+          )}
         </section>
 
         <section className="nceca-features">
@@ -97,7 +110,7 @@ export function NCECAPage() {
           <div className="feature-grid">
             <div className="feature-item">
               <h3>Explore</h3>
-              <p>Map 3,000+ glazes on an interactive Stull chart. Filter by cone, surface, color, and more.</p>
+              <p>Map 3,200+ glazes on an interactive Stull chart. Filter by cone, surface, color, and more.</p>
               <Link to="/">Open Explorer</Link>
             </div>
             <div className="feature-item">

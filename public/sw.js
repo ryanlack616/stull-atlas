@@ -6,7 +6,7 @@
  * Plotly GL bundles get a long cache since they're content-hashed.
  */
 
-const CACHE_NAME = 'stull-atlas-v3'
+const CACHE_NAME = 'stull-atlas-v4'
 const DATASET_CACHE = 'stull-dataset-v1'
 
 // App shell — cache on install
@@ -17,11 +17,19 @@ const SHELL_FILES = [
   '/stullv2/manifest.json',
 ]
 
-// Install: pre-cache app shell
+// Critical JS/CSS bundles injected by postbuild script
+// __PRECACHE_ASSETS__ is replaced at build time with the actual hashed filenames
+const PRECACHE_ASSETS = '__PRECACHE_ASSETS__'
+
+// Install: pre-cache app shell + critical assets
 self.addEventListener('install', (event) => {
+  const urls = [...SHELL_FILES]
+  if (Array.isArray(PRECACHE_ASSETS)) {
+    urls.push(...PRECACHE_ASSETS.map(f => '/stullv2/' + f))
+  }
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(SHELL_FILES))
+      .then(cache => cache.addAll(urls))
       .then(() => self.skipWaiting())
   )
 })

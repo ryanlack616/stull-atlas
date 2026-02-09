@@ -11,6 +11,7 @@ export default defineConfig({
     }
   },
   build: {
+    manifest: true, // generates .vite/manifest.json for SW pre-caching
     chunkSizeWarningLimit: 2200, // Plotly GL bundles are ~2MB, expected
     rollupOptions: {
       output: {

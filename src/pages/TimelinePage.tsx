@@ -275,6 +275,19 @@ export function TimelinePage() {
               </div>
             )}
           </div>
+
+          {/* Dedication */}
+          <div className="dedication">
+            <div className="dedication-line" />
+            <p className="dedication-text">
+              For Warren MacKenzie (1924–2018)<br />
+              who made honest pots and gave them away,<br />
+              and taught us that a good cup is enough.
+            </p>
+            <p className="dedication-wish">
+              I wish I could have said thank you.
+            </p>
+          </div>
         </div>
       </div>
     </>
@@ -805,5 +818,35 @@ const timelineStyles = `
     .sources-section {
       padding-left: 0;
     }
+  }
+
+  /* Dedication */
+  .dedication {
+    max-width: 480px;
+    margin: 48px auto 32px;
+    text-align: center;
+  }
+
+  .dedication-line {
+    width: 40px;
+    height: 1px;
+    background: var(--text-muted);
+    margin: 0 auto 24px;
+    opacity: 0.4;
+  }
+
+  .dedication-text {
+    margin: 0 0 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    letter-spacing: 0.01em;
+  }
+
+  .dedication-wish {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
   }
 `
