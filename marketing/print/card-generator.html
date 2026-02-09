@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stull Atlas — NCECA Card Generator</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    padding: 40px;
+  }
+
+  .controls {
+    max-width: 700px;
+    margin: 0 auto 40px;
+    padding: 30px;
+    background: #16213e;
+    border-radius: 12px;
+    border: 1px solid #2a2a4a;
+  }
+
+  h1 { font-size: 24px; margin-bottom: 8px; color: #fff; }
+  .subtitle { color: #888; font-size: 14px; margin-bottom: 24px; }
+
+  label { display: block; font-size: 13px; color: #aaa; margin-bottom: 6px; }
+  textarea, input[type="text"] {
+    width: 100%;
+    padding: 10px 14px;
+    background: #0f0f23;
+    border: 1px solid #333;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+  }
+  textarea { min-height: 120px; resize: vertical; }
+
+  .row { display: flex; gap: 16px; margin-top: 16px; }
+  .row > div { flex: 1; }
+
+  button {
+    margin-top: 20px;
+    padding: 12px 28px;
+    background: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  button:hover { filter: brightness(1.15); }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-secondary { background: #2a2a4a; border: 1px solid #444; }
+
+  .stats {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #888;
+  }
+
+  /* ===== Print Layout ===== */
+  /* US Letter: 8.5" × 11" = 612pt × 792pt */
+  /* Card: 3.5" × 2" = 252pt × 144pt */
+  /* 2 columns × 5 rows = 10 cards per page */
+
+  .print-area {
+    display: none;
+  }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .controls { display: none; }
+    .print-area { display: block; }
+
+    @page {
+      size: letter;
+      margin: 0.5in 0.5in;
+    }
+
+    .card-page {
+      display: grid;
+      grid-template-columns: 3.5in 3.5in;
+      grid-template-rows: repeat(5, 2in);
+      gap: 0;
+      page-break-after: always;
+      width: 7in;
+    }
+    .card-page:last-child {
+      page-break-after: avoid;
+    }
+  }
+
+  /* Preview (on screen) */
+  .preview {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .preview .card-page {
+    display: grid;
+    grid-template-columns: repeat(2, 252px);
+    grid-template-rows: repeat(5, 144px);
+    gap: 0;
+    margin: 0 auto 40px;
+    background: white;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    border-radius: 4px;
+    padding: 0;
+  }
+
+  .card-front {
+    width: 252px;
+    height: 144px;
+    background: #1E1B4B;
+    display: flex;
+    padding: 14px 18px;
+    position: relative;
+    overflow: hidden;
+    border: 0.5px solid #ddd;
+  }
+
+  .card-front .card-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .card-front .card-title {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #F5F3FF;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+  }
+
+  .card-front .card-tagline {
+    font-size: 8.5px;
+    color: #A5B4FC;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+
+  .card-front .card-cta {
+    font-size: 7.5px;
+    color: #C4B5FD;
+    font-weight: 500;
+  }
+
+  .card-front .card-qr {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .card-front .card-qr canvas {
+    width: 72px !important;
+    height: 72px !important;
+    border-radius: 4px;
+  }
+
+  .card-front .card-code-label {
+    position: absolute;
+    bottom: 6px;
+    right: 12px;
+    font-size: 5.5px;
+    color: #6366F1;
+    font-family: monospace;
+    letter-spacing: 0.5px;
+  }
+
+  /* Card back (for double-sided printing — separate pages) */
+  .card-back {
+    width: 252px;
+    height: 144px;
+    background: #FAFAFA;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 0.5px solid #ddd;
+  }
+
+  .card-back .feature-list {
+    list-style: none;
+    margin-bottom: 12px;
+  }
+
+  .card-back .feature-list li {
+    font-size: 8px;
+    color: #1E1B4B;
+    line-height: 1.8;
+  }
+
+  .card-back .feature-list li::before {
+    content: '✓ ';
+    color: #F59E0B;
+    font-weight: 700;
+  }
+
+  .card-back .card-url {
+    font-size: 9px;
+    font-weight: 700;
+    color: #1E1B4B;
+    margin-top: auto;
+  }
+
+  .page-label {
+    text-align: center;
+    color: #666;
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="controls">
+  <h1>⚗ NCECA Card Generator</h1>
+  <p class="subtitle">Paste trial codes ⇒ generate print-ready business cards with unique QR codes</p>
+
+  <label for="codes">Trial codes (one per line — from Supabase export)</label>
+  <textarea id="codes" placeholder="NCECA-K7M2-P9X4
+NCECA-A3B9-Q7R2
+NCECA-W5X1-M8N6
+..."></textarea>
+
+  <div class="row">
+    <div>
+      <label>Base URL</label>
+      <input type="text" id="baseUrl" value="https://rlv.lol/stullv2/#/nceca?code=">
+    </div>
+    <div>
+      <label>Batch label (for tracking)</label>
+      <input type="text" id="batchLabel" value="NCECA 2026 Detroit">
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 12px;">
+    <button onclick="generateCards()">Generate Cards</button>
+    <button class="btn-secondary" onclick="window.print()">🖨 Print</button>
+    <button class="btn-secondary" onclick="generateSample()">Load Sample</button>
+  </div>
+
+  <div class="stats" id="stats"></div>
+</div>
+
+<div class="preview" id="preview"></div>
+<div class="print-area" id="printArea"></div>
+
+<script>
+function generateSample() {
+  // Generate 20 sample codes for preview
+  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  const codes = [];
+  for (let i = 0; i < 20; i++) {
+    let code = 'NCECA-';
+    for (let j = 0; j < 4; j++) code += chars[Math.floor(Math.random() * chars.length)];
+    code += '-';
+    for (let j = 0; j < 4; j++) code += chars[Math.floor(Math.random() * chars.length)];
+    codes.push(code);
+  }
+  document.getElementById('codes').value = codes.join('\n');
+}
+
+async function generateCards() {
+  const raw = document.getElementById('codes').value.trim();
+  const baseUrl = document.getElementById('baseUrl').value.trim();
+  
+  if (!raw) {
+    alert('Paste at least one trial code.');
+    return;
+  }
+  
+  const codes = raw.split('\n')
+    .map(c => c.trim())
+    .filter(c => c.length > 0 && c.startsWith('NCECA-'));
+  
+  if (codes.length === 0) {
+    alert('No valid NCECA codes found. Each code should start with NCECA-.');
+    return;
+  }
+  
+  document.getElementById('stats').textContent = `Generating ${codes.length} cards...`;
+  
+  const preview = document.getElementById('preview');
+  const printArea = document.getElementById('printArea');
+  preview.innerHTML = '';
+  printArea.innerHTML = '';
+  
+  // 10 cards per page (2 columns × 5 rows)
+  const cardsPerPage = 10;
+  const totalPages = Math.ceil(codes.length / cardsPerPage);
+  
+  for (let page = 0; page < totalPages; page++) {
+    const pageStart = page * cardsPerPage;
+    const pageCodes = codes.slice(pageStart, pageStart + cardsPerPage);
+    
+    // Front page
+    const frontLabel = document.createElement('p');
+    frontLabel.className = 'page-label';
+    frontLabel.textContent = `Front — Page ${page + 1} of ${totalPages} (Cards ${pageStart + 1}–${pageStart + pageCodes.length})`;
+    
+    const frontPage = document.createElement('div');
+    frontPage.className = 'card-page';
+    
+    for (const code of pageCodes) {
+      const card = createCardFront(code, baseUrl);
+      frontPage.appendChild(card);
+    }
+    
+    // Pad remaining slots with empty cells
+    for (let i = pageCodes.length; i < cardsPerPage; i++) {
+      const empty = document.createElement('div');
+      empty.style.cssText = 'width:252px;height:144px;';
+      frontPage.appendChild(empty);
+    }
+    
+    preview.appendChild(frontLabel);
+    preview.appendChild(frontPage);
+    
+    // Clone for print area
+    const printFrontLabel = frontLabel.cloneNode(true);
+    const printFrontPage = frontPage.cloneNode(true);
+    printArea.appendChild(printFrontLabel);
+    printArea.appendChild(printFrontPage);
+    
+    // Back page
+    const backLabel = document.createElement('p');
+    backLabel.className = 'page-label';
+    backLabel.textContent = `Back — Page ${page + 1} of ${totalPages}`;
+    
+    const backPage = document.createElement('div');
+    backPage.className = 'card-page';
+    
+    for (let i = 0; i < cardsPerPage; i++) {
+      backPage.appendChild(createCardBack());
+    }
+    
+    preview.appendChild(backLabel);
+    preview.appendChild(backPage);
+    
+    const printBackLabel = backLabel.cloneNode(true);
+    const printBackPage = backPage.cloneNode(true);
+    printArea.appendChild(printBackLabel);
+    printArea.appendChild(printBackPage);
+  }
+  
+  // Generate QR codes (async — needs canvas rendering)
+  const qrContainers = preview.querySelectorAll('.card-qr');
+  const allCodes = [];
+  preview.querySelectorAll('.card-code-label').forEach(el => allCodes.push(el.textContent));
+  
+  for (let i = 0; i < qrContainers.length; i++) {
+    const url = baseUrl + allCodes[i];
+    const canvas = document.createElement('canvas');
+    await QRCode.toCanvas(canvas, url, {
+      width: 150,
+      margin: 1,
+      color: { dark: '#1E1B4B', light: '#FFFFFF' },
+      errorCorrectionLevel: 'M',
+    });
+    qrContainers[i].appendChild(canvas);
+  }
+  
+  // Clone QR codes to print area
+  const printQrContainers = printArea.querySelectorAll('.card-qr');
+  for (let i = 0; i < printQrContainers.length; i++) {
+    const srcCanvas = qrContainers[i].querySelector('canvas');
+    if (srcCanvas) {
+      const cloneCanvas = document.createElement('canvas');
+      cloneCanvas.width = srcCanvas.width;
+      cloneCanvas.height = srcCanvas.height;
+      cloneCanvas.getContext('2d').drawImage(srcCanvas, 0, 0);
+      cloneCanvas.style.cssText = srcCanvas.style.cssText;
+      printQrContainers[i].appendChild(cloneCanvas);
+    }
+  }
+  
+  document.getElementById('stats').textContent = 
+    `Generated ${codes.length} cards across ${totalPages} pages (${totalPages * 2} sheets for front+back). Ready to print!`;
+}
+
+function createCardFront(code, baseUrl) {
+  const card = document.createElement('div');
+  card.className = 'card-front';
+  card.innerHTML = `
+    <div class="card-text">
+      <div class="card-title">STULL ATLAS</div>
+      <div class="card-tagline">Navigate the chemistry<br>of ceramics.</div>
+      <div class="card-cta">Scan for 30 days free →</div>
+    </div>
+    <div class="card-qr"></div>
+    <div class="card-code-label">${code}</div>
+  `;
+  return card;
+}
+
+function createCardBack() {
+  const card = document.createElement('div');
+  card.className = 'card-back';
+  card.innerHTML = `
+    <ul class="feature-list">
+      <li>Interactive Stull Charts (2D & 3D)</li>
+      <li>14,000+ analyzed glaze recipes</li>
+      <li>Blend calculators & optimizer</li>
+      <li>AI-powered glaze suggestions</li>
+    </ul>
+    <div class="card-url">rlv.lol/stullv2</div>
+  `;
+  return card;
+}
+</script>
+</body>
+</html>
