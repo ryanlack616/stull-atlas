@@ -70,8 +70,9 @@
 
 ### Booth Logistics
 - [ ] Confirm booth assignment / floor plan from NCECA
-- [ ] Book travel (flights/drive to Detroit)
-- [ ] Book hotel near Huntington Place
+- [ ] Driving from Howell (~60 min) — plan to leave by 7 AM each day
+- [ ] Optional: book 1 hotel night near Huntington Place (setup eve or late teardown)
+- [ ] Research parking at/near Huntington Place (prepay if possible)
 - [ ] Booth furnishing — do you need a table, chair, monitor, power strip?
 - [ ] Laptop for live demo (charged, offline data works, good screen)
 - [ ] Extension cord + power strip (booths sometimes only get 1 outlet)
@@ -135,14 +136,18 @@
 
 ## Budget Summary
 
+Howell, MI → Huntington Place, Detroit: ~60 mi / 1 hr each way.
+Plan to commute daily; hotel optional (1 night max if setup runs late).
+
 | Item                          | Est. Cost   |
 |-------------------------------|-------------|
 | Booth fee                     | $1,900      |
-| Hotel (3 nights)              | ~$600-900   |
 | Booth staff (weekend)         | $320        |
 | Business cards (500)          | ~$100       |
 | Retractable banner            | ~$200       |
 | USB drives (100, printed)     | ~$135       |
-| Travel (gas/flights)          | ~$200-400   |
-| Misc (food, parking, extras)  | ~$200       |
-| **Total**                     | **~$3,655-4,155** |
+| Gas (4 days × 120 mi @ $0.25) | ~$120      |
+| Parking (convention center)   | ~$80-120    |
+| Hotel (0-1 nights, optional)  | $0-200      |
+| Misc (food, tolls, extras)    | ~$150       |
+| **Total**                     | **~$3,005-3,245** |
