@@ -37,6 +37,12 @@ export type CameraPreset = 'default' | 'top' | 'side-x' | 'side-y'
 
 type ColorByOption = 'cone' | 'surface' | 'source' | 'flux_ratio' | 'confidence' | 'boron' | 'z_axis' | 'glaze_type'
 
+export interface LightPosition {
+  x: number
+  y: number
+  z: number
+}
+
 interface StullPlot3DProps {
   zAxis?: ZAxisOption
   colorBy?: ColorByOption
@@ -51,6 +57,12 @@ interface StullPlot3DProps {
   surfaceOpacity?: number
   // Camera
   cameraPreset?: CameraPreset
+  // 3D perspective (FOV)
+  perspective?: number
+  // Light source position
+  lightPosition?: LightPosition
+  // Callback when fitted surface grid updates (for export)
+  onSurfaceGridReady?: (grid: SurfaceGrid | null, scatterPoints: { x: number; y: number; z: number; name: string }[]) => void
 }
 
 type PlotData = any
@@ -286,6 +298,7 @@ function buildSurfaceTrace(
   zAxis: ZAxisOption,
   opacity: number,
   isDark: boolean,
+  lightPos?: LightPosition,
 ): PlotData {
   return {
     type: 'surface' as const,
@@ -307,13 +320,21 @@ function buildSurfaceTrace(
         project: { z: true },
       },
     },
-    lighting: {
+    lighting: lightPos ? {
+      ambient: 0.5,
+      diffuse: 0.8,
+      specular: 0.4,
+      roughness: 0.4,
+      fresnel: 0.2,
+    } : {
       ambient: 0.8,
       diffuse: 0.3,
       specular: 0.15,
       roughness: 0.6,
     },
-    lightposition: { x: 0, y: 0, z: 10000 },
+    lightposition: lightPos
+      ? { x: lightPos.x * 100000, y: lightPos.y * 100000, z: lightPos.z * 100000 }
+      : { x: 0, y: 0, z: 10000 },
   }
 }
 
@@ -384,12 +405,18 @@ export function StullPlot3D({
   showSurface = true,
   surfaceOpacity = 0.35,
   cameraPreset = 'default',
+  perspective = 0.5,
+  lightPosition,
+  onSurfaceGridReady,
 }: StullPlot3DProps) {
   const [PlotComponent, setPlotComponent] = useState<PlotComponentType | null>(null)
   const [plotError, setPlotError] = useState(false)
   const [loadSlow, setLoadSlow] = useState(false)
   const [retryCount, setRetryCount] = useState(0)
   const plotRef = useRef<any>(null)
+
+  // Track user camera so selecting a glaze doesn't reset the view
+  const userCameraRef = useRef<any>(null)
 
   useEffect(() => {
     let active = true
@@ -512,6 +539,11 @@ export function StullPlot3D({
       },
     )
   }, [plotData, showSurface])
+
+  // Notify parent when surface grid changes (for 3D export)
+  useEffect(() => {
+    onSurfaceGridReady?.(surfaceGrid, plotData.map((p: any) => ({ x: p.x, y: p.y, z: p.z, name: p.name ?? '' })))
+  }, [surfaceGrid, plotData, onSurfaceGridReady])
 
   // ─── Main scatter trace ───────────────────────────────────────
 
@@ -758,7 +790,7 @@ export function StullPlot3D({
     if (dropLines) t.push(dropLines)
 
     if (surfaceGrid && showSurface) {
-      t.push(buildSurfaceTrace(surfaceGrid, zAxis, surfaceOpacity, isDark))
+      t.push(buildSurfaceTrace(surfaceGrid, zAxis, surfaceOpacity, isDark, lightPosition))
     }
 
     t.push(scatterTrace)
@@ -772,14 +804,29 @@ export function StullPlot3D({
     return t
   }, [
     regionTraces, tempContours, qLineTrace, regionLabels,
-    dropLines, surfaceGrid, showSurface, surfaceOpacity, zAxis, isDark,
+    dropLines, surfaceGrid, showSurface, surfaceOpacity, zAxis, isDark, lightPosition,
     scatterTrace, highlightTrace, voidTrace, blendTrace,
     selectedTrace, selectedDropLine,
   ])
 
   // ─── Layout ───────────────────────────────────────────────────
 
-  const camera = CAMERA_PRESETS[cameraPreset](zoom)
+  // Use user's manually-orbited camera if available, otherwise preset
+  const presetCamera = CAMERA_PRESETS[cameraPreset](zoom)
+  const camera = userCameraRef.current ?? presetCamera
+
+  // When cameraPreset or zoom changes from the UI, reset user camera
+  useEffect(() => {
+    userCameraRef.current = null
+  }, [cameraPreset, zoom])
+
+  // Perspective projection config (Plotly uses "projection" inside camera)
+  const cameraWithProjection = useMemo(() => ({
+    ...camera,
+    projection: {
+      type: perspective > 0.01 ? 'perspective' as const : 'orthographic' as const,
+    },
+  }), [camera, perspective])
 
   const layout = useMemo(() => ({
     scene: {
@@ -807,7 +854,7 @@ export function StullPlot3D({
         backgroundcolor: plotColors.axisbg,
       },
       bgcolor: plotColors.bg,
-      camera,
+      camera: cameraWithProjection,
       aspectmode: 'manual' as const,
       aspectratio: { x: 2, y: 1, z: 0.8 },
     },
@@ -816,9 +863,18 @@ export function StullPlot3D({
     margin: { l: 0, r: 0, t: 0, b: 0 },
     hovermode: 'closest' as const,
     showlegend: false,
-  }), [zAxis, plotColors, camera])
+    uirevision: 'stull3d',
+  }), [zAxis, plotColors, cameraWithProjection])
 
   // ─── Event handlers ───────────────────────────────────────────
+
+  // Capture user's manual camera changes (orbit, pan, zoom)
+  const handleRelayout = useCallback((update: any) => {
+    const cam = update?.['scene.camera']
+    if (cam) {
+      userCameraRef.current = cam
+    }
+  }, [])
 
   const handleClick = useCallback((event: any) => {
     const point = event.points?.[0]
@@ -899,6 +955,7 @@ export function StullPlot3D({
       config={config}
       onClick={handleClick}
       onHover={handleHover}
+      onRelayout={handleRelayout}
       useResizeHandler
       style={{ width: width || '100%', height: height || '100%' }}
     />

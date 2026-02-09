@@ -10,7 +10,7 @@ import { useGlazeStore, useSelectionStore, useRecipeStore, useThemeStore, useMol
 import { OxideSymbol, GlazePlotPoint, SurfaceType, EpistemicState } from '@/types'
 import { getOxideValue } from '@/calculator/umf'
 import { roundTo } from '@/calculator'
-import { CONE_LIMITS } from '@/calculator/validation'
+import { CONE_LIMITS, interpolateLimits, ConeLimits } from '@/calculator/validation'
 import { glazeTypeColor, glazeTypeName } from '@/domain/glaze'
 import { useFilteredPoints } from '@/hooks'
 
@@ -24,6 +24,10 @@ interface StullPlotProps {
   highlightPointIds?: string[]
   highlightCircle?: { x: number; y: number; r: number } | null
   densityMap?: { grid: number[][]; bounds: { xMin: number; xMax: number; yMin: number; yMax: number }; resolution: number; maxDensity: number } | null
+  /** Show limit formula overlays */
+  showLimits?: boolean
+  /** If set, highlight this specific cone's limits prominently */
+  limitCone?: string | null
 }
 
 type PlotComponentType = React.ComponentType<any>
@@ -145,6 +149,8 @@ export function StullPlot({
   highlightPointIds,
   highlightCircle,
   densityMap,
+  showLimits = false,
+  limitCone = null,
 }: StullPlotProps) {
 
   const [PlotComponent, setPlotComponent] = useState<PlotComponentType | null>(null)
@@ -195,8 +201,74 @@ export function StullPlot({
       qLabel: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.3)',
       tempLabel: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.4)',
       coneBorder: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)',
+      limitFill: isDark ? 'rgba(59,130,246,0.12)' : 'rgba(59,130,246,0.08)',
+      limitBorder: isDark ? 'rgba(59,130,246,0.5)' : 'rgba(59,130,246,0.4)',
+      limitLabel: isDark ? 'rgba(59,130,246,0.7)' : 'rgba(59,130,246,0.6)',
+      limitDimBorder: isDark ? 'rgba(150,150,150,0.15)' : 'rgba(100,100,100,0.12)',
     }
   }, [theme])
+
+  // Build limit formula overlay shapes + annotations
+  const limitOverlay = useMemo(() => {
+    if (!showLimits) return { shapes: [], annotations: [] }
+    
+    // Map oxide axis name to ConeLimits key
+    const oxideKey = (axis: string): keyof ConeLimits | null => {
+      const map: Record<string, keyof ConeLimits> = {
+        SiO2: 'SiO2', Al2O3: 'Al2O3', B2O3: 'B2O3',
+        Na2O: 'KNaO', K2O: 'KNaO', // Combined alkalis
+        CaO: 'CaO', MgO: 'MgO', ZnO: 'ZnO', BaO: 'BaO',
+      }
+      return map[axis] ?? null
+    }
+    
+    const xKey = oxideKey(xAxis)
+    const yKey = oxideKey(yAxis)
+    if (!xKey || !yKey) return { shapes: [], annotations: [] }
+    
+    const shapes: any[] = []
+    const annotations: any[] = []
+    
+    // Determine which cone to highlight
+    const highlightCone = limitCone || null
+    
+    for (const cl of CONE_LIMITS) {
+      const xRange = cl[xKey] as { min: number; max: number }
+      const yRange = cl[yKey] as { min: number; max: number }
+      if (!xRange || !yRange) continue
+      
+      const isHighlighted = highlightCone === cl.cone
+      
+      shapes.push({
+        type: 'rect' as const,
+        x0: xRange.min, x1: xRange.max,
+        y0: yRange.min, y1: yRange.max,
+        fillcolor: isHighlighted ? plotColors.limitFill : 'transparent',
+        line: {
+          color: isHighlighted ? plotColors.limitBorder : plotColors.limitDimBorder,
+          width: isHighlighted ? 2 : 1,
+          dash: isHighlighted ? 'solid' as const : 'dot' as const,
+        },
+        layer: 'below' as const,
+      })
+      
+      // Label at top-right corner of each rectangle
+      annotations.push({
+        x: xRange.max,
+        y: yRange.max,
+        text: `▲${cl.cone}`,
+        showarrow: false,
+        font: {
+          color: isHighlighted ? plotColors.limitBorder : plotColors.limitDimBorder,
+          size: isHighlighted ? 11 : 9,
+        },
+        xanchor: 'right',
+        yanchor: 'bottom',
+      })
+    }
+    
+    return { shapes, annotations }
+  }, [showLimits, limitCone, xAxis, yAxis, plotColors])
   
   // Get plot data
   const rawPlotPoints = useMemo(() => {
@@ -430,7 +502,9 @@ export function StullPlot({
       { x: 6.4, y: 0.48, text: '1270°C', showarrow: false, font: { color: 'rgba(255,255,204,0.6)', size: 9 } },
       { x: 6.4, y: 0.52, text: '1260°C', showarrow: false, font: { color: 'rgba(255,255,136,0.7)', size: 9 } },
       { x: 6.4, y: 0.60, text: '1250°C', showarrow: false, font: { color: 'rgba(255,255,34,0.7)', size: 9 } },
-      { x: 5.9, y: 0.68, text: '1240°C', showarrow: false, font: { color: 'rgba(255,221,0,0.8)', size: 9 } }
+      { x: 5.9, y: 0.68, text: '1240°C', showarrow: false, font: { color: 'rgba(255,221,0,0.8)', size: 9 } },
+      // Limit formula labels
+      ...limitOverlay.annotations,
     ] as any,
     shapes: [
       // Stull region fills
@@ -457,20 +531,11 @@ export function StullPlot({
         line: { color: contour.color, width: 1 },
         layer: 'below' as const
       })),
-      // Cone limit rectangles (SiO2 vs Al2O3 range boxes)
-      ...CONE_LIMITS.map(cl => ({
-        type: 'rect' as const,
-        x0: cl.SiO2.min,
-        x1: cl.SiO2.max,
-        y0: cl.Al2O3.min,
-        y1: cl.Al2O3.max,
-        fillcolor: 'transparent',
-        line: { color: plotColors.coneBorder, width: 1, dash: 'dot' as const },
-        layer: 'below' as const
-      })),
+      // Limit formula rectangles (dynamic per axis pair)
+      ...limitOverlay.shapes,
       ...(circleShape ? [circleShape] : [])
     ]
-  }), [xAxis, yAxis, xHalfSpan, yHalfSpan, circleShape, plotColors])
+  }), [xAxis, yAxis, xHalfSpan, yHalfSpan, circleShape, plotColors, limitOverlay])
   
   // Click handler
   const handleClick = useCallback((event: any) => {

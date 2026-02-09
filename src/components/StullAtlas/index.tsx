@@ -12,9 +12,12 @@ import { useSelectionStore, useGlazeStore, useFilterStore } from '@/stores'
 import { useSimilarity } from '@/hooks'
 import { OxideSymbol, GlazeRecipe } from '@/types'
 import type { DensityMap } from '@/analysis/density'
-import type { ZAxisOption, CameraPreset } from './StullPlot3D'
+import type { ZAxisOption, CameraPreset, LightPosition } from './StullPlot3D'
+import { zAxisLabel } from './StullPlot3D'
+import type { SurfaceGrid } from '@/analysis/surfaceFit'
 import { UMFFingerprint, FluxDonut, OxideRadar, GlazeTypeBadge, ConeRangeBar, MiniStull, DatasetStats, RecipeBar, OxideTd } from '@/components/UMFVisuals'
 import { explorerStyles } from './explorer-styles'
+import { exportPlotAsImage, exportAsPrintPDF, exportSurfaceAsOBJ, exportSurfaceAsSTL, exportScatterAsCSV } from '@/utils'
 
 // Lazy-load heavy components that aren't always visible
 const StullPlot3D = lazy(() => import('./StullPlot3D').then(m => ({ default: m.StullPlot3D })))
@@ -155,6 +158,18 @@ export function StullAtlas() {
   const [showSurface, setShowSurface] = useState(true)
   const [surfaceOpacity, setSurfaceOpacity] = useState(0.35)
   const [cameraPreset, setCameraPreset] = useState<CameraPreset>('default')
+  const [showLimits, setShowLimits] = useState(false)
+  const [limitCone, setLimitCone] = useState<string>('6')
+  const [perspective, setPerspective] = useState(0.5)
+  const [lightEnabled, setLightEnabled] = useState(false)
+  const [lightPosition, setLightPosition] = useState<LightPosition>({ x: 1, y: -1, z: 2 })
+  const [surfaceGridRef, setSurfaceGridRef] = useState<SurfaceGrid | null>(null)
+  const [scatterPointsRef, setScatterPointsRef] = useState<{ x: number; y: number; z: number; name: string }[]>([])
+  
+  const handleSurfaceGridReady = useCallback((grid: SurfaceGrid | null, scatter: { x: number; y: number; z: number; name: string }[]) => {
+    setSurfaceGridRef(grid)
+    setScatterPointsRef(scatter)
+  }, [])
   
   // Auto-switch to z_axis coloring when entering 3D or changing Z axis
   useEffect(() => {
@@ -360,6 +375,57 @@ export function StullAtlas() {
                     ))}
                   </div>
                 </div>
+
+                <div className="perspective-control">
+                  <span className="presets-label">Perspective</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.05"
+                      value={perspective}
+                      onChange={e => setPerspective(Number(e.target.value))}
+                      title={perspective < 0.01 ? 'Orthographic' : `Perspective: ${Math.round(perspective * 100)}%`}
+                      style={{ flex: 1 }}
+                    />
+                    <span style={{ fontSize: 11, color: 'var(--text-secondary)', minWidth: 36, textAlign: 'right' }}>
+                      {perspective < 0.01 ? 'Ortho' : `${Math.round(perspective * 100)}%`}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="light-control">
+                  <label className="surface-toggle">
+                    <input
+                      type="checkbox"
+                      checked={lightEnabled}
+                      onChange={e => setLightEnabled(e.target.checked)}
+                    />
+                    Light Source
+                  </label>
+                  {lightEnabled && (
+                    <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                      {(['x', 'y', 'z'] as const).map(axis => (
+                        <div key={axis} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
+                          <span style={{ width: 12, color: 'var(--text-secondary)' }}>{axis.toUpperCase()}</span>
+                          <input
+                            type="range"
+                            min="-3"
+                            max="3"
+                            step="0.1"
+                            value={lightPosition[axis]}
+                            onChange={e => setLightPosition(prev => ({ ...prev, [axis]: Number(e.target.value) }))}
+                            style={{ flex: 1 }}
+                          />
+                          <span style={{ fontSize: 11, color: 'var(--text-dim)', minWidth: 28, textAlign: 'right' }}>
+                            {lightPosition[axis].toFixed(1)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </>
             )}
           </div>
@@ -384,6 +450,98 @@ export function StullAtlas() {
             >
               Reset
             </button>
+          </div>
+          
+          <div className="control-group">
+            <h3>Limit Formulas</h3>
+            <label className="surface-toggle" style={{ marginBottom: 4 }}>
+              <input
+                type="checkbox"
+                checked={showLimits}
+                onChange={e => setShowLimits(e.target.checked)}
+              />
+              Show Limits
+            </label>
+            {showLimits && (
+              <div style={{ marginTop: 4 }}>
+                <label style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+                  Highlight Cone
+                  <select
+                    value={limitCone}
+                    onChange={e => setLimitCone(e.target.value)}
+                    style={{ marginLeft: 6, fontSize: 12 }}
+                  >
+                    <option value="06">Cone 06</option>
+                    <option value="04">Cone 04</option>
+                    <option value="6">Cone 6</option>
+                    <option value="9">Cone 9</option>
+                    <option value="10">Cone 10</option>
+                    <option value="11">Cone 11</option>
+                  </select>
+                </label>
+                <p style={{ fontSize: 10, color: 'var(--text-tertiary)', margin: '4px 0 0', lineHeight: 1.3 }}>
+                  Safe oxide ranges from Digitalfire &amp; ceramic literature
+                </p>
+              </div>
+            )}
+          </div>
+          
+          <div className="control-group">
+            <h3>Export</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <button
+                className="reset-zoom"
+                onClick={() => exportPlotAsImage('png', 'stull-atlas-chart')}
+                title="Save chart as a high-res PNG image"
+              >
+                📷 Save Image (PNG)
+              </button>
+              <button
+                className="reset-zoom"
+                onClick={() => exportPlotAsImage('svg', 'stull-atlas-chart')}
+                title="Save chart as SVG vector graphic"
+              >
+                🖼 Save Image (SVG)
+              </button>
+              <button
+                className="reset-zoom"
+                onClick={() => exportAsPrintPDF('Stull Atlas')}
+                title="Print or save as PDF"
+              >
+                🖨 Print / PDF
+              </button>
+              {is3D && surfaceGridRef && (
+                <>
+                  <div style={{ borderTop: '1px solid var(--border)', margin: '4px 0', paddingTop: 4 }}>
+                    <span style={{ fontSize: 10, color: 'var(--text-tertiary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>3D Surface</span>
+                  </div>
+                  <button
+                    className="reset-zoom"
+                    onClick={() => exportSurfaceAsOBJ(surfaceGridRef, {
+                      zLabel: zAxisLabel(zAxis),
+                      scatterPoints: scatterPointsRef,
+                    })}
+                    title="Export surface mesh as OBJ — opens in Blender, MeshLab, etc."
+                  >
+                    🧊 Surface Mesh (OBJ)
+                  </button>
+                  <button
+                    className="reset-zoom"
+                    onClick={() => exportSurfaceAsSTL(surfaceGridRef)}
+                    title="Export surface mesh as STL — for 3D printing or CAD tools"
+                  >
+                    🔺 Surface Mesh (STL)
+                  </button>
+                  <button
+                    className="reset-zoom"
+                    onClick={() => exportScatterAsCSV(scatterPointsRef, { zLabel: zAxisLabel(zAxis) })}
+                    title="Export glaze scatter points as CSV with 3D coordinates"
+                  >
+                    📊 3D Points (CSV)
+                  </button>
+                </>
+              )}
+            </div>
           </div>
           
           <MolarSetPicker />
@@ -419,6 +577,9 @@ export function StullAtlas() {
                 showSurface={showSurface}
                 surfaceOpacity={surfaceOpacity}
                 cameraPreset={cameraPreset}
+                perspective={perspective}
+                lightPosition={lightEnabled ? lightPosition : undefined}
+                onSurfaceGridReady={handleSurfaceGridReady}
               />
             </Suspense>
           ) : (
@@ -430,6 +591,8 @@ export function StullAtlas() {
               highlightPointIds={highlightPointIds}
               highlightCircle={highlightCircle}
               densityMap={showDensity ? densityMap : null}
+              showLimits={showLimits}
+              limitCone={showLimits ? limitCone : null}
             />
           )}
         </main>
