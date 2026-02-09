@@ -5,13 +5,20 @@
  * '__PRECACHE_ASSETS__' placeholder in sw.js with an array of critical
  * asset paths (vendor chunks, main CSS, index JS).
  * 
- * Usage: node scripts/postbuild-sw.js [dist-dir]
+ * In gift/offline mode (--all flag), injects ALL assets for full
+ * offline capability on micro SD card distribution.
+ * 
+ * Usage:
+ *   node scripts/postbuild-sw.js [dist-dir]
+ *   node scripts/postbuild-sw.js [dist-dir] --all   # gift mode: cache everything
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'fs'
 import { join } from 'path'
 
-const distDir = process.argv[2] || 'dist'
+const args = process.argv.slice(2)
+const cacheAll = args.includes('--all')
+const distDir = args.find(a => !a.startsWith('-')) || 'dist'
 const manifestPath = join(distDir, '.vite', 'manifest.json')
 const swPath = join(distDir, 'sw.js')
 
@@ -27,18 +34,23 @@ if (!existsSync(swPath)) {
 
 const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'))
 
-// Collect critical assets to pre-cache:
-// - All CSS files (small, needed for first paint)
-// - Vendor chunks (react, router, state — needed for any page)
-// - Main index JS (the entry point)
-// - NOT lazy-loaded page chunks (they'll be cached on-demand)
-// - NOT Plotly bundles (2MB each — too large for install-time pre-cache)
+// Collect assets to pre-cache:
+// Normal mode: critical assets only (CSS, vendor chunks, main entry)
+// Gift mode (--all): everything for full offline use
 const criticalAssets = new Set()
 
 for (const [key, entry] of Object.entries(manifest)) {
   const file = entry.file
   if (!file) continue
 
+  if (cacheAll) {
+    // Gift mode: cache ALL assets for complete offline capability
+    criticalAssets.add(file)
+    if (entry.css) entry.css.forEach(c => criticalAssets.add(c))
+    continue
+  }
+
+  // Normal mode: only critical assets
   // Always include CSS
   if (file.endsWith('.css')) {
     criticalAssets.add(file)
@@ -65,7 +77,9 @@ const assetsArray = JSON.stringify([...criticalAssets])
 sw = sw.replace("'__PRECACHE_ASSETS__'", assetsArray)
 
 writeFileSync(swPath, sw, 'utf-8')
-console.log(`✓ Injected ${criticalAssets.size} critical assets into sw.js:`)
+
+const mode = cacheAll ? 'GIFT (all assets)' : 'normal (critical only)'
+console.log(`✓ Injected ${criticalAssets.size} assets into sw.js [${mode}]:`)
 for (const a of criticalAssets) {
   console.log(`  ${a}`)
 }
