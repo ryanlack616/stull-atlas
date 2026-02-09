@@ -625,12 +625,12 @@ export const EVENTS: TimelineEvent[] = [
     significance: 2,
   },
   {
-    year: 1951,
-    title: 'Paul Soldner — Salt Firing Exploration',
-    description: 'American exploration of atmospheric firing chemistry. Soldner\u2019s work with salt and later alternative-atmosphere firing expands the vocabulary of surface effects.',
+    year: 1966,
+    title: 'Paul Soldner — American Raku',
+    description: 'Paul Soldner (1921–2011), a student of Voulkos at Otis, develops American Raku — adapting the traditional Japanese technique with post-firing reduction in combustible materials. The process creates unpredictable, dramatic surface effects (copper lusters, carbon trapping) that become a gateway into atmospheric chemistry for generations of potters. Later experiments with salt and soda firing further expand the vocabulary of atmospheric surfaces.',
     category: 'science',
     people: ['Paul Soldner'],
-    significance: 3,
+    significance: 2,
   },
   {
     year: 1952,
@@ -767,6 +767,14 @@ export const EVENTS: TimelineEvent[] = [
     significance: 3,
   },
   {
+    year: 1980,
+    approximate: true,
+    title: 'American Anagama Movement Begins',
+    description: 'Japanese-trained American potters begin building anagama (single-chamber wood kilns) across the U.S. The anagama revival reintroduces wood ash as an active glazing agent — fly ash, flame path, and ember contact create surfaces impossible to achieve with applied glazes. A direct rejection of the electric kiln era.',
+    category: 'technology',
+    significance: 2,
+  },
+  {
     year: 1981,
     title: 'Michael Cardew — \u201CPioneer Pottery\u201D',
     description: 'Traditional pottery knowledge documented by a Leach pupil who spent decades working in West Africa. Pre-industrial methods preserved for future generations.',
@@ -788,6 +796,13 @@ export const EVENTS: TimelineEvent[] = [
     category: 'publication',
     people: ['Frank Hamer', 'Janet Hamer'],
     significance: 2,
+  },
+  {
+    year: 1985,
+    title: 'Wood Firing Workshops Spread Nationally',
+    description: 'Wood firing workshops and community kiln-building projects proliferate across American universities and craft schools. Multi-day firings become communal events — the labor-intensive process creates a social practice distinct from solitary electric kiln work. Schools like Penland, Haystack, and Arrowmont host intensive wood firing sessions.',
+    category: 'community',
+    significance: 3,
   },
   {
     year: 1985,
@@ -855,6 +870,14 @@ export const EVENTS: TimelineEvent[] = [
     description: 'First online ceramic communities emerge on Usenet and early web forums. Global ceramic discourse begins — potters can exchange knowledge without physical proximity for the first time.',
     category: 'community',
     significance: 3,
+  },
+  {
+    year: 1995,
+    title: 'Jack Troy — "Wood-Fired Stoneware and Porcelain"',
+    description: 'Jack Troy publishes the definitive reference on wood firing, documenting kiln design, firing techniques, and the chemistry of wood ash glazing. The book provides the intellectual framework for the anagama revival and legitimizes wood firing as a discipline with its own scientific rigor.',
+    category: 'publication',
+    people: ['Jack Troy'],
+    significance: 2,
   },
   {
     year: 1995,
@@ -942,6 +965,14 @@ export const EVENTS: TimelineEvent[] = [
     description: 'Collaborative online community for cone 6 testing. Crowd-sourced glaze development — potters share results from standardized tests, building collective knowledge faster than any individual could.',
     category: 'community',
     significance: 3,
+  },
+  {
+    year: 2007,
+    title: 'John Britt — "The Complete Guide to High-Fire Glazes"',
+    description: 'John Britt, former Clay Coordinator at Penland School of Crafts, publishes a comprehensive reference for cone 10 glazing with hundreds of personally tested recipes. Covers copper, iron, shino, salt/soda, and crystalline glazes with rigorous chemistry. His workshop-based teaching methodology — test, document, share — embodies the democratization of glaze knowledge. Later followed by "The Complete Guide to Mid-Range Glazes" (2014).',
+    category: 'publication',
+    people: ['John Britt'],
+    significance: 2,
   },
   {
     year: 2008,

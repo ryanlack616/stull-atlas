@@ -25,6 +25,7 @@ export function TimelinePage() {
   const [filter, setFilter] = useState<EventCategory | 'all'>('all')
   const [expandedKey, setExpandedKey] = useState<string | null>(null)
   const [showThemes, setShowThemes] = useState(false)
+  const [showSources, setShowSources] = useState(false)
   const [onlyInflections, setOnlyInflections] = useState(false)
   const timelineRef = useRef<HTMLDivElement>(null)
 
@@ -220,6 +221,59 @@ export function TimelinePage() {
                 </div>
               )
             })}
+          </div>
+
+          {/* Sources & Bibliography */}
+          <div className="sources-section">
+            <button
+              className="sources-toggle"
+              onClick={() => setShowSources(v => !v)}
+              aria-expanded={showSources}
+            >
+              📚 Sources & Bibliography {showSources ? '▾' : '▸'}
+            </button>
+            {showSources && (
+              <div className="sources-content">
+                <p className="sources-note">
+                  This timeline was compiled from primary sources, scholarly references, and community
+                  knowledge. Key references include:
+                </p>
+                <ul className="sources-list">
+                  <li>
+                    <strong>Stull, R.T.</strong> (1912). "Influences of Variable Silica and Alumina on Porcelain
+                    Glazes of Constant RO." <em>Transactions of the American Ceramic Society</em>, Vol. XIV, pp. 62–70.
+                  </li>
+                  <li>
+                    <strong>Rhodes, Daniel</strong> (1957). <em>Clay and Glazes for the Potter</em>. Philadelphia: Chilton.
+                  </li>
+                  <li>
+                    <strong>Currie, Ian</strong> (1990). <em>Stoneware Glazes: A Systematic Approach</em>. Bootstrap Press.
+                  </li>
+                  <li>
+                    <strong>Hesselberth, John & Roy, Ron</strong> (2003). <em>Mastering Cone 6 Glazes</em>. Glaze Master Press.
+                  </li>
+                  <li>
+                    <strong>Britt, John</strong> (2007). <em>The Complete Guide to High-Fire Glazes</em>. Lark Books.
+                  </li>
+                  <li>
+                    <strong>Finkelnburg, Dave</strong> (2021). "Techno File: Surface Science." <em>Ceramics Monthly</em>, February 2021.
+                  </li>
+                  <li>
+                    <strong>Katz, Matt</strong>. Ceramic Materials Workshop — <a href="https://ceramicmaterialsworkshop.com" target="_blank" rel="noopener noreferrer">ceramicmaterialsworkshop.com</a>
+                  </li>
+                  <li>
+                    <strong>Philipau, Derek</strong>. Glazy — <a href="https://glazy.org" target="_blank" rel="noopener noreferrer">glazy.org</a> & <a href="https://wiki.glazy.org" target="_blank" rel="noopener noreferrer">Glazy Wiki</a>
+                  </li>
+                  <li>
+                    <strong>Hansen, Tony</strong>. Digitalfire — <a href="https://digitalfire.com" target="_blank" rel="noopener noreferrer">digitalfire.com</a>
+                  </li>
+                </ul>
+                <p className="sources-disclaimer">
+                  Corrections and additions welcome — this timeline is a living document.
+                  If you spot an error or know of a missing milestone, please reach out.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -669,6 +723,87 @@ const timelineStyles = `
 
     .event-detail {
       display: block !important;
+    }
+  }
+
+  /* Sources section */
+  .sources-section {
+    max-width: 800px;
+    margin: 40px auto 20px;
+    padding: 0 0 0 40px;
+  }
+
+  .sources-toggle {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    width: 100%;
+    text-align: left;
+    transition: all 0.15s;
+  }
+
+  .sources-toggle:hover {
+    border-color: var(--accent);
+    color: var(--text-bright);
+  }
+
+  .sources-content {
+    margin-top: 8px;
+    padding: 16px 20px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 8px;
+  }
+
+  .sources-note {
+    margin: 0 0 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .sources-list {
+    margin: 0 0 12px;
+    padding: 0 0 0 20px;
+    font-size: 12px;
+    color: var(--text-body);
+    line-height: 1.7;
+  }
+
+  .sources-list li {
+    margin-bottom: 6px;
+  }
+
+  .sources-list em {
+    font-style: italic;
+  }
+
+  .sources-list a {
+    color: var(--text-link);
+    text-decoration: none;
+  }
+
+  .sources-list a:hover {
+    text-decoration: underline;
+  }
+
+  .sources-disclaimer {
+    margin: 0;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    .sources-section {
+      padding-left: 0;
     }
   }
 `

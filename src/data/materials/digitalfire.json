@@ -30,7 +30,7 @@
         "K2O": 0.35,
         "Na2O": 0.07
       },
-      "loi": 14.62
+      "loi": 13.20
     },
     {
       "id": "grolleg_kaolin",
@@ -72,16 +72,16 @@
       "aliases": ["OM4", "Old Mine 4", "OM-4"],
       "category": "clay",
       "analysis": {
-        "SiO2": 53.47,
-        "Al2O3": 31.06,
-        "TiO2": 1.39,
+        "SiO2": 59.00,
+        "Al2O3": 25.00,
+        "TiO2": 1.00,
         "Fe2O3": 0.97,
         "K2O": 0.73,
         "MgO": 0.29,
         "CaO": 0.27,
         "Na2O": 0.26
       },
-      "loi": 11.56
+      "loi": 12.00
     },
     {
       "id": "goldart",
@@ -89,16 +89,16 @@
       "aliases": ["Goldart Stoneware", "Gold Art"],
       "category": "clay",
       "analysis": {
-        "SiO2": 68.00,
-        "Al2O3": 17.00,
-        "K2O": 3.00,
-        "Fe2O3": 2.20,
-        "TiO2": 0.90,
+        "SiO2": 55.20,
+        "Al2O3": 28.80,
+        "K2O": 1.90,
+        "Fe2O3": 1.40,
+        "TiO2": 1.80,
         "MgO": 0.60,
-        "Na2O": 0.60,
+        "Na2O": 0.20,
         "CaO": 0.40
       },
-      "loi": 7.30
+      "loi": 10.00
     },
     {
       "id": "redart",
@@ -237,7 +237,7 @@
       "category": "feldspar",
       "analysis": {
         "SiO2": 68.50,
-        "Al2O3": 17.35,
+        "Al2O3": 17.00,
         "K2O": 10.28,
         "Na2O": 3.04,
         "CaO": 0.30,
@@ -318,7 +318,7 @@
       "analysis": {
         "SiO2": 64.60,
         "Al2O3": 27.40,
-        "Li2O": 7.60,
+        "Li2O": 8.01,
         "Na2O": 0.30,
         "Fe2O3": 0.10
       },
@@ -353,12 +353,9 @@
       "category": "calcium",
       "analysis": {
         "SiO2": 51.72,
-        "CaO": 46.16,
-        "MgO": 0.60,
-        "Al2O3": 0.40,
-        "Fe2O3": 0.20
+        "CaO": 48.28
       },
-      "loi": 0.92
+      "loi": 0
     },
     {
       "id": "dolomite",
@@ -398,9 +395,10 @@
       "aliases": ["Frit 3134", "3134", "F3134"],
       "category": "frit",
       "analysis": {
-        "SiO2": 46.51,
-        "B2O3": 23.26,
-        "CaO": 20.10,
+        "SiO2": 45.56,
+        "Al2O3": 2.00,
+        "B2O3": 22.79,
+        "CaO": 19.51,
         "Na2O": 10.28
       },
       "loi": 0
@@ -469,16 +467,16 @@
       "aliases": ["GB"],
       "category": "flux",
       "analysis": {
-        "B2O3": 28.01,
-        "CaO": 20.56,
+        "B2O3": 26.80,
+        "CaO": 19.40,
         "SiO2": 14.70,
         "Na2O": 4.09,
-        "MgO": 4.09,
+        "MgO": 3.50,
         "Al2O3": 1.03,
         "K2O": 0.51,
         "Fe2O3": 0.34
       },
-      "loi": 26.67
+      "loi": 29.50
     },
     {
       "id": "gillespie_borate",
@@ -553,12 +551,10 @@
       "aliases": ["Calcium Phosphate", "Tricalcium Phosphate"],
       "category": "flux",
       "analysis": {
-        "CaO": 52.00,
-        "P2O5": 42.00,
-        "Na2O": 2.00,
-        "MgO": 1.00
+        "CaO": 55.82,
+        "P2O5": 42.39
       },
-      "loi": 3.00
+      "loi": 1.79
     },
     {
       "id": "barium_carbonate",
@@ -637,7 +633,7 @@
       "aliases": ["RIO", "Fe2O3", "Iron Oxide", "Spanish Red Iron Oxide"],
       "category": "colorant",
       "analysis": {
-        "Fe2O3": 97.00
+        "Fe2O3": 95.00
       },
       "loi": 3.00
     },
