@@ -253,7 +253,14 @@ export function AboutPage() {
             Built by Ryan Lack at <a href="https://myclaycorner.com" target="_blank" rel="noopener noreferrer">My Clay Corner Studio</a> — 
             Howell, Michigan.
           </p>
-          <p className="version">v0.2.0</p>
+          <p style={{ marginTop: 8 }}>
+            <Link to="/nceca" style={{ color: 'var(--text-link)' }}>NCECA 2026 — Detroit</Link>
+            {' · '}
+            <Link to="/pricing" style={{ color: 'var(--text-link)' }}>Plans & Pricing</Link>
+            {' · '}
+            <Link to="/help/variability" style={{ color: 'var(--text-link)' }}>Understanding Variability</Link>
+          </p>
+          <p className="version">v0.3.0</p>
         </section>
 
       </div>

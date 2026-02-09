@@ -185,8 +185,9 @@ export function Layout() {
           border: 1px solid var(--border-secondary);
           background: var(--bg-input);
           color: var(--text-secondary);
-          font-size: 14px;
+          font-size: 13px;
           font-weight: 700;
+          font-family: var(--font-display);
           cursor: pointer;
           display: flex;
           align-items: center;

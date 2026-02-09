@@ -54,7 +54,7 @@ const UpdatesPage = lazyRetry(() => import('./pages/UpdatesPage').then(m => ({ d
 const SuggestionPage = lazyRetry(() => import('./pages/SuggestionPage').then(m => ({ default: m.SuggestionPage })))
 const PricingPage = lazyRetry(() => import('./pages/PricingPage').then(m => ({ default: m.PricingPage })))
 const NCECAPage = lazyRetry(() => import('./pages/NCECAPage').then(m => ({ default: m.NCECAPage })))
-const VariabilityPage = lazyRetry(() => import('./pages/VariabilityPage').then(m => ({ default: m.VariabilityPage })))
+// const VariabilityPage = lazyRetry(() => import('./pages/VariabilityPage').then(m => ({ default: m.VariabilityPage })))
 
 // Clear the retry flag on successful load so future failures can retry again
 if (sessionStorage.getItem('stull-chunk-retry')) {
@@ -144,7 +144,7 @@ function App() {
         <Route path="updates" element={<LazyPage><UpdatesPage /></LazyPage>} />
         <Route path="pricing" element={<LazyPage><PricingPage /></LazyPage>} />
         <Route path="nceca" element={<LazyPage><NCECAPage /></LazyPage>} />
-        <Route path="help/variability" element={<LazyPage><VariabilityPage /></LazyPage>} />
+        {/* <Route path="help/variability" element={<LazyPage><VariabilityPage /></LazyPage>} /> */}
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

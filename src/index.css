@@ -437,6 +437,10 @@ input[type="range"]::-webkit-slider-thumb {
     gap: 2px !important;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    position: relative;
+    mask-image: linear-gradient(to right, transparent 0, black 12px, black calc(100% - 28px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 12px, black calc(100% - 28px), transparent 100%);
+    padding-right: 20px !important;
   }
 
   .main-nav::-webkit-scrollbar {

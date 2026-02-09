@@ -12,3 +12,5 @@ Thumbs.db
 *.log
 coverage/
 .vitest/
+supabase/
+marketing/print/nceca-codes.txt
