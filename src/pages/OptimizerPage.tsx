@@ -13,6 +13,7 @@ import { optimizeRecipeGA, type GAResult, type GAConfig } from '@/calculator/gen
 import { analyzeResponseSurface, type RSMAnalysis } from '@/calculator/responseSurface'
 import { CONE_LIMITS } from '@/calculator/validation'
 import { usePageTitle } from '@/hooks/usePageTitle'
+import { OxideLink } from '@/components/UMFVisuals/OxideLink'
 import { calcStyles } from './calc-styles'
 
 const COMMON_OXIDES: OxideSymbol[] = ['SiO2', 'Al2O3', 'B2O3', 'Na2O', 'K2O', 'CaO', 'MgO', 'ZnO', 'BaO']
@@ -465,7 +466,7 @@ export function OptimizerPage() {
                     <tbody>
                       {result.targetResults.map(tr => (
                         <tr key={tr.oxide}>
-                          <td>{tr.oxide}</td>
+                          <td><OxideLink oxide={tr.oxide} /></td>
                           <td style={{ textAlign: 'right' }}>
                             {tr.target !== null
                               ? tr.target.toFixed(2)
@@ -588,7 +589,7 @@ function renderUMFGroup(label: string, oxides: OxideSymbol[], umf: Partial<Recor
       {rows.map((o, i) => (
         <tr key={o}>
           {i === 0 && <td rowSpan={rows.length} style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>{label}</td>}
-          <td>{o}</td>
+          <td><OxideLink oxide={o} /></td>
           <td style={{ textAlign: 'right' }}>{(umf[o] ?? 0).toFixed(3)}</td>
         </tr>
       ))}

@@ -8,9 +8,9 @@
 
 import React, { useState, useMemo } from 'react'
 import { GlazeRecipe, MaterialDatasetId, Ingredient } from '@/types'
-import { UMFFingerprint, FluxDonut, OxideRadar, GlazeTypeBadge, ConeRangeBar } from '@/components/UMFVisuals'
+import { UMFFingerprint, FluxDonut, OxideRadar, GlazeTypeBadge, ConeRangeBar, OxideTd } from '@/components/UMFVisuals'
 
-/** Subscript helper for oxide formulas */
+/** Subscript helper for oxide formulas (kept for backward compat, prefer OxideTd) */
 const subscript = (s: string) => s.replace(/([A-Z][a-z]?)(\d+)/g, '$1<sub>$2</sub>')
 
 interface ComparePanelProps {
@@ -247,7 +247,7 @@ export function ComparePanel({ glazes, currentDataset, onRemove, onClear, onSele
                   const barColors = ['#3498db', '#e67e22', '#2ecc71']
                   return (
                     <tr key={ox}>
-                      <td dangerouslySetInnerHTML={{ __html: subscript(ox) }} />
+                      <OxideTd oxide={ox} />
                       {values.map((val, i) => (
                         <td key={glazes[i].id} className="compare-value" style={{
                           fontWeight: glazes.length > 1 && val === max && max !== min ? 600 : 400,

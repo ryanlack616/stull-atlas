@@ -13,6 +13,7 @@ import { GLAZE_ARCHETYPES, type GlazeArchetype } from '@/domain/suggestion'
 import type { FiringSchedule, FiringRecommendation, MaterialSubstitution } from '@/domain/suggestion'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { calcStyles } from './calc-styles'
+import { OxideLink } from '@/components/UMFVisuals/OxideLink'
 
 // â”€â”€â”€ Example queries for inspiration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
@@ -407,7 +408,7 @@ function SuggestionCard({
                   key={tr.oxide}
                   className={`umf-cell ${tr.satisfied ? 'satisfied' : 'off-target'}`}
                 >
-                  <span className="umf-oxide">{tr.oxide}</span>
+                  <span className="umf-oxide"><OxideLink oxide={tr.oxide} /></span>
                   <span className="umf-value">{tr.actual.toFixed(3)}</span>
                   <span className="umf-target">
                     {tr.target !== null

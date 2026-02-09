@@ -13,7 +13,7 @@ import { useSimilarity } from '@/hooks'
 import { OxideSymbol, GlazeRecipe, MaterialDatasetId } from '@/types'
 import type { DensityMap } from '@/analysis/density'
 import type { ZAxisOption, CameraPreset } from './StullPlot3D'
-import { UMFFingerprint, FluxDonut, OxideRadar, GlazeTypeBadge, ConeRangeBar, MiniStull, DatasetStats, RecipeBar } from '@/components/UMFVisuals'
+import { UMFFingerprint, FluxDonut, OxideRadar, GlazeTypeBadge, ConeRangeBar, MiniStull, DatasetStats, RecipeBar, OxideTd } from '@/components/UMFVisuals'
 import { explorerStyles } from './explorer-styles'
 
 // Lazy-load heavy components that aren't always visible
@@ -23,7 +23,7 @@ const DigitalfirePanel = lazy(() => import('@/components/DigitalfirePanel').then
 
 type ColorByOption = 'cone' | 'surface' | 'source' | 'flux_ratio' | 'confidence' | 'boron' | 'z_axis' | 'glaze_type'
 
-/** Subscript helper for oxide formulas */
+/** Subscript helper for oxide formulas (kept for backward compat, prefer OxideTd) */
 const subscript = (s: string) => s.replace(/([A-Z][a-z]?)(\d+)/g, '$1<sub>$2</sub>')
 
 /* ── Filter Panel ── */
@@ -549,7 +549,7 @@ export function StullAtlas() {
                                 <tr><td colSpan={2} style={{ color: 'var(--text-muted)', fontSize: 11, paddingTop: 6 }}>{group.label}</td></tr>
                                 {rows.map(({ ox, val }) => (
                                   <tr key={ox}>
-                                    <td dangerouslySetInnerHTML={{ __html: subscript(ox) }} />
+                                    <OxideTd oxide={ox} />
                                     <td className="amount">{val.toFixed(3)}</td>
                                   </tr>
                                 ))}

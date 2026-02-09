@@ -11,6 +11,7 @@ import { TraceViewer } from '@/components/TraceViewer'
 import { GlazeRecipe, UMF, OxideSymbol, ValidationIssue, CalculationStep } from '@/types'
 import { recipeToUMF, getOxideValue } from '@/calculator/umf'
 import { PRECISION } from '@/calculator/constants'
+import { OxideLink } from '@/components/UMFVisuals/OxideLink'
 import { ALL_CONES } from '@/calculator/parseCone'
 import { validateUMFAgainstLimits, validateRecipe, predictSurface, type StullPrediction } from '@/calculator/validation'
 import { materialDatabase } from '@/domain/material'
@@ -121,7 +122,7 @@ export function UMFCalculatorPage() {
     if (val < 0.001) return null
     return (
       <tr key={oxide}>
-        <td>{label || oxide}</td>
+        <td><OxideLink oxide={oxide} />{label && label !== oxide ? ` (${label})` : ''}</td>
         <td>{val.toFixed(PRECISION.umfOxide)}</td>
         <td>
           {limitsIssues
