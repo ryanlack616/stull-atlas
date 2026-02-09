@@ -269,7 +269,7 @@ export function precomputeAllMolarVariants() {
     _molarCaches.set(setId, { version, points })
   }
 
-  if (typeof console !== 'undefined') {
+  if (import.meta.env.DEV) {
     console.log(
       `[molar] Precomputed ${_molarCaches.size} plot-point variants ` +
       `(${glazes.length} glazes × ${_molarCaches.size} sets)`
