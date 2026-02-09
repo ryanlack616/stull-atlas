@@ -73,12 +73,26 @@ export function getTrialStatus(profile: Profile | null): TrialStatus {
   return now <= end ? 'active' : 'expired'
 }
 
+/**
+ * Free access window — all verified (signed-in) users get Pro.
+ * NCECA 2026 promotion: free through end of April.
+ * Set to null to disable.
+ */
+const FREE_UNTIL: Date | null = new Date('2026-04-30T23:59:59-04:00')
+
+/** Whether the free access window is currently active */
+export function isFreePeriodActive(): boolean {
+  return FREE_UNTIL !== null && new Date() <= FREE_UNTIL
+}
+
 /** Whether running in demo mode (all features unlocked, no auth needed) */
 export const isDemoMode = DEMO_MODE
 
 /** Check if user has access to a given feature */
 export function hasTierAccess(profile: Profile | null, feature: Feature): boolean {
   if (edition.allUnlocked || DEMO_MODE) return true
+  // Free period: any signed-in user gets full access
+  if (isFreePeriodActive() && profile) return true
   const effectiveTier: Tier = getTrialStatus(profile) === 'active' ? 'pro' : (profile?.tier ?? 'free')
   return canAccess(effectiveTier, feature)
 }

@@ -2,29 +2,31 @@
 
 **Trigger**: User creates an account (any method)  
 **From**: Stull Atlas <hello@stullatlas.app>  
-**Subject**: Welcome to Stull Atlas — let's explore some glazes
+**Subject**: Welcome to Stull Atlas — everything's unlocked
 
 ---
 
 Hi {{first_name}},
 
-Welcome to Stull Atlas! You've just unlocked a new way to understand your glazes.
+Welcome to Stull Atlas! Your account is set up and **all Pro features are free through April 30**.
 
-**Here's what you can do right now:**
+No credit card, no trial code — just start using it.
+
+**Here's where to start:**
 
 🔍 **Explore** — Browse 10,000+ glazes on the interactive Stull chart. Filter by cone, surface, and color.
 
 🧮 **Calculate** — Enter a recipe and instantly see its Unity Molecular Formula.
 
-📚 **Learn** — The built-in guide explains what each oxide does and why it matters.
+🧪 **Blend** — Run a triaxial, line blend, or radial pattern between any glazes.
 
-{{#if has_trial}}
-🎉 **Your Pro trial is active** — You have {{trial_days}} days to try everything: blends, optimizer, AI suggestions, and more.
+🤖 **Suggest** — Describe what you want — "a satin celadon at cone 6" — and get optimized recipes.
+
+📊 **Analyze** — DBSCAN clustering, density maps, void detection, and surface fitting.
 
 [Open Stull Atlas →](https://stullatlas.app)
-{{else}}
-Want to go further? [Start a free 7-day Pro trial →](https://stullatlas.app/#/pricing)
-{{/if}}
+
+After April 30, the Explorer and UMF Calculator stay free forever. If you want to keep the full suite, Solo starts at $8/mo and Pro is $18/mo — [see plans](https://stullatlas.app/#/pricing).
 
 Happy glazing,  
 The Stull Atlas Team

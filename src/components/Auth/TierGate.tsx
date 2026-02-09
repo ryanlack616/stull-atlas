@@ -14,11 +14,10 @@
 
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuthStore, getTrialStatus } from '@/stores'
-import { canAccess, requiredTier, tierDisplayName, type Feature } from '@/domain/tier'
+import { useAuthStore, hasTierAccess, isFreePeriodActive } from '@/stores'
+import { requiredTier, tierDisplayName, type Feature } from '@/domain/tier'
 import { AuthModal } from '@/components/Auth'
 import { edition } from '@/edition'
-import type { Tier } from '@/infra/supabase'
 
 interface TierGateProps {
   /** The feature being gated */
@@ -120,11 +119,8 @@ export function TierGate({ feature, children, title, description }: TierGateProp
     return <>{children}</>
   }
 
-  const trialStatus = getTrialStatus(profile)
-  const effectiveTier: Tier = trialStatus === 'active' ? 'pro' : (profile?.tier ?? 'free')
-
-  // Access granted — render children
-  if (canAccess(effectiveTier, feature)) {
+  // Use canonical tier access check (handles free period, trials, etc.)
+  if (hasTierAccess(profile, feature)) {
     return <>{children}</>
   }
 
@@ -132,6 +128,8 @@ export function TierGate({ feature, children, title, description }: TierGateProp
   const info = FEATURE_DESCRIPTIONS[feature]
   const displayTitle = title ?? info?.title ?? feature
   const displayDesc = description ?? info?.desc ?? ''
+  const freePeriod = isFreePeriodActive()
+  const effectiveDisplay = profile?.tier ?? 'free'
 
   return (
     <div className="tier-gate">
@@ -153,10 +151,12 @@ export function TierGate({ feature, children, title, description }: TierGateProp
         {!user ? (
           <div className="tier-gate-actions">
             <button className="tier-gate-primary" onClick={() => setShowAuth(true)}>
-              Sign In to Get Started
+              {freePeriod ? 'Sign Up — Free Through April' : 'Sign In to Get Started'}
             </button>
             <p className="tier-gate-hint">
-              Have a trial code? <button className="tier-gate-link" onClick={() => setShowAuth(true)}>Sign up</button> and enter it.
+              {freePeriod
+                ? 'Create a free account to unlock all features — no credit card needed.'
+                : <>Have a trial code? <button className="tier-gate-link" onClick={() => setShowAuth(true)}>Sign up</button> and enter it.</>}
             </p>
           </div>
         ) : (
@@ -165,7 +165,7 @@ export function TierGate({ feature, children, title, description }: TierGateProp
               View Plans
             </Link>
             <p className="tier-gate-hint">
-              You're on the <strong>{tierDisplayName(effectiveTier)}</strong> plan.
+              You're on the <strong>{tierDisplayName(effectiveDisplay)}</strong> plan.
             </p>
           </div>
         )}

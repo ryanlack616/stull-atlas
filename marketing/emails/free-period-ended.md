@@ -1,25 +1,24 @@
-# Trial Expired Email
+# Free Period Ended Email
 
-**Trigger**: Day trial ends  
+**Trigger**: May 1 (day after free period ends)  
 **From**: Stull Atlas <hello@stullatlas.app>  
-**Subject**: Your Pro trial has ended — but your data is safe
+**Subject**: Free access has ended — but your data is safe
 
 ---
 
 Hi {{first_name}},
 
-Your Stull Atlas Pro trial ended today. Your account is now on the **Free** tier.
+The Stull Atlas free access window ended yesterday. Your account is now on the **Free** tier.
 
-**Good news**: Your saved recipes and data are still there. If you upgrade later, everything picks up right where you left it.
+**Good news**: Your saved recipes and data are still there. If you upgrade, everything picks up right where you left it.
 
 **What you still have:**
 ✓ 2D Stull Chart Explorer  
 ✓ UMF Calculator  
 ✓ Materials Browser  
 ✓ Interactive Guide  
-✓ Limit Warnings  
 
-**Ready to upgrade?**
+**Ready to keep going?**
 
 | Plan | Price | Best For |
 |------|-------|----------|
@@ -28,7 +27,7 @@ Your Stull Atlas Pro trial ended today. Your account is now on the **Free** tier
 
 [See plans →](https://stullatlas.app/#/pricing)
 
-Thanks for trying Pro. We hope it made your glaze work easier.
+Thanks for trying Stull Atlas. We hope it made your glaze work easier.
 
 — The Stull Atlas Team
 
