@@ -59,9 +59,8 @@ export function AuthModal({ isOpen, onClose, initialCode, defaultTab = 'signin' 
       const result = await signUp(email, password)
       if (!result.error) {
         if (code.trim()) {
-          // Supabase may require email confirmation before the user is fully
-          // signed in. Show success and let them redeem on the /nceca page
-          // or sign in later with the code.
+          // Persist code so it survives the signup → email confirm → signin flow
+          try { localStorage.setItem('stull_pending_trial_code', code.trim().toUpperCase()) } catch {}
           setSuccess('Account created! Sign in to activate your trial code.')
           setTimeout(onClose, 2500)
         } else {
@@ -72,9 +71,13 @@ export function AuthModal({ isOpen, onClose, initialCode, defaultTab = 'signin' 
     } else {
       const result = await signIn(email, password)
       if (!result.error) {
-        // If code provided, redeem after sign in
-        if (code.trim()) {
-          const codeResult = await redeemCode(code)
+        // If code provided (typed or restored from localStorage), redeem after sign in
+        const effectiveCode = code.trim() || (() => {
+          try { return localStorage.getItem('stull_pending_trial_code') ?? '' } catch { return '' }
+        })()
+        if (effectiveCode) {
+          try { localStorage.removeItem('stull_pending_trial_code') } catch {}
+          const codeResult = await redeemCode(effectiveCode)
           if (!codeResult.error) {
             setSuccess('Signed in and trial activated!')
           } else {

@@ -14,7 +14,8 @@ coverage/
 .vitest/
 test-results/
 playwright-report/
-supabase/
+supabase/.temp/
+supabase/seed-nceca-codes.sql
 marketing/print/nceca-codes.txt
 
 dist-deploy/

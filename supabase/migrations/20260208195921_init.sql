@@ -56,6 +56,11 @@ create policy "Users can update own profile"
   on public.profiles for update
   using (auth.uid() = id);
 
+-- Fallback: if the trigger hasn't fired yet, allow the client to insert its own profile
+create policy "Users can insert own profile"
+  on public.profiles for insert
+  with check (auth.uid() = id);
+
 -- ============================================================
 -- 2. Trial codes table
 -- ============================================================

@@ -7,6 +7,7 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuthStore, getTrialStatus } from '@/stores'
 import { tierDisplayName } from '@/domain/tier'
 import { AuthModal } from './AuthModal'
@@ -16,6 +17,7 @@ export function UserMenu() {
   const [showModal, setShowModal] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -89,7 +91,20 @@ export function UserMenu() {
             </span>
           </div>
           <div className="user-dropdown-divider" />
-          {(effectiveTier === 'solo' || effectiveTier === 'pro') && (
+          {trialStatus === 'expired' && (
+            <div className="user-dropdown-notice">
+              Your trial has ended. <a href="/#/pricing">Upgrade</a> to keep Pro features.
+            </div>
+          )}
+          {effectiveTier === 'free' && trialStatus !== 'active' && (
+            <button
+              className="user-dropdown-item"
+              onClick={() => { navigate('/nceca'); setShowDropdown(false) }}
+            >
+              Redeem Trial Code
+            </button>
+          )}
+          {(effectiveTier === 'solo' || effectiveTier === 'pro') && trialStatus !== 'active' && (
             <button
               className="user-dropdown-item"
               onClick={() => {
@@ -223,6 +238,19 @@ export function UserMenu() {
         .user-dropdown-item:hover {
           background: var(--bg-hover);
           color: var(--text-primary);
+        }
+
+        .user-dropdown-notice {
+          padding: 8px 14px;
+          font-size: 12px;
+          color: var(--text-warning, #f59e0b);
+          background: rgba(245, 158, 11, 0.08);
+          line-height: 1.4;
+        }
+
+        .user-dropdown-notice a {
+          color: var(--accent);
+          text-decoration: underline;
         }
       `}</style>
     </div>
