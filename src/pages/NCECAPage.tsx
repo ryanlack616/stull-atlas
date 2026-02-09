@@ -1,47 +1,21 @@
 /**
  * NCECA Landing Page
  * 
- * Conference-specific landing with trial code redemption.
- * URL: /#/nceca — printed on cards handed out at the booth.
+ * Conference-specific landing — free through April promotion.
+ * URL: /#/nceca — printed on cards and flyers handed out at the booth.
  */
 
 import React, { useState } from 'react'
-import { useSearchParams, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { usePageTitle } from '@/hooks'
-import { useAuthStore } from '@/stores'
-import { isDemoMode } from '@/stores'
+import { useAuthStore, isFreePeriodActive } from '@/stores'
 import { AuthModal } from '@/components/Auth'
 
 export function NCECAPage() {
   usePageTitle('NCECA 2026 — Stull Atlas')
-  const { user, profile } = useAuthStore()
-  const [searchParams] = useSearchParams()
+  const { user } = useAuthStore()
   const [showAuth, setShowAuth] = useState(false)
-
-  // Support ?code=NCECA-XXXX-XXXX in URL (QR code on cards)
-  const urlCode = searchParams.get('code') ?? ''
-  const [redeemCode, setRedeemCode] = useState(urlCode)
-  const [redeeming, setRedeeming] = useState(false)
-  const [redeemResult, setRedeemResult] = useState<{ success: boolean; message: string } | null>(null)
-
-  const storeRedeemCode = useAuthStore((s) => s.redeemCode)
-
-  const handleRedeem = async () => {
-    if (!redeemCode.trim()) return
-    if (!user) {
-      setShowAuth(true)
-      return
-    }
-    setRedeeming(true)
-    setRedeemResult(null)
-    const result = await storeRedeemCode(redeemCode)
-    setRedeeming(false)
-    if (result.error) {
-      setRedeemResult({ success: false, message: result.error })
-    } else {
-      setRedeemResult({ success: true, message: 'Trial activated! You now have 30 days of full Pro access.' })
-    }
-  }
+  const freePeriod = isFreePeriodActive()
 
   return (
     <div className="nceca-page">
@@ -53,55 +27,39 @@ export function NCECAPage() {
           <p className="nceca-subtitle">
             A computational glaze explorer — 114 years after Stull's original chart.
             <br />
-            Explore 3,200+ glazes, run blend calculations, and use AI to find your next recipe.
+            Explore 10,000+ glazes, run blend calculations, and use AI to find your next recipe.
           </p>
         </section>
 
         <section className="nceca-trial">
-          {isDemoMode ? (
+          {user ? (
             <>
-              <h2>Demo Mode Active</h2>
-              <p>All Pro features are unlocked. Explore freely!</p>
+              <h2>You're All Set</h2>
+              <p>
+                {freePeriod
+                  ? 'All Pro features are unlocked through April. Dive in!'
+                  : 'Your account is active. Explore the full suite.'}
+              </p>
               <Link to="/" className="trial-submit" style={{ display: 'inline-block', textDecoration: 'none', textAlign: 'center' }}>
                 Open Explorer
               </Link>
             </>
           ) : (
-          <>
-          <h2>Activate Your Trial</h2>
-          <p>Enter the code from your card for <strong>30 days of free Pro access</strong> — no credit card required.</p>
-          
-          <div className="trial-form">
-            <input
-              type="text"
-              value={redeemCode}
-              onChange={(e) => setRedeemCode(e.target.value.toUpperCase())}
-              className="trial-input"
-              placeholder="NCECA-XXXX-XXXX"
-              spellCheck={false}
-              autoComplete="off"
-            />
-            <button 
-              className="trial-submit" 
-              onClick={handleRedeem} 
-              disabled={redeeming || !redeemCode.trim()}
-            >
-              {redeeming ? 'Activating...' : user ? 'Activate' : 'Sign In & Activate'}
-            </button>
-          </div>
-
-          {redeemResult && (
-            <p className={`trial-result ${redeemResult.success ? 'success' : 'error'}`}>
-              {redeemResult.message}
-            </p>
-          )}
-
-          {!user && (
-            <p className="trial-note">
-              You'll need to create a free account to redeem your code.
-            </p>
-          )}
-          </>
+            <>
+              <h2>{freePeriod ? 'Free Through April' : 'Get Started'}</h2>
+              <p>
+                {freePeriod
+                  ? <>Sign up with your email to unlock <strong>all Pro features</strong> — no credit card, no code needed.</>
+                  : <>Create a free account to start exploring.</>}
+              </p>
+              <button className="trial-submit" onClick={() => setShowAuth(true)}>
+                {freePeriod ? 'Sign Up Free' : 'Create Account'}
+              </button>
+              <p className="trial-note">
+                Already have an account?{' '}
+                <button className="nceca-link" onClick={() => setShowAuth(true)}>Sign in</button>
+              </p>
+            </>
           )}
         </section>
 
@@ -133,8 +91,7 @@ export function NCECAPage() {
 
         <section className="nceca-cta">
           <p>
-            No code? No problem.{' '}
-            <Link to="/">Explore for free</Link> or check out our{' '}
+            Questions? Email <a href="mailto:hello@stullatlas.app">hello@stullatlas.app</a> or check out our{' '}
             <Link to="/pricing">plans</Link>.
           </p>
         </section>
@@ -144,7 +101,6 @@ export function NCECAPage() {
         isOpen={showAuth} 
         onClose={() => setShowAuth(false)} 
         defaultTab="signup"
-        initialCode={redeemCode}
       />
 
       <style>{`
@@ -214,32 +170,6 @@ export function NCECAPage() {
           margin: 0 0 20px;
         }
 
-        .trial-form {
-          display: flex;
-          gap: 12px;
-          max-width: 420px;
-          margin: 0 auto;
-        }
-
-        .trial-input {
-          flex: 1;
-          padding: 12px 16px;
-          border: 1px solid var(--border-input);
-          border-radius: 6px;
-          background: var(--bg-input);
-          color: var(--text-primary);
-          font-size: 16px;
-          font-family: 'Courier New', Courier, monospace;
-          letter-spacing: 1px;
-          text-transform: uppercase;
-          text-align: center;
-          outline: none;
-        }
-
-        .trial-input:focus {
-          border-color: var(--accent);
-        }
-
         .trial-submit {
           padding: 12px 24px;
           border-radius: 6px;
@@ -257,34 +187,23 @@ export function NCECAPage() {
           opacity: 0.9;
         }
 
-        .trial-submit:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-
-        .trial-result {
-          margin: 16px 0 0;
-          padding: 10px 16px;
-          border-radius: 6px;
-          font-size: 14px;
-        }
-
-        .trial-result.success {
-          background: rgba(46, 204, 113, 0.15);
-          border: 1px solid rgba(46, 204, 113, 0.3);
-          color: #2ecc71;
-        }
-
-        .trial-result.error {
-          background: rgba(231, 76, 60, 0.15);
-          border: 1px solid rgba(231, 76, 60, 0.3);
-          color: var(--danger);
-        }
-
         .trial-note {
           margin: 12px 0 0;
           font-size: 13px;
           color: var(--text-dim);
+        }
+
+        .nceca-link {
+          background: none;
+          border: none;
+          color: var(--text-link);
+          font-size: 13px;
+          cursor: pointer;
+          padding: 0;
+        }
+
+        .nceca-link:hover {
+          text-decoration: underline;
         }
 
         .nceca-features {

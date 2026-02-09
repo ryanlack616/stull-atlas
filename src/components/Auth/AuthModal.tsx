@@ -1,32 +1,30 @@
 /**
  * Auth Modal
  * 
- * Sign in / Sign up dialog with optional trial code field.
+ * Sign in / Sign up dialog.
+ * During the free period, shows "free through April" messaging.
  * Rendered as a portal overlay.
  */
 
 import React, { useState, useEffect, useRef } from 'react'
-import { useAuthStore } from '@/stores'
+import { useAuthStore, isFreePeriodActive } from '@/stores'
 
 interface AuthModalProps {
   isOpen: boolean
   onClose: () => void
-  /** Pre-fill the code field (e.g., from /nceca URL) */
-  initialCode?: string
   /** Start on signup tab instead of signin */
   defaultTab?: 'signin' | 'signup'
 }
 
-export function AuthModal({ isOpen, onClose, initialCode, defaultTab = 'signin' }: AuthModalProps) {
+export function AuthModal({ isOpen, onClose, defaultTab = 'signin' }: AuthModalProps) {
   const [tab, setTab] = useState<'signin' | 'signup'>(defaultTab)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [code, setCode] = useState(initialCode ?? '')
-  const [showCode, setShowCode] = useState(Boolean(initialCode))
   const [success, setSuccess] = useState<string | null>(null)
 
-  const { signIn, signUp, redeemCode, loading, error, clearError } = useAuthStore()
+  const { signIn, signUp, loading, error, clearError } = useAuthStore()
   const emailRef = useRef<HTMLInputElement>(null)
+  const freePeriod = isFreePeriodActive()
 
   // Reset form state and focus email on open
   useEffect(() => {
@@ -35,12 +33,10 @@ export function AuthModal({ isOpen, onClose, initialCode, defaultTab = 'signin' 
       setSuccess(null)
       setEmail('')
       setPassword('')
-      setCode(initialCode ?? '')
-      setShowCode(Boolean(initialCode))
       setTab(defaultTab)
       setTimeout(() => emailRef.current?.focus(), 100)
     }
-  }, [isOpen, initialCode, defaultTab, clearError])
+  }, [isOpen, defaultTab, clearError])
 
   // Reset when switching tabs
   useEffect(() => {
@@ -58,35 +54,13 @@ export function AuthModal({ isOpen, onClose, initialCode, defaultTab = 'signin' 
     if (tab === 'signup') {
       const result = await signUp(email, password)
       if (!result.error) {
-        if (code.trim()) {
-          // Persist code so it survives the signup → email confirm → signin flow
-          try { localStorage.setItem('stull_pending_trial_code', code.trim().toUpperCase()) } catch {}
-          setSuccess('Account created! Sign in to activate your trial code.')
-          setTimeout(onClose, 2500)
-        } else {
-          setSuccess('Account created! Check your email to confirm.')
-          setTimeout(onClose, 2000)
-        }
+        setSuccess('Account created! Check your email to verify, then sign in.')
+        setTimeout(onClose, 2500)
       }
     } else {
       const result = await signIn(email, password)
       if (!result.error) {
-        // If code provided (typed or restored from localStorage), redeem after sign in
-        const effectiveCode = code.trim() || (() => {
-          try { return localStorage.getItem('stull_pending_trial_code') ?? '' } catch { return '' }
-        })()
-        if (effectiveCode) {
-          try { localStorage.removeItem('stull_pending_trial_code') } catch {}
-          const codeResult = await redeemCode(effectiveCode)
-          if (!codeResult.error) {
-            setSuccess('Signed in and trial activated!')
-          } else {
-            setSuccess('Signed in!')
-          }
-          setTimeout(onClose, 1500)
-        } else {
-          onClose()
-        }
+        onClose()
       }
     }
   }
@@ -166,31 +140,10 @@ export function AuthModal({ isOpen, onClose, initialCode, defaultTab = 'signin' 
             />
           </label>
 
-          {tab === 'signup' && (
-            <div className="auth-code-section">
-              {!showCode ? (
-                <button
-                  type="button"
-                  className="auth-code-toggle"
-                  onClick={() => setShowCode(true)}
-                >
-                  Have a trial code?
-                </button>
-              ) : (
-                <label className="auth-label">
-                  Trial Code
-                  <input
-                    type="text"
-                    value={code}
-                    onChange={(e) => setCode(e.target.value.toUpperCase())}
-                    className="auth-input auth-code-input"
-                    placeholder="NCECA-XXXX-XXXX"
-                    autoComplete="off"
-                    spellCheck={false}
-                  />
-                </label>
-              )}
-            </div>
+          {tab === 'signup' && freePeriod && (
+            <p className="auth-free-banner">
+              All features free through April — no credit card needed.
+            </p>
           )}
 
           {error && <p className="auth-error">{error}</p>}
@@ -317,27 +270,15 @@ export function AuthModal({ isOpen, onClose, initialCode, defaultTab = 'signin' 
             color: var(--text-dim);
           }
 
-          .auth-code-input {
-            font-family: 'Courier New', Courier, monospace;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-          }
-
-          .auth-code-section {
-            margin-top: 2px;
-          }
-
-          .auth-code-toggle {
-            background: none;
-            border: none;
-            color: var(--text-link);
+          .auth-free-banner {
+            margin: 0;
+            padding: 8px 12px;
+            background: rgba(46, 204, 113, 0.12);
+            border: 1px solid rgba(46, 204, 113, 0.25);
+            border-radius: 6px;
+            color: #2ecc71;
             font-size: 13px;
-            cursor: pointer;
-            padding: 0;
-          }
-
-          .auth-code-toggle:hover {
-            text-decoration: underline;
+            text-align: center;
           }
 
           .auth-error {
