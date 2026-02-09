@@ -13,8 +13,10 @@ import { GuidedTour, useTour } from '@/components/GuidedTour'
 import { useGlazeLoader } from '@/hooks'
 
 export function Layout() {
-  const { stats, isLoading } = useGlazeStore()
-  const { theme, toggle } = useThemeStore()
+  const stats = useGlazeStore(s => s.stats)
+  const isLoading = useGlazeStore(s => s.isLoading)
+  const theme = useThemeStore(s => s.theme)
+  const toggle = useThemeStore(s => s.toggle)
   const initialize = useAuthStore((s) => s.initialize)
   const { showWelcome, dismiss: dismissWelcome } = useWelcome()
   const { showTour, startTour, closeTour } = useTour()

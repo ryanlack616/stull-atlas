@@ -155,15 +155,21 @@ export function StullPlot({
       if (!active) return
       const Plot = createPlotlyComponent((mod as any).default ?? mod)
       setPlotComponent(() => Plot)
+    }).catch(() => {
+      // Plotly chunk failed to load — component stays null, user sees nothing
+      // A page refresh is the simplest recovery
     })
     return () => { active = false }
   }, [])
   
-  const { currentDataset } = useDatasetStore()
-  const { getPlotPoints } = useGlazeStore()
-  const { selectedGlaze, setSelectedGlaze, setHoveredPoint, selectedForBlend } = useSelectionStore()
-  const { blendResults } = useRecipeStore()
-  const { theme } = useThemeStore()
+  const currentDataset = useDatasetStore(s => s.currentDataset)
+  const getPlotPoints = useGlazeStore(s => s.getPlotPoints)
+  const selectedGlaze = useSelectionStore(s => s.selectedGlaze)
+  const setSelectedGlaze = useSelectionStore(s => s.setSelectedGlaze)
+  const setHoveredPoint = useSelectionStore(s => s.setHoveredPoint)
+  const selectedForBlend = useSelectionStore(s => s.selectedForBlend)
+  const blendResults = useRecipeStore(s => s.blendResults)
+  const theme = useThemeStore(s => s.theme)
   
   // Theme-dependent Plotly colors (CSS vars don't work in Plotly JS objects)
   const plotColors = useMemo(() => {

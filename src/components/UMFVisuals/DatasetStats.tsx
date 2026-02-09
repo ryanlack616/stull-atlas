@@ -7,7 +7,7 @@
 
 import React, { useMemo, useState } from 'react'
 import { useGlazeStore, useDatasetStore } from '@/stores'
-import { glazeTypeName, glazeTypeColor, GLAZE_TYPE_BY_ID } from '@/domain/glaze/glazeTypes'
+import { glazeTypeName, glazeTypeColor } from '@/domain/glaze/glazeTypes'
 
 export function DatasetStats() {
   const glazes = useGlazeStore(s => s.glazes)
@@ -16,16 +16,10 @@ export function DatasetStats() {
 
   const stats = useMemo(() => {
     const all = Array.from(glazes.values())
-    const byCone = new Map<number | null, number>()
     const bySurface = new Map<string, number>()
     const byType = new Map<number | null, number>()
 
     for (const g of all) {
-      // Cone
-      const umf = g.umf.get(currentDataset)
-      const cone = g.coneRange ? g.coneRange[0] : null
-      byCone.set(cone as any, (byCone.get(cone as any) ?? 0) + 1)
-
       // Surface
       bySurface.set(g.surfaceType, (bySurface.get(g.surfaceType) ?? 0) + 1)
 

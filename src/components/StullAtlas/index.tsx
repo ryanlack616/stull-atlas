@@ -155,7 +155,16 @@ export function StullAtlas() {
     if (is3D) setColorBy('z_axis')
   }, [is3D, zAxis])
   
-  const { selectedGlaze, showSidebar, sidebarTab, toggleSidebar, setSidebarTab, setSelectedGlaze, addToCompare, compareGlazes, removeFromCompare, clearCompare } = useSelectionStore()
+  const selectedGlaze = useSelectionStore(s => s.selectedGlaze)
+  const showSidebar = useSelectionStore(s => s.showSidebar)
+  const sidebarTab = useSelectionStore(s => s.sidebarTab)
+  const toggleSidebar = useSelectionStore(s => s.toggleSidebar)
+  const setSidebarTab = useSelectionStore(s => s.setSidebarTab)
+  const setSelectedGlaze = useSelectionStore(s => s.setSelectedGlaze)
+  const addToCompare = useSelectionStore(s => s.addToCompare)
+  const compareGlazes = useSelectionStore(s => s.compareGlazes)
+  const removeFromCompare = useSelectionStore(s => s.removeFromCompare)
+  const clearCompare = useSelectionStore(s => s.clearCompare)
   // Use selectors for frequently-changing state to avoid re-rendering the whole tree
   const glazes = useGlazeStore(s => s.glazes)
   const currentDataset = useDatasetStore(s => s.currentDataset)

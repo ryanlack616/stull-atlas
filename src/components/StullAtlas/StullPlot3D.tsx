@@ -394,15 +394,20 @@ export function StullPlot3D({
       if (!active) return
       const Plot = createPlotlyComponent((mod as any).default ?? mod)
       setPlotComponent(() => Plot)
+    }).catch(() => {
+      // Plotly chunk failed to load — component stays null
     })
     return () => { active = false }
   }, [])
 
-  const { currentDataset } = useDatasetStore()
-  const { getPlotPoints, glazes } = useGlazeStore()
-  const { selectedGlaze, setSelectedGlaze, setHoveredPoint } = useSelectionStore()
-  const { blendResults } = useRecipeStore()
-  const { theme } = useThemeStore()
+  const currentDataset = useDatasetStore(s => s.currentDataset)
+  const getPlotPoints = useGlazeStore(s => s.getPlotPoints)
+  const glazes = useGlazeStore(s => s.glazes)
+  const selectedGlaze = useSelectionStore(s => s.selectedGlaze)
+  const setSelectedGlaze = useSelectionStore(s => s.setSelectedGlaze)
+  const setHoveredPoint = useSelectionStore(s => s.setHoveredPoint)
+  const blendResults = useRecipeStore(s => s.blendResults)
+  const theme = useThemeStore(s => s.theme)
 
   const isDark = theme === 'dark'
 

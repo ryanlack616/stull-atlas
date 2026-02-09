@@ -14,7 +14,10 @@ let servicePromise: Promise<GlazeService> | null = null
 
 function getService(): Promise<GlazeService> {
   if (!servicePromise) {
-    servicePromise = import('@/domain/glaze')
+    servicePromise = import('@/domain/glaze').catch((err) => {
+      servicePromise = null // allow retry on next call
+      throw err
+    })
   }
   return servicePromise
 }
@@ -25,8 +28,10 @@ export interface ImportResult {
 }
 
 export function useImportExport() {
-  const { loadGlazes, getGlazesArray, stats } = useGlazeStore()
-  const { recipes } = useRecipeStore()
+  const loadGlazes = useGlazeStore(s => s.loadGlazes)
+  const getGlazesArray = useGlazeStore(s => s.getGlazesArray)
+  const stats = useGlazeStore(s => s.stats)
+  const recipes = useRecipeStore(s => s.recipes)
   const [importResult, setImportResult] = useState<ImportResult | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
