@@ -2,7 +2,7 @@
  * Molar Weight Store
  *
  * Zustand store for managing the active molar weight set.
- * Mirrors the datasetStore wiggle pattern — cycles between
+ * Cycles between
  * selected weight sets on a timer so users can see how their
  * glazes shift on the Stull chart.
  *

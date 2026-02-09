@@ -332,13 +332,15 @@ export function optimizeRecipeGA(config: GAConfig, db: IMatDB): GAResult {
   const alternatives: OptimizerResult[] = []
   const minDiversity = 0.05
 
+  const pickedWeights: number[][] = [allTimeBest]
   for (const candidate of allEvaluated) {
     if (alternatives.length >= topK - 1) break
-    // Check it's diverse enough from existing picks
-    const isDiverse = [allTimeBest, ...alternatives.map(() => allTimeBest)].every(
+    // Check it's diverse enough from all existing picks
+    const isDiverse = pickedWeights.every(
       existing => diversity(candidate.weights, existing) > minDiversity
     )
     if (isDiverse && candidate.cost < tolerance * 10) {
+      pickedWeights.push(candidate.weights)
       alternatives.push(buildResult(candidate.weights, matrix, oxides, names, materialIds, targets, tolerance))
     }
   }

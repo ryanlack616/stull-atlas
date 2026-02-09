@@ -235,6 +235,7 @@ export function optimizeRecipe(
 
   // Learning rate schedule: start moderate, decay
   let lr = 0.15
+  let actualIterations = maxIterations
 
   for (let iter = 0; iter < maxIterations; iter++) {
     const umf = computeUMF(weights, matrix, oxides)
@@ -245,7 +246,7 @@ export function optimizeRecipe(
       bestWeights = [...weights]
     }
 
-    if (c < tolerance * tolerance) break // converged
+    if (c < tolerance * tolerance) { actualIterations = iter + 1; break } // converged
 
     // Numerical gradient (central difference)
     const grad = new Array(n).fill(0)
@@ -323,7 +324,7 @@ export function optimizeRecipe(
     targetResults,
     residual: roundTo(finalCost, 6),
     converged,
-    iterations: Math.min(maxIterations, maxIterations),
+    iterations: actualIterations,
     summary,
   }
 }

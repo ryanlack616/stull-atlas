@@ -40,13 +40,13 @@ export function AuthModal({ isOpen, onClose, initialCode, defaultTab = 'signin' 
       setTab(defaultTab)
       setTimeout(() => emailRef.current?.focus(), 100)
     }
-  }, [isOpen])
+  }, [isOpen, initialCode, defaultTab, clearError])
 
   // Reset when switching tabs
   useEffect(() => {
     clearError()
     setSuccess(null)
-  }, [tab])
+  }, [tab, clearError])
 
   if (!isOpen) return null
 
