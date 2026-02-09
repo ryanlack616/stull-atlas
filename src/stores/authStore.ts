@@ -10,6 +10,7 @@ import { create } from 'zustand'
 import { supabase, isSupabaseConfigured } from '@/infra/supabase'
 import type { Profile, Tier, TrialStatus } from '@/infra/supabase'
 import { canAccess, type Feature } from '@/domain/tier'
+import { edition } from '@/edition'
 import type { Session, User } from '@supabase/supabase-js'
 
 /**
@@ -77,7 +78,7 @@ export const isDemoMode = DEMO_MODE
 
 /** Check if user has access to a given feature */
 export function hasTierAccess(profile: Profile | null, feature: Feature): boolean {
-  if (DEMO_MODE) return true
+  if (edition.allUnlocked || DEMO_MODE) return true
   const effectiveTier: Tier = getTrialStatus(profile) === 'active' ? 'pro' : (profile?.tier ?? 'free')
   return canAccess(effectiveTier, feature)
 }
@@ -93,6 +94,12 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
   initialize: async () => {
     // Guard: only run once
     if (get().initialized) return
+
+    // Studio edition: skip auth entirely, all features unlocked
+    if (edition.allUnlocked) {
+      set({ initialized: true })
+      return
+    }
 
     // Demo mode: skip auth entirely, provide fake Pro profile
     if (DEMO_MODE) {

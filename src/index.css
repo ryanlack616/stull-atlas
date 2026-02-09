@@ -100,6 +100,116 @@
   --scrollbar-thumb-hover: #aaa;
 }
 
+/* ========= Studio Skins ========= */
+
+/* Earthen — warm terracotta/clay tones */
+[data-theme="earthen"] {
+  --bg-primary: #1a1410;
+  --bg-secondary: #231c15;
+  --bg-tertiary: #2c2318;
+  --bg-elevated: #362b1f;
+  --bg-input: #3d3226;
+  --bg-hover: #2a2016;
+
+  --text-primary: #e8ddd0;
+  --text-secondary: #a08c78;
+  --text-muted: #7a6854;
+  --text-bright: #f5efe6;
+  --text-dim: #5e4e3c;
+  --text-body: #c4b5a2;
+  --text-label: #b0a090;
+  --text-link: #D4896A;
+
+  --border-primary: #3d3226;
+  --border-secondary: #4d4030;
+  --border-subtle: #2c2318;
+  --border-input: #4a3d2e;
+
+  --accent: #C06030;
+  --accent-bg: #3a2015;
+  --accent-hover: #4a2a1a;
+  --accent-selection: #B85530;
+
+  --danger: #c0392b;
+  --warning: #e67e22;
+
+  --scrollbar-track: #1a1410;
+  --scrollbar-thumb: #4d4030;
+  --scrollbar-thumb-hover: #5e4e3c;
+}
+
+/* Celadon — cool jade/celadon green */
+[data-theme="celadon"] {
+  --bg-primary: #0e1512;
+  --bg-secondary: #141e19;
+  --bg-tertiary: #1a2720;
+  --bg-elevated: #223028;
+  --bg-input: #2a3830;
+  --bg-hover: #182520;
+
+  --text-primary: #d0e4da;
+  --text-secondary: #7a9e8c;
+  --text-muted: #5a7c6a;
+  --text-bright: #e8f5ee;
+  --text-dim: #3e5e4c;
+  --text-body: #a8c8b6;
+  --text-label: #90b8a0;
+  --text-link: #70B890;
+
+  --border-primary: #2a3830;
+  --border-secondary: #354838;
+  --border-subtle: #1a2720;
+  --border-input: #354838;
+
+  --accent: #4A8C6A;
+  --accent-bg: #152a20;
+  --accent-hover: #1c3828;
+  --accent-selection: #3D7A5C;
+
+  --danger: #c0392b;
+  --warning: #e67e22;
+
+  --scrollbar-track: #0e1512;
+  --scrollbar-thumb: #354838;
+  --scrollbar-thumb-hover: #4a6050;
+}
+
+/* Shino — warm cream/rust/carbon */
+[data-theme="shino"] {
+  --bg-primary: #181210;
+  --bg-secondary: #201815;
+  --bg-tertiary: #2a201a;
+  --bg-elevated: #342820;
+  --bg-input: #3e3028;
+  --bg-hover: #261e18;
+
+  --text-primary: #e8dccf;
+  --text-secondary: #a59080;
+  --text-muted: #7a6858;
+  --text-bright: #f8f0e4;
+  --text-dim: #5e4e40;
+  --text-body: #c8b8a8;
+  --text-label: #b0a090;
+  --text-link: #E8985A;
+
+  --border-primary: #3e3028;
+  --border-secondary: #504035;
+  --border-subtle: #2a201a;
+  --border-input: #4a3a2e;
+
+  --accent: #D27030;
+  --accent-bg: #3a2010;
+  --accent-hover: #4a2815;
+  --accent-selection: #C06525;
+
+  --danger: #c0392b;
+  --warning: #e67e22;
+
+  --scrollbar-track: #181210;
+  --scrollbar-thumb: #504035;
+  --scrollbar-thumb-hover: #605548;
+}
+
 /* ========= Typography ========= */
 :root {
   --font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;

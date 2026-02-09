@@ -7,11 +7,13 @@
 import React, { useEffect, useState, useCallback, lazy, Suspense } from 'react'
 import { Outlet, NavLink, useLocation } from 'react-router-dom'
 import { useGlazeStore, useThemeStore, useAuthStore, isDemoMode } from '@/stores'
+import { STUDIO_SKINS } from '@/stores/themeStore'
 import { UserMenu } from '@/components/Auth'
 import { WelcomeOverlay, useWelcome } from '@/components/Welcome'
 import { GuidedTour, useTour } from '@/components/GuidedTour'
 import { useGlazeLoader } from '@/hooks'
 import { useOmniSearch } from '@/hooks'
+import { edition } from '@/edition'
 
 const OmniSearch = lazy(() => import('@/components/OmniSearch'))
 
@@ -20,6 +22,7 @@ export function Layout() {
   const isLoading = useGlazeStore(s => s.isLoading)
   const theme = useThemeStore(s => s.theme)
   const toggle = useThemeStore(s => s.toggle)
+  const setTheme = useThemeStore(s => s.setTheme)
   const initialize = useAuthStore((s) => s.initialize)
   const { showWelcome, dismiss: dismissWelcome } = useWelcome()
   const { showTour, startTour, closeTour } = useTour()
@@ -44,7 +47,7 @@ export function Layout() {
       <header className="atlas-header" role="banner">
         <div className="header-left">
           <NavLink to="/" className="logo-link">
-            <h1>Stull Atlas</h1>
+            <h1>{edition.name}</h1>
           </NavLink>
           <button
             className={`hamburger${menuOpen ? ' open' : ''}`}
@@ -65,7 +68,7 @@ export function Layout() {
             <NavLink to="/guide">Guide</NavLink>
             <NavLink to="/about">About</NavLink>
             <NavLink to="/updates">What's New</NavLink>
-            <NavLink to="/pricing">Pricing</NavLink>
+            {edition.showPricing && <NavLink to="/pricing">Pricing</NavLink>}
           </nav>
         </div>
         <div className="header-right">
@@ -95,7 +98,7 @@ export function Layout() {
           >
             ?
           </button>
-          <UserMenu />
+          {edition.showAuth && <UserMenu />}
           <button
             className="theme-toggle"
             onClick={toggle}
@@ -104,6 +107,20 @@ export function Layout() {
           >
             {theme === 'dark' ? '☀' : '🌙'}
           </button>
+          {edition.extraSkins && (
+            <div className="skin-picker">
+              {STUDIO_SKINS.map(s => (
+                <button
+                  key={s.id}
+                  className={`skin-dot${theme === s.id ? ' active' : ''}`}
+                  onClick={() => setTheme(s.id)}
+                  title={s.label}
+                  aria-label={`${s.label} skin`}
+                  style={{ background: s.preview }}
+                />
+              ))}
+            </div>
+          )}
           <span className="stats" aria-live="polite">
             {loadError ? (
               <button className="retry-btn" onClick={retry} title="Tap to retry loading">
@@ -210,6 +227,37 @@ export function Layout() {
         .theme-toggle:hover {
           border-color: var(--accent);
           background: var(--bg-elevated);
+        }
+
+        .skin-picker {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 2px 4px;
+          border-radius: 6px;
+          border: 1px solid var(--border-secondary);
+          background: var(--bg-input);
+        }
+
+        .skin-dot {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          border: 2px solid transparent;
+          cursor: pointer;
+          padding: 0;
+          transition: all 0.15s;
+          box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15);
+        }
+
+        .skin-dot:hover {
+          transform: scale(1.2);
+          border-color: var(--text-secondary);
+        }
+
+        .skin-dot.active {
+          border-color: var(--accent);
+          box-shadow: 0 0 0 2px var(--accent), inset 0 0 0 1px rgba(0,0,0,0.15);
         }
 
         .stats {

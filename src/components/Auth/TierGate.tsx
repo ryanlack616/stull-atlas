@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom'
 import { useAuthStore, getTrialStatus } from '@/stores'
 import { canAccess, requiredTier, tierDisplayName, type Feature } from '@/domain/tier'
 import { AuthModal } from '@/components/Auth'
+import { edition } from '@/edition'
 import type { Tier } from '@/infra/supabase'
 
 interface TierGateProps {
@@ -113,6 +114,11 @@ const FEATURE_DESCRIPTIONS: Partial<Record<Feature, { title: string; desc: strin
 export function TierGate({ feature, children, title, description }: TierGateProps) {
   const { user, profile } = useAuthStore()
   const [showAuth, setShowAuth] = useState(false)
+
+  // Studio edition — everything unlocked, skip gate entirely
+  if (edition.allUnlocked) {
+    return <>{children}</>
+  }
 
   const trialStatus = getTrialStatus(profile)
   const effectiveTier: Tier = trialStatus === 'active' ? 'pro' : (profile?.tier ?? 'free')

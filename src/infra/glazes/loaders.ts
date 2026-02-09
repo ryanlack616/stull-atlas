@@ -8,6 +8,7 @@
 
 import { GlazeRecipe, UMF, Atmosphere, SurfaceType, EpistemicState } from '@/types'
 import { classifyGlazeByName } from '@/domain/glaze'
+import { edition } from '@/edition'
 
 // ── Raw types for the processed Glazy JSON ──────────────────────
 
@@ -112,9 +113,18 @@ async function fetchWithRetry(
  */
 export async function loadGlazyDataset(): Promise<GlazeRecipe[]> {
   try {
-    const base = import.meta.env.BASE_URL || '/'
-    const response = await fetchWithRetry(`${base}glazy-processed.json`)
-    const data: RawGlazyGlaze[] = await response.json()
+    let data: RawGlazyGlaze[]
+
+    if (edition.offlineData) {
+      // Studio: bundled JSON — no network needed
+      const mod = await import('@/data/glazes/glazy-processed.json')
+      data = (mod.default ?? mod) as RawGlazyGlaze[]
+    } else {
+      // Web: fetch from public directory
+      const base = import.meta.env.BASE_URL || '/'
+      const response = await fetchWithRetry(`${base}glazy-processed.json`)
+      data = await response.json()
+    }
 
     return data.map((g): GlazeRecipe => {
       const umf: UMF = {}
