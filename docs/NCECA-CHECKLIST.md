@@ -9,10 +9,10 @@
 
 ### Print Orders (long lead time — do first)
 - [ ] **Business cards** — Finalize artwork from `marketing/print/nceca-card.md`
-  - Export QR codes (500 unique, one per card)
-  - Upload to Moo / Vistaprint / local printer
-  - 16pt matte, soft-touch laminate, 500 qty
-  - Budget: ~$80-120
+  - Export QR codes (200 unique, one per card)
+  - Upload to MOO — Super Soft Touch, 18pt
+  - 200 qty (flyer covers most handout needs)
+  - Budget: ~$80
 - [ ] **Retractable banner** — Finalize artwork from `marketing/print/booth-banner.md`
   - 33"×80", 150 DPI, PDF/X-1a
   - Screenshot of Explorer page at good angle
@@ -23,6 +23,12 @@
   - Imprint: Stull Atlas wordmark + stullatlas.app
   - ~10 business days production
   - Budget: ~$120 + shipping
+- [ ] **Quarter-sheet flyers** — Double-sided postcard handout
+  - 6"×4" (or 5.5"×4.25"), 14pt cardstock, UV gloss front
+  - Front: Logo, tagline, Explorer screenshot, QR code to stullatlas.app
+  - Back: Feature bullets, Studio Edition callout, contact info
+  - 500 qty — Vistaprint postcards or PrintPlace
+  - Budget: ~$50
 
 ### Software
 - [ ] Final Tauri build — `npm run tauri:build`, verify .exe installs clean
@@ -51,6 +57,7 @@
 
 ### Print Arrives (check tracking)
 - [ ] Business cards received — spot check QR codes (scan 5 random)
+- [ ] Quarter-sheet flyers received — check colors, QR code scans, text accuracy
 - [ ] Banner received — unroll, check colors and text
 - [ ] USB drives received — test imprint quality
 
@@ -92,7 +99,8 @@
 ### Final Checks
 - [ ] Pack checklist:
   - [ ] Retractable banner + stand + carry case
-  - [ ] Business cards (all 500)
+  - [ ] Business cards (all 200)
+  - [ ] Quarter-sheet flyers (all 500)
   - [ ] USB drives (all 100)
   - [ ] Demo laptop + charger
   - [ ] Extension cord / power strip
@@ -112,14 +120,14 @@
 - [ ] Open Explorer on laptop, Cone 6 view ready
 
 ### Each Day
-- [ ] Restock cards and USBs at booth
-- [ ] Track how many cards/USBs handed out (rough count)
+- [ ] Restock cards, flyers, and USBs at booth
+- [ ] Track how many cards/flyers/USBs handed out (rough count)
 - [ ] Note any feature requests or common questions
 - [ ] Post 1 photo/update to social media if you want
 
 ### Day 4 — Teardown (Mar 21)
 - [ ] Pack everything
-- [ ] Note remaining card/USB counts
+- [ ] Note remaining card/flyer/USB counts
 - [ ] Send follow-up email blast (nceca-followup template) within 48 hours
 
 ---
@@ -143,14 +151,15 @@ Plan to commute daily; hotel optional (1 night max if setup runs late).
 |-------------------------------|-------------|---------------------------------------------|
 | Booth fee                     | $1,900      | NCECA exhibitor registration                |
 | Booth staff (weekend)         | $320        |                                             |
-| Business cards (400, Super)   | $155        | MOO Super 18pt Soft Touch — moo.com/us      |
+| Business cards (200, Super)   | $80         | MOO Super 18pt Soft Touch — moo.com/us      |
+| Quarter-sheet flyers (500)    | $50         | Vistaprint 6"×4" postcards, 14pt UV gloss   |
 | Retractable banner (33×81")   | $110        | Vistaprint Standard vinyl — vistaprint.com  |
 | USB drives (100, printed)     | $120        | Brilliant Promos SFWW0324 — brilliantpromos.com |
 | Gas (4 days × 120 mi @ $0.25) | $120       |                                             |
 | Parking (Huntington Place)    | $100        | Rooftop garage, $25/day × 4, credit card only |
 | Hotel (0-1 nights, optional)  | $0-200      |                                             |
 | Misc (food, tolls, extras)    | $150        |                                             |
-| **Total**                     | **~$2,975-3,175** |                                       |
+| **Total**                     | **~$2,850-3,050** |                                       |
 
 > **Parking tip:** Wayne State Lot 12 (6050 Woodward) is $5/day + free QLINE
 > streetcar to Huntington Place — saves $80 over 4 days if you don't
