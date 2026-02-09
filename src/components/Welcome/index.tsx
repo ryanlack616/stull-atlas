@@ -82,9 +82,16 @@ export function WelcomeOverlay({ onDismiss }: WelcomeOverlayProps) {
     navigate('/pricing')
   }
 
+  // Escape key closes overlay
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onDismiss() }
+    document.addEventListener('keydown', handleKey)
+    return () => document.removeEventListener('keydown', handleKey)
+  }, [onDismiss])
+
   return (
     <div className="welcome-overlay" onClick={onDismiss}>
-      <div className="welcome-card" onClick={(e) => e.stopPropagation()}>
+      <div className="welcome-card" role="dialog" aria-modal="true" aria-label="Welcome to Stull Atlas" onClick={(e) => e.stopPropagation()}>
         {step === 0 ? (
           <>
             <div className="welcome-hero">

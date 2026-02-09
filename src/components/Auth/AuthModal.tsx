@@ -91,12 +91,36 @@ export function AuthModal({ isOpen, onClose, initialCode, defaultTab = 'signin' 
     }
   }
 
+  // Escape key closes modal
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', handleKey)
+    return () => document.removeEventListener('keydown', handleKey)
+  }, [onClose])
+
+  // Focus trap
+  const modalRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = modalRef.current
+    if (!el) return
+    const focusable = el.querySelectorAll<HTMLElement>('button, input, [tabindex]:not([tabindex="-1"])')
+    if (focusable.length) (focusable[0] as HTMLElement).focus()
+    const trap = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab' || !focusable.length) return
+      const first = focusable[0], last = focusable[focusable.length - 1]
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus() }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus() }
+    }
+    el.addEventListener('keydown', trap)
+    return () => el.removeEventListener('keydown', trap)
+  }, [tab])
+
   return (
     <div className="auth-overlay" onClick={onClose}>
-      <div className="auth-modal" onClick={(e) => e.stopPropagation()}>
+      <div ref={modalRef} className="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-title" onClick={(e) => e.stopPropagation()}>
         <button className="auth-close" onClick={onClose} aria-label="Close">&times;</button>
 
-        <h2 className="auth-title">Stull Atlas Studio</h2>
+        <h2 id="auth-title" className="auth-title">Stull Atlas Studio</h2>
 
         <div className="auth-tabs">
           <button

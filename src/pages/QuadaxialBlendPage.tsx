@@ -8,7 +8,7 @@
 import React, { useState, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RecipeInput } from '@/components/RecipeInput'
-import { GlazeRecipe, SimplexPoint } from '@/types'
+import { GlazeRecipe, SimplexPoint, UMF } from '@/types'
 import { simplexBlend, simplexPointCount } from '@/calculator/blends/simplex'
 import { recipeToUMF } from '@/calculator/umf'
 import { materialDatabase } from '@/domain/material'
@@ -62,9 +62,10 @@ export function QuadaxialBlendPage() {
       return
     }
 
+    const validUmfs = umfs.filter((u): u is UMF => u !== null)
     const result = simplexBlend(
       { type: 'quadaxial', recipes: recs, divisions },
-      umfs as any
+      validUmfs
     )
 
     if (result.value) {

@@ -18,6 +18,7 @@ import { parseGlazeQuery, type ParsedGlazeQuery } from './queryParser'
 import { findArchetypes, archetypesForCone, GLAZE_ARCHETYPES, type GlazeArchetype } from './archetypes'
 import { suggestFiringSchedule, type FiringRecommendation } from './firingSchedules'
 import { findRecipeSubstitutions, type MaterialSubstitution } from './materialSubstitutions'
+import { getContextualRefs, getTroubleRef, type DigitalfireRef } from '@/domain/digitalfire'
 
 // ─── Types ─────────────────────────────────────────────────────
 
@@ -51,6 +52,8 @@ export interface RecipeSuggestion {
   firingSchedule?: FiringRecommendation
   /** Material substitution options */
   substitutions: Map<string, MaterialSubstitution[]>
+  /** Relevant references from Tony Hansen's Digitalfire Reference Library */
+  digitalfireRefs: DigitalfireRef[]
 }
 
 export interface ColorantSuggestion {
@@ -348,6 +351,16 @@ function generateSuggestion(
   // Find material substitutions for the recipe
   const substitutions = findRecipeSubstitutions(recipe.materialNames)
 
+  // Gather relevant Digitalfire references for this suggestion
+  const digitalfireRefs = getContextualRefs({
+    materialNames: recipe.materialNames,
+    oxideSymbols: targets.map(t => t.oxide),
+    surfaceType: archetype.surface,
+    atmosphere: archetype.atmosphere,
+    glazeFamily: archetype.family,
+    coneRange: archetype.coneRange,
+  })
+
   return {
     archetype,
     recipe,
@@ -358,6 +371,7 @@ function generateSuggestion(
     warnings,
     firingSchedule,
     substitutions,
+    digitalfireRefs,
   }
 }
 
@@ -500,8 +514,10 @@ function buildWarnings(
   for (const oxide of unsafeOxides) {
     const actual = recipe.umf[oxide]
     if (actual && actual > 0.05) {
+      const troubleRef = getTroubleRef('food safe')
+      const link = troubleRef ? ` Learn more: ${troubleRef.url}` : ''
       warnings.push(
-        `Contains significant ${oxide} (${actual.toFixed(2)} moles). May not be food-safe.`,
+        `Contains significant ${oxide} (${actual.toFixed(2)} moles). May not be food-safe.${link}`,
       )
     }
   }
@@ -517,9 +533,11 @@ function buildWarnings(
   if (archetype.family === 'crystalline') {
     const al2o3 = recipe.umf['Al2O3'] ?? 0
     if (al2o3 > 0.1) {
+      const troubleRef = getTroubleRef('crystalline')
+      const link = troubleRef ? ` See: ${troubleRef.url}` : ''
       warnings.push(
         `Al2O3 at ${al2o3.toFixed(2)} is too high for crystal growth — target is under 0.08. ` +
-        `Remove clay or alumina-bearing materials.`,
+        `Remove clay or alumina-bearing materials.${link}`,
       )
     }
   }

@@ -242,8 +242,15 @@ export function AboutPage() {
               Temperature contour data and Stull region geometry (GPL-3.0)
             </li>
             <li>
-              <strong><a href="https://digitalfire.com" target="_blank" rel="noopener noreferrer">Digitalfire</a></strong> — 
-              Materials analysis database
+              <strong><a href="https://digitalfire.com" target="_blank" rel="noopener noreferrer">Digitalfire Reference Library</a></strong> (Tony Hansen) — 
+              Comprehensive ceramic chemistry knowledge base, materials database, oxide reference, 
+              and troubleshooting guides. Tony Hansen has spent over 30 years building the most 
+              thorough freely-available reference library in ceramics. His work on understanding 
+              glaze chemistry, material properties, and ceramic testing is foundational to how 
+              modern potters think about glazes. The knowledge panel in our Explorer and the 
+              contextual links throughout Stull Atlas draw from his library — always linking back 
+              to the original articles at{' '}
+              <a href="https://digitalfire.com" target="_blank" rel="noopener noreferrer">digitalfire.com</a>.
             </li>
           </ul>
         </section>

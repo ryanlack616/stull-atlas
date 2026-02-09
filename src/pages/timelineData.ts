@@ -464,7 +464,7 @@ export const EVENTS: TimelineEvent[] = [
   {
     year: 1905,
     title: 'Adelaide Alsop Robineau — Crystalline Glaze Pioneer',
-    description: 'Robineau (1865–1929) achieves mastery of zinc-silicate crystalline glazes, producing the legendary "Scarab Vase." Her systematic experimentation with crystal nucleation and growth advances glaze science while creating museum-worthy art.',
+    description: 'Robineau (1865–1929) achieves mastery of zinc-silicate crystalline glazes through systematic experimentation with crystal nucleation and growth. Her legendary "Scarab Vase" (exhibited 1910) advances glaze science while creating museum-worthy art.',
     category: 'science',
     people: ['Adelaide Alsop Robineau'],
     significance: 2,
@@ -523,9 +523,9 @@ export const EVENTS: TimelineEvent[] = [
   // ═══════════════════════════════════════════════════════════════
 
   {
-    year: 1920,
+    year: 1910,
     title: 'Charles Binns — \u201CThe Potter\u2019s Craft\u201D',
-    description: 'Formal ceramic education text codifying the Alfred University approach. Studio pottery pedagogy established as a teachable discipline.',
+    description: 'Founding director of the New York State School of Clay-Working (now Alfred University) publishes a formal ceramic education text codifying the Alfred approach. Studio pottery pedagogy established as a teachable discipline.',
     category: 'publication',
     people: ['Charles Fergus Binns'],
     significance: 3,
@@ -540,9 +540,9 @@ export const EVENTS: TimelineEvent[] = [
     inflectionPoint: true,
   },
   {
-    year: 1922,
+    year: 1920,
     title: 'Leach Pottery Established (St Ives)',
-    description: 'The Leach Pottery in St Ives, Cornwall becomes the most influential teaching center for studio ceramics in the Western world. A model for studio pottery practice worldwide.',
+    description: 'Bernard Leach and Shoji Hamada establish the Leach Pottery in St Ives, Cornwall — the most influential teaching center for studio ceramics in the Western world. Hamada returns to Japan in 1923; Leach continues building a model for studio pottery practice worldwide.',
     category: 'institution',
     people: ['Bernard Leach', 'Shoji Hamada'],
     significance: 2,
@@ -594,6 +594,14 @@ export const EVENTS: TimelineEvent[] = [
     inflectionPoint: true,
   },
   {
+    year: 1942,
+    title: 'Marguerite Wildenhain — Pond Farm Pottery',
+    description: 'Marguerite Wildenhain (1896\u20131985), Bauhaus-trained master potter and Jewish refugee who fled Nazi Germany, settles at Pond Farm in Guerneville, California. The first woman to earn the Master Potter certification in Germany (1925), she teaches rigorous summer sessions from 1949 until 1980, introducing Bauhaus techniques and philosophy to hundreds of American potters. Published "Pottery: Form and Expression" (1959). Pond Farm designated a National Historic Landmark in 2023.',
+    category: 'institution',
+    people: ['Marguerite Wildenhain'],
+    significance: 2,
+  },
+  {
     year: 1945,
     title: 'Affordable Electric Kilns',
     description: 'Post-war manufacturing makes electric kilns accessible to home studios. Ceramics no longer requires expensive gas infrastructure or communal wood-firing. The studio ceramics boom begins — oxidation firing becomes the dominant mode.',
@@ -602,10 +610,11 @@ export const EVENTS: TimelineEvent[] = [
     inflectionPoint: true,
   },
   {
-    year: 1946,
+    year: 1951,
     title: 'Archie Bray Foundation Founded',
-    description: 'The Archie Bray Foundation for the Ceramic Arts established in Helena, Montana. Becomes the most influential American ceramic institution — a model for artist residency programs worldwide.',
+    description: 'Archie Bray Sr., a brickmaker in Helena, Montana, establishes the Archie Bray Foundation for the Ceramic Arts. Peter Voulkos and Rudy Autio are among its first residents. Becomes the most influential American ceramic institution — a model for artist residency programs worldwide.',
     category: 'institution',
+    people: ['Archie Bray Sr.', 'Peter Voulkos', 'Rudy Autio'],
     significance: 2,
   },
   {
@@ -618,8 +627,25 @@ export const EVENTS: TimelineEvent[] = [
   },
   {
     year: 1950,
+    title: 'Warren MacKenzie — Apprentice at St Ives',
+    description: 'Warren MacKenzie (1924\u20132018) and his wife Alix become the first American apprentices at Bernard Leach\u2019s pottery in St Ives, Cornwall (1950\u20131952). They absorb Leach\u2019s philosophy and Hamada\u2019s Mingei aesthetic firsthand, then bring Leach and Hamada on a watershed U.S. workshop tour in 1952.',
+    category: 'community',
+    people: ['Warren MacKenzie', 'Alix MacKenzie'],
+    significance: 2,
+  },
+  {
+    year: 1953,
+    title: 'Warren MacKenzie — University of Minnesota',
+    description: 'MacKenzie begins a 37-year teaching career at the University of Minnesota (1953\u20131990), training generations of functional potters in the Leach-Hamada tradition. His simple, wheel-thrown stoneware \u2014 affordable, generous, and deeply influenced by Japanese folk pottery \u2014 defines the "Mingei-sota" style. Perhaps the most influential American functional potter of the 20th century. His studio in Stillwater, MN operated until his death in 2018.',
+    category: 'community',
+    people: ['Warren MacKenzie'],
+    significance: 1,
+    inflectionPoint: true,
+  },
+  {
+    year: 1954,
     title: 'Peter Voulkos — Material Experimentation as Art',
-    description: 'Voulkos brings Abstract Expressionist energy to ceramics at the Otis Art Institute (California). Challenges the idea that ceramic materials serve function — clay and glaze become expressive media in themselves.',
+    description: 'After residency at the Archie Bray Foundation (1951–1954), Voulkos brings Abstract Expressionist energy to ceramics at the Otis Art Institute (Los Angeles). Challenges the idea that ceramic materials serve function — clay and glaze become expressive media in themselves.',
     category: 'science',
     people: ['Peter Voulkos'],
     significance: 2,
@@ -633,9 +659,9 @@ export const EVENTS: TimelineEvent[] = [
     significance: 2,
   },
   {
-    year: 1952,
+    year: 1950,
     title: 'Haystack Mountain School of Crafts',
-    description: 'Summer workshop model for intensive ceramic education established in Maine. The workshop format — intensive, immersive, community-based — becomes a primary mode of ceramic knowledge transmission.',
+    description: 'Founded in Montville, Maine (later relocated to Deer Isle, 1961). Summer workshop model for intensive ceramic education. The workshop format — intensive, immersive, community-based — becomes a primary mode of ceramic knowledge transmission.',
     category: 'institution',
     significance: 3,
   },
@@ -680,12 +706,28 @@ export const EVENTS: TimelineEvent[] = [
     significance: 2,
   },
   {
+    year: 1962,
+    title: 'Don Reitz — Salt Firing Revival',
+    description: 'Don Reitz (1929\u20132014) earns his MFA from Alfred University and joins the University of Wisconsin-Madison faculty, where he teaches for 25 years. More than anyone else, Reitz is credited with reviving the medieval technique of salt firing in American ceramics \u2014 throwing salt into a hot kiln to create textured, unpredictable surfaces. His fearless experimentation (banana peels, copper plates, anything at hand) and monumental sculptural forms helped wrench ceramics off the dinner table and into the gallery.',
+    category: 'science',
+    people: ['Don Reitz'],
+    significance: 2,
+  },
+  {
     year: 1964,
     title: 'Herbert Sanders — \u201CGlazes for Special Effects\u201D',
     description: 'Crystalline, luster, and reduction glazes documented with scientific rigor. Advanced glaze techniques made teachable.',
     category: 'publication',
     people: ['Herbert Sanders'],
     significance: 3,
+  },
+  {
+    year: 1964,
+    title: 'Ken Ferguson — Kansas City Art Institute',
+    description: 'Kenneth Ferguson (1928\u20132004) becomes head of the ceramics department at the Kansas City Art Institute, a position he holds for over 30 years (1964\u20131997). His emphasis on functional pottery as serious art \u2014 and his legendary critiques \u2014 shape a generation of American potters. Students include Akio Takamori, Chris Gustin, and Kurt Weiser.',
+    category: 'institution',
+    people: ['Ken Ferguson'],
+    significance: 2,
   },
   {
     year: 1966,
@@ -736,10 +778,11 @@ export const EVENTS: TimelineEvent[] = [
     significance: 3,
   },
   {
-    year: 1974,
+    year: 1972,
     title: 'Studio Potter Magazine Founded',
-    description: 'Knowledge sharing formalized in a dedicated print publication. Community-driven publication creates a forum for technical exchange beyond academic journals.',
+    description: 'Gerry Williams and his wife co-found Studio Potter magazine. Knowledge sharing formalized in a dedicated print publication — a community-driven forum for technical exchange beyond academic journals.',
     category: 'community',
+    people: ['Gerry Williams'],
     significance: 3,
   },
   {

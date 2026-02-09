@@ -184,8 +184,8 @@ export function MaterialsPage() {
               <div className="results-header">
                 <h3>{filtered.length} materials</h3>
               </div>
-              <div className="results-scroll" style={{ maxHeight: 'calc(100vh - 220px)' }}>
-                <table className="results-table">
+              <div className="results-scroll" style={{ maxHeight: 'calc(100vh - 220px)', overflowX: 'auto' }}>
+                <table className="results-table" style={{ minWidth: 700 }}>
                   <thead>
                     <tr>
                       <th style={{ width: 30 }}></th>

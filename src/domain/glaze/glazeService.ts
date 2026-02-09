@@ -14,7 +14,6 @@
 import { GlazeRecipe, MaterialDatasetId, OxideSymbol, UMF } from '@/types'
 import { recipeToUMF, getOxideValue } from '@/calculator/umf'
 import {
-  loadSampleGlazes,
   loadGlazyDataset,
   deserializeGlazesJSON,
   serializeGlazesJSON,
@@ -27,7 +26,7 @@ import { materialDatabase } from '@/infra/materials'
 
 // ── Data loading ──────────────────────────────────────────────
 
-export { loadSampleGlazes, loadGlazyDataset }
+export { loadGlazyDataset }
 
 // ── Import / Export ───────────────────────────────────────────
 

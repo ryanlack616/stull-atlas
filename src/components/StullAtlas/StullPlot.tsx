@@ -148,19 +148,27 @@ export function StullPlot({
 }: StullPlotProps) {
 
   const [PlotComponent, setPlotComponent] = useState<PlotComponentType | null>(null)
+  const [plotError, setPlotError] = useState(false)
+  const [loadSlow, setLoadSlow] = useState(false)
+  const [retryCount, setRetryCount] = useState(0)
 
   useEffect(() => {
     let active = true
+    setPlotError(false)
+    setLoadSlow(false)
+    const slowTimer = setTimeout(() => { if (active) setLoadSlow(true) }, 12000)
     import('plotly.js-gl2d-dist-min').then((mod) => {
       if (!active) return
+      clearTimeout(slowTimer)
       const Plot = createPlotlyComponent((mod as any).default ?? mod)
       setPlotComponent(() => Plot)
     }).catch(() => {
-      // Plotly chunk failed to load — component stays null, user sees nothing
-      // A page refresh is the simplest recovery
+      if (!active) return
+      clearTimeout(slowTimer)
+      setPlotError(true)
     })
-    return () => { active = false }
-  }, [])
+    return () => { active = false; clearTimeout(slowTimer) }
+  }, [retryCount])
   
   const currentDataset = useDatasetStore(s => s.currentDataset)
   const getPlotPoints = useGlazeStore(s => s.getPlotPoints)
@@ -506,15 +514,35 @@ export function StullPlot({
   if (!PlotComponent) {
     return (
       <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        display: 'flex', flexDirection: 'column' as const, alignItems: 'center', justifyContent: 'center', gap: 8,
         width: width || '100%', height: height || '100%',
         color: '#777', fontSize: 13,
         background: 'var(--bg-secondary, #1a1a1a)',
         borderRadius: 8,
-        animation: 'pulse 1.5s ease-in-out infinite',
+        ...(!plotError ? { animation: 'pulse 1.5s ease-in-out infinite' } : {}),
       }}>
         <style>{`@keyframes pulse { 0%,100% { opacity: 0.6 } 50% { opacity: 1 } }`}</style>
-        Loading chart engine…
+        {plotError ? (
+          <>
+            <span style={{ fontSize: 22 }}>⚠</span>
+            <span>Chart engine failed to load</span>
+            <button
+              onClick={() => setRetryCount(c => c + 1)}
+              style={{
+                marginTop: 4, padding: '6px 16px', borderRadius: 6,
+                border: '1px solid #555', background: 'var(--bg-tertiary, #252525)',
+                color: '#ccc', cursor: 'pointer', fontSize: 13,
+              }}
+            >
+              Tap to retry
+            </button>
+          </>
+        ) : (
+          <>
+            <span>Loading chart engine…</span>
+            {loadSlow && <span style={{ fontSize: 11, color: '#666' }}>Slow connection — still trying…</span>}
+          </>
+        )}
       </div>
     )
   }

@@ -10,7 +10,6 @@
 
 export {
   // data loading
-  loadSampleGlazes,
   loadGlazyDataset,
   // import/export
   importGlazesFromJSON,
@@ -30,7 +29,6 @@ export type { SimilarityResult, SimilarityOptions } from './glazeService'
 export {
   GLAZE_TYPE_CATALOG,
   GLAZE_TYPE_BY_ID,
-  getGlazeTypeGroups,
   classifyGlazeByName,
   glazeTypeName,
   glazeTypeColor,

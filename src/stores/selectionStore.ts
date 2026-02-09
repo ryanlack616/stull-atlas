@@ -25,7 +25,7 @@ interface SelectionState {
   
   // View state
   showSidebar: boolean
-  sidebarTab: 'detail' | 'blend' | 'analysis' | 'compare'
+  sidebarTab: 'detail' | 'blend' | 'analysis' | 'compare' | 'knowledge'
 }
 
 interface SelectionActions {
@@ -50,7 +50,7 @@ interface SelectionActions {
   
   // Sidebar
   toggleSidebar: () => void
-  setSidebarTab: (tab: 'detail' | 'blend' | 'analysis' | 'compare') => void
+  setSidebarTab: (tab: 'detail' | 'blend' | 'analysis' | 'compare' | 'knowledge') => void
   
   // Clear all
   clearSelection: () => void

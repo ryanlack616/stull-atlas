@@ -19,6 +19,7 @@ import { explorerStyles } from './explorer-styles'
 // Lazy-load heavy components that aren't always visible
 const StullPlot3D = lazy(() => import('./StullPlot3D').then(m => ({ default: m.StullPlot3D })))
 const AnalysisPanel = lazy(() => import('@/components/AnalysisPanel').then(m => ({ default: m.AnalysisPanel })))
+const DigitalfirePanel = lazy(() => import('@/components/DigitalfirePanel').then(m => ({ default: m.DigitalfirePanel })))
 
 type ColorByOption = 'cone' | 'surface' | 'source' | 'flux_ratio' | 'confidence' | 'boron' | 'z_axis' | 'glaze_type'
 
@@ -61,6 +62,8 @@ function FilterPanel() {
                   key={a}
                   className={`filter-chip ${atmospheres.has(a) ? 'active' : ''}`}
                   onClick={() => toggleAtmosphere(a)}
+                  aria-pressed={atmospheres.has(a)}
+                  aria-label={`Atmosphere: ${a}`}
                 >
                   {a === 'unknown' ? '?' : a.slice(0, 3)}
                 </button>
@@ -77,6 +80,8 @@ function FilterPanel() {
                   key={s}
                   className={`filter-chip ${surfaces.has(s) ? 'active' : ''}`}
                   onClick={() => toggleSurface(s)}
+                  aria-pressed={surfaces.has(s)}
+                  aria-label={`Surface: ${s}`}
                 >
                   {s === 'unknown' ? '?' : s === 'crystalline' ? 'crys' : s.slice(0, 4)}
                 </button>
@@ -459,6 +464,15 @@ export function StullAtlas() {
               >
                 Analysis
               </button>
+              <button 
+                className={`sidebar-tab ${sidebarTab === 'knowledge' ? 'active' : ''}`}
+                onClick={() => setSidebarTab('knowledge')}
+                role="tab"
+                aria-selected={sidebarTab === 'knowledge'}
+                title="Ceramic knowledge from Tony Hansen's Digitalfire Reference Library"
+              >
+                Knowledge
+              </button>
             </div>
             
             {sidebarTab === 'detail' && (
@@ -710,6 +724,15 @@ export function StullAtlas() {
                   onHighlightCluster={handleHighlightCluster}
                   onHighlightVoid={handleHighlightVoid}
                   onDensityMap={handleDensityMap}
+                />
+              </Suspense>
+            )}
+            
+            {sidebarTab === 'knowledge' && (
+              <Suspense fallback={<div style={{ padding: 16, fontSize: 13, color: 'var(--text-secondary)' }}>Loading knowledge...</div>}>
+                <DigitalfirePanel
+                  selectedGlaze={selectedGlaze}
+                  currentDataset={currentDataset}
                 />
               </Suspense>
             )}

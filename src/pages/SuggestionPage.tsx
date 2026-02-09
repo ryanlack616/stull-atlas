@@ -308,7 +308,7 @@ function SuggestionCard({
   onRefineSubmit: () => void
   onRefineCancel: () => void
 }) {
-  const { archetype, recipe, colorants, relevance, explanation, warnings, firingSchedule, substitutions } = suggestion
+  const { archetype, recipe, colorants, relevance, explanation, warnings, firingSchedule, substitutions, digitalfireRefs } = suggestion
   const [showFiring, setShowFiring] = useState(false)
   const [showSubs, setShowSubs] = useState(false)
 
@@ -445,6 +445,33 @@ function SuggestionCard({
             </div>
           )}
 
+          {/* Digitalfire References — links back to Tony Hansen's work */}
+          {digitalfireRefs && digitalfireRefs.length > 0 && (
+            <div className="card-section">
+              <h4>Learn More</h4>
+              <div className="df-refs-list">
+                {digitalfireRefs.slice(0, 4).map((ref, i) => (
+                  <a
+                    key={ref.url + i}
+                    href={ref.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="df-ref-link"
+                  >
+                    <span className="df-ref-category">{ref.category}</span>
+                    <span className="df-ref-name">{ref.title}</span>
+                    <span className="df-ref-arrow">&rarr;</span>
+                  </a>
+                ))}
+              </div>
+              <p className="df-attribution-line">
+                Source: <a href="https://digitalfire.com" target="_blank" rel="noopener noreferrer">
+                  Tony Hansen, Digitalfire Reference Library
+                </a>
+              </p>
+            </div>
+          )}
+
           {/* Firing Schedule */}
           {firingSchedule && (
             <div className="card-section">
@@ -452,7 +479,7 @@ function SuggestionCard({
                 className="section-toggle"
                 onClick={() => setShowFiring(!showFiring)}
               >
-                Firing Schedule {showFiring ? 'â–¼' : 'â–¶'}
+                Firing Schedule {showFiring ? '▼' : '▶'}
               </h4>
               {showFiring && (
                 <FiringSchedulePanel recommendation={firingSchedule} />
@@ -1283,5 +1310,71 @@ const suggestionStyles = `
 
   .refine-cancel:hover {
     border-color: var(--text-secondary);
+  }
+
+  /* Digitalfire Reference Links */
+  .df-refs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .df-ref-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: var(--bg-tertiary, #1a1a2e);
+    border: 1px solid var(--border-subtle, #2a2a3e);
+    border-radius: 4px;
+    text-decoration: none;
+    color: inherit;
+    font-size: 12px;
+    transition: border-color 0.15s;
+  }
+
+  .df-ref-link:hover {
+    border-color: var(--accent, #6366F1);
+  }
+
+  .df-ref-category {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: var(--text-dim, #666);
+    background: var(--bg-input, #252538);
+    padding: 2px 5px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .df-ref-name {
+    flex: 1;
+    color: var(--text-link, #818cf8);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .df-ref-arrow {
+    color: var(--text-dim, #666);
+    font-size: 11px;
+  }
+
+  .df-attribution-line {
+    font-size: 10px;
+    color: var(--text-dim, #666);
+    margin: 4px 0 0;
+    text-align: right;
+  }
+
+  .df-attribution-line a {
+    color: var(--text-muted, #888);
+    text-decoration: none;
+  }
+
+  .df-attribution-line a:hover {
+    text-decoration: underline;
   }
 `
