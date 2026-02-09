@@ -10,8 +10,8 @@ import React, { useState, useMemo, useRef, useEffect } from 'react'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import {
   EVENTS, ERAS, CATEGORY_META, THEMATIC_THREADS,
-  formatYear,
-  type EventCategory, type TimelineEvent,
+  formatYear, getDescription, filterByDensity,
+  type EventCategory, type TimelineEvent, type ReadingLevel, type Density,
 } from './timelineData'
 
 // Event count
@@ -27,13 +27,16 @@ export function TimelinePage() {
   const [showThemes, setShowThemes] = useState(false)
   const [showSources, setShowSources] = useState(false)
   const [onlyInflections, setOnlyInflections] = useState(false)
+  const [readingLevel, setReadingLevel] = useState<ReadingLevel>('standard')
+  const [density, setDensity] = useState<Density>('standard')
   const timelineRef = useRef<HTMLDivElement>(null)
 
   const filtered = useMemo(() => {
     let events = filter === 'all' ? EVENTS : EVENTS.filter(e => e.category === filter)
     if (onlyInflections) events = events.filter(e => e.inflectionPoint)
+    else events = filterByDensity(events, density)
     return events.sort((a, b) => a.year - b.year)
-  }, [filter, onlyInflections])
+  }, [filter, onlyInflections, density])
 
   const eventKey = (event: TimelineEvent) => `${event.year}-${event.title}`
 
@@ -63,7 +66,7 @@ export function TimelinePage() {
         <div className="timeline-header">
           <h2>History of Ceramic Science</h2>
           <p className="subtitle">
-            From the first fired clay (~18,000 BCE) to the digital age — {TOTAL_EVENTS} events spanning
+            From the first fired clay (~18,000 BCE) to the digital age — showing {filtered.length} of {TOTAL_EVENTS} events spanning
             20,000 years of people, publications, and breakthroughs that built our understanding of glaze chemistry.
           </p>
 
@@ -112,6 +115,38 @@ export function TimelinePage() {
               >
                 🧵 Thematic Threads
               </button>
+            </div>
+
+            {/* Reading Level + Density */}
+            <div className="toggle-row">
+              {/* Reading Level */}
+              <div className="level-group">
+                <span className="level-label">Reading level:</span>
+                {([['simple', '🌱 Simple'], ['standard', '📖 Standard'], ['detailed', '🔬 Detailed']] as const).map(([lvl, lbl]) => (
+                  <button
+                    key={lvl}
+                    className={`level-btn ${readingLevel === lvl ? 'active' : ''}`}
+                    onClick={() => setReadingLevel(lvl)}
+                  >
+                    {lbl}
+                  </button>
+                ))}
+              </div>
+
+              {/* Density */}
+              <div className="level-group">
+                <span className="level-label">Detail:</span>
+                {([['condensed', 'Condensed'], ['standard', 'Standard'], ['full', 'Full']] as const).map(([d, lbl]) => (
+                  <button
+                    key={d}
+                    className={`level-btn ${density === d ? 'active' : ''}`}
+                    onClick={() => setDensity(d)}
+                    disabled={onlyInflections}
+                  >
+                    {lbl}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -197,7 +232,7 @@ export function TimelinePage() {
 
                     {isExpanded && (
                       <div className="event-detail">
-                        <p>{event.description}</p>
+                        <p>{getDescription(event, readingLevel)}</p>
                         {event.people && event.people.length > 0 && (
                           <div className="event-people">
                             {event.people.map(p => (
@@ -364,6 +399,53 @@ const timelineStyles = `
     background: var(--accent-bg, rgba(99, 102, 241, 0.15));
     border-color: var(--accent);
     color: var(--text-bright);
+  }
+
+  /* Reading level & density controls */
+  .level-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-secondary);
+    border-radius: 16px;
+    padding: 2px 4px;
+  }
+
+  .level-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 0 6px;
+    white-space: nowrap;
+  }
+
+  .level-btn {
+    padding: 3px 10px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+
+  .level-btn:hover:not(:disabled) {
+    color: var(--text-bright);
+    background: var(--bg-hover);
+  }
+
+  .level-btn.active {
+    background: var(--accent-bg, rgba(99, 102, 241, 0.15));
+    border-color: var(--accent);
+    color: var(--text-bright);
+  }
+
+  .level-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
   }
 
   /* Themes panel */

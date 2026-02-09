@@ -10,6 +10,7 @@ import { materialDatabase } from '@/domain/material'
 import { Material, MaterialCategory, OxideSymbol } from '@/types'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { calcStyles } from './calc-styles'
+import { lookupMaterial, lookupOxide } from '@/domain/digitalfire'
 
 const OXIDE_ORDER: OxideSymbol[] = [
   'SiO2', 'Al2O3', 'B2O3', 'Na2O', 'K2O', 'CaO', 'MgO',
@@ -411,6 +412,7 @@ function MaterialComparison({ materialIds, onClose }: { materialIds: string[]; o
 function MaterialDetail({ material, onClose }: { material: Material; onClose: () => void }) {
   const analysis = materialDatabase.getAnalysis(material.id, 'digitalfire_2024')
   const loi = materialDatabase.getLoi(material.id)
+  const dfRef = lookupMaterial(material.primaryName)
 
   return (
     <div>
@@ -440,6 +442,25 @@ function MaterialDetail({ material, onClose }: { material: Material; onClose: ()
               </div>
             </div>
           )}
+
+          {dfRef && (
+            <div style={{ marginTop: 8, padding: '10px 14px', background: 'var(--bg-tertiary)', borderRadius: 8, border: '1px solid var(--border-subtle)' }}>
+              <a
+                href={dfRef.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: 'var(--text-link)', textDecoration: 'none', fontWeight: 600, fontSize: 13 }}
+              >
+                📖 View on Digitalfire Reference Library ↗
+              </a>
+              {dfRef.excerpt && (
+                <p style={{ margin: '6px 0 0', fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                  {dfRef.excerpt.slice(0, 200)}{dfRef.excerpt.length > 200 ? '...' : ''}
+                </p>
+              )}
+              <div style={{ fontSize: 10, color: 'var(--text-dim)', marginTop: 6 }}>Source: Tony Hansen, digitalfire.com</div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -461,9 +482,14 @@ function MaterialDetail({ material, onClose }: { material: Material; onClose: ()
                 {OXIDE_ORDER.map(oxide => {
                   const val = (analysis as any)[oxide]
                   if (!val || val < 0.01) return null
+                  const oxRef = lookupOxide(oxide)
                   return (
                     <tr key={oxide}>
-                      <td style={{ fontFamily: 'inherit' }}>{oxide}</td>
+                      <td style={{ fontFamily: 'inherit' }}>
+                        {oxRef ? (
+                          <a href={oxRef.url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-link)', textDecoration: 'none' }} title={`Learn about ${oxide} on Digitalfire`}>{oxide}</a>
+                        ) : oxide}
+                      </td>
                       <td>{val.toFixed(2)}</td>
                       <td style={{ width: '50%' }}>
                         <div style={{

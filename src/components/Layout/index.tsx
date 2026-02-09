@@ -4,13 +4,16 @@
  * Shared shell for all pages — header with nav, renders page content via Outlet.
  */
 
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, lazy, Suspense } from 'react'
 import { Outlet, NavLink, useLocation } from 'react-router-dom'
 import { useGlazeStore, useThemeStore, useAuthStore, isDemoMode } from '@/stores'
 import { UserMenu } from '@/components/Auth'
 import { WelcomeOverlay, useWelcome } from '@/components/Welcome'
 import { GuidedTour, useTour } from '@/components/GuidedTour'
 import { useGlazeLoader } from '@/hooks'
+import { useOmniSearch } from '@/hooks/useOmniSearch'
+
+const OmniSearch = lazy(() => import('@/components/OmniSearch'))
 
 export function Layout() {
   const stats = useGlazeStore(s => s.stats)
@@ -23,6 +26,7 @@ export function Layout() {
   const { loadError, retry } = useGlazeLoader()
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
+  const { open: omniOpen, toggle: toggleOmni } = useOmniSearch()
 
   // Close mobile menu on route change
   useEffect(() => { setMenuOpen(false) }, [location.pathname])
@@ -74,6 +78,16 @@ export function Layout() {
             </span>
           )}
           <button
+            className="search-trigger"
+            onClick={toggleOmni}
+            title="Search everything (Ctrl+K)"
+            aria-label="Search everything"
+          >
+            <span className="search-trigger-icon">&#x1F50D;</span>
+            <span className="search-trigger-label">Search</span>
+            <kbd className="search-trigger-kbd">Ctrl K</kbd>
+          </button>
+          <button
             className="tour-trigger"
             onClick={startTour}
             title="Start guided tour"
@@ -106,6 +120,7 @@ export function Layout() {
 
       {showWelcome && <WelcomeOverlay onDismiss={dismissWelcome} />}
       {showTour && <GuidedTour onClose={closeTour} />}
+      {omniOpen && <Suspense fallback={null}><OmniSearch /></Suspense>}
 
       <style>{`
         .app-layout {
@@ -245,6 +260,49 @@ export function Layout() {
           background: var(--accent-bg);
         }
 
+        /* ── Search trigger button ─────────────────── */
+        .search-trigger {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 5px 12px;
+          border-radius: 6px;
+          border: 1px solid var(--border-secondary);
+          background: var(--bg-input);
+          color: var(--text-secondary);
+          font-size: 13px;
+          font-family: var(--font-body);
+          cursor: pointer;
+          transition: all 0.15s;
+          white-space: nowrap;
+        }
+
+        .search-trigger:hover {
+          border-color: var(--accent);
+          color: var(--text-primary);
+          background: var(--accent-bg);
+        }
+
+        .search-trigger-icon {
+          font-size: 13px;
+          line-height: 1;
+        }
+
+        .search-trigger-label {
+          font-size: 13px;
+        }
+
+        .search-trigger-kbd {
+          font-size: 10px;
+          font-weight: 600;
+          background: var(--bg-tertiary);
+          border: 1px solid var(--border-primary);
+          border-radius: 3px;
+          padding: 1px 5px;
+          margin-left: 4px;
+          font-family: var(--font-body);
+        }
+
         .page-content {
           flex: 1;
           overflow: hidden;
@@ -345,6 +403,11 @@ export function Layout() {
           }
 
           .tour-trigger {
+            display: none;
+          }
+
+          .search-trigger-label,
+          .search-trigger-kbd {
             display: none;
           }
         }

@@ -1,16 +1,19 @@
-﻿-- =============================================
+-- =============================================
 -- Stull Atlas: Init + Seed (run in Supabase SQL Editor)
 -- =============================================
 
--- Stull Atlas Studio â€” Supabase Schema
+-- Stull Atlas Studio -- Supabase Schema
 -- Run this in the Supabase SQL Editor after creating your project.
 
 -- ============================================================
 -- 1. Profiles table (extends Supabase auth.users)
 -- ============================================================
-create type public.tier as enum ('free', 'solo', 'pro', 'edu_individual', 'edu_classroom');
+DO $$ BEGIN
+  CREATE TYPE public.tier AS ENUM ('free', 'solo', 'pro', 'edu_individual', 'edu_classroom');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-create table public.profiles (
+create table if not exists public.profiles (
   id            uuid primary key references auth.users(id) on delete cascade,
   email         text not null,
   display_name  text,
@@ -32,6 +35,7 @@ begin
 end;
 $$ language plpgsql security definer;
 
+drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
@@ -45,6 +49,7 @@ begin
 end;
 $$ language plpgsql;
 
+drop trigger if exists profiles_updated_at on public.profiles;
 create trigger profiles_updated_at
   before update on public.profiles
   for each row execute procedure public.set_updated_at();
@@ -52,15 +57,18 @@ create trigger profiles_updated_at
 -- RLS: users can read/update their own profile
 alter table public.profiles enable row level security;
 
+drop policy if exists "Users can view own profile" on public.profiles;
 create policy "Users can view own profile"
   on public.profiles for select
   using (auth.uid() = id);
 
+drop policy if exists "Users can update own profile" on public.profiles;
 create policy "Users can update own profile"
   on public.profiles for update
   using (auth.uid() = id);
 
 -- Fallback: if the trigger hasn't fired yet, allow the client to insert its own profile
+drop policy if exists "Users can insert own profile" on public.profiles;
 create policy "Users can insert own profile"
   on public.profiles for insert
   with check (auth.uid() = id);
@@ -68,9 +76,12 @@ create policy "Users can insert own profile"
 -- ============================================================
 -- 2. Trial codes table
 -- ============================================================
-create type public.code_status as enum ('unused', 'redeemed', 'disabled');
+DO $$ BEGIN
+  CREATE TYPE public.code_status AS ENUM ('unused', 'redeemed', 'disabled');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-create table public.trial_codes (
+create table if not exists public.trial_codes (
   code          text primary key,
   batch_id      text not null,
   status        public.code_status not null default 'unused',
@@ -82,16 +93,18 @@ create table public.trial_codes (
 -- RLS: codes are readable (to validate) but only updatable by authenticated users
 alter table public.trial_codes enable row level security;
 
+drop policy if exists "Anyone can check if a code exists" on public.trial_codes;
 create policy "Anyone can check if a code exists"
   on public.trial_codes for select
   using (true);
 
+drop policy if exists "Authenticated users can redeem codes" on public.trial_codes;
 create policy "Authenticated users can redeem codes"
   on public.trial_codes for update
   using (auth.role() = 'authenticated');
 
 -- Index for code lookups
-create index idx_trial_codes_status on public.trial_codes(status);
+create index if not exists idx_trial_codes_status on public.trial_codes(status);
 
 -- ============================================================
 -- 3. Helper: Generate a batch of trial codes
@@ -335,7 +348,8 @@ INSERT INTO public.trial_codes (code, batch_id, status) VALUES
   ('NCECA-BZRP-PNGK', 'nceca-2026', 'unused'),
   ('NCECA-K6QA-CBKG', 'nceca-2026', 'unused'),
   ('NCECA-V6WJ-1LFU', 'nceca-2026', 'unused'),
-  ('NCECA-9AGM-2PYQ', 'nceca-2026', 'unused');
+  ('NCECA-9AGM-2PYQ', 'nceca-2026', 'unused')
+ON CONFLICT (code) DO NOTHING;
 
 -- Verify count
 SELECT count(*) as total_codes FROM public.trial_codes WHERE batch_id = 'nceca-2026';
