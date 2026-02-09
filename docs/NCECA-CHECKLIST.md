@@ -23,11 +23,19 @@
   - Screenshot of Explorer page at good angle
   - Order with stand + carry case
   - Budget: ~$150-250
-- [ ] **USB drives** — Order from [Brilliant Promos](https://www.brilliantpromos.com/BP-Config?ProductID=555691000)
-  - 100 qty, smallest capacity, navy body
+- [ ] **Journals** — Vistaprint Softy Classic Journal (black, qty 50)
+  - Front imprint: original 1912 Stull chart artwork
+  - 80 lined pages, A6, elastic closure
+  - No setup fee
+  - Budget: ~$130
+- [ ] **USB drives** — Metal mini style, custom logo imprint
+  - 25 qty, smallest capacity
   - Imprint: Stull Atlas wordmark + stullatlas.app
-  - ~10 business days production
-  - Budget: ~$120 + shipping
+  - Budget: ~$50-75
+- [ ] **Small fabric bags** — Muslin/cotton drawstring pouches, 3"×4"
+  - 25 qty (one per USB drive)
+  - Each bag gets: USB drive + business card
+  - Budget: ~$5-12
 - [ ] **Quarter-sheet flyers** — Double-sided postcard handout
   - 6"×4" (or 5.5"×4.25"), 14pt cardstock, UV gloss front
   - Front: Logo, tagline, Explorer screenshot, QR code to stullatlas.app
@@ -70,11 +78,13 @@
 - [ ] Quarter-sheet flyers received — check colors, QR code scans, text accuracy
 - [ ] Banner received — unroll, check colors and text
 - [ ] USB drives received — test imprint quality
+- [ ] Journals received — check Stull chart print quality, elastic band
+- [ ] Fabric bags received — check size fits USB + card
 
 ### Flash USBs
-- [ ] Batch flash all 100 drives: `.\scripts\flash-usb.ps1`
-- [ ] Spot check 5 random drives — insert, run installer, verify app launches
-- [ ] Pack drives in small bags or a tray for booth
+- [ ] Batch flash all 25 drives: `.\scripts\flash-usb.ps1`
+- [ ] Spot check 3 random drives — insert, run installer, verify app launches
+- [ ] Assemble gift bags: 1 USB + 1 business card per fabric pouch
 
 ### Web Deploy
 - [ ] Final web deploy to stullatlas.app — `.\scripts\deploy.ps1`
@@ -120,8 +130,9 @@
 - [ ] Pack checklist:
   - [ ] Retractable banner + stand + carry case
   - [ ] Business cards (all 300)
+  - [ ] Journals (all 50)
   - [ ] Quarter-sheet flyers (all 600)
-  - [ ] USB drives (all 100)
+  - [ ] USB gift bags (all 25)
   - [ ] Demo laptop + charger
   - [ ] Extension cord / power strip
   - [ ] Phone charger
@@ -142,14 +153,14 @@
 
 ### Resource Hall Days (Wed–Fri, Mar 25–27)
 **Hours**: Wed & Thu 9 AM – 5 PM, Fri 9 AM – 4:30 PM
-- [ ] Restock cards, flyers, and USBs at booth
-- [ ] Track how many cards/flyers/USBs handed out (rough count)
+- [ ] Restock cards, journals, flyers, and USB gift bags at booth
+- [ ] Track how many cards/journals/flyers/USBs handed out (rough count)
 - [ ] Note any feature requests or common questions
 - [ ] Post 1 photo/update to social media if you want
 
 ### Fri Mar 27 — Teardown (4:30–10:30 PM)
 - [ ] Pack everything
-- [ ] Note remaining card/flyer/USB counts
+- [ ] Note remaining card/journal/flyer/USB counts
 - [ ] Send follow-up email blast (nceca-followup template) within 48 hours
 
 ### Sat Mar 28 — Resource Hall CLOSED
@@ -177,15 +188,17 @@ Plan to commute daily; hotel optional (1 night max if setup runs late).
 |-------------------------------|-------------|---------------------------------------------|
 | Booth fee                     | $1,900      | NCECA exhibitor registration                |
 | Booth staff (weekend)         | $320        |                                             |
+| Journals (50, Stull chart)    | $130        | Vistaprint Softy Classic Journal, black     |
 | Business cards (300, Super)   | $115        | MOO Super 18pt Soft Touch — moo.com/us      |
-| Quarter-sheet flyers (600)    | $55         | Vistaprint 6"×4" postcards, 14pt UV gloss   |
 | Retractable banner (33×81")   | $110        | Vistaprint Standard vinyl — vistaprint.com  |
-| USB drives (100, printed)     | $120        | Brilliant Promos SFWW0324 — brilliantpromos.com |
+| USB drives (25, metal mini)   | $50-75      | Custom logo imprint                         |
+| Fabric pouches (25)           | $5-12       | Muslin drawstring 3"×4" — Amazon/packaging  |
+| Quarter-sheet flyers (600)    | $55         | Vistaprint 6"×4" postcards, 14pt UV gloss   |
 | Gas (4 days × 120 mi @ $0.25) | $120       |                                             |
 | Parking (Huntington Place)    | $100        | Rooftop garage, $25/day × 4, credit card only |
 | Hotel (0-1 nights, optional)  | $0-200      |                                             |
 | Misc (food, tolls, extras)    | $150        |                                             |
-| **Total**                     | **~$2,890-3,090** |                                       |
+| **Total**                     | **~$2,955-3,187** |                                       |
 
 > **Parking tip:** Wayne State Lot 12 (6050 Woodward) is $5/day + free QLINE
 > streetcar to Huntington Place — saves $80 over 4 days if you don't

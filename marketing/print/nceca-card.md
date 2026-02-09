@@ -8,24 +8,24 @@
 
 ## Front Layout
 ```
-┌──────────────────────────────────┐
-│                                  │
-│    STULL ATLAS                   │
-│    Navigate the chemistry        │
-│    of ceramics.                  │
-│                                  │
-│    Scan for 30 days free →       │
-│              ┌─────┐            │
-│              │ QR  │            │
-│              │CODE │            │
-│              └─────┘            │
-│                                  │
-└──────────────────────────────────┘
++----------------------------------+
+|                                  |
+|    STULL ATLAS                   |
+|    Navigate the chemistry        |
+|    of ceramics.                  |
+|                                  |
+|    Free through April 2026 ->    |
+|              +-----+            |
+|              | QR  |            |
+|              |CODE |            |
+|              +-----+            |
+|                                  |
++----------------------------------+
 ```
 - Background: Dark indigo (#1E1B4B)
 - Text: White (#F5F3FF)
-- QR Code: White on indigo, 0.75" × 0.75"
-- QR URL: `https://stullatlas.app/#/nceca?code=NCECA-XXXX-XXXX`
+- QR Code: White on indigo, 0.75" x 0.75"
+- QR URL: `https://stullatlas.app` (same on all cards)
 
 ## Back Layout
 ```
@@ -46,15 +46,16 @@
 - URL: Indigo, bold
 
 ## Print Notes
-- Each card gets a **unique QR code** with a unique trial code
-- Print run: 500 cards (matches trial code batch)
+- All cards have the **same QR code** pointing to stullatlas.app
+- Free Pro access through April 30, 2026 -- sign up with any email
+- Print run: 300 cards
 - Stock: 16pt matte with soft-touch laminate
-- Vendor: TBD (Moo, Vistaprint, or local)
+- Vendor: MOO (Super Soft Touch, 18pt)
 
 ## QR Code Generation
-Use `qrcode` npm package or similar:
+Single QR code for all cards:
 ```
-URL pattern: https://stullatlas.app/#/nceca?code=NCECA-{4char}-{4char}
+URL: https://stullatlas.app
 Error correction: M (15%)
 Size: 0.75" at 300dpi = 225×225 pixels minimum
 Format: SVG preferred for print
