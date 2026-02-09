@@ -12,8 +12,8 @@
 import {
   oxides, materials, glossary, troubles, articles, tests,
   type DigitalfireRef, type DigitalfireOxide, type DigitalfireMaterial,
-  DIGITALFIRE_ATTRIBUTION,
 } from '@/data/digitalfire'
+import { DIGITALFIRE_ATTRIBUTION } from '@/data/digitalfire/attribution'
 import type { OxideSymbol } from '@/types'
 
 export type { DigitalfireRef, DigitalfireOxide, DigitalfireMaterial }

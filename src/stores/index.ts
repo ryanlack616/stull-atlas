@@ -6,7 +6,7 @@
  * Components pick stores by importing from '@/stores'.
  *
  *   useGlazeStore        – loaded glazes, plot points, molar variant cache
- *   useMolarWeightStore  – active molar weight set, wiggle animation state
+ *   useMolarWeightStore  – active molar weight set selection
  *   useSelectionStore    – hovered/selected glaze in the explorer
  *   useRecipeStore       – user’s saved recipes (localStorage-persisted)
  *   useThemeStore        – dark/light mode

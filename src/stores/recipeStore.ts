@@ -3,10 +3,19 @@
  * 
  * Persistent storage for user-entered recipes.
  * Survives page reloads via localStorage.
+ * When authenticated, syncs to Supabase for cross-device access.
  */
 
 import { create } from 'zustand'
 import { GlazeRecipe, SimplexPoint } from '@/types'
+import {
+  fetchCloudRecipes,
+  upsertCloudRecipe,
+  deleteCloudRecipe,
+  pushAllToCloud,
+  clearCloudRecipes,
+  mergeRecipes,
+} from '@/infra/supabase/recipeSync'
 
 const STORAGE_KEY = 'stull-atlas-recipes'
 const BLEND_RESULTS_KEY = 'stull-atlas-blend-results'
@@ -35,6 +44,7 @@ function deserializeRecipe(raw: any): GlazeRecipe {
 interface RecipeState {
   recipes: GlazeRecipe[]
   blendResults: SimplexPoint[]  // results from calculators, for plotting on explorer
+  _syncUserId: string | null    // non-null when signed in — enables cloud sync
 }
 
 interface RecipeActions {
@@ -47,6 +57,10 @@ interface RecipeActions {
   // Blend results bridge to explorer
   setBlendResults: (points: SimplexPoint[]) => void
   clearBlendResults: () => void
+
+  // Cloud sync
+  syncFromCloud: (userId: string) => Promise<void>
+  setSyncUserId: (userId: string | null) => void
 }
 
 function loadFromStorage(): GlazeRecipe[] {
@@ -106,6 +120,7 @@ function saveBlendResults(points: SimplexPoint[]) {
 export const useRecipeStore = create<RecipeState & RecipeActions>((set, get) => ({
   recipes: loadFromStorage(),
   blendResults: loadBlendResults(),
+  _syncUserId: null,
 
   saveRecipe: (recipe) => set((state) => {
     // Replace if same id exists, else append
@@ -117,12 +132,17 @@ export const useRecipeStore = create<RecipeState & RecipeActions>((set, get) => 
       next.push(recipe)
     }
     saveToStorage(next)
+    // Fire-and-forget cloud sync
+    const uid = get()._syncUserId
+    if (uid) upsertCloudRecipe(recipe, uid)
     return { recipes: next }
   }),
 
   removeRecipe: (id) => set((state) => {
     const next = state.recipes.filter(r => r.id !== id)
     saveToStorage(next)
+    const uid = get()._syncUserId
+    if (uid) deleteCloudRecipe(id, uid)
     return { recipes: next }
   }),
 
@@ -131,6 +151,9 @@ export const useRecipeStore = create<RecipeState & RecipeActions>((set, get) => 
       r.id === id ? { ...r, ...updates } : r
     )
     saveToStorage(next)
+    const updated = next.find(r => r.id === id)
+    const uid = get()._syncUserId
+    if (uid && updated) upsertCloudRecipe(updated, uid)
     return { recipes: next }
   }),
 
@@ -140,6 +163,8 @@ export const useRecipeStore = create<RecipeState & RecipeActions>((set, get) => 
 
   clearAll: () => {
     localStorage.removeItem(STORAGE_KEY)
+    const uid = get()._syncUserId
+    if (uid) clearCloudRecipes(uid)
     set({ recipes: [] })
   },
 
@@ -151,5 +176,24 @@ export const useRecipeStore = create<RecipeState & RecipeActions>((set, get) => 
   clearBlendResults: () => {
     localStorage.removeItem(BLEND_RESULTS_KEY)
     set({ blendResults: [] })
+  },
+
+  // ── Cloud sync ──────────────────────────────────────────────────
+  setSyncUserId: (userId) => set({ _syncUserId: userId }),
+
+  syncFromCloud: async (userId) => {
+    const cloud = await fetchCloudRecipes(userId)
+    const local = get().recipes
+    const merged = mergeRecipes(local, cloud)
+
+    // Push any local-only recipes to the cloud
+    const cloudIds = new Set(cloud.map(r => r.id))
+    const localOnly = local.filter(r => !cloudIds.has(r.id))
+    if (localOnly.length > 0) {
+      pushAllToCloud(localOnly, userId)
+    }
+
+    saveToStorage(merged)
+    set({ recipes: merged, _syncUserId: userId })
   },
 }))

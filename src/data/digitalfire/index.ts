@@ -79,11 +79,6 @@ export const troubles = troublesData as DigitalfireTrouble[]
 export const articles = articlesData as DigitalfireArticle[]
 export const tests = testsData as DigitalfireTest[]
 
-// ─── Attribution ────────────────────────────────────────────────
+// ─── Attribution (re-export from isolated module) ──────────────
 
-export const DIGITALFIRE_ATTRIBUTION = {
-  name: 'Tony Hansen',
-  source: 'Digitalfire Reference Library',
-  url: 'https://digitalfire.com',
-  text: 'Source: Tony Hansen, Digitalfire Reference Library',
-} as const
+export { DIGITALFIRE_ATTRIBUTION } from './attribution'

@@ -37,6 +37,17 @@ export interface TrialCode {
   redeemed_by: string | null
 }
 
+/** Cloud-saved recipe record */
+export interface SavedRecipeRow {
+  id: string
+  user_id: string
+  name: string
+  source: string
+  recipe_data: Record<string, unknown>
+  created_at: string
+  updated_at: string
+}
+
 /**
  * Supabase Database schema definition.
  * Used for typed client queries.
@@ -54,6 +65,12 @@ export interface Database {
         Row: TrialCode
         Insert: Omit<TrialCode, 'redeemed_at' | 'redeemed_by'>
         Update: Partial<TrialCode>
+        Relationships: []
+      }
+      saved_recipes: {
+        Row: SavedRecipeRow
+        Insert: Omit<SavedRecipeRow, 'created_at' | 'updated_at'>
+        Update: Partial<Omit<SavedRecipeRow, 'id' | 'user_id' | 'created_at'>>
         Relationships: []
       }
     }

@@ -75,7 +75,9 @@ export async function loadLibrary(): Promise<DigitalfirePage[]> {
 
       if (import.meta.env.VITE_OFFLINE_DATA === 'true') {
         // Studio: bundled JSON — no network needed
-        const mod = await import('@/data/digitalfire/pages.json')
+        // Dynamic path prevents Rollup from emitting a phantom chunk in web builds
+        const p = '@/data/digitalfire/' + 'pages.json'
+        const mod = await import(/* @vite-ignore */ p)
         raw = (mod.default ?? mod) as RawPage[]
       } else {
         // Web: fetch from public directory

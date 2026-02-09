@@ -12,6 +12,7 @@ import type { Profile, Tier, TrialStatus } from '@/infra/supabase'
 import { canAccess, type Feature } from '@/domain/tier'
 import { edition } from '@/edition'
 import type { Session, User } from '@supabase/supabase-js'
+import { useRecipeStore } from './recipeStore'
 
 /**
  * Demo mode — unlocks all features without auth.
@@ -133,6 +134,8 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
 
       if (session?.user) {
         await get().fetchProfile()
+        // Sync recipes from cloud on initial load
+        useRecipeStore.getState().syncFromCloud(session.user.id)
       }
 
       // Listen for auth changes (store subscription for potential cleanup)
@@ -140,8 +143,12 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
         set({ session, user: session?.user ?? null })
         if (session?.user) {
           await get().fetchProfile()
+          // Sync recipes when auth state changes (sign in)
+          useRecipeStore.getState().syncFromCloud(session.user.id)
         } else {
           set({ profile: null })
+          // Clear sync user when signed out
+          useRecipeStore.getState().setSyncUserId(null)
         }
       })
       // Store ref so we could unsubscribe later if needed
