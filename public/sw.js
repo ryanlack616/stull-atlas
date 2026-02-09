@@ -15,6 +15,8 @@ const SHELL_FILES = [
   '/stullv2/index.html',
   '/stullv2/favicon.svg',
   '/stullv2/manifest.json',
+  '/stullv2/fonts/source-serif-4-latin.woff2',
+  '/stullv2/fonts/source-serif-4-latin-italic.woff2',
 ]
 
 // Critical JS/CSS bundles injected by postbuild script
@@ -71,8 +73,9 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // Content-hashed assets (JS/CSS) — cache-first
-  if (url.pathname.match(/\.(js|css)$/) && url.pathname.includes('/assets/')) {
+  // Content-hashed assets (JS/CSS) and fonts — cache-first
+  if ((url.pathname.match(/\.(js|css)$/) && url.pathname.includes('/assets/')) ||
+      url.pathname.includes('/fonts/')) {
     event.respondWith(
       caches.open(CACHE_NAME).then(cache =>
         cache.match(event.request).then(cached => {

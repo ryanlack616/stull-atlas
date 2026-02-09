@@ -1034,6 +1034,8 @@ export const EVENTS: TimelineEvent[] = [
     year: 1987,
     title: 'Daniel de Montmollin — \u201CPratique des \u00E9maux de gr\u00E8s\u201D',
     description: 'Brother Daniel de Montmollin published 60 SiO\u2082\u2013Al\u2082O\u2083 charts showing how different flux combinations affect melting behavior at cone 13. Originally published in French (1987); English translation \u201CPractice of Stoneware Glazes\u201D follows in 2005. A monumental experimental work that remains unmatched in scope.',
+    descriptionSimple: 'A French monk spent years testing 60 different glaze combinations and published all the results in beautiful charts. His book shows exactly what happens when you change the ingredients.',
+    descriptionDetailed: 'Brother Daniel de Montmollin published 60 SiO₂–Al₂O₃ charts showing how different flux combinations affect melting behavior at cone 13. Each chart holds one flux composition constant while mapping the SiO₂–Al₂O₃ response surface with actual fired test tiles. Originally published in French (1987); English translation “Practice of Stoneware Glazes” (2005). The scope of systematic empirical work is unmatched.',
     category: 'publication',
     people: ['Daniel de Montmollin'],
     significance: 2,

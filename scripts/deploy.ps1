@@ -70,7 +70,9 @@ if (-not $SkipBuild) {
     Write-Host "`n[1/3] Building..." -ForegroundColor Yellow
     Push-Location $projectRoot
     try {
+        $env:FORCE_COLOR = "0"
         npm run build 2>&1 | ForEach-Object { Write-Host "  $_" }
+        $env:FORCE_COLOR = $null
         if ($LASTEXITCODE -ne 0) {
             Write-Host "Build failed!" -ForegroundColor Red
             exit 1
