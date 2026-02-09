@@ -1,5 +1,5 @@
-# Stull Atlas — Deploy to rlv.lol/stullv2/
-# 
+# Stull Atlas - Deploy to rlv.lol/stullv2/
+#
 # Usage:
 #   .\scripts\deploy.ps1
 #   .\scripts\deploy.ps1 -SkipBuild    # deploy existing dist/
@@ -12,6 +12,7 @@
 #      FTP_PASS=your-ftp-password
 #      FTP_PATH=/stullv2
 #   2. npm run build must succeed
+#   3. WinSCP CLI (choco install winscp)
 
 param(
     [switch]$SkipBuild,
@@ -30,6 +31,13 @@ if (-not (Test-Path "$projectRoot\package.json")) {
 }
 
 Write-Host "`n=== Stull Atlas Deploy ===" -ForegroundColor Cyan
+
+# Check WinSCP
+$winscp = Get-Command winscp.com -ErrorAction SilentlyContinue
+if (-not $winscp) {
+    Write-Host "`nERROR: WinSCP CLI not found. Install with: choco install winscp" -ForegroundColor Red
+    exit 1
+}
 
 # Load FTP credentials from .env.deploy
 $envFile = Join-Path $projectRoot ".env.deploy"
@@ -80,6 +88,17 @@ if (-not (Test-Path $distDir)) {
     exit 1
 }
 
+# Copy glazy data into dist
+$glazyDest = Join-Path $distDir "data\glazes"
+if (-not (Test-Path $glazyDest)) {
+    New-Item -ItemType Directory -Path $glazyDest -Force | Out-Null
+}
+$glazySrc = Join-Path $projectRoot "src\data\glazes\glazy-processed.json"
+if (Test-Path $glazySrc) {
+    Copy-Item $glazySrc (Join-Path $glazyDest "glazy-processed.json") -Force
+    Write-Host "  Copied glazy-processed.json to dist/" -ForegroundColor DarkGray
+}
+
 # Count files
 $files = Get-ChildItem -Path $distDir -Recurse -File
 Write-Host "  Found $($files.Count) files to upload" -ForegroundColor Green
@@ -94,91 +113,35 @@ if ($DryRun) {
     exit 0
 }
 
-# Step 2: Upload via FTP
+# Step 2: Upload via WinSCP (explicit FTPS)
 Write-Host "`n[2/3] Uploading to $($ftpConfig['FTP_HOST'])$($ftpConfig['FTP_PATH'])..." -ForegroundColor Yellow
 
-$ftpBase = "ftp://$($ftpConfig['FTP_HOST'])$($ftpConfig['FTP_PATH'])"
-$cred = New-Object System.Net.NetworkCredential($ftpConfig['FTP_USER'], $ftpConfig['FTP_PASS'])
+$ftpHost = $ftpConfig['FTP_HOST']
+$ftpUser = $ftpConfig['FTP_USER']
+$ftpPass = $ftpConfig['FTP_PASS']
+$ftpPath = $ftpConfig['FTP_PATH']
 
-# Ensure we track created directories to avoid redundant MKD calls
-$createdDirs = @{}
+$winscpScript = @"
+open ftp://${ftpUser}:${ftpPass}@${ftpHost}/ -explicit
+synchronize remote "$distDir" "$ftpPath"
+exit
+"@
 
-function Ensure-FtpDirectory {
-    param([string]$DirPath)
-    
-    if ($createdDirs.ContainsKey($DirPath)) { return }
-    
-    # Recursively ensure parent exists
-    $parent = Split-Path $DirPath -Parent
-    if ($parent -and $parent -ne $DirPath) {
-        $parentFtp = $parent.Replace('\', '/')
-        if ($parentFtp -and -not $createdDirs.ContainsKey($parentFtp)) {
-            Ensure-FtpDirectory $parentFtp
-        }
-    }
-    
-    try {
-        $uri = "$ftpBase/$($DirPath.Replace('\', '/'))"
-        if (-not $uri.EndsWith('/')) { $uri += '/' }
-        $req = [System.Net.FtpWebRequest]::Create($uri)
-        $req.Method = [System.Net.WebRequestMethods+Ftp]::MakeDirectory
-        $req.Credentials = $cred
-        $req.UseBinary = $true
-        $req.EnableSsl = $false
-        $resp = $req.GetResponse()
-        $resp.Close()
-    } catch {
-        # Directory probably already exists — that's fine
-    }
-    $createdDirs[$DirPath] = $true
-}
+$output = $winscpScript | winscp.com /ini=nul /log=NUL /command 2>&1
+$exitCode = $LASTEXITCODE
 
-$uploaded = 0
-$errors = @()
-
-foreach ($file in $files) {
-    $relativePath = $file.FullName.Substring($distDir.Length + 1).Replace('\', '/')
-    $relativeDir = Split-Path $relativePath -Parent
-    
-    if ($relativeDir) {
-        Ensure-FtpDirectory $relativeDir
-    }
-    
-    $targetUri = "$ftpBase/$relativePath"
-    
-    try {
-        $req = [System.Net.FtpWebRequest]::Create($targetUri)
-        $req.Method = [System.Net.WebRequestMethods+Ftp]::UploadFile
-        $req.Credentials = $cred
-        $req.UseBinary = $true
-        $req.EnableSsl = $false
-        $req.ContentLength = $file.Length
-        
-        $fileStream = [System.IO.File]::OpenRead($file.FullName)
-        $reqStream = $req.GetRequestStream()
-        $fileStream.CopyTo($reqStream)
-        $reqStream.Close()
-        $fileStream.Close()
-        
-        $resp = $req.GetResponse()
-        $resp.Close()
-        
-        $uploaded++
-        $pct = [math]::Round(($uploaded / $files.Count) * 100)
-        Write-Host "`r  [$pct%] $uploaded/$($files.Count) — $relativePath" -NoNewline
-    } catch {
-        $errors += "$relativePath : $($_.Exception.Message)"
-    }
-}
+# Count uploaded files from WinSCP output
+$uploadLines = $output | Where-Object { $_ -match '\| 100%' }
+$uploaded = if ($uploadLines) { @($uploadLines).Count } else { 0 }
 
 Write-Host ""
+$output | ForEach-Object { Write-Host "  $_" }
 
 # Step 3: Summary
 Write-Host "`n[3/3] Deploy complete!" -ForegroundColor Green
-Write-Host "  Uploaded: $uploaded files" -ForegroundColor Green
-if ($errors.Count -gt 0) {
-    Write-Host "  Errors: $($errors.Count)" -ForegroundColor Red
-    $errors | ForEach-Object { Write-Host "    $_" -ForegroundColor Red }
+Write-Host "  Synced: $uploaded files" -ForegroundColor Green
+if ($exitCode -ne 0) {
+    Write-Host "  WinSCP exited with code $exitCode" -ForegroundColor Red
 }
 Write-Host "`n  Live at: https://rlv.lol/stullv2/" -ForegroundColor Cyan
 Write-Host ""
