@@ -49,7 +49,7 @@ const TOUR_STEPS: TourStep[] = [
   {
     target: '.dataset-switcher',
     title: 'Dataset Switcher',
-    body: 'Browse the full Glazy dataset (14,000+ glazes) or switch to focused subsets like cone 6 stoneware, cone 10 reduction, or low-fire earthenware.',
+    body: 'Browse the full Glazy dataset (3,000+ glazes) or switch to focused subsets like cone 6 stoneware, cone 10 reduction, or low-fire earthenware.',
     position: 'bottom',
   },
   {

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * UpdatesPage
  *
  * Changelog documenting the meaningful improvements from
@@ -23,7 +23,30 @@ export function UpdatesPage() {
           </p>
         </section>
 
-        {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        {/* v0.3.1 */}
+        <section className="about-section" style={{ borderLeft: '3px solid var(--accent, #6366F1)', paddingLeft: 16 }}>
+          <h2>{'\uD83D\uDD2C'} v0.3.1 {'\u2014'} Materials, Timeline &amp; Brand Polish</h2>
+          <p style={{ fontSize: 13, color: 'var(--text-dim)', margin: '0 0 12px' }}>February 2025</p>
+          <ul>
+            <li><strong>Materials database expanded 20 {'\u2192'} 56</strong> {'\u2014'} Added feldspar variants,
+              frits (3110, 3124, 3134, 3195, 3249), colorants (iron, cobalt, copper, manganese,
+              chrome, rutile, tin, zircopax, titanium), bone ash, gerstley borate, Cornwall stone,
+              nepheline syenite, lithium carbonate, strontium carbonate, and more. Every mineral
+              oxide analysis verified.</li>
+            <li><strong>Historical Timeline</strong> {'\u2014'} New <Link to="/timeline">Timeline</Link> page
+              with 160+ events from 18,000 BCE to 2026, covering six eras of ceramic science.
+              Filterable by category, inflection-point highlights, and thematic threads tracing
+              recurring patterns across 20,000 years.</li>
+            <li><strong>Brand unification</strong> {'\u2014'} Indigo color system (#4F46E5 / #6366F1) applied
+              consistently across all pages, SVG wordmark assets created, favicon updated.</li>
+            <li><strong>Polished upgrade UX</strong> {'\u2014'} Stripe integration placeholders now show
+              a clean modal instead of a browser alert.</li>
+            <li><strong>Analytics</strong> {'\u2014'} Plausible privacy-respecting analytics added.</li>
+          </ul>
+        </section>
+
+        <hr style={{ border: 'none', borderTop: '1px solid var(--border-subtle)', margin: '32px 0' }} />
+{/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
             v3 â€” AI Recipe Suggestions
             â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
         <section className="about-section" style={{ borderLeft: '3px solid var(--accent, #6366F1)', paddingLeft: 16 }}>
@@ -280,7 +303,7 @@ export function UpdatesPage() {
             </a>{' '}
             â€” Howell, Michigan.
           </p>
-          <p className="version">v0.3.0</p>
+          <p className="version">v0.3.1</p>
         </section>
 
       </div>

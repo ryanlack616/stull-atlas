@@ -18,8 +18,8 @@ const STORAGE_KEY = 'stull-atlas-welcomed'
 const FEATURES = [
   {
     icon: '🔬',
-    title: '14,000+ Real Glazes',
-    desc: 'Explore the largest open dataset of glaze analyses, plotted on interactive Stull charts by oxide composition.',
+    title: '3,000+ Real Glazes',
+    desc: 'Explore a curated dataset of glaze analyses from Glazy, plotted on interactive Stull charts by oxide composition.',
   },
   {
     icon: '🧪',
@@ -96,7 +96,7 @@ export function WelcomeOverlay({ onDismiss }: WelcomeOverlayProps) {
             </div>
 
             <p className="welcome-body">
-              Stull Atlas puts 14,000+ real glaze analyses at your fingertips — plotted
+              Stull Atlas puts 3,000+ real glaze analyses at your fingertips — plotted
               on interactive oxide charts with tools for blending, optimizing, and
               discovering new recipes.
             </p>
