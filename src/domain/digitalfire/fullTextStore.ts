@@ -1,13 +1,18 @@
 /**
  * Digitalfire Full-Text Store
  *
- * Lazy-loads the complete Digitalfire Reference Library (~4,800 pages)
+ * Lazy-loads the Digitalfire Reference Library (~4,200 pages)
  * from a sidecar JSON file. Not bundled into the main JS — fetched
  * on-demand when the user opens the Library tab.
  *
  * The JSON lives at /data/digitalfire/pages.json and is generated
  * by scripts/extract-digitalfire.py from the SQLite database.
+ * URLs are stored as paths (prefix stripped) and restored on load.
  */
+
+// ─── Constants ──────────────────────────────────────────────────
+
+const URL_PREFIX = 'https://digitalfire.com/'
 
 // ─── Types ──────────────────────────────────────────────────────
 
@@ -21,11 +26,11 @@ export interface DigitalfirePage {
 
 /** Raw JSON shape (short keys to save bandwidth) */
 interface RawPage {
-  u: string  // url
+  u: string  // url path (prefix stripped)
   t: string  // title
   c: string  // category
   d?: string // description
-  b: string  // body text
+  b: string  // body text (may be truncated)
 }
 
 // ─── State ──────────────────────────────────────────────────────
@@ -68,10 +73,10 @@ export async function loadLibrary(): Promise<DigitalfirePage[]> {
       }
       const raw: RawPage[] = await resp.json()
 
-      // Expand short keys
+      // Expand short keys + restore full URL
       pages = raw.map(r => ({
-        url: r.u,
-        title: r.t,
+        url: r.u.startsWith('http') ? r.u : URL_PREFIX + r.u,
+        title: r.t ?? '',
         category: r.c,
         description: r.d,
         body: r.b,
