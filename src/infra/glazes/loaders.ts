@@ -18,15 +18,19 @@ export interface RawGlazyGlaze {
   cone: number | null
   surface: string
   transparency: string | null
+  atmosphere?: string
   ingredients: Array<{
     name: string
     percentage: number
-    isAddition: boolean
+    isAddition?: boolean
+    isAdditional?: boolean
   }>
   umf: Record<string, number>
   x: number
   y: number
   imageUrl: string | null
+  thumbnailUrl?: string | null
+  imageUrls?: string[]
 }
 
 // ── Loaders ─────────────────────────────────────────────────────
@@ -64,16 +68,52 @@ export async function loadSampleGlazes(): Promise<GlazeRecipe[]> {
 }
 
 /**
+ * Fetch with retry and timeout.
+ * Exponential back-off: 0 → 1s → 2s (3 attempts total).
+ */
+async function fetchWithRetry(
+  url: string,
+  maxAttempts = 3,
+  timeoutMs = 15_000,
+): Promise<Response> {
+  let lastError: Error | null = null
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    if (attempt > 0) {
+      await new Promise((r) => setTimeout(r, 1000 * Math.pow(2, attempt - 1)))
+    }
+
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), timeoutMs)
+
+    try {
+      const res = await fetch(url, { signal: controller.signal })
+      clearTimeout(timer)
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      return res
+    } catch (err: any) {
+      clearTimeout(timer)
+      lastError = err
+      console.warn(`Fetch attempt ${attempt + 1}/${maxAttempts} failed:`, err.message)
+    }
+  }
+
+  throw lastError ?? new Error('Fetch failed after retries')
+}
+
+/**
  * Load the full Glazy dataset via fetch from public directory.
  * Using fetch + JSON.parse is ~2x faster than JS module evaluation
  * for large data files (1.2MB+ JSON parsed natively vs interpreted JS).
  * Returns domain-ready GlazeRecipe objects.
+ *
+ * Retries up to 3 times with exponential back-off and a 15 s timeout
+ * per attempt — resilient to flaky conference WiFi.
  */
 export async function loadGlazyDataset(): Promise<GlazeRecipe[]> {
   try {
     const base = import.meta.env.BASE_URL || '/stullv2/'
-    const response = await fetch(`${base}glazy-processed.json`)
-    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+    const response = await fetchWithRetry(`${base}glazy-processed.json`)
     const data: RawGlazyGlaze[] = await response.json()
 
     return data.map((g): GlazeRecipe => {
@@ -89,6 +129,14 @@ export async function loadGlazyDataset(): Promise<GlazeRecipe[]> {
         }
       }
 
+      // Collect image URLs
+      const images: string[] = []
+      if (g.imageUrls && g.imageUrls.length > 0) {
+        images.push(...g.imageUrls)
+      } else if (g.imageUrl) {
+        images.push(g.imageUrl)
+      }
+
       return {
         id: g.id,
         name: g.name,
@@ -101,19 +149,20 @@ export async function loadGlazyDataset(): Promise<GlazeRecipe[]> {
         })),
         umf: new Map([['glazy_default', umf]]),
         coneRange: g.cone !== null ? [g.cone, g.cone] : ['?', '?'],
-        atmosphere: 'unknown' as Atmosphere,
+        atmosphere: (g.atmosphere || 'unknown') as Atmosphere,
         surfaceType: g.surface as SurfaceType,
         glazeTypeId: classifyGlazeByName(g.name),
+        images: images.length > 0 ? images : undefined,
         notes: g.transparency || undefined,
         umfConfidence: 'inferred' as EpistemicState,
         verified: false,
         _plotX: g.x,
         _plotY: g.y,
-        _imageUrl: g.imageUrl,
+        _imageUrl: g.thumbnailUrl || g.imageUrl,
       } as GlazeRecipe & { _plotX: number; _plotY: number; _imageUrl: string | null }
     })
   } catch (e) {
     console.error('Failed to load Glazy dataset:', e)
-    return []
+    throw e  // let callers handle retry / error UI
   }
 }

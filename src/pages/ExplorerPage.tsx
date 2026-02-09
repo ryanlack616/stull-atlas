@@ -12,7 +12,7 @@ import { usePageTitle } from '@/hooks/usePageTitle'
 
 export function ExplorerPage() {
   usePageTitle('Explorer')
-  const { isLoading, loadError } = useGlazeLoader()
+  const { isLoading, loadError, retry } = useGlazeLoader()
 
   if (loadError) {
     return (
@@ -27,7 +27,7 @@ export function ExplorerPage() {
           {loadError}
         </p>
         <button
-          onClick={() => window.location.reload()}
+          onClick={retry}
           style={{
             padding: '8px 20px', background: 'var(--accent-bg)', border: '1px solid var(--accent)',
             borderRadius: 6, color: 'var(--text-bright)', fontSize: 14, cursor: 'pointer',

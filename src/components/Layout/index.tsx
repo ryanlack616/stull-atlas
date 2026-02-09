@@ -4,12 +4,13 @@
  * Shared shell for all pages — header with nav, renders page content via Outlet.
  */
 
-import React, { useEffect } from 'react'
-import { Outlet, NavLink } from 'react-router-dom'
+import React, { useEffect, useState, useCallback } from 'react'
+import { Outlet, NavLink, useLocation } from 'react-router-dom'
 import { useGlazeStore, useThemeStore, useAuthStore, isDemoMode } from '@/stores'
 import { UserMenu } from '@/components/Auth'
 import { WelcomeOverlay, useWelcome } from '@/components/Welcome'
 import { GuidedTour, useTour } from '@/components/GuidedTour'
+import { useGlazeLoader } from '@/hooks'
 
 export function Layout() {
   const { stats, isLoading } = useGlazeStore()
@@ -17,6 +18,14 @@ export function Layout() {
   const initialize = useAuthStore((s) => s.initialize)
   const { showWelcome, dismiss: dismissWelcome } = useWelcome()
   const { showTour, startTour, closeTour } = useTour()
+  const { loadError, retry } = useGlazeLoader()
+  const [menuOpen, setMenuOpen] = useState(false)
+  const location = useLocation()
+
+  // Close mobile menu on route change
+  useEffect(() => { setMenuOpen(false) }, [location.pathname])
+
+  const toggleMenu = useCallback(() => setMenuOpen((v) => !v), [])
 
   // Bootstrap auth listener on mount
   useEffect(() => {
@@ -31,7 +40,16 @@ export function Layout() {
           <NavLink to="/" className="logo-link">
             <h1>Stull Atlas</h1>
           </NavLink>
-          <nav className="main-nav" aria-label="Main navigation">
+          <button
+            className={`hamburger${menuOpen ? ' open' : ''}`}
+            onClick={toggleMenu}
+            aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={menuOpen}
+            aria-controls="main-nav"
+          >
+            <span /><span /><span />
+          </button>
+          <nav className={`main-nav${menuOpen ? ' show' : ''}`} id="main-nav" aria-label="Main navigation">
             <NavLink to="/" end>Explorer</NavLink>
             <NavLink to="/suggest">AI Suggest</NavLink>
             <NavLink to="/calc">Calculators</NavLink>
@@ -71,7 +89,11 @@ export function Layout() {
             {theme === 'dark' ? '☀' : '🌙'}
           </button>
           <span className="stats" aria-live="polite">
-            {isLoading ? 'Loading...' : `${stats.total.toLocaleString()} glazes`}
+            {loadError ? (
+              <button className="retry-btn" onClick={retry} title="Tap to retry loading">
+                ⚠ Load failed · Retry
+              </button>
+            ) : isLoading ? 'Loading...' : `${stats.total.toLocaleString()} glazes`}
           </span>
         </div>
       </header>
@@ -178,6 +200,24 @@ export function Layout() {
           color: var(--text-secondary);
         }
 
+        .retry-btn {
+          background: rgba(231, 76, 60, 0.15);
+          color: #e74c3c;
+          border: 1px solid rgba(231, 76, 60, 0.3);
+          border-radius: 6px;
+          padding: 4px 12px;
+          font-size: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.15s;
+          white-space: nowrap;
+        }
+
+        .retry-btn:hover {
+          background: rgba(231, 76, 60, 0.25);
+          border-color: #e74c3c;
+        }
+
         .tour-trigger {
           width: 28px;
           height: 28px;
@@ -212,6 +252,98 @@ export function Layout() {
         @media (max-width: 768px) {
           .page-content {
             overflow: auto;
+          }
+        }
+
+        /* ── Hamburger button ─────────────────────── */
+        .hamburger {
+          display: none;
+          flex-direction: column;
+          justify-content: center;
+          gap: 4px;
+          width: 32px;
+          height: 32px;
+          background: none;
+          border: 1px solid var(--border-secondary);
+          border-radius: 6px;
+          cursor: pointer;
+          padding: 6px;
+          transition: all 0.15s;
+        }
+
+        .hamburger span {
+          display: block;
+          height: 2px;
+          background: var(--text-secondary);
+          border-radius: 1px;
+          transition: all 0.25s;
+        }
+
+        .hamburger:hover {
+          border-color: var(--accent);
+        }
+
+        .hamburger:hover span {
+          background: var(--accent);
+        }
+
+        .hamburger.open span:nth-child(1) {
+          transform: rotate(45deg) translate(4px, 4px);
+        }
+        .hamburger.open span:nth-child(2) {
+          opacity: 0;
+        }
+        .hamburger.open span:nth-child(3) {
+          transform: rotate(-45deg) translate(4px, -4px);
+        }
+
+        /* ── Mobile responsive ────────────────────── */
+        @media (max-width: 768px) {
+          .hamburger {
+            display: flex;
+          }
+
+          .atlas-header {
+            flex-wrap: wrap;
+            padding: 8px 12px;
+          }
+
+          .header-left {
+            gap: 12px;
+          }
+
+          .header-left h1 {
+            font-size: 16px;
+          }
+
+          .main-nav {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            gap: 2px;
+            padding-top: 8px;
+            order: 3;
+          }
+
+          .main-nav.show {
+            display: flex;
+          }
+
+          .main-nav a {
+            padding: 10px 14px;
+            font-size: 15px;
+          }
+
+          .header-right {
+            gap: 8px;
+          }
+
+          .header-right .stats {
+            display: none;
+          }
+
+          .tour-trigger {
+            display: none;
           }
         }
 
