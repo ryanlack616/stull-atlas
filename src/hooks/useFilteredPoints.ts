@@ -8,7 +8,7 @@
 
 import { useMemo } from 'react'
 import { GlazePlotPoint, GlazeRecipe } from '@/types'
-import { useFilterStore } from '@/stores/filterStore'
+import { useFilterStore } from '@/stores'
 import { useGlazeStore } from '@/stores'
 
 export function useFilteredPoints(points: GlazePlotPoint[]): GlazePlotPoint[] {

@@ -14,6 +14,7 @@
 export * from './constants'
 export * from './umf'
 export * from './validation'
+export * from './parseCone'
 export * from './blends'
 export * from './optimizer'
 export * from './geneticOptimizer'

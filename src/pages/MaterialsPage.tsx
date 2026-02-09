@@ -8,7 +8,7 @@
 import React, { useState, useMemo } from 'react'
 import { materialDatabase } from '@/domain/material'
 import { Material, MaterialCategory, OxideSymbol } from '@/types'
-import { usePageTitle } from '@/hooks/usePageTitle'
+import { usePageTitle } from '@/hooks'
 import { calcStyles } from './calc-styles'
 import { lookupMaterial, lookupOxide } from '@/domain/digitalfire'
 

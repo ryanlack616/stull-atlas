@@ -8,7 +8,7 @@
 import React, { useState, useCallback } from 'react'
 import { useRecipeStore } from '@/stores'
 import { useImportExport } from '@/hooks'
-import { usePageTitle } from '@/hooks/usePageTitle'
+import { usePageTitle } from '@/hooks'
 import { calcStyles } from './calc-styles'
 
 export function ImportExportPage() {

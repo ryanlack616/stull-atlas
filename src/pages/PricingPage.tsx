@@ -7,7 +7,7 @@
 
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { usePageTitle } from '@/hooks/usePageTitle'
+import { usePageTitle } from '@/hooks'
 import { useAuthStore } from '@/stores'
 import { tierDisplayName, featuresForTier, type Feature } from '@/domain/tier'
 import { AuthModal } from '@/components/Auth'

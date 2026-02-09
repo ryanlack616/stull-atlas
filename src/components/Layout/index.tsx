@@ -11,7 +11,7 @@ import { UserMenu } from '@/components/Auth'
 import { WelcomeOverlay, useWelcome } from '@/components/Welcome'
 import { GuidedTour, useTour } from '@/components/GuidedTour'
 import { useGlazeLoader } from '@/hooks'
-import { useOmniSearch } from '@/hooks/useOmniSearch'
+import { useOmniSearch } from '@/hooks'
 
 const OmniSearch = lazy(() => import('@/components/OmniSearch'))
 

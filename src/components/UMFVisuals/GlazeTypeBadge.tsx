@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { glazeTypeName, glazeTypeColor, glazeTypeRoot } from '@/domain/glaze/glazeTypes'
+import { glazeTypeName, glazeTypeColor, glazeTypeRoot } from '@/domain/glaze'
 
 interface GlazeTypeBadgeProps {
   glazeTypeId: number | null | undefined

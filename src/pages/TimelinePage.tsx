@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useMemo, useRef, useEffect } from 'react'
-import { usePageTitle } from '@/hooks/usePageTitle'
+import { usePageTitle } from '@/hooks'
 import {
   EVENTS, ERAS, CATEGORY_META, THEMATIC_THREADS,
   formatYear, getDescription, filterByDensity,

@@ -8,7 +8,7 @@
 import React from 'react'
 import { StullAtlas } from '@/components/StullAtlas'
 import { useGlazeLoader } from '@/hooks'
-import { usePageTitle } from '@/hooks/usePageTitle'
+import { usePageTitle } from '@/hooks'
 
 export function ExplorerPage() {
   usePageTitle('Explorer')

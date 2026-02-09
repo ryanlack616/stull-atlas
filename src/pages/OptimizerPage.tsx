@@ -12,7 +12,7 @@ import { optimizeRecipe, type OptimizerInput, type OptimizerResult, type OxideTa
 import { optimizeRecipeGA, type GAResult, type GAConfig } from '@/calculator/geneticOptimizer'
 import { analyzeResponseSurface, type RSMAnalysis } from '@/calculator/responseSurface'
 import { CONE_LIMITS } from '@/calculator/validation'
-import { usePageTitle } from '@/hooks/usePageTitle'
+import { usePageTitle } from '@/hooks'
 import { OxideLink } from '@/components/UMFVisuals/OxideLink'
 import { calcStyles } from './calc-styles'
 

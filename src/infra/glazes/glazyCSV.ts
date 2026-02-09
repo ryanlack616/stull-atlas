@@ -11,7 +11,7 @@
  */
 
 import { GlazeRecipe, UMF, Atmosphere, SurfaceType, EpistemicState } from '@/types'
-import { classifyGlazeByName } from '@/domain/glaze/glazeTypes'
+import { classifyGlazeByName } from '@/domain/glaze'
 
 const GLAZY_UMF_FIELDS = [
   'SiO2', 'Al2O3', 'B2O3', 'Li2O', 'Na2O', 'K2O',

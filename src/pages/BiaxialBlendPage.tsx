@@ -14,9 +14,8 @@ import { materialDatabase } from '@/domain/material'
 import { useRecipeStore } from '@/stores'
 import { ALL_CONES } from '@/calculator/parseCone'
 import { validateUMFAgainstLimits, predictSurface, type StullPrediction } from '@/calculator/validation'
-import { exportBlendCSV, printLabels } from '@/utils/export'
-import { actionBtnStyle } from '@/utils/blend'
-import { usePageTitle } from '@/hooks/usePageTitle'
+import { exportBlendCSV, printLabels, actionBtnStyle } from '@/utils'
+import { usePageTitle } from '@/hooks'
 import { calcStyles } from './calc-styles'
 
 interface GridResult {

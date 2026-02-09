@@ -11,7 +11,7 @@
  */
 
 import { OxideSymbol } from '@/types'
-import { materialDatabase } from '@/infra/materials'
+import { materialDatabase } from '@/domain/material'
 import { optimizeRecipe, type OxideTarget, type OptimizerResult } from '@/calculator/optimizer'
 import { optimizeRecipeGA, type GAResult } from '@/calculator/geneticOptimizer'
 import { parseGlazeQuery, type ParsedGlazeQuery } from './queryParser'

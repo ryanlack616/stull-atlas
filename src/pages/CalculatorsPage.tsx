@@ -6,7 +6,7 @@
 
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { usePageTitle } from '@/hooks/usePageTitle'
+import { usePageTitle } from '@/hooks'
 import { calcStyles } from './calc-styles'
 
 const calculators = [

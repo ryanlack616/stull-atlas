@@ -8,7 +8,7 @@
 
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { usePageTitle } from '@/hooks/usePageTitle'
+import { usePageTitle } from '@/hooks'
 
 export function VariabilityPage() {
   usePageTitle('Understanding Variability')

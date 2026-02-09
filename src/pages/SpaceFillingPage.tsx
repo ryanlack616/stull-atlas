@@ -23,9 +23,8 @@ import {
 } from '@/calculator/blends/spacefilling'
 import { getOxideValue } from '@/calculator/umf'
 import { useRecipeStore } from '@/stores'
-import { exportBlendCSV, printLabels } from '@/utils/export'
-import { formatSiAlRatio, actionBtnStyle } from '@/utils/blend'
-import { usePageTitle } from '@/hooks/usePageTitle'
+import { exportBlendCSV, printLabels, formatSiAlRatio, actionBtnStyle } from '@/utils'
+import { usePageTitle } from '@/hooks'
 import { calcStyles } from './calc-styles'
 
 type SamplingMethod = 'lhs' | 'sobol' | 'halton'

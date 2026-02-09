@@ -13,9 +13,8 @@ import { simplexBlend, simplexPointCount } from '@/calculator/blends/simplex'
 import { recipeToUMF } from '@/calculator/umf'
 import { materialDatabase } from '@/domain/material'
 import { useRecipeStore } from '@/stores'
-import { exportBlendCSV, printLabels } from '@/utils/export'
-import { formatSiAlRatio, formatOxideDisplay, actionBtnStyle } from '@/utils/blend'
-import { usePageTitle } from '@/hooks/usePageTitle'
+import { exportBlendCSV, printLabels, formatSiAlRatio, formatOxideDisplay, actionBtnStyle } from '@/utils'
+import { usePageTitle } from '@/hooks'
 import { calcStyles } from './calc-styles'
 
 const CORNER_COLORS = ['#e74c3c', '#2ecc71', '#3498db', '#f39c12']

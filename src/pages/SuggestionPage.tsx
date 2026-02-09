@@ -11,7 +11,7 @@ import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import { suggestRecipes, type SuggestionResult, type RecipeSuggestion } from '@/domain/suggestion'
 import { GLAZE_ARCHETYPES, type GlazeArchetype } from '@/domain/suggestion'
 import type { FiringSchedule, FiringRecommendation, MaterialSubstitution } from '@/domain/suggestion'
-import { usePageTitle } from '@/hooks/usePageTitle'
+import { usePageTitle } from '@/hooks'
 import { calcStyles } from './calc-styles'
 import { OxideLink } from '@/components/UMFVisuals/OxideLink'
 

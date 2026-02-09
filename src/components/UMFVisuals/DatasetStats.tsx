@@ -7,7 +7,7 @@
 
 import React, { useMemo, useState } from 'react'
 import { useGlazeStore } from '@/stores'
-import { glazeTypeName, glazeTypeColor } from '@/domain/glaze/glazeTypes'
+import { glazeTypeName, glazeTypeColor } from '@/domain/glaze'
 
 export function DatasetStats() {
   const glazes = useGlazeStore(s => s.glazes)

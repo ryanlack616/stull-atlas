@@ -11,8 +11,8 @@ import { OxideSymbol, GlazePlotPoint, SurfaceType, EpistemicState } from '@/type
 import { getOxideValue } from '@/calculator/umf'
 import { roundTo } from '@/calculator'
 import { CONE_LIMITS } from '@/calculator/validation'
-import { glazeTypeColor, glazeTypeName } from '@/domain/glaze/glazeTypes'
-import { useFilteredPoints } from '@/hooks/useFilteredPoints'
+import { glazeTypeColor, glazeTypeName } from '@/domain/glaze'
+import { useFilteredPoints } from '@/hooks'
 
 interface StullPlotProps {
   xAxis?: OxideSymbol

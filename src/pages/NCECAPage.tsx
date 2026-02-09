@@ -7,7 +7,7 @@
 
 import React, { useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
-import { usePageTitle } from '@/hooks/usePageTitle'
+import { usePageTitle } from '@/hooks'
 import { useAuthStore } from '@/stores'
 import { isDemoMode } from '@/stores'
 import { AuthModal } from '@/components/Auth'

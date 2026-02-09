@@ -7,7 +7,7 @@
  */
 
 import { GlazeRecipe, UMF, Atmosphere, SurfaceType, EpistemicState } from '@/types'
-import { classifyGlazeByName } from '@/domain/glaze/glazeTypes'
+import { classifyGlazeByName } from '@/domain/glaze'
 
 // ── Raw types for the processed Glazy JSON ──────────────────────
 

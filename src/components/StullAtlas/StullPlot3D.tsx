@@ -24,8 +24,8 @@ import { useGlazeStore, useSelectionStore, useRecipeStore, useThemeStore, useMol
 import { OxideSymbol, GlazePlotPoint, SurfaceType, EpistemicState } from '@/types'
 import { getOxideValue } from '@/calculator/umf'
 import { fitSurface, type SurfaceGrid } from '@/analysis/surfaceFit'
-import { glazeTypeColor, glazeTypeName } from '@/domain/glaze/glazeTypes'
-import { useFilteredPoints } from '@/hooks/useFilteredPoints'
+import { glazeTypeColor, glazeTypeName } from '@/domain/glaze'
+import { useFilteredPoints } from '@/hooks'
 
 // ─── Public types ──────────────────────────────────────────────
 
