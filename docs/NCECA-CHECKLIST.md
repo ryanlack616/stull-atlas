@@ -137,10 +137,12 @@
 
 | Item                          | Est. Cost   |
 |-------------------------------|-------------|
-| Booth fee                     | ~$1,900     |
+| Booth fee                     | $1,900      |
+| Hotel (3 nights)              | ~$600-900   |
+| Booth staff (weekend)         | $320        |
 | Business cards (500)          | ~$100       |
 | Retractable banner            | ~$200       |
 | USB drives (100, printed)     | ~$135       |
-| Travel + hotel (3 nights)     | ~$800-1,200 |
+| Travel (gas/flights)          | ~$200-400   |
 | Misc (food, parking, extras)  | ~$200       |
-| **Total**                     | **~$3,000-3,500** |
+| **Total**                     | **~$3,655-4,155** |
