@@ -40,12 +40,12 @@
 ## Week 2: Feb 16–22 (4 weeks out)
 
 ### Data & Backend
-- [ ] Implement free-month flag: all verified signups get Pro access Mar 15 – Apr 18
+- [ ] Implement free-month flag: all verified signups get Pro access Mar 15 – Apr 30
   - Add `FREE_UNTIL` date check in auth / tier logic
   - No trial codes needed — just sign up with verified email → full access
 - [ ] Test signup → email verification → Pro features unlock flow
 - [ ] Set up email templates in transactional provider (Resend/Postmark)
-  - Welcome ("free through April 18"), nceca-followup, free-period-ending
+  - Welcome ("free through April"), nceca-followup, free-period-ending
 
 ### USB Prep
 - [ ] Flash script dry run: `.\scripts\flash-usb.ps1` with 1 test USB
@@ -138,7 +138,7 @@
 - [ ] Send NCECA follow-up email to new signups from the free period
 - [ ] Review Plausible analytics — traffic spike from conference?
 - [ ] Check Supabase — how many new verified signups during free window?
-- [ ] Plan conversion: free period ends Apr 18 — send "thanks, here's what Pro costs" email
+- [ ] Plan conversion: free period ends Apr 30 — send "thanks, here's what Pro costs" email
 - [ ] Write up lessons learned (what worked, what to change next time)
 - [ ] Reorder materials if planning more events
 
