@@ -2,7 +2,7 @@
  * UpdatesPage
  *
  * Changelog documenting the meaningful improvements from
- * Stull Atlas v1 (rlv.lol/stull) â†’ v2 (rlv.lol/stullv2).
+ * Stull Atlas v1 (rlv.lol/stull) → v2 (stullatlas.app).
  */
 
 import React from 'react'

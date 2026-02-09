@@ -138,11 +138,11 @@ export function OptimizerPage() {
     setTimeout(() => {
       const dbWrapper = {
         resolve(name: string) {
-          return materialDatabase.resolve(name, 'digitalfire_2024') ??
+          return materialDatabase.resolve(name) ??
                  materialDatabase.getMaterial(name) ?? null
         },
         getAnalysis(id: string) {
-          return materialDatabase.getAnalysis(id, 'digitalfire_2024')
+          return materialDatabase.getAnalysis(id)
         },
       }
 
@@ -150,7 +150,6 @@ export function OptimizerPage() {
         const gaConfig: GAConfig = {
           materialIds: selectedMats,
           targets,
-          datasetId: 'digitalfire_2024',
           populationSize: 80,
           generations: 200,
           tolerance: 0.02,
@@ -163,7 +162,7 @@ export function OptimizerPage() {
         if (ga.best.weights.length > 0) {
           const fractionalWeights = ga.best.weights.map(w => w / 100)
           const rsm = analyzeResponseSurface(
-            fractionalWeights, selectedMats, targets, 'digitalfire_2024', dbWrapper as any
+            fractionalWeights, selectedMats, targets, dbWrapper as any
           )
           setRSMAnalysis(rsm)
         }
@@ -171,7 +170,6 @@ export function OptimizerPage() {
         const input: OptimizerInput = {
           materialIds: selectedMats,
           targets,
-          datasetId: 'digitalfire_2024',
           maxIterations: 3000,
           tolerance: 0.02,
         }
@@ -183,7 +181,7 @@ export function OptimizerPage() {
         if (res.weights.length > 0) {
           const fractionalWeights = res.weights.map(w => w / 100)
           const rsm = analyzeResponseSurface(
-            fractionalWeights, selectedMats, targets, 'digitalfire_2024', dbWrapper as any
+            fractionalWeights, selectedMats, targets, dbWrapper as any
           )
           setRSMAnalysis(rsm)
         }

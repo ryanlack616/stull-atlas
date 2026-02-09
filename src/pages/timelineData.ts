@@ -1558,7 +1558,7 @@ export const EVENTS: TimelineEvent[] = [
     significance: 1,
     inflectionPoint: true,
     links: [
-      { label: 'Stull Atlas', url: 'https://rlv.lol/stullv2/' },
+      { label: 'Stull Atlas', url: 'https://stullatlas.app/' },
     ],
   },
 ]

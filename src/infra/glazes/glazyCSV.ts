@@ -149,7 +149,7 @@ export function deserializeGlazyCSV(csv: string): GlazeRecipe[] {
         source: 'glazy',
         sourceUrl: `https://glazy.org/recipes/${id}`,
         ingredients: [], // Glazy CSV doesn't include ingredient lists
-        umf: new Map([['glazy_default', umf]]),
+        umf,
         coneRange,
         atmosphere: 'unknown' as Atmosphere,
         surfaceType,

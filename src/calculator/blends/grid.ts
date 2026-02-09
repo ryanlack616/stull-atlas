@@ -14,7 +14,6 @@ import {
   CalculationResult,
   CalculationStep,
   Ingredient,
-  MaterialDatasetId,
 } from '@/types'
 import { MaterialDatabase, recipeToUMF, createOxideValue } from '../umf'
 import { EPSILON, roundTo } from '../constants'
@@ -55,7 +54,7 @@ function cloneRecipe(recipe: GlazeRecipe): GlazeRecipe {
   return {
     ...recipe,
     ingredients: recipe.ingredients.map(ing => ({ ...ing })),
-    umf: new Map(recipe.umf),
+    umf: recipe.umf ? { ...recipe.umf } : null,
     coneRange: [...recipe.coneRange] as [string | number, string | number],
   }
 }
@@ -66,7 +65,6 @@ function cloneRecipe(recipe: GlazeRecipe): GlazeRecipe {
 export function gridBlend(
   config: GridBlendConfig,
   materials: MaterialDatabase,
-  datasetId: MaterialDatasetId
 ): CalculationResult<GridPoint[]> {
   
   const { baseRecipe, additions } = config
@@ -184,12 +182,10 @@ export function biaxialBlend(
   additionA: Addition,
   additionB: Addition,
   materials: MaterialDatabase,
-  datasetId: MaterialDatasetId
 ): CalculationResult<GridPoint[]> {
   return gridBlend(
     { type: 'biaxial', baseRecipe, additions: [additionA, additionB] },
     materials,
-    datasetId
   )
 }
 
@@ -203,7 +199,6 @@ export function radialBlend(
   additions: Addition[],
   stepsPerSpoke: number,
   materials: MaterialDatabase,
-  datasetId: MaterialDatasetId
 ): CalculationResult<GridPoint[]> {
   
   const trace: CalculationStep[] = []
@@ -246,7 +241,7 @@ export function radialBlend(
       modified.name = `${centerRecipe.name} +${roundTo(amount, 1)} ${addition.materialName}`
       
       // Calculate UMF
-      const umfResult = recipeToUMF(modified, materials, datasetId)
+      const umfResult = recipeToUMF(modified, materials)
       
       points.push({
         index,

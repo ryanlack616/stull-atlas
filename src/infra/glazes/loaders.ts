@@ -56,7 +56,7 @@ export async function loadSampleGlazes(): Promise<GlazeRecipe[]> {
         amount: ing.amount,
         unit: 'weight' as const,
       })),
-      umf: new Map(),
+      umf: null,
       notes: glaze.notes,
       umfConfidence: 'inferred',
       verified: false,
@@ -112,7 +112,7 @@ async function fetchWithRetry(
  */
 export async function loadGlazyDataset(): Promise<GlazeRecipe[]> {
   try {
-    const base = import.meta.env.BASE_URL || '/stullv2/'
+    const base = import.meta.env.BASE_URL || '/'
     const response = await fetchWithRetry(`${base}glazy-processed.json`)
     const data: RawGlazyGlaze[] = await response.json()
 
@@ -147,7 +147,7 @@ export async function loadGlazyDataset(): Promise<GlazeRecipe[]> {
           amount: ing.percentage,
           unit: 'weight' as const,
         })),
-        umf: new Map([['glazy_default', umf]]),
+        umf,
         coneRange: g.cone !== null ? [g.cone, g.cone] : ['?', '?'],
         atmosphere: (g.atmosphere || 'unknown') as Atmosphere,
         surfaceType: g.surface as SurfaceType,

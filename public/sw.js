@@ -11,12 +11,12 @@ const DATASET_CACHE = 'stull-dataset-v1'
 
 // App shell — cache on install
 const SHELL_FILES = [
-  '/stullv2/',
-  '/stullv2/index.html',
-  '/stullv2/favicon.svg',
-  '/stullv2/manifest.json',
-  '/stullv2/fonts/source-serif-4-latin.woff2',
-  '/stullv2/fonts/source-serif-4-latin-italic.woff2',
+  '/',
+  '/index.html',
+  '/favicon.svg',
+  '/manifest.json',
+  '/fonts/source-serif-4-latin.woff2',
+  '/fonts/source-serif-4-latin-italic.woff2',
 ]
 
 // Critical JS/CSS bundles injected by postbuild script
@@ -27,7 +27,7 @@ const PRECACHE_ASSETS = '__PRECACHE_ASSETS__'
 self.addEventListener('install', (event) => {
   const urls = [...SHELL_FILES]
   if (Array.isArray(PRECACHE_ASSETS)) {
-    urls.push(...PRECACHE_ASSETS.map(f => '/stullv2/' + f))
+    urls.push(...PRECACHE_ASSETS.map(f => '/' + f))
   }
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -101,6 +101,6 @@ self.addEventListener('fetch', (event) => {
         }
         return response
       })
-      .catch(() => caches.match(event.request).then(cached => cached || caches.match('/stullv2/')))
+      .catch(() => caches.match(event.request).then(cached => cached || caches.match('/')))
   )
 })

@@ -1,4 +1,4 @@
-# Stull Atlas - Deploy to rlv.lol/stullv2/
+# Stull Atlas - Deploy to stullatlas.app
 #
 # Usage:
 #   .\scripts\deploy.ps1
@@ -8,9 +8,9 @@
 # Prerequisites:
 #   1. Create .env.deploy in project root (gitignored) with:
 #      FTP_HOST=pixie-ss1-ftp.porkbun.com
-#      FTP_USER=your-ftp-username
+#      FTP_USER=stullatlas.app
 #      FTP_PASS=your-ftp-password
-#      FTP_PATH=/stullv2
+#      FTP_PATH=/
 #   2. npm run build must succeed
 #   3. WinSCP CLI (choco install winscp)
 
@@ -147,5 +147,5 @@ Write-Host "  Synced: $uploaded files" -ForegroundColor Green
 if ($exitCode -ne 0) {
     Write-Host "  WinSCP exited with code $exitCode" -ForegroundColor Red
 }
-Write-Host "`n  Live at: https://rlv.lol/stullv2/" -ForegroundColor Cyan
+Write-Host "\n  Live at: https://stullatlas.app/" -ForegroundColor Cyan
 Write-Host ""

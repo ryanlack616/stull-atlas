@@ -52,8 +52,8 @@ export function LineBlendPage() {
     const [a, b] = recipes as GlazeRecipe[]
     
     // Calculate UMFs
-    const umfA = recipeToUMF(a, materialDatabase, 'digitalfire_2024')
-    const umfB = recipeToUMF(b, materialDatabase, 'digitalfire_2024')
+    const umfA = recipeToUMF(a, materialDatabase)
+    const umfB = recipeToUMF(b, materialDatabase)
 
     const allErrors: string[] = [...umfA.errors, ...umfB.errors]
     

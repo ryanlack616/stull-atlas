@@ -11,7 +11,7 @@
  * No React, no Zustand, no DOM.
  */
 
-import { GlazeRecipe, MaterialDatasetId, OxideSymbol, UMF } from '@/types'
+import { GlazeRecipe, OxideSymbol, UMF } from '@/types'
 import { recipeToUMF, getOxideValue } from '@/calculator/umf'
 import {
   loadGlazyDataset,
@@ -71,27 +71,21 @@ export function importGlazesFromFile(text: string, filename: string): GlazeRecip
 // ── UMF Calculation ───────────────────────────────────────────
 
 /**
- * Batch-calculate UMF for every recipe across the given datasets.
+ * Batch-calculate UMF for every recipe.
  */
 export function calculateAllUMF(
   recipes: GlazeRecipe[],
-  datasetIds: MaterialDatasetId[] = ['digitalfire_2024'],
 ): GlazeRecipe[] {
   const results: GlazeRecipe[] = []
 
   for (const recipe of recipes) {
-    const updatedRecipe = { ...recipe, umf: new Map(recipe.umf) }
+    const result = recipeToUMF(recipe, materialDatabase)
 
-    for (const datasetId of datasetIds) {
-      const result = recipeToUMF(recipe, materialDatabase, datasetId)
-
-      if (result.value) {
-        updatedRecipe.umf.set(datasetId, result.value)
-        updatedRecipe.umfConfidence = result.confidence
-      }
+    if (result.value) {
+      results.push({ ...recipe, umf: result.value, umfConfidence: result.confidence })
+    } else {
+      results.push({ ...recipe })
     }
-
-    results.push(updatedRecipe)
   }
 
   return results
@@ -105,8 +99,6 @@ export interface SimilarityResult {
 }
 
 export interface SimilarityOptions {
-  /** Which dataset's UMF to compare */
-  datasetId: string
   /** Per-oxide weighting (default 1.0 each) */
   weights?: Partial<Record<OxideSymbol, number>>
   /** How many results to return */
@@ -129,13 +121,12 @@ export function findSimilarGlazes(
   options: SimilarityOptions,
 ): SimilarityResult[] {
   const {
-    datasetId,
     weights = {},
     count = 6,
     oxides = DEFAULT_SIMILARITY_OXIDES,
   } = options
 
-  const baseUmf = target.umf.get(datasetId)
+  const baseUmf = target.umf
   if (!baseUmf) return []
 
   const baseVec = oxides.map((o) => getOxideValue(baseUmf, o) || 0)
@@ -144,7 +135,7 @@ export function findSimilarGlazes(
   return candidates
     .filter((g) => g.id !== target.id)
     .map((g) => {
-      const umf = g.umf.get(datasetId)
+      const umf = g.umf
       if (!umf) return null
       const vec = oxides.map((o) => getOxideValue(umf, o) || 0)
       const dist = Math.sqrt(

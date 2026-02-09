@@ -17,7 +17,6 @@ const SIMILARITY_OXIDES: OxideSymbol[] = [
 export function useSimilarity(
   target: GlazeRecipe | null,
   allGlazes: Map<string, GlazeRecipe>,
-  datasetId: string,
 ) {
   const [weights, setWeights] = useState<Record<OxideSymbol, number>>(() =>
     SIMILARITY_OXIDES.reduce((acc, o) => ({ ...acc, [o]: 1 }), {} as Record<OxideSymbol, number>),
@@ -46,12 +45,11 @@ export function useSimilarity(
     if (!target) return []
     const candidates = Array.from(allGlazes.values())
     return findSimilarGlazes(target, candidates, {
-      datasetId,
       weights: debouncedWeights,
       count,
       oxides: SIMILARITY_OXIDES,
     })
-  }, [target, allGlazes, datasetId, debouncedWeights, count])
+  }, [target, allGlazes, debouncedWeights, count])
 
   return {
     results,

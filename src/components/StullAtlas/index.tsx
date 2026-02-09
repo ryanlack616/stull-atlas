@@ -6,12 +6,11 @@
 
 import React, { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react'
 import { StullPlot } from './StullPlot'
-import { DatasetSwitcher } from './DatasetSwitcher'
 import { MolarSetPicker } from './MolarSetPicker'
 
-import { useSelectionStore, useGlazeStore, useDatasetStore, useFilterStore } from '@/stores'
+import { useSelectionStore, useGlazeStore, useFilterStore } from '@/stores'
 import { useSimilarity } from '@/hooks'
-import { OxideSymbol, GlazeRecipe, MaterialDatasetId } from '@/types'
+import { OxideSymbol, GlazeRecipe } from '@/types'
 import type { DensityMap } from '@/analysis/density'
 import type { ZAxisOption, CameraPreset } from './StullPlot3D'
 import { UMFFingerprint, FluxDonut, OxideRadar, GlazeTypeBadge, ConeRangeBar, MiniStull, DatasetStats, RecipeBar, OxideTd } from '@/components/UMFVisuals'
@@ -174,7 +173,6 @@ export function StullAtlas() {
   const clearCompare = useSelectionStore(s => s.clearCompare)
   // Use selectors for frequently-changing state to avoid re-rendering the whole tree
   const glazes = useGlazeStore(s => s.glazes)
-  const currentDataset = useDatasetStore(s => s.currentDataset)
   
   // Highlight state for analysis panel → plot bridge
   const [highlightPointIds, setHighlightPointIds] = useState<string[]>([])
@@ -209,7 +207,7 @@ export function StullAtlas() {
     updateWeight,
     resetWeights,
     oxides,
-  } = useSimilarity(selectedGlaze, glazes, currentDataset)
+  } = useSimilarity(selectedGlaze, glazes)
   
   const axisOptions: OxideSymbol[] = [
     'SiO2', 'Al2O3', 'B2O3', 
@@ -388,7 +386,6 @@ export function StullAtlas() {
             </button>
           </div>
           
-          <DatasetSwitcher />
           <MolarSetPicker />
           <DatasetStats />
 
@@ -519,7 +516,7 @@ export function StullAtlas() {
                 
                 {/* UMF Values */}
                 {(() => {
-                  const umf = selectedGlaze.umf.get(currentDataset)
+                  const umf = selectedGlaze.umf
                   if (!umf) return null
                   const oxideGroups = [
                     { label: 'Fluxes (R₂O)', oxides: ['Li2O', 'Na2O', 'K2O'] as const },
@@ -715,7 +712,6 @@ export function StullAtlas() {
               <Suspense fallback={<div style={{ padding: 16, fontSize: 13, color: 'var(--text-secondary)' }}>Loading compare...</div>}>
                 <ComparePanel
                   glazes={compareGlazes}
-                  currentDataset={currentDataset}
                   onRemove={removeFromCompare}
                   onClear={clearCompare}
                   onSelect={setSelectedGlaze}
@@ -737,7 +733,6 @@ export function StullAtlas() {
               <Suspense fallback={<div style={{ padding: 16, fontSize: 13, color: 'var(--text-secondary)' }}>Loading knowledge...</div>}>
                 <DigitalfirePanel
                   selectedGlaze={selectedGlaze}
-                  currentDataset={currentDataset}
                 />
               </Suspense>
             )}

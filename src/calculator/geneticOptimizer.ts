@@ -16,7 +16,7 @@
  *   6. Return top-K diverse solutions
  */
 
-import { OxideSymbol, MaterialDatasetId } from '@/types'
+import { OxideSymbol } from '@/types'
 import { MOLECULAR_WEIGHTS, FLUX_OXIDES, EPSILON, roundTo } from './constants'
 import type { OxideTarget, OptimizerResult, TargetResult } from './optimizer'
 import type { MaterialDatabase as IMatDB } from './umf'
@@ -28,8 +28,6 @@ export interface GAConfig {
   materialIds: string[]
   /** What chemistry to aim for */
   targets: OxideTarget[]
-  /** Which material dataset */
-  datasetId: MaterialDatasetId
   /** Population size (default 80) */
   populationSize?: number
   /** Number of generations (default 200) */
@@ -67,14 +65,14 @@ type OxideMatrix = number[][]
 const ALL_UMF_OXIDES: OxideSymbol[] = Object.keys(MOLECULAR_WEIGHTS) as OxideSymbol[]
 
 function buildOxideMatrix(
-  materialIds: string[], db: IMatDB, datasetId: MaterialDatasetId,
+  materialIds: string[], db: IMatDB,
 ): { matrix: OxideMatrix; oxides: OxideSymbol[]; names: string[] } {
   const oxides = ALL_UMF_OXIDES
   const matrix: number[][] = []
   const names: string[] = []
   for (const id of materialIds) {
-    const mat = db.resolve(id, datasetId)
-    const analysis = mat ? db.getAnalysis(mat.id, datasetId) : null
+    const mat = db.resolve(id)
+    const analysis = mat ? db.getAnalysis(mat.id) : null
     names.push(mat?.primaryName ?? id)
     const row: number[] = []
     for (const oxide of oxides) {
@@ -226,7 +224,6 @@ export function optimizeRecipeGA(config: GAConfig, db: IMatDB): GAResult {
   const {
     materialIds,
     targets,
-    datasetId,
     populationSize = 80,
     generations = 200,
     mutationRate = 0.15,
@@ -248,7 +245,7 @@ export function optimizeRecipeGA(config: GAConfig, db: IMatDB): GAResult {
     }
   }
 
-  const { matrix, oxides, names } = buildOxideMatrix(materialIds, db, datasetId)
+  const { matrix, oxides, names } = buildOxideMatrix(materialIds, db)
 
   // Initialize population
   let population: number[][] = []

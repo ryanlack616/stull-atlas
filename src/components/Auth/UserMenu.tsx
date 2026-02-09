@@ -114,7 +114,7 @@ export function UserMenu() {
                   if (user.email) url.searchParams.set('prefilled_email', user.email)
                   window.open(url.toString(), '_blank')
                 } else {
-                  window.location.href = 'mailto:stullatlas@rlv.lol?subject=Billing%20Inquiry'
+                  window.location.href = 'mailto:contact@stullatlas.app?subject=Billing%20Inquiry'
                 }
                 setShowDropdown(false)
               }}

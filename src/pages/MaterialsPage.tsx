@@ -80,7 +80,7 @@ export function MaterialsPage() {
   }, [allMaterials, search, categoryFilter, sortBy])
 
   const getAnalysis = (mat: Material): Record<string, number> | null => {
-    return materialDatabase.getAnalysis(mat.id, 'digitalfire_2024')
+    return materialDatabase.getAnalysis(mat.id)
   }
 
   const toggleCompare = (id: string) => {
@@ -254,7 +254,7 @@ function MaterialComparison({ materialIds, onClose }: { materialIds: string[]; o
     .map(id => materialDatabase.getMaterial(id))
     .filter((m): m is Material => m !== null)
 
-  const analyses = materials.map(m => materialDatabase.getAnalysis(m.id, 'digitalfire_2024'))
+  const analyses = materials.map(m => materialDatabase.getAnalysis(m.id))
 
   // Find all oxides present in any material
   const presentOxides = OXIDE_ORDER.filter(oxide =>
@@ -410,7 +410,7 @@ function MaterialComparison({ materialIds, onClose }: { materialIds: string[]; o
 
 /* Material Detail Panel */
 function MaterialDetail({ material, onClose }: { material: Material; onClose: () => void }) {
-  const analysis = materialDatabase.getAnalysis(material.id, 'digitalfire_2024')
+  const analysis = materialDatabase.getAnalysis(material.id)
   const loi = materialDatabase.getLoi(material.id)
   const dfRef = lookupMaterial(material.primaryName)
 

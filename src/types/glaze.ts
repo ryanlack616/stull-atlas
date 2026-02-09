@@ -6,16 +6,6 @@ import { UMF } from './umf'
 import { EpistemicState } from './epistemic'
 
 /**
- * Material dataset identifiers
- */
-export type MaterialDatasetId =
-  | 'digitalfire_2024'
-  | 'glazy_default'
-  | 'insight_legacy'
-  | 'supplier_spec'
-  | string  // allow custom datasets
-
-/**
  * Data source identifiers
  */
 export type GlazeSource =
@@ -64,9 +54,8 @@ export interface GlazeRecipe {
   // Recipe as entered
   ingredients: Ingredient[]
   
-  // Calculated UMF for each material dataset
-  // Key is MaterialDatasetId
-  umf: Map<MaterialDatasetId, UMF>
+  // Calculated UMF (Unity Molecular Formula)
+  umf: UMF | null
   
   // Firing info
   coneRange: [number | string, number | string]

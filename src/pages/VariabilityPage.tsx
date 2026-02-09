@@ -146,7 +146,7 @@ export function VariabilityPage() {
         <section className="variability-cta">
           <p>
             Questions? Reach us at{' '}
-            <a href="mailto:stullatlas@rlv.lol">stullatlas@rlv.lol</a>.
+            <a href="mailto:contact@stullatlas.app">contact@stullatlas.app</a>.
           </p>
           <p>
             <Link to="/">Back to Explorer</Link>

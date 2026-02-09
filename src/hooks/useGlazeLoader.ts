@@ -8,7 +8,6 @@
 
 import { useEffect, useCallback } from 'react'
 import { useGlazeStore, precomputeAllMolarVariants } from '@/stores'
-import { useDatasetStore } from '@/stores'
 
 export function useGlazeLoader() {
   const { loadGlazes, setLoading, setError, isLoading, loadError } = useGlazeStore()
@@ -21,9 +20,8 @@ export function useGlazeLoader() {
       const glazes = await loadGlazyDataset()
       if (!cancelled.current) {
         loadGlazes(glazes)
-        // Precompute UMFs for every molar-weight set so wiggle redraws the chart
-        const dataset = useDatasetStore.getState().currentDataset
-        precomputeAllMolarVariants(dataset)
+        // Precompute UMFs for every molar-weight set
+        precomputeAllMolarVariants()
       }
     } catch (err: any) {
       if (!cancelled.current) setError(err.message || 'Failed to load dataset')

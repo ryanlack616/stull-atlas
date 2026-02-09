@@ -67,14 +67,14 @@ export function RadialBlendPage() {
 
     setErrors([])
 
-    const centerResult = recipeToUMF(centerRecipe, materialDatabase, 'digitalfire_2024')
+    const centerResult = recipeToUMF(centerRecipe, materialDatabase)
     if (!centerResult.value) {
       setErrors(centerResult.errors.length > 0 ? centerResult.errors : ['Failed to calculate center UMF'])
       return
     }
 
     const resolvedAdditions = additions.map(a => {
-      const material = materialDatabase.resolve(a.material, 'digitalfire_2024')
+      const material = materialDatabase.resolve(a.material)
       return { input: a, material }
     })
 
@@ -95,8 +95,7 @@ export function RadialBlendPage() {
         steps: stepsPerSpoke,
       })),
       stepsPerSpoke,
-      materialDatabase,
-      'digitalfire_2024'
+      materialDatabase
     )
 
     if (blendResult.value) {

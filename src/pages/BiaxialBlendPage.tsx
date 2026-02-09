@@ -72,7 +72,7 @@ export function BiaxialBlendPage() {
           ],
         }
 
-        const result = recipeToUMF(modifiedRecipe, materialDatabase, 'digitalfire_2024')
+        const result = recipeToUMF(modifiedRecipe, materialDatabase)
         const umf = result.value || null
         const surface: StullPrediction = umf ? predictSurface(umf) : 'unknown'
 

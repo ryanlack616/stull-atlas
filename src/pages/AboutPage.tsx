@@ -35,7 +35,7 @@ export function AboutPage() {
 
           <figure className="original-chart">
             <img 
-              src="/stullv2/stull-original-1912.jpg" 
+              src="/stull-original-1912.jpg" 
               alt="Original Stull Chart from 1912 — Chart 1 from Transactions of the American Ceramic Society, Vol. XIV, showing the relationship between molecules of SiO₂ (x-axis) and Al₂O₃ (y-axis) with labeled regions for Unfused, Mattes, Semi-Matte, Bright Gloss, and Devitrified zones"
               loading="lazy"
             />

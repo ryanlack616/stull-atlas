@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useMemo } from 'react'
-import { GlazeRecipe, MaterialDatasetId, Ingredient } from '@/types'
+import { GlazeRecipe, Ingredient } from '@/types'
 import { UMFFingerprint, FluxDonut, OxideRadar, GlazeTypeBadge, ConeRangeBar, OxideTd } from '@/components/UMFVisuals'
 
 /** Subscript helper for oxide formulas (kept for backward compat, prefer OxideTd) */
@@ -15,7 +15,6 @@ const subscript = (s: string) => s.replace(/([A-Z][a-z]?)(\d+)/g, '$1<sub>$2</su
 
 interface ComparePanelProps {
   glazes: GlazeRecipe[]
-  currentDataset: MaterialDatasetId
   onRemove: (id: string) => void
   onClear: () => void
   onSelect: (g: GlazeRecipe) => void
@@ -38,7 +37,7 @@ function MiniBar({ value, max, color }: { value: number; max: number; color: str
   )
 }
 
-export function ComparePanel({ glazes, currentDataset, onRemove, onClear, onSelect }: ComparePanelProps) {
+export function ComparePanel({ glazes, onRemove, onClear, onSelect }: ComparePanelProps) {
   const [copied, setCopied] = useState(false)
   const [showBars, setShowBars] = useState(true)
 
@@ -63,7 +62,7 @@ export function ComparePanel({ glazes, currentDataset, onRemove, onClear, onSele
   // Collect all oxides that appear in any glaze
   const allOxides = new Set<string>()
   glazes.forEach(g => {
-    const umf = g.umf.get(currentDataset)
+    const umf = g.umf
     if (!umf) return
     oxideGroups.forEach(group => {
       group.oxides.forEach(ox => {
@@ -84,10 +83,10 @@ export function ComparePanel({ glazes, currentDataset, onRemove, onClear, onSele
       if (active.length === 0) return
       rows.push([`— ${group.label} —`])
       active.forEach(ox => {
-        rows.push([ox, ...glazes.map(g => (g.umf.get(currentDataset)?.[ox]?.value ?? 0).toFixed(3))])
+        rows.push([ox, ...glazes.map(g => (g.umf?.[ox]?.value ?? 0).toFixed(3))])
       })
     })
-    const metas = glazes.map(g => g.umf.get(currentDataset)?._meta)
+    const metas = glazes.map(g => g.umf?._meta)
     if (metas.some(m => m)) {
       rows.push(['— Ratios —'])
       rows.push(['Si:Al', ...metas.map(m => m?.SiO2_Al2O3_ratio?.toFixed(2) ?? '—')])
@@ -118,10 +117,10 @@ export function ComparePanel({ glazes, currentDataset, onRemove, onClear, onSele
     rows.push(['Atmosphere', ...glazes.map(g => esc(g.atmosphere))])
     oxideGroups.forEach(group => {
       group.oxides.filter(ox => allOxides.has(ox)).forEach(ox => {
-        rows.push([ox, ...glazes.map(g => (g.umf.get(currentDataset)?.[ox]?.value ?? 0).toFixed(3))])
+        rows.push([ox, ...glazes.map(g => (g.umf?.[ox]?.value ?? 0).toFixed(3))])
       })
     })
-    const metas = glazes.map(g => g.umf.get(currentDataset)?._meta)
+    const metas = glazes.map(g => g.umf?._meta)
     rows.push(['Si:Al', ...metas.map(m => m?.SiO2_Al2O3_ratio?.toFixed(2) ?? '')])
     rows.push(['R2O:RO', ...metas.map(m => m?.R2O_RO_ratio?.toFixed(2) ?? '')])
     const allMats = new Set<string>()
@@ -208,7 +207,7 @@ export function ComparePanel({ glazes, currentDataset, onRemove, onClear, onSele
           <tr className="compare-meta-row">
             <td>UMF</td>
             {glazes.map(g => {
-              const umf = g.umf.get(currentDataset)
+              const umf = g.umf
               return <td key={g.id}>{umf ? <UMFFingerprint umf={umf} width={100} compact /> : '—'}</td>
             })}
           </tr>
@@ -217,15 +216,15 @@ export function ComparePanel({ glazes, currentDataset, onRemove, onClear, onSele
           <tr className="compare-meta-row">
             <td>Fluxes</td>
             {glazes.map(g => {
-              const umf = g.umf.get(currentDataset)
+              const umf = g.umf
               return <td key={g.id}>{umf ? <FluxDonut umf={umf} size={64} /> : '—'}</td>
             })}
           </tr>
           <tr className="compare-meta-row">
             <td>Profile</td>
             {glazes.map((g, i) => {
-              const umf = g.umf.get(currentDataset)
-              const compareUmf = i > 0 ? glazes[0].umf.get(currentDataset) : undefined
+              const umf = g.umf
+              const compareUmf = i > 0 ? glazes[0].umf : undefined
               return <td key={g.id}>{umf ? <OxideRadar umf={umf} compareUmf={compareUmf} size={100} /> : '—'}</td>
             })}
           </tr>
@@ -240,7 +239,7 @@ export function ComparePanel({ glazes, currentDataset, onRemove, onClear, onSele
                   <td colSpan={glazes.length + 1}>{group.label}</td>
                 </tr>
                 {activeOxides.map(ox => {
-                  const values = glazes.map(g => g.umf.get(currentDataset)?.[ox]?.value ?? 0)
+                  const values = glazes.map(g => g.umf?.[ox]?.value ?? 0)
                   const max = Math.max(...values)
                   const min = Math.min(...values)
                   const range = max - min
@@ -274,7 +273,7 @@ export function ComparePanel({ glazes, currentDataset, onRemove, onClear, onSele
 
           {/* Ratios */}
           {(() => {
-            const metas = glazes.map(g => g.umf.get(currentDataset)?._meta)
+            const metas = glazes.map(g => g.umf?._meta)
             if (metas.every(m => !m)) return null
             return (
               <>

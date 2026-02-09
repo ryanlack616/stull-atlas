@@ -10,7 +10,7 @@
  * No neural networks needed. Just ceramic chemistry knowledge + a good optimizer.
  */
 
-import { OxideSymbol, MaterialDatasetId } from '@/types'
+import { OxideSymbol } from '@/types'
 import { materialDatabase } from '@/infra/materials'
 import { optimizeRecipe, type OxideTarget, type OptimizerResult } from '@/calculator/optimizer'
 import { optimizeRecipeGA, type GAResult } from '@/calculator/geneticOptimizer'
@@ -267,7 +267,7 @@ function selectMaterials(
   // Validate that each material actually exists in the database
   const validated: string[] = []
   for (const id of materials) {
-    const mat = materialDatabase.resolve(id, 'digitalfire_2024') ??
+    const mat = materialDatabase.resolve(id) ??
                 materialDatabase.getMaterial(id)
     if (mat) validated.push(mat.id)
   }
@@ -290,11 +290,11 @@ function generateSuggestion(
 
   const dbWrapper = {
     resolve(name: string) {
-      return materialDatabase.resolve(name, 'digitalfire_2024') ??
+      return materialDatabase.resolve(name) ??
              materialDatabase.getMaterial(name) ?? null
     },
     getAnalysis(id: string) {
-      return materialDatabase.getAnalysis(id, 'digitalfire_2024')
+      return materialDatabase.getAnalysis(id)
     },
   }
 
@@ -305,7 +305,6 @@ function generateSuggestion(
       const ga = optimizeRecipeGA({
         materialIds,
         targets,
-        datasetId: 'digitalfire_2024',
         populationSize: 60,
         generations: 150,
         tolerance: 0.03,
@@ -315,7 +314,6 @@ function generateSuggestion(
       recipe = optimizeRecipe({
         materialIds,
         targets,
-        datasetId: 'digitalfire_2024',
         maxIterations: 2000,
         tolerance: 0.03,
       }, dbWrapper as any)
@@ -441,7 +439,7 @@ function buildColorantSuggestions(archetype: GlazeArchetype): ColorantSuggestion
   if (!archetype.colorants) return []
 
   return Object.entries(archetype.colorants).map(([materialId, range]) => {
-    const mat = materialDatabase.resolve(materialId, 'digitalfire_2024') ??
+    const mat = materialDatabase.resolve(materialId) ??
                 materialDatabase.getMaterial(materialId)
     return {
       materialId,

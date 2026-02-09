@@ -15,8 +15,6 @@ import type { GlazeRecipe, OxideSymbol } from '@/types'
 interface DigitalfirePanelProps {
   /** Currently selected glaze (drives contextual suggestions) */
   selectedGlaze?: GlazeRecipe | null
-  /** Current dataset for UMF lookup */
-  currentDataset?: string
 }
 
 /** Category → icon + color */
@@ -53,7 +51,7 @@ function RefCard({ ref: entry }: { ref: DigitalfireRef }) {
   )
 }
 
-export function DigitalfirePanel({ selectedGlaze, currentDataset }: DigitalfirePanelProps) {
+export function DigitalfirePanel({ selectedGlaze }: DigitalfirePanelProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [mode, setMode] = useState<'context' | 'search'>('context')
 
@@ -62,7 +60,7 @@ export function DigitalfirePanel({ selectedGlaze, currentDataset }: DigitalfireP
     if (!selectedGlaze) return []
 
     // Extract oxide symbols from UMF
-    const umf = currentDataset ? selectedGlaze.umf.get(currentDataset) : undefined
+    const umf = selectedGlaze.umf
     const oxideSymbols: OxideSymbol[] = []
     if (umf) {
       for (const [key, val] of Object.entries(umf)) {

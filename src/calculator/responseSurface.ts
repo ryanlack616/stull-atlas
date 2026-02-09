@@ -11,7 +11,7 @@
  * then pass the result here for analysis.
  */
 
-import { OxideSymbol, MaterialDatasetId } from '@/types'
+import { OxideSymbol } from '@/types'
 import { MOLECULAR_WEIGHTS, FLUX_OXIDES, EPSILON, roundTo } from './constants'
 import type { OxideTarget } from './optimizer'
 import type { MaterialDatabase as IMatDB } from './umf'
@@ -52,14 +52,14 @@ type OxideMatrix = number[][]
 const ALL_UMF_OXIDES: OxideSymbol[] = Object.keys(MOLECULAR_WEIGHTS) as OxideSymbol[]
 
 function buildOxideMatrix(
-  materialIds: string[], db: IMatDB, datasetId: MaterialDatasetId,
+  materialIds: string[], db: IMatDB,
 ): { matrix: OxideMatrix; oxides: OxideSymbol[]; names: string[] } {
   const oxides = ALL_UMF_OXIDES
   const matrix: number[][] = []
   const names: string[] = []
   for (const id of materialIds) {
-    const mat = db.resolve(id, datasetId)
-    const analysis = mat ? db.getAnalysis(mat.id, datasetId) : null
+    const mat = db.resolve(id)
+    const analysis = mat ? db.getAnalysis(mat.id) : null
     names.push(mat?.primaryName ?? id)
     const row: number[] = []
     for (const oxide of oxides) {
@@ -126,11 +126,10 @@ export function analyzeResponseSurface(
   weights: number[],
   materialIds: string[],
   targets: OxideTarget[],
-  datasetId: MaterialDatasetId,
   db: IMatDB,
 ): RSMAnalysis {
   const n = weights.length
-  const { matrix, oxides, names } = buildOxideMatrix(materialIds, db, datasetId)
+  const { matrix, oxides, names } = buildOxideMatrix(materialIds, db)
 
   const baseUMF = computeUMF(weights, matrix, oxides)
   const baseCost = cost(baseUMF, targets)

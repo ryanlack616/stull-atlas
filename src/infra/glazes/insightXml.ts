@@ -122,17 +122,12 @@ function parseRecipeNode(node: Element, index: number): GlazeRecipe | null {
 
   const notes = textContent(node.querySelector('notes, Notes, description, Description'))
 
-  const umfMap = new Map<string, UMF>()
-  if (Object.keys(umf).length > 0) {
-    umfMap.set('insight_legacy', umf)
-  }
-
   return {
     id: `insight_${Date.now()}_${index}`,
     name,
     source: 'user',
     ingredients,
-    umf: umfMap,
+    umf: Object.keys(umf).length > 0 ? umf : null,
     coneRange,
     atmosphere,
     surfaceType: surface,

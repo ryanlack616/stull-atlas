@@ -52,7 +52,7 @@ export function QuadaxialBlendPage() {
     setErrors([])
 
     const recs = recipes as GlazeRecipe[]
-    const umfResults = recs.map(r => recipeToUMF(r, materialDatabase, 'digitalfire_2024'))
+    const umfResults = recs.map(r => recipeToUMF(r, materialDatabase))
 
     const allErrors = umfResults.flatMap(u => u.errors)
     const umfs = umfResults.map(u => u.value)

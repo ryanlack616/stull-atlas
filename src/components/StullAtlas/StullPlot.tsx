@@ -6,7 +6,7 @@
 
 import React, { useMemo, useCallback, useEffect, useState } from 'react'
 import createPlotlyComponent from 'react-plotly.js/factory'
-import { useGlazeStore, useDatasetStore, useSelectionStore, useRecipeStore, useThemeStore, useMolarWeightStore } from '@/stores'
+import { useGlazeStore, useSelectionStore, useRecipeStore, useThemeStore, useMolarWeightStore } from '@/stores'
 import { OxideSymbol, GlazePlotPoint, SurfaceType, EpistemicState } from '@/types'
 import { getOxideValue } from '@/calculator/umf'
 import { roundTo } from '@/calculator'
@@ -170,7 +170,6 @@ export function StullPlot({
     return () => { active = false; clearTimeout(slowTimer) }
   }, [retryCount])
   
-  const currentDataset = useDatasetStore(s => s.currentDataset)
   const getPlotPoints = useGlazeStore(s => s.getPlotPoints)
   const activeWeightSetId = useMolarWeightStore(s => s.currentSetId)
   const selectedGlaze = useSelectionStore(s => s.selectedGlaze)
@@ -201,8 +200,8 @@ export function StullPlot({
   
   // Get plot data
   const rawPlotPoints = useMemo(() => {
-    return getPlotPoints(currentDataset, activeWeightSetId)
-  }, [getPlotPoints, currentDataset, activeWeightSetId])
+    return getPlotPoints(activeWeightSetId)
+  }, [getPlotPoints, activeWeightSetId])
   const plotPoints = useFilteredPoints(rawPlotPoints)
   
   // Build blend overlay trace from calculator results

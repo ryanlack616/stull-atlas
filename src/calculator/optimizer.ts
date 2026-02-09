@@ -14,7 +14,7 @@
  *   - Works with the existing MaterialDatabase
  */
 
-import { OxideSymbol, Material, MaterialDatasetId } from '@/types'
+import { OxideSymbol, Material } from '@/types'
 import { MOLECULAR_WEIGHTS, FLUX_OXIDES, EPSILON, roundTo } from './constants'
 import type { MaterialDatabase as IMatDB } from './umf'
 
@@ -38,8 +38,6 @@ export interface OptimizerInput {
   targets: OxideTarget[]
   /** Cone for limit validation */
   cone?: string
-  /** Which material dataset to pull analyses from */
-  datasetId: MaterialDatasetId
   /** Max iterations (default 2000) */
   maxIterations?: number
   /** Tolerance for "close enough" (default 0.02) */
@@ -92,15 +90,14 @@ const ALL_UMF_OXIDES: OxideSymbol[] = Object.keys(MOLECULAR_WEIGHTS) as OxideSym
 function buildOxideMatrix(
   materialIds: string[],
   db: IMatDB,
-  datasetId: MaterialDatasetId,
 ): { matrix: OxideMatrix; oxides: OxideSymbol[]; names: string[] } {
   const oxides = ALL_UMF_OXIDES
   const matrix: number[][] = []
   const names: string[] = []
 
   for (const id of materialIds) {
-    const mat = db.resolve(id, datasetId)
-    const analysis = mat ? db.getAnalysis(mat.id, datasetId) : null
+    const mat = db.resolve(id)
+    const analysis = mat ? db.getAnalysis(mat.id) : null
     names.push(mat?.primaryName ?? id)
 
     const row: number[] = []
@@ -218,7 +215,6 @@ export function optimizeRecipe(
   const {
     materialIds,
     targets,
-    datasetId,
     maxIterations = 2000,
     tolerance = 0.02,
     locks,
@@ -229,7 +225,7 @@ export function optimizeRecipe(
     return emptyResult('No materials selected')
   }
 
-  const { matrix, oxides, names } = buildOxideMatrix(materialIds, db, datasetId)
+  const { matrix, oxides, names } = buildOxideMatrix(materialIds, db)
 
   // Initial weights: equal (or from locks)
   let weights = projectSimplex(new Array(n).fill(1 / n), locks)

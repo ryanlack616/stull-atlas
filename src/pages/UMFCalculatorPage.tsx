@@ -72,14 +72,14 @@ export function UMFCalculatorPage() {
     }
 
     // Calculate UMF
-    const result = recipeToUMF(recipe, materialDatabase, 'digitalfire_2024')
+    const result = recipeToUMF(recipe, materialDatabase)
 
     // Build resolved ingredients summary
     const total = recipe.ingredients.reduce((s, ing) => s + (ing.amount || 0), 0)
     const resolvedList = recipe.ingredients
       .filter(ing => ing.material.trim() && ing.amount > 0)
       .map(ing => {
-        const mat = materialDatabase.resolve(ing.material.trim(), 'digitalfire_2024')
+        const mat = materialDatabase.resolve(ing.material.trim())
         return {
           name: ing.material.trim(),
           resolved: mat ? mat.primaryName : null,

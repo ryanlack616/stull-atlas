@@ -6,7 +6,7 @@
  */
 
 import React, { useState, useMemo, useCallback } from 'react'
-import { useGlazeStore, useDatasetStore, useMolarWeightStore } from '@/stores'
+import { useGlazeStore, useMolarWeightStore } from '@/stores'
 import { dbscan, type Cluster, type ClusteringResult, type DBSCANConfig } from '@/analysis/clustering'
 import { calculateDensity, type DensityMap } from '@/analysis/density'
 import { findVoids, type Void } from '@/analysis/voids'
@@ -18,7 +18,6 @@ interface AnalysisPanelProps {
 }
 
 export function AnalysisPanel({ onHighlightCluster, onHighlightVoid, onDensityMap }: AnalysisPanelProps) {
-  const { currentDataset } = useDatasetStore()
   const { getPlotPoints } = useGlazeStore()
   const activeWeightSetId = useMolarWeightStore(s => s.currentSetId)
   
@@ -30,7 +29,7 @@ export function AnalysisPanel({ onHighlightCluster, onHighlightVoid, onDensityMa
   const [activeSection, setActiveSection] = useState<'clusters' | 'density' | 'voids'>('clusters')
   const [computing, setComputing] = useState(false)
 
-  const plotPoints = useMemo(() => getPlotPoints(currentDataset, activeWeightSetId), [getPlotPoints, currentDataset, activeWeightSetId])
+  const plotPoints = useMemo(() => getPlotPoints(activeWeightSetId), [getPlotPoints, activeWeightSetId])
   const validPoints = useMemo(() => 
     plotPoints.filter(p => p.x > 0 && p.y > 0 && !isNaN(p.x) && !isNaN(p.y)),
     [plotPoints]

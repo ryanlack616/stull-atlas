@@ -5,13 +5,13 @@
  * lookup / fuzzy-matching / analysis retrieval.
  */
 
-import { Material, MaterialDatasetId, OxideSymbol } from '@/types'
+import { Material, OxideSymbol } from '@/types'
 import digitalfireData from '@/data/materials/digitalfire.json'
 
 class MaterialDatabase {
   private materials: Map<string, Material> = new Map()
   private aliases: Map<string, string> = new Map() // alias → canonical id
-  private analyses: Map<string, Map<MaterialDatasetId, Record<OxideSymbol, number>>> = new Map()
+  private analyses: Map<string, Record<OxideSymbol, number>> = new Map()
   private lois: Map<string, number> = new Map() // LOI per material
 
   constructor() {
@@ -29,7 +29,6 @@ class MaterialDatabase {
         primaryName: mat.primaryName,
         aliases: mat.aliases || [],
         category: mat.category,
-        defaultDataset: 'digitalfire_2024',
         discontinued: mat.discontinued || false,
       }
 
@@ -43,9 +42,8 @@ class MaterialDatabase {
       }
 
       if (!this.analyses.has(mat.id)) {
-        this.analyses.set(mat.id, new Map())
+        this.analyses.set(mat.id, analysis as Record<OxideSymbol, number>)
       }
-      this.analyses.get(mat.id)!.set('digitalfire_2024', analysis as Record<OxideSymbol, number>)
 
       this.materials.set(mat.id, material)
 
@@ -58,7 +56,7 @@ class MaterialDatabase {
 
   // ── Public API ─────────────────────────────────────────────
 
-  resolve(name: string, datasetId: MaterialDatasetId): Material | null {
+  resolve(name: string): Material | null {
     const normalized = name.toLowerCase().trim()
     if (!normalized) return null
 
@@ -92,14 +90,8 @@ class MaterialDatabase {
     return bestMatch ? this.materials.get(bestMatch.materialId) || null : null
   }
 
-  getAnalysis(materialId: string, datasetId: MaterialDatasetId): Record<OxideSymbol, number> | null {
-    const materialAnalyses = this.analyses.get(materialId)
-    if (!materialAnalyses) return null
-
-    if (materialAnalyses.has(datasetId)) return materialAnalyses.get(datasetId)!
-
-    const firstAvailable = materialAnalyses.values().next().value
-    return firstAvailable || null
+  getAnalysis(materialId: string): Record<OxideSymbol, number> | null {
+    return this.analyses.get(materialId) ?? null
   }
 
   getAllMaterials(): Material[] {
@@ -108,16 +100,6 @@ class MaterialDatabase {
 
   getMaterial(id: string): Material | null {
     return this.materials.get(id) || null
-  }
-
-  getDatasets(): MaterialDatasetId[] {
-    const datasets = new Set<MaterialDatasetId>()
-    for (const analyses of this.analyses.values()) {
-      for (const datasetId of analyses.keys()) {
-        datasets.add(datasetId)
-      }
-    }
-    return Array.from(datasets)
   }
 
   getMaterialCount(): number {

@@ -6,12 +6,11 @@
  */
 
 import React, { useMemo, useState } from 'react'
-import { useGlazeStore, useDatasetStore } from '@/stores'
+import { useGlazeStore } from '@/stores'
 import { glazeTypeName, glazeTypeColor } from '@/domain/glaze/glazeTypes'
 
 export function DatasetStats() {
   const glazes = useGlazeStore(s => s.glazes)
-  const currentDataset = useDatasetStore(s => s.currentDataset)
   const [expanded, setExpanded] = useState(false)
 
   const stats = useMemo(() => {
@@ -37,7 +36,7 @@ export function DatasetStats() {
     const unclassified = byType.get(null) ?? 0
 
     return { total: all.length, bySurface, topTypes, unclassified }
-  }, [glazes, currentDataset])
+  }, [glazes])
 
   if (stats.total === 0) return null
 

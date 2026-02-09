@@ -6,18 +6,18 @@
 
 import { useMemo } from 'react'
 import { materialDatabase, getAllMaterials } from '@/domain/material'
-import type { Material, MaterialDatasetId } from '@/types'
+import type { Material } from '@/types'
 
 /**
  * Returns the materialDatabase singleton and a memoized list of all materials.
  */
-export function useMaterialLookup(datasetId: MaterialDatasetId = 'digitalfire_2024') {
+export function useMaterialLookup() {
   const allMaterials = useMemo(() => getAllMaterials(), [])
 
   return {
     materialDatabase,
     allMaterials,
-    resolve: (name: string) => materialDatabase.resolve(name, datasetId),
-    getAnalysis: (materialId: string) => materialDatabase.getAnalysis(materialId, datasetId),
+    resolve: (name: string) => materialDatabase.resolve(name),
+    getAnalysis: (materialId: string) => materialDatabase.getAnalysis(materialId),
   }
 }

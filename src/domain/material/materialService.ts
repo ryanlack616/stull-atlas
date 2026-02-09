@@ -6,15 +6,15 @@
  */
 
 import { materialDatabase } from '@/infra/materials'
-import type { Material, MaterialDatasetId, OxideSymbol } from '@/types'
+import type { Material, OxideSymbol } from '@/types'
 
 export { materialDatabase }
 
 /**
  * Resolve a free-text material name to a Material, or null.
  */
-export function resolveMaterial(name: string, datasetId: MaterialDatasetId = 'digitalfire_2024'): Material | null {
-  return materialDatabase.resolve(name, datasetId)
+export function resolveMaterial(name: string): Material | null {
+  return materialDatabase.resolve(name)
 }
 
 /**
@@ -22,9 +22,8 @@ export function resolveMaterial(name: string, datasetId: MaterialDatasetId = 'di
  */
 export function getMaterialAnalysis(
   materialId: string,
-  datasetId: MaterialDatasetId = 'digitalfire_2024',
 ): Record<OxideSymbol, number> | null {
-  return materialDatabase.getAnalysis(materialId, datasetId)
+  return materialDatabase.getAnalysis(materialId)
 }
 
 /**

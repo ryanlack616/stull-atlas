@@ -16,7 +16,6 @@ import {
   OxideSymbol,
   OxideValue,
   GlazeRecipe,
-  MaterialDatasetId,
   Material,
   CalculationResult,
   CalculationStep,
@@ -35,8 +34,8 @@ import {
  * Material database interface
  */
 export interface MaterialDatabase {
-  resolve(name: string, datasetId: MaterialDatasetId): Material | null
-  getAnalysis(materialId: string, datasetId: MaterialDatasetId): Record<OxideSymbol, number> | null
+  resolve(name: string): Material | null
+  getAnalysis(materialId: string): Record<OxideSymbol, number> | null
 }
 
 /**
@@ -45,7 +44,6 @@ export interface MaterialDatabase {
 export function recipeToUMF(
   recipe: GlazeRecipe,
   materials: MaterialDatabase,
-  datasetId: MaterialDatasetId
 ): CalculationResult<UMF> {
   
   const trace: CalculationStep[] = []
@@ -55,15 +53,15 @@ export function recipeToUMF(
   // Step 1: Resolve all materials
   trace.push({
     operation: 'begin',
-    inputs: { recipe: recipe.name, dataset: datasetId },
+    inputs: { recipe: recipe.name },
     output: 0,
-    note: `Starting UMF calculation for "${recipe.name}" using ${datasetId} dataset`
+    note: `Starting UMF calculation for "${recipe.name}"`
   })
   
   const resolved: { ingredient: typeof recipe.ingredients[0]; material: Material; analysis: Record<OxideSymbol, number> }[] = []
   
   for (const ing of recipe.ingredients) {
-    const material = materials.resolve(ing.material, datasetId)
+    const material = materials.resolve(ing.material)
     
     if (!material) {
       errors.push(`Unknown material: ${ing.material}`)
@@ -76,15 +74,15 @@ export function recipeToUMF(
       continue
     }
     
-    const analysis = materials.getAnalysis(material.id, datasetId)
+    const analysis = materials.getAnalysis(material.id)
     
     if (!analysis) {
-      warnings.push(`No analysis for "${ing.material}" in ${datasetId} dataset`)
+      warnings.push(`No analysis for "${ing.material}"`)
       trace.push({
         operation: 'material_resolution',
         inputs: { name: ing.material, materialId: material.id },
         output: 0,
-        note: `WARNING: No oxide analysis available for "${material.primaryName}" in ${datasetId}`
+        note: `WARNING: No oxide analysis available for "${material.primaryName}"`
       })
       continue
     }
@@ -209,7 +207,7 @@ export function recipeToUMF(
       value: roundTo(normalized, PRECISION.moles),
       precision: PRECISION.umfOxide,
       state: 'inferred',
-      source: `calculated from recipe using ${datasetId}`
+      source: 'calculated from recipe'
     }
     
     trace.push({

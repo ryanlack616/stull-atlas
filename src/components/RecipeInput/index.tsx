@@ -60,7 +60,7 @@ const ALL_MATERIAL_NAMES = (() => {
 // Pre-compute resolution status for showing match indicators
 function resolveStatus(name: string): { resolved: boolean; match?: string; discontinued?: boolean } {
   if (!name.trim()) return { resolved: false }
-  const mat = materialDatabase.resolve(name.trim(), 'digitalfire_2024')
+  const mat = materialDatabase.resolve(name.trim())
   if (!mat) return { resolved: false }
   return {
     resolved: true,

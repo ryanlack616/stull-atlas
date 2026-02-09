@@ -161,7 +161,7 @@ export function PricingPage() {
             features={proFeatures}
             cta="Request Info"
             onAction={() => {
-              window.location.href = 'mailto:stullatlas@rlv.lol?subject=Edu%20License%20Inquiry'
+              window.location.href = 'mailto:contact@stullatlas.app?subject=Edu%20License%20Inquiry'
             }}
             current={currentTier === 'edu_individual' || currentTier === 'edu_classroom'}
           />
@@ -187,7 +187,7 @@ export function PricingPage() {
 
           <details>
             <summary>Do you offer educational discounts?</summary>
-            <p>Yes. We offer classroom licenses for ceramic arts programs at a substantial discount. <a href="mailto:stullatlas@rlv.lol?subject=Edu%20License%20Inquiry">Get in touch</a> for pricing.</p>
+            <p>Yes. We offer classroom licenses for ceramic arts programs at a substantial discount. <a href="mailto:contact@stullatlas.app?subject=Edu%20License%20Inquiry">Get in touch</a> for pricing.</p>
           </details>
 
           <details>
@@ -211,7 +211,7 @@ export function PricingPage() {
               → Get a trial code at NCECA 2026
             </Link>
             <a
-              href={`mailto:stullatlas@rlv.lol?subject=${encodeURIComponent(`${upgradeNotice.tier.charAt(0).toUpperCase() + upgradeNotice.tier.slice(1)} Access Request`)}&body=${encodeURIComponent(`Hi, I'd like to upgrade to ${upgradeNotice.tier}.\n\nEmail: ${upgradeNotice.email}`)}`}
+              href={`mailto:contact@stullatlas.app?subject=${encodeURIComponent(`${upgradeNotice.tier.charAt(0).toUpperCase() + upgradeNotice.tier.slice(1)} Access Request`)}&body=${encodeURIComponent(`Hi, I'd like to upgrade to ${upgradeNotice.tier}.\n\nEmail: ${upgradeNotice.email}`)}`}
               className="upgrade-notice-cta"
             >
               Request Access

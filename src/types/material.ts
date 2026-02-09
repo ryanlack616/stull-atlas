@@ -2,10 +2,8 @@
  * Material and Oxide Analysis Types
  */
 
-import { MaterialDatasetId } from './glaze'
-
 /**
- * A ceramic material with analyses from multiple datasets.
+ * A ceramic material.
  * Oxide analyses are stored on MaterialDatabase, not on the Material object.
  */
 export interface Material {
@@ -13,9 +11,6 @@ export interface Material {
   primaryName: string
   aliases: string[]  // all known names
   category: MaterialCategory
-  
-  // Default/preferred analysis to use
-  defaultDataset: MaterialDatasetId
   
   // Metadata
   description?: string
