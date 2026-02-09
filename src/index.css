@@ -77,6 +77,12 @@
   --scrollbar-thumb-hover: #aaa;
 }
 
+/* ========= Typography ========= */
+:root {
+  --font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
 /* ========= Global Reset ========= */
 * {
   box-sizing: border-box;
@@ -90,11 +96,38 @@ html, body, #root {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: var(--bg-primary);
   color: var(--text-primary);
+}
+
+/* Display headings — Source Serif Pro */
+h1, h2 {
+  font-family: var(--font-display);
+}
+
+/* Page-level hero titles */
+.about-hero h1,
+.guide-content h1,
+.nceca-hero h1,
+.pricing-hero h1,
+.variability-hero h1,
+.updates-hero h1,
+.page-hero h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Section headings within content pages */
+.about-section h2,
+.guide-section h2,
+.variability-section h2,
+.pricing-section h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
 }
 
 /* Scrollbar styling */

@@ -4,13 +4,24 @@
  * Shared shell for all pages — header with nav, renders page content via Outlet.
  */
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Outlet, NavLink } from 'react-router-dom'
-import { useGlazeStore, useThemeStore } from '@/stores'
+import { useGlazeStore, useThemeStore, useAuthStore, isDemoMode } from '@/stores'
+import { UserMenu } from '@/components/Auth'
+import { WelcomeOverlay, useWelcome } from '@/components/Welcome'
+import { GuidedTour, useTour } from '@/components/GuidedTour'
 
 export function Layout() {
   const { stats, isLoading } = useGlazeStore()
   const { theme, toggle } = useThemeStore()
+  const initialize = useAuthStore((s) => s.initialize)
+  const { showWelcome, dismiss: dismissWelcome } = useWelcome()
+  const { showTour, startTour, closeTour } = useTour()
+
+  // Bootstrap auth listener on mount
+  useEffect(() => {
+    initialize()
+  }, [initialize])
 
   return (
     <div className="app-layout">
@@ -30,9 +41,27 @@ export function Layout() {
             <NavLink to="/guide">Guide</NavLink>
             <NavLink to="/about">About</NavLink>
             <NavLink to="/updates">What's New</NavLink>
+            <NavLink to="/pricing">Pricing</NavLink>
           </nav>
         </div>
         <div className="header-right">
+          {isDemoMode && (
+            <span style={{
+              padding: '3px 10px', borderRadius: 10, fontSize: 11, fontWeight: 600,
+              background: 'rgba(46, 204, 113, 0.2)', color: '#2ecc71', whiteSpace: 'nowrap',
+            }}>
+              DEMO MODE
+            </span>
+          )}
+          <button
+            className="tour-trigger"
+            onClick={startTour}
+            title="Start guided tour"
+            aria-label="Start guided tour"
+          >
+            ?
+          </button>
+          <UserMenu />
           <button
             className="theme-toggle"
             onClick={toggle}
@@ -51,6 +80,9 @@ export function Layout() {
         <Outlet />
       </main>
 
+      {showWelcome && <WelcomeOverlay onDismiss={dismissWelcome} />}
+      {showTour && <GuidedTour onClose={closeTour} />}
+
       <style>{`
         .app-layout {
           display: flex;
@@ -58,7 +90,7 @@ export function Layout() {
           height: 100vh;
           background: var(--bg-primary);
           color: var(--text-primary);
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          font-family: var(--font-body);
         }
 
         .atlas-header {
@@ -85,7 +117,9 @@ export function Layout() {
         .header-left h1 {
           margin: 0;
           font-size: 20px;
-          font-weight: 600;
+          font-weight: 700;
+          font-family: var(--font-display);
+          letter-spacing: -0.01em;
         }
 
         .main-nav {
@@ -142,6 +176,30 @@ export function Layout() {
         .stats {
           font-size: 14px;
           color: var(--text-secondary);
+        }
+
+        .tour-trigger {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          border: 1px solid var(--border-secondary);
+          background: var(--bg-input);
+          color: var(--text-secondary);
+          font-size: 14px;
+          font-weight: 700;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.15s;
+          padding: 0;
+          line-height: 1;
+        }
+
+        .tour-trigger:hover {
+          border-color: var(--accent);
+          color: var(--accent);
+          background: var(--accent-bg);
         }
 
         .page-content {
