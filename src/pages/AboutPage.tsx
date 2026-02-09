@@ -346,7 +346,7 @@ export function AboutPage() {
             {' · '}
             <Link to="/help/variability" style={{ color: 'var(--text-link)' }}>Understanding Variability</Link>
           </p>
-          <p className="version">v0.3.1</p>
+          <p className="version">v3.3.1</p>
         </section>
 
       </div>

@@ -23,9 +23,9 @@ export function UpdatesPage() {
           </p>
         </section>
 
-        {/* v0.3.1 */}
+        {/* v3.3.1 */}
         <section className="about-section" style={{ borderLeft: '3px solid var(--accent, #6366F1)', paddingLeft: 16 }}>
-          <h2>{'\uD83D\uDD2C'} v0.3.1 {'\u2014'} Materials, Timeline &amp; Brand Polish</h2>
+          <h2>{'\uD83D\uDD2C'} v3.3.1 {'\u2014'} Materials, Timeline &amp; Brand Polish</h2>
           <p style={{ fontSize: 13, color: 'var(--text-dim)', margin: '0 0 12px' }}>February 2025</p>
           <ul>
             <li><strong>Materials database expanded 20 {'\u2192'} 56</strong> {'\u2014'} Added feldspar variants,
@@ -303,7 +303,7 @@ export function UpdatesPage() {
             </a>{' '}
             â€” Howell, Michigan.
           </p>
-          <p className="version">v0.3.1</p>
+          <p className="version">v3.3.1</p>
         </section>
 
       </div>
