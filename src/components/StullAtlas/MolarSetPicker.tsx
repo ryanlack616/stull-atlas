@@ -4,8 +4,6 @@
  * UI for selecting which molar weight set the calculator uses,
  * and for running the "molar wiggle" — animating between sets
  * so users can see how their glazes shift on the Stull chart.
- *
- * Mirrors the DatasetSwitcher pattern for consistency.
  */
 
 import React, { useMemo } from 'react'
