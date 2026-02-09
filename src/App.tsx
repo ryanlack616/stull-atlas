@@ -12,6 +12,7 @@ import { Layout } from './components/Layout'
 import { ExplorerPage } from './pages/ExplorerPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { TierGate } from './components/Auth'
 
 /**
  * Lazy import with automatic retry on chunk load failure.
@@ -51,6 +52,9 @@ const OptimizerPage = lazyRetry(() => import('./pages/OptimizerPage').then(m => 
 const TimelinePage = lazyRetry(() => import('./pages/TimelinePage').then(m => ({ default: m.TimelinePage })))
 const UpdatesPage = lazyRetry(() => import('./pages/UpdatesPage').then(m => ({ default: m.UpdatesPage })))
 const SuggestionPage = lazyRetry(() => import('./pages/SuggestionPage').then(m => ({ default: m.SuggestionPage })))
+const PricingPage = lazyRetry(() => import('./pages/PricingPage').then(m => ({ default: m.PricingPage })))
+const NCECAPage = lazyRetry(() => import('./pages/NCECAPage').then(m => ({ default: m.NCECAPage })))
+const VariabilityPage = lazyRetry(() => import('./pages/VariabilityPage').then(m => ({ default: m.VariabilityPage })))
 
 // Clear the retry flag on successful load so future failures can retry again
 if (sessionStorage.getItem('stull-chunk-retry')) {
@@ -124,20 +128,23 @@ function App() {
         <Route index element={<ExplorerPage />} />
         <Route path="calc" element={<LazyPage><CalculatorsPage /></LazyPage>} />
         <Route path="calc/umf" element={<LazyPage><UMFCalculatorPage /></LazyPage>} />
-        <Route path="calc/line-blend" element={<LazyPage><LineBlendPage /></LazyPage>} />
-        <Route path="calc/triaxial" element={<LazyPage><TriaxialBlendPage /></LazyPage>} />
-        <Route path="calc/quadaxial" element={<LazyPage><QuadaxialBlendPage /></LazyPage>} />
-        <Route path="calc/biaxial" element={<LazyPage><BiaxialBlendPage /></LazyPage>} />
-        <Route path="calc/radial" element={<LazyPage><RadialBlendPage /></LazyPage>} />
-        <Route path="calc/space-filling" element={<LazyPage><SpaceFillingPage /></LazyPage>} />
-        <Route path="calc/optimizer" element={<LazyPage><OptimizerPage /></LazyPage>} />
+        <Route path="calc/line-blend" element={<LazyPage><TierGate feature="line_blend" title="Line Blend Calculator" description="Two recipes, n steps between them — the classic line blend test."><LineBlendPage /></TierGate></LazyPage>} />
+        <Route path="calc/triaxial" element={<LazyPage><TierGate feature="triaxial_blend" title="Triaxial Blend Calculator" description="Three corner recipes on a simplex triangle — the classic triaxial test tile layout."><TriaxialBlendPage /></TierGate></LazyPage>} />
+        <Route path="calc/quadaxial" element={<LazyPage><TierGate feature="quadaxial_blend" title="Quadaxial Blend Calculator" description="Four corner recipes — explore a wider material space."><QuadaxialBlendPage /></TierGate></LazyPage>} />
+        <Route path="calc/biaxial" element={<LazyPage><TierGate feature="biaxial_blend" title="Biaxial Blend Calculator" description="Grid blend of two axes — systematic variation of two recipe pairs."><BiaxialBlendPage /></TierGate></LazyPage>} />
+        <Route path="calc/radial" element={<LazyPage><TierGate feature="radial_blend" title="Radial Blend Calculator" description="Radial variation around a center recipe."><RadialBlendPage /></TierGate></LazyPage>} />
+        <Route path="calc/space-filling" element={<LazyPage><TierGate feature="space_filling" title="Space-Filling Design" description="Maximize coverage of the oxide space with minimal test tiles."><SpaceFillingPage /></TierGate></LazyPage>} />
+        <Route path="calc/optimizer" element={<LazyPage><TierGate feature="optimizer" title="Recipe Optimizer" description="Set UMF targets and let gradient descent or genetic algorithms find recipes that hit them."><OptimizerPage /></TierGate></LazyPage>} />
         <Route path="materials" element={<LazyPage><MaterialsPage /></LazyPage>} />
         <Route path="timeline" element={<LazyPage><TimelinePage /></LazyPage>} />
-        <Route path="import-export" element={<LazyPage><ImportExportPage /></LazyPage>} />
+        <Route path="import-export" element={<LazyPage><TierGate feature="import_export" title="Import / Export" description="Import glazes from JSON/CSV, export your saved recipes and collections."><ImportExportPage /></TierGate></LazyPage>} />
         <Route path="about" element={<LazyPage><AboutPage /></LazyPage>} />
         <Route path="guide" element={<LazyPage><GuidePage /></LazyPage>} />
-        <Route path="suggest" element={<LazyPage><SuggestionPage /></LazyPage>} />
+        <Route path="suggest" element={<LazyPage><TierGate feature="suggestion_engine" title="AI Recipe Suggestions" description="Describe the glaze you want in plain English — get optimized recipes with full UMF analysis."><SuggestionPage /></TierGate></LazyPage>} />
         <Route path="updates" element={<LazyPage><UpdatesPage /></LazyPage>} />
+        <Route path="pricing" element={<LazyPage><PricingPage /></LazyPage>} />
+        <Route path="nceca" element={<LazyPage><NCECAPage /></LazyPage>} />
+        <Route path="help/variability" element={<LazyPage><VariabilityPage /></LazyPage>} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
