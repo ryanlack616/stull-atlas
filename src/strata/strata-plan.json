@@ -1,0 +1,102 @@
+{
+  "$schema": "https://stullatlas.com/schemas/strata-tool.v1.json",
+  "meta": {
+    "name": "strata",
+    "description": "CLI tool for epistemic project audits using Agent Stratigraphy",
+    "framework": "Agent Stratigraphy",
+    "version": "0.1.0",
+    "creators": ["Ryan Howells", "Claude-Howell"],
+    "language": "TypeScript",
+    "runtime": "Node.js (tsx)",
+    "license": "MIT"
+  },
+
+  "commands": {
+    "scan": {
+      "description": "Core-sample the project. Reads espg-gates.json, renders stratigraphic column with confidence bars, colors, and status.",
+      "input": "espg-gates.json (auto-discovered from cwd or --config path)",
+      "output": "Colored terminal stratigraphic column with summary stats",
+      "flags": {
+        "--config": "Path to espg-gates.json (default: auto-discover)",
+        "--json": "Output as JSON instead of visual",
+        "--no-color": "Plain text output",
+        "--ci": "Exit code 1 if any gate below threshold"
+      }
+    },
+    "gate": {
+      "description": "Deep-dive into a specific gate. Shows required evidence, epistemic checks, DO-NOT-PROCEED conditions, current status, and gaps.",
+      "input": "Gate number (0-10)",
+      "output": "Full gate evaluation with evidence checklist"
+    },
+    "audit": {
+      "description": "Run all DO-NOT-PROCEED checks across all gates. Returns pass/fail for each condition.",
+      "input": "espg-gates.json",
+      "output": "List of triggered DO-NOT-PROCEED conditions with gate references"
+    },
+    "decay": {
+      "description": "Check for stale beliefs. Flags any gate whose evidence is older than the staleness window.",
+      "input": "espg-gates.json with timestamps",
+      "output": "List of stale gates with time since last evaluation"
+    },
+    "init": {
+      "description": "Initialize a new espg-gates.json for a project. Interactive prompt walks through Gate 0 and Gate 1.",
+      "input": "Interactive prompts",
+      "output": "New espg-gates.json with Bedrock gates evaluated"
+    }
+  },
+
+  "architecture": {
+    "files": {
+      "strata/index.ts": "CLI entry point, command routing",
+      "strata/commands/scan.ts": "Core sample renderer",
+      "strata/commands/gate.ts": "Single gate deep-dive",
+      "strata/commands/audit.ts": "DO-NOT-PROCEED checker",
+      "strata/commands/decay.ts": "Staleness detector",
+      "strata/commands/init.ts": "Project initializer",
+      "strata/render.ts": "Terminal rendering: colors, bars, columns",
+      "strata/loader.ts": "Find and parse espg-gates.json",
+      "strata/types.ts": "TypeScript types for ESPG schema",
+      "strata/palette.ts": "Stratigraphic color palette (ANSI mappings)"
+    }
+  },
+
+  "palette_ansi": {
+    "gate_0_garnet":    { "hex": "#7C1D1D", "ansi256": 88,  "label": "Garnet" },
+    "gate_1_sienna":    { "hex": "#A0522D", "ansi256": 130, "label": "Sienna" },
+    "gate_2_sandstone": { "hex": "#B8860B", "ansi256": 136, "label": "Sandstone" },
+    "gate_3_mudstone":  { "hex": "#8B7355", "ansi256": 137, "label": "Mudstone" },
+    "gate_4_forest":    { "hex": "#2D5A27", "ansi256": 22,  "label": "Forest" },
+    "gate_5_seagreen":  { "hex": "#2E8B57", "ansi256": 29,  "label": "Sea Green" },
+    "gate_6_teal":      { "hex": "#1A7A7A", "ansi256": 30,  "label": "Teal" },
+    "gate_7_steel":     { "hex": "#2070B4", "ansi256": 32,  "label": "Steel Blue" },
+    "gate_8_slate":     { "hex": "#5B4FA0", "ansi256": 61,  "label": "Slate Blue" },
+    "gate_9_amethyst":  { "hex": "#7B52AB", "ansi256": 133, "label": "Amethyst" },
+    "gate_10_goldenrod": { "hex": "#DAA520", "ansi256": 178, "label": "Goldenrod" }
+  },
+
+  "rendering": {
+    "confidence_bar": {
+      "width": 10,
+      "filled": "█",
+      "empty": "░",
+      "formula": "Math.round(confidence * width)"
+    },
+    "status_symbols": {
+      "passed": "✓ PASSED",
+      "partial": "⚠ PARTIAL",
+      "not-started": "· NOT STARTED",
+      "failed": "✗ FAILED",
+      "stale": "⏳ STALE"
+    },
+    "layer_separators": "─────────────────────────────────────────────"
+  },
+
+  "ci_integration": {
+    "description": "strata scan --ci exits with code 1 if any gate is below minimum threshold, making it usable as a CI/CD gate check",
+    "exit_codes": {
+      "0": "All evaluated gates meet thresholds",
+      "1": "One or more gates below threshold",
+      "2": "No espg-gates.json found"
+    }
+  }
+}
