@@ -1012,4 +1012,157 @@ export const explorerStyles = `
   .filter-clear:hover {
     text-decoration: underline;
   }
+
+  /* ─── Aesthetic Compass ──────────────────────────────────── */
+
+  .aesthetic-compass {
+    margin-top: 6px;
+    border: 1px solid var(--border-color, #333);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .compass-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    padding: 6px 8px;
+    background: var(--bg-secondary, #1e1e1e);
+    border: none;
+    color: var(--text-primary, #ccc);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .compass-toggle:hover {
+    background: var(--bg-hover, #2a2a2a);
+  }
+  .compass-toggle.open {
+    border-bottom: 1px solid var(--border-color, #333);
+  }
+  .compass-icon {
+    font-size: 13px;
+  }
+  .compass-active-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #f59e0b;
+    flex-shrink: 0;
+  }
+  .compass-chevron {
+    margin-left: auto;
+    font-size: 10px;
+    opacity: 0.5;
+  }
+
+  .compass-body {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    animation: fadeSlideIn 0.15s ease;
+  }
+
+  /* Presets row */
+  .compass-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .compass-preset-btn {
+    padding: 3px 7px;
+    font-size: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color, #444);
+    background: transparent;
+    color: var(--text-secondary, #999);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .compass-preset-btn:hover {
+    border-color: var(--accent-primary, #4a9eff);
+    color: var(--text-primary, #ccc);
+  }
+  .compass-preset-btn.active {
+    background: var(--accent-primary, #4a9eff);
+    color: #fff;
+    border-color: var(--accent-primary, #4a9eff);
+  }
+
+  /* Sliders */
+  .compass-sliders {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .compass-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .compass-slider-label {
+    font-size: 10px;
+    font-weight: 600;
+    width: 42px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+  .compass-slider {
+    flex: 1;
+    height: 3px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--border-color, #333);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+  .compass-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--slider-color, #4a9eff);
+    border: 2px solid var(--bg-primary, #1a1a1a);
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .compass-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+  }
+  .compass-slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--slider-color, #4a9eff);
+    border: 2px solid var(--bg-primary, #1a1a1a);
+    cursor: pointer;
+  }
+  .compass-slider-val {
+    font-size: 9px;
+    color: var(--text-tertiary, #666);
+    width: 28px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Reset */
+  .compass-reset-btn {
+    padding: 3px 0;
+    font-size: 10px;
+    color: var(--accent-primary, #4a9eff);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    opacity: 0.8;
+  }
+  .compass-reset-btn:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
 `

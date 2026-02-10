@@ -12,8 +12,8 @@ import { useSelectionStore, useGlazeStore, useFilterStore } from '@/stores'
 import { useSimilarity } from '@/hooks'
 import { OxideSymbol, GlazeRecipe } from '@/types'
 import type { DensityMap } from '@/analysis/density'
-import type { ZAxisOption, CameraPreset, LightPosition, ProximityStats } from './StullPlot3D'
-import { zAxisLabel } from './StullPlot3D'
+import type { ZAxisOption, CameraPreset, LightPosition, ProximityStats, ProximityWeights } from './StullPlot3D'
+import { zAxisLabel, DEFAULT_PROXIMITY_WEIGHTS } from './StullPlot3D'
 import type { SurfaceGrid } from '@/analysis/surfaceFit'
 import { UMFFingerprint, FluxDonut, OxideRadar, GlazeTypeBadge, ConeRangeBar, MiniStull, DatasetStats, RecipeBar, OxideTd } from '@/components/UMFVisuals'
 import { explorerStyles } from './explorer-styles'
@@ -179,6 +179,9 @@ export function StullAtlas() {
   const [nearbyFilter, setNearbyFilter] = useState<Set<string>>(new Set()) // empty = show all
   const [nearbySortBy, setNearbySortBy] = useState<'distance' | 'cone' | 'name'>('distance')
   const [explorationPath, setExplorationPath] = useState<{ id: string; name: string }[]>([]) // breadcrumb trail
+  // Aesthetic Compass — weighted similarity sliders
+  const [compassWeights, setCompassWeights] = useState<ProximityWeights>({ ...DEFAULT_PROXIMITY_WEIGHTS })
+  const [compassExpanded, setCompassExpanded] = useState(false)
   const [cameraKey, setCameraKey] = useState(0) // increment to force-reset camera
   const handleSurfaceGridReady = useCallback((grid: SurfaceGrid | null, scatter: { x: number; y: number; z: number; name: string }[]) => {
     setSurfaceGridRef(grid)
@@ -580,6 +583,92 @@ export function StullAtlas() {
                   )}
                 </div>
 
+                {/* Aesthetic Compass — weighted similarity sliders */}
+                {proximityEnabled && selectedGlaze && (() => {
+                  const COMPASS_PRESETS: { label: string; title: string; weights: ProximityWeights }[] = [
+                    { label: 'Balanced', title: 'Equal weight on all axes', weights: { x: 0.5, y: 0.5, z: 0.5, cone: 0.0, surface: 0.0 } },
+                    { label: 'Chemistry Twin', title: 'Prioritize SiO₂ and Al₂O₃ match', weights: { x: 1.0, y: 1.0, z: 0.3, cone: 0.0, surface: 0.0 } },
+                    { label: 'Same Surface', title: 'Must match surface type', weights: { x: 0.3, y: 0.3, z: 0.2, cone: 0.0, surface: 1.0 } },
+                    { label: 'Same Cone', title: 'Prioritize firing temperature match', weights: { x: 0.2, y: 0.2, z: 0.2, cone: 1.0, surface: 0.0 } },
+                    { label: 'Flux Sibling', title: 'Match on Z-axis (flux/ratio)', weights: { x: 0.2, y: 0.2, z: 1.0, cone: 0.0, surface: 0.0 } },
+                  ]
+
+                  const COMPASS_SLIDERS: { key: keyof ProximityWeights; label: string; color: string }[] = [
+                    { key: 'x', label: 'SiO₂', color: '#3b82f6' },
+                    { key: 'y', label: 'Al₂O₃', color: '#22c55e' },
+                    { key: 'z', label: zAxisLabel(zAxis), color: '#f59e0b' },
+                    { key: 'cone', label: 'Cone', color: '#a855f7' },
+                    { key: 'surface', label: 'Surface', color: '#ec4899' },
+                  ]
+
+                  const isDefault = Object.keys(DEFAULT_PROXIMITY_WEIGHTS).every(
+                    k => compassWeights[k as keyof ProximityWeights] === DEFAULT_PROXIMITY_WEIGHTS[k as keyof ProximityWeights]
+                  )
+
+                  return (
+                    <div className="aesthetic-compass">
+                      <button
+                        className={`compass-toggle${compassExpanded ? ' open' : ''}`}
+                        onClick={() => setCompassExpanded(prev => !prev)}
+                      >
+                        <span className="compass-icon">🧭</span>
+                        <span>Aesthetic Compass</span>
+                        {!isDefault && <span className="compass-active-dot" />}
+                        <span className="compass-chevron">{compassExpanded ? '▾' : '▸'}</span>
+                      </button>
+
+                      {compassExpanded && (
+                        <div className="compass-body">
+                          {/* Presets */}
+                          <div className="compass-presets">
+                            {COMPASS_PRESETS.map(preset => {
+                              const isActive = Object.keys(preset.weights).every(
+                                k => Math.abs(compassWeights[k as keyof ProximityWeights] - preset.weights[k as keyof ProximityWeights]) < 0.01
+                              )
+                              return (
+                                <button
+                                  key={preset.label}
+                                  className={`compass-preset-btn${isActive ? ' active' : ''}`}
+                                  onClick={() => setCompassWeights({ ...preset.weights })}
+                                  title={preset.title}
+                                >{preset.label}</button>
+                              )
+                            })}
+                          </div>
+
+                          {/* Sliders */}
+                          <div className="compass-sliders">
+                            {COMPASS_SLIDERS.map(s => (
+                              <div key={s.key} className="compass-slider-row">
+                                <span className="compass-slider-label" style={{ color: s.color }}>{s.label}</span>
+                                <input
+                                  type="range"
+                                  min="0"
+                                  max="1"
+                                  step="0.05"
+                                  value={compassWeights[s.key]}
+                                  onChange={e => setCompassWeights(prev => ({ ...prev, [s.key]: Number(e.target.value) }))}
+                                  className="compass-slider"
+                                  style={{ '--slider-color': s.color } as React.CSSProperties}
+                                />
+                                <span className="compass-slider-val">{(compassWeights[s.key] * 100).toFixed(0)}%</span>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Reset */}
+                          {!isDefault && (
+                            <button
+                              className="compass-reset-btn"
+                              onClick={() => setCompassWeights({ ...DEFAULT_PROXIMITY_WEIGHTS })}
+                            >Reset to default</button>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })()}
+
                 {/* Nearby glazes list */}
                 {proximityEnabled && proximityStats && proximityStats.nearby.length > 0 && (() => {
                   // Surface type filter: empty set = show all
@@ -924,6 +1013,7 @@ export function StullAtlas() {
                 zStretch={zStretch}
                 proximityRadius={proximityEnabled && selectedGlaze ? proximityRadius : null}
                 proximityCenterId={pinnedCenterId}
+                proximityWeights={compassWeights}
                 hoveredNeighborId={hoveredNeighborId}
                 onProximityStats={setProximityStats}
                 onResetCamera={handleResetCamera}

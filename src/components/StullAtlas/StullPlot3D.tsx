@@ -43,10 +43,26 @@ export interface LightPosition {
   z: number
 }
 
+export interface ProximityWeights {
+  x: number   // SiO2 weight (0–1)
+  y: number   // Al2O3 weight (0–1)
+  z: number   // Z-axis weight (0–1)
+  cone: number   // Cone similarity weight (0–1)
+  surface: number // Surface type match weight (0–1)
+}
+
+export const DEFAULT_PROXIMITY_WEIGHTS: ProximityWeights = {
+  x: 0.5,
+  y: 0.5,
+  z: 0.5,
+  cone: 0.0,
+  surface: 0.0,
+}
+
 export interface ProximityNeighbor {
   id: string
   name: string
-  distance: number // normalized Euclidean distance
+  distance: number // weighted normalized distance
   x: number
   y: number
   z: number
@@ -56,6 +72,8 @@ export interface ProximityNeighbor {
   dx: number  // normalized delta on SiO2
   dy: number  // normalized delta on Al2O3
   dz: number  // normalized delta on Z-axis
+  dCone: number   // normalized cone delta (0–1)
+  dSurface: number // surface mismatch (0 = same, 1 = different)
 }
 
 export interface ProximityStats {
@@ -93,6 +111,8 @@ interface StullPlot3DProps {
   proximityRadius?: number | null
   // Override which glaze ID is the center of the proximity sphere ("pin" feature)
   proximityCenterId?: string | null
+  // Aesthetic Compass — axis weights for proximity distance calculation
+  proximityWeights?: ProximityWeights
   // Glaze ID hovered in the nearby list — show highlight marker in 3D
   hoveredNeighborId?: string | null
   // Callback reporting proximity filter stats (visible count, total count, ranked nearby list)
@@ -450,6 +470,7 @@ export function StullPlot3D({
   zStretch = 0.8,
   proximityRadius = null,
   proximityCenterId = null,
+  proximityWeights = DEFAULT_PROXIMITY_WEIGHTS,
   hoveredNeighborId = null,
   onProximityStats,
   onResetCamera,
@@ -543,8 +564,10 @@ export function StullPlot3D({
     }).filter(p => isFinite(p.z))
   }, [filteredPoints, glazes, zAxis])
 
-  // ─── Proximity filter ─────────────────────────────────────────
-  // Normalize each axis to 0-1 based on data range, then Euclidean distance
+  // ─── Proximity filter (Aesthetic Compass) ──────────────────────
+  // Weighted normalized Euclidean distance: √(Σ wᵢ · δᵢ²)
+  // Axes x/y/z are normalized to 0-1 by data range.
+  // Cone and surface type are extra dimensions controlled by weights.
 
   const { visibleData, proximityCenter, axisRanges, nearby } = useMemo(() => {
     if (proximityRadius == null || !selectedGlaze || plotData.length === 0) {
@@ -558,10 +581,11 @@ export function StullPlot3D({
       return { visibleData: plotData, proximityCenter: null, axisRanges: null, nearby: [] as ProximityNeighbor[] }
     }
 
-    // Compute axis ranges for normalization (use reduce to avoid stack overflow on large datasets)
+    // Compute axis ranges for normalization (use loops to avoid stack overflow on large datasets)
     let xMin = Infinity, xMax = -Infinity
     let yMin = Infinity, yMax = -Infinity
     let zMin_ = Infinity, zMax_ = -Infinity
+    let coneMin = Infinity, coneMax = -Infinity
     for (const p of plotData) {
       if (p.x < xMin) xMin = p.x
       if (p.x > xMax) xMax = p.x
@@ -571,24 +595,67 @@ export function StullPlot3D({
         if (p.z < zMin_) zMin_ = p.z
         if (p.z > zMax_) zMax_ = p.z
       }
+      if (p.cone != null) {
+        if (p.cone < coneMin) coneMin = p.cone
+        if (p.cone > coneMax) coneMax = p.cone
+      }
     }
     const xRange = Math.max(xMax - xMin, 0.001)
     const yRange = Math.max(yMax - yMin, 0.001)
     const zRange_ = Math.max(zMin_ < Infinity ? zMax_ - zMin_ : 1, 0.001)
+    const coneRange = Math.max(coneMax - coneMin, 1)
     const ranges = { x: xRange, y: yRange, z: zRange_ }
 
+    // Weights — clamp to [0, 1]
+    const w = proximityWeights
+    const wx = Math.max(0, Math.min(1, w.x))
+    const wy = Math.max(0, Math.min(1, w.y))
+    const wz = Math.max(0, Math.min(1, w.z))
+    const wCone = Math.max(0, Math.min(1, w.cone))
+    const wSurface = Math.max(0, Math.min(1, w.surface))
+    // Total weight for normalization so changing weights doesn't shrink/grow the sphere radius
+    const wTotal = wx + wy + wz + wCone + wSurface
+    const wNorm = wTotal > 0 ? Math.sqrt(wTotal) : 1
+
     const filtered: typeof plotData = []
-    const distances: { point: typeof plotData[0]; dist: number; dx: number; dy: number; dz: number }[] = []
+    const distances: { point: typeof plotData[0]; dist: number; dx: number; dy: number; dz: number; dCone: number; dSurface: number }[] = []
+
+    const centerCone = center.cone ?? 6
+    const centerSurface = center.surfaceType ?? 'unknown'
 
     for (const p of plotData) {
+      // Normalized axis deltas (0–1 range)
       const dx = (p.x - center.x) / ranges.x
       const dy = (p.y - center.y) / ranges.y
       const dz = (p.z - center.z) / ranges.z
-      const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
-      if (dist <= proximityRadius) {
+      // Cone delta (normalized 0–1)
+      const dCone = (p.cone != null && center.cone != null)
+        ? Math.abs((p.cone - centerCone) / coneRange)
+        : 0.5 // unknown cone gets moderate penalty
+      // Surface match (0 = same, 1 = different)
+      const dSurface = (p.surfaceType ?? 'unknown') === centerSurface ? 0 : 1
+
+      // Weighted distance: √(Σ wᵢ · δᵢ²) / √(Σ wᵢ) to normalize
+      const rawDist = Math.sqrt(
+        wx * dx * dx +
+        wy * dy * dy +
+        wz * dz * dz +
+        wCone * dCone * dCone +
+        wSurface * dSurface * dSurface
+      ) / wNorm
+
+      if (rawDist <= proximityRadius) {
         filtered.push(p)
         if (p.id !== center.id) {
-          distances.push({ point: p, dist, dx: Math.abs(dx), dy: Math.abs(dy), dz: Math.abs(dz) })
+          distances.push({
+            point: p,
+            dist: rawDist,
+            dx: Math.abs(dx),
+            dy: Math.abs(dy),
+            dz: Math.abs(dz),
+            dCone,
+            dSurface,
+          })
         }
       }
     }
@@ -598,7 +665,7 @@ export function StullPlot3D({
       filtered.push(center)
     }
 
-    // Sort by distance for the ranked list
+    // Sort by weighted distance for the ranked list
     distances.sort((a, b) => a.dist - b.dist)
     const nearby: ProximityNeighbor[] = distances.slice(0, 50).map(d => ({
       id: d.point.id,
@@ -612,6 +679,8 @@ export function StullPlot3D({
       dx: d.dx,
       dy: d.dy,
       dz: d.dz,
+      dCone: d.dCone,
+      dSurface: d.dSurface,
     }))
 
     return {
@@ -620,7 +689,7 @@ export function StullPlot3D({
       axisRanges: ranges,
       nearby,
     }
-  }, [plotData, selectedGlaze, proximityRadius, proximityCenterId])
+  }, [plotData, selectedGlaze, proximityRadius, proximityCenterId, proximityWeights])
 
   // Report proximity stats to parent
   useEffect(() => {
