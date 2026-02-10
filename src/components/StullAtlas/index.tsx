@@ -203,6 +203,8 @@ export function StullAtlas() {
   const [nearbySortBy, setNearbySortBy] = useState<'distance' | 'cone' | 'name'>('distance')
   const [nearbyViewMode, setNearbyViewMode] = useState<'list' | 'gallery'>('list')
   const [carouselIndex, setCarouselIndex] = useState(0)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxZoom, setLightboxZoom] = useState(1)
   const [explorationPath, setExplorationPath] = useState<{ id: string; name: string }[]>([]) // breadcrumb trail
   // Aesthetic Compass — weighted similarity sliders
   const [compassWeights, setCompassWeights] = useState<ProximityWeights>({ ...DEFAULT_PROXIMITY_WEIGHTS })
@@ -256,11 +258,58 @@ export function StullAtlas() {
   // Auto-disable proximity when no glaze is selected; reset carousel
   useEffect(() => {
     setCarouselIndex(0)
+    setLightboxOpen(false)
+    setLightboxZoom(1)
     if (!selectedGlaze) {
       setProximityEnabled(false)
       setPinnedCenterId(null)
     }
   }, [selectedGlaze])
+
+  // ─── Keyboard shortcuts for carousel & lightbox ───────────────
+  useEffect(() => {
+    const images = selectedGlaze?.images
+    if (!images || images.length === 0) return
+
+    const handler = (e: KeyboardEvent) => {
+      const el = e.target as HTMLElement
+      if (el?.tagName === 'INPUT' || el?.tagName === 'TEXTAREA' || el?.tagName === 'SELECT' || el?.isContentEditable) return
+
+      if (lightboxOpen) {
+        if (e.key === 'Escape') {
+          setLightboxOpen(false)
+          setLightboxZoom(1)
+          e.preventDefault()
+        } else if (e.key === 'ArrowLeft') {
+          setCarouselIndex(i => (i - 1 + images.length) % images.length)
+          e.preventDefault()
+        } else if (e.key === 'ArrowRight') {
+          setCarouselIndex(i => (i + 1) % images.length)
+          e.preventDefault()
+        } else if (e.key === '+' || e.key === '=') {
+          setLightboxZoom(z => Math.min(z + 0.5, 4))
+          e.preventDefault()
+        } else if (e.key === '-') {
+          setLightboxZoom(z => Math.max(z - 0.5, 0.5))
+          e.preventDefault()
+        } else if (e.key === '0') {
+          setLightboxZoom(1)
+          e.preventDefault()
+        }
+      } else if (sidebarTab === 'detail') {
+        if (e.key === 'ArrowLeft' && images.length > 1) {
+          setCarouselIndex(i => (i - 1 + images.length) % images.length)
+          e.preventDefault()
+        } else if (e.key === 'ArrowRight' && images.length > 1) {
+          setCarouselIndex(i => (i + 1) % images.length)
+          e.preventDefault()
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [selectedGlaze, lightboxOpen, sidebarTab])
   const toggleSidebar = useSelectionStore(s => s.toggleSidebar)
   const setSidebarTab = useSelectionStore(s => s.setSidebarTab)
   const setSelectedGlaze = useSelectionStore(s => s.setSelectedGlaze)
@@ -940,6 +989,9 @@ export function StullAtlas() {
                                 ) : (
                                   <span className="list-thumb-placeholder" />
                                 )}
+                                {(nGlaze?.images?.length ?? 0) > 1 && (
+                                  <span className="list-photo-count">{nGlaze!.images!.length}</span>
+                                )}
                                 <span className="proximity-nearby-rank">{i + 1}</span>
                                 <span className="proximity-nearby-name">{n.name}</span>
                                 {n.cone != null && <span className="proximity-nearby-cone">\u25B3{typeof n.cone === 'number' && n.cone === Math.floor(n.cone) ? n.cone : n.cone}</span>}
@@ -1342,6 +1394,9 @@ export function StullAtlas() {
                           alt={`${selectedGlaze.name} — photo ${idx + 1}`}
                           loading="lazy"
                           className="carousel-img"
+                          onClick={() => { setLightboxOpen(true); setLightboxZoom(1) }}
+                          style={{ cursor: 'zoom-in' }}
+                          title="Click to enlarge (← → to cycle, Esc to close)"
                         />
                         {images.length > 1 && (
                           <>
@@ -1515,6 +1570,58 @@ export function StullAtlas() {
             )}
           </aside>
         )}
+
+      {/* ─── Lightbox overlay ─── */}
+      {lightboxOpen && selectedGlaze?.images && selectedGlaze.images.length > 0 && (() => {
+        const images = selectedGlaze.images!
+        const idx = Math.min(carouselIndex, images.length - 1)
+        return (
+          <div
+            className="lightbox-overlay"
+            onClick={(e) => { if (e.target === e.currentTarget) { setLightboxOpen(false); setLightboxZoom(1) } }}
+            role="dialog"
+            aria-label="Image lightbox"
+          >
+            <div className="lightbox-content">
+              <img
+                src={images[idx]}
+                alt={`${selectedGlaze.name} — photo ${idx + 1}`}
+                className="lightbox-img"
+                style={{ transform: `scale(${lightboxZoom})` }}
+                draggable={false}
+              />
+              {images.length > 1 && (
+                <>
+                  <button
+                    className="lightbox-nav lightbox-prev"
+                    onClick={() => setCarouselIndex(i => (i - 1 + images.length) % images.length)}
+                    title="Previous (←)"
+                  >{'\u2039'}</button>
+                  <button
+                    className="lightbox-nav lightbox-next"
+                    onClick={() => setCarouselIndex(i => (i + 1) % images.length)}
+                    title="Next (→)"
+                  >{'\u203A'}</button>
+                </>
+              )}
+              <div className="lightbox-toolbar">
+                <span className="lightbox-caption">
+                  {selectedGlaze.name}{images.length > 1 ? ` (${idx + 1}/${images.length})` : ''}
+                </span>
+                <div className="lightbox-zoom-controls">
+                  <button onClick={() => setLightboxZoom(z => Math.max(z - 0.5, 0.5))} title="Zoom out (−)">−</button>
+                  <span>{(lightboxZoom * 100).toFixed(0)}%</span>
+                  <button onClick={() => setLightboxZoom(z => Math.min(z + 0.5, 4))} title="Zoom in (+)">+</button>
+                  {lightboxZoom !== 1 && (
+                    <button onClick={() => setLightboxZoom(1)} title="Reset zoom (0)">1:1</button>
+                  )}
+                </div>
+                <button className="lightbox-close" onClick={() => { setLightboxOpen(false); setLightboxZoom(1) }} title="Close (Esc)">✕</button>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
       
       <style>{explorerStyles}</style>
     </div>

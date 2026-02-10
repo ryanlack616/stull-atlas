@@ -2,7 +2,7 @@
 
 > *Every other tool treats chemistry as a spreadsheet. We're building a landscape you can walk through.*
 
-Current version: **3.3.1** (master)
+Current version: **3.5.0** (master)
 
 ---
 
@@ -22,30 +22,29 @@ Current version: **3.3.1** (master)
 
 ---
 
-## v3.5 — The Gallery
+## v3.5 — The Gallery ✅ SHIPPED
 *"See what these glazes actually look like."*
 
-Glazes have images. Most users won't read oxide numbers — they'll look at photos.
-This version turns the nearby list into a **visual** browsing experience.
+**What shipped:**
+- [x] Nearby list gains 24×24 image thumbnails beside each neighbor (list view)
+- [x] Gallery mode toggle: switches nearby list from compact rows → image grid (3-wide)
+- [x] Image grid items: photo + name + cone badge + surface dot + distance
+- [x] Lazy loading with native `loading="lazy"` on all images
+- [x] Fallback placeholder for glazes without photos (surface type badge)
+- [x] Tiny thumbnail in the mini UMF preview card (hover)
+- [x] "Has photo" 📷 quick-filter pill in the nearby list
+- [x] Photo count badge on gallery cards and list items (for multi-image glazes)
+- [x] Click any thumbnail → navigate + add to breadcrumb trail
+- [x] Detail panel image carousel (prev/next buttons, dot indicators)
+- [x] Keyboard navigation: ← → to cycle carousel images
+- [x] Click-to-zoom lightbox with +/−/1:1 controls and Esc to close
+- [x] 269 tests passing
 
-### v3.5.0 — Thumbnail Grid
-- [ ] Nearby list gains image thumbnails (small 40×40 thumb beside each neighbor)
-- [ ] Detail panel photo expands to lightbox on click
-- [ ] "Gallery mode" toggle: switches nearby list from compact rows → image grid (3-wide)
-- [ ] Image grid items: photo + name + cone badge + surface dot + distance
-- [ ] Lazy loading with intersection observer (images load as you scroll)
-- [ ] Fallback placeholder for glazes without photos
+**Why it matters:** The explorer becomes visual — potters browse by how glazes look,
+not just their oxide numbers. The lightbox rewards curiosity.
 
-### v3.5.1 — Visual Similarity Signals
-- [ ] Tiny thumbnail in the mini UMF preview card (hover preview already exists)
-- [ ] "Has photo" quick-filter pill in the nearby list (alongside surface pills)
-- [ ] Photo count badge on each neighbor: 📷1, 📷3
-- [ ] Click thumbnail → navigate + add to breadcrumb trail (same as clicking name)
-
-### v3.5.2 — Image Carousel
-- [ ] Detail panel shows full image carousel (swipe/arrows) when multiple images exist
-- [ ] Keyboard: ← → to cycle images in detail panel
-- [ ] Zoom on click (CSS transform, no external lib)
+**Data note:** Only ~13 glazes currently have images from the initial Glazy scrape.
+Re-scraping Glazy for image URLs would unlock the Gallery's full potential.
 
 **Technical notes:**
 - Images already on `GlazeRecipe.images?: string[]` (Glazy data)
@@ -204,7 +203,7 @@ as edges, the whole dataset as a navigable graph you can fly through.
 | Version | Codename | Core Idea | Status |
 |---------|----------|-----------|--------|
 | **3.4** | The Compass | Weighted search + surface prediction | ✅ Shipped |
-| **3.5** | The Gallery | Photos in exploration, visual browsing | 🔜 Next |
+| **3.5** | The Gallery | Photos in exploration, visual browsing | ✅ Shipped |
 | **3.6** | The Walk | Recipe interpolation, "how do I get there?" | 📋 Planned |
 | **3.7** | The Constellations | Auto-named glaze families | 📋 Planned |
 | **3.8** | The Knowledge Graph | Visual graph navigation with photos | 🌟 Vision |
