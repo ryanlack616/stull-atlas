@@ -383,6 +383,16 @@ export const explorerStyles = `
     border-color: rgba(250, 204, 21, 0.5);
     box-shadow: inset 2px 0 0 #facc15;
   }
+  .proximity-nearby-item:focus-visible {
+    outline: 2px solid var(--accent-primary, #6366f1);
+    outline-offset: -2px;
+    border-color: var(--accent-primary, #6366f1);
+    box-shadow: inset 2px 0 0 var(--accent-primary, #6366f1);
+    z-index: 1;
+  }
+  .proximity-nearby-item:focus:not(:focus-visible) {
+    outline: none;
+  }
 
   .proximity-nearby-rank {
     flex-shrink: 0;
@@ -672,6 +682,16 @@ export const explorerStyles = `
   .gallery-card.hovered {
     border-color: rgba(250, 204, 21, 0.6);
     box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.15);
+  }
+  .gallery-card:focus-visible {
+    outline: 2px solid var(--accent-primary, #6366f1);
+    outline-offset: -2px;
+    border-color: var(--accent-primary, #6366f1);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.35);
+    z-index: 1;
+  }
+  .gallery-card:focus:not(:focus-visible) {
+    outline: none;
   }
 
   .gallery-thumb {

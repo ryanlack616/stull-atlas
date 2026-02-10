@@ -54,6 +54,31 @@ Re-scraping Glazy for image URLs would unlock the Gallery's full potential.
 
 ---
 
+## NCECA Launch Plan (March 2026)
+
+**Conference dates:** March 25–27, Resource Hall
+
+**Domain structure:**
+- `stullatlas.app/rje/dev` — Dev build, shareable now with a handful of people
+- `stullatlas.app` — Public launch site (goes live ~March 18, one week before NCECA)
+
+**Timeline:**
+| Date | Milestone |
+|------|-----------|
+| Now → Mar 1 | Dev builds at `/rje/dev` for preview. Share URL with trusted testers. |
+| Mar 1–14 | Lock features, fix bugs, polish UX for NCECA demo. |
+| ~Mar 14 | Complete: QR code, og-image, analytics, Stripe integration, permission emails. |
+| ~Mar 18 | **Go live:** promote dev build to `stullatlas.app` root. Remove or redirect `/rje/dev`. |
+| Mar 25–27 | NCECA Resource Hall — live demos, handout cards with QR → stullatlas.app. |
+
+**Deploy commands:**
+```
+npm run deploy:dev           # → stullatlas.app/rje/dev  (dev preview)
+npm run deploy               # → stullatlas.app/         (production, go-live)
+```
+
+---
+
 ## v3.6 — The Walk
 *"How do I get from my glaze to that one?"*
 
@@ -273,28 +298,28 @@ when the trigger condition is true.*
 ### Component Extraction
 | Action | Trigger | Details |
 |--------|---------|---------|
-| Extract `<NearbyList>` component | `index.tsx` > 1600 lines (currently **1631**) | Move gallery grid, list view, photo filter, and carousel into `components/StullAtlas/NearbyList.tsx`. Wire via props/callbacks. Reduces index.tsx by ~300 lines. |
-| Extract `<ImageCarousel>` component | When `<NearbyList>` is extracted | Carousel logic (state, keyboard nav, lightbox) into its own file. Reusable for future gallery contexts. |
+| ~~Extract `<NearbyList>` component~~ | ~~`index.tsx` > 1600 lines~~ | **DONE** — `NearbyList.tsx` (317 lines), `index.tsx` down to 1177 lines. |
+| ~~Extract `<ImageCarousel>` component~~ | ~~When `<NearbyList>` is extracted~~ | **DONE** — `ImageCarousel.tsx` (177 lines) + `carouselUtils.ts` (pure helpers). |
 
 ### Image Resilience
 | Action | Trigger | Details |
 |--------|---------|---------|
-| Add `onError` fallback to all `<img>` tags | Any new `<img>` added without it | Replace broken images with surface-type badge placeholder. Prevents white rectangles when Glazy URLs 404. |
+| ~~Add `onError` fallback to all `<img>` tags~~ | ~~Any new `<img>` added without it~~ | **DONE** — All `<img>` tags have `onError` fallbacks showing placeholder. |
 | Validate image URLs at load time | Before next Gallery enhancement | Scan `glazes` Map on load, flag entries where `images[0]` returns 404. Cache results in sessionStorage. Log count to console. |
 
 ### Performance
 | Action | Trigger | Details |
 |--------|---------|---------|
-| Memoize `glazes.get()` lookups in nearby list | Nearby list renders > 50 items | Wrap filtered nearby mapping in `useMemo` keyed on `[nearbyList, nearbyPhotoOnly, nearbySortMode]`. Currently re-creates on every render. |
+| ~~Memoize `glazes.get()` lookups in nearby list~~ | ~~Nearby list renders > 50 items~~ | **DONE** — Single-pass `nearbyGlazes` Map via `useMemo`, eliminates 5+ redundant lookups per render. |
 | Bundle size check | Before any new dependency added | Run `npx vite-bundle-visualizer` and compare against last snapshot. Plotly already dominates — new deps should add < 50 KB gzipped. |
-| Dead CSS audit | After extracting NearbyList | Grep for unused CSS classes in `explorer-styles.ts`. Remove orphans. |
+| ~~Dead CSS audit~~ | ~~After extracting NearbyList~~ | **DONE** — Removed `.proximity-axis-label` orphan class. |
 
 ### Accessibility & UX
 | Action | Trigger | Details |
 |--------|---------|---------|
-| Mobile breakpoints for gallery | Before any public demo on mobile | Gallery grid → 2-wide at 768px, 1-wide at 480px. Carousel prev/next → swipe gesture. Lightbox → full-viewport. |
-| Keyboard nav for gallery grid | Before v3.6 ships | Arrow keys to move between gallery cards, Enter to select. Focus ring visible. Tab order: filter pills → view toggle → gallery cards. |
-| Carousel boundary tests | Next test-writing session | Unit tests for carousel: wrapping at boundaries, dot count, keyboard events, lightbox open/close. Add to `__tests__/`. |
+| ~~Mobile breakpoints for gallery~~ | ~~Before any public demo on mobile~~ | **DONE** — Gallery grid 2-wide at 768px, 1-wide at 480px. Carousel buttons always visible on mobile. Lightbox full-viewport. |
+| ~~Keyboard nav for gallery grid~~ | ~~Before v3.6 ships~~ | **DONE** — Arrow keys navigate gallery cards (grid-aware) and list items. Enter selects, Home/End jump. Focus ring visible via `:focus-visible`. `role="listbox"`/`role="option"` ARIA. |
+| ~~Carousel boundary tests~~ | ~~Next test-writing session~~ | **DONE** — 25 unit tests in `carouselUtils.test.ts`: wrapIndex, safeIndex, stepZoom, isFormElement. |
 
 ### Data Quality
 | Action | Trigger | Details |

@@ -6,7 +6,7 @@
  * list view, breadcrumb trail, hover preview with UMF fingerprint.
  */
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef, useCallback } from 'react'
 import type { ProximityNeighbor, ProximityStats } from './StullPlot3D'
 import { zAxisLabel } from './StullPlot3D'
 import type { GlazeRecipe } from '@/types'
@@ -65,6 +65,9 @@ export function NearbyList({
   const [nearbySortBy, setNearbySortBy] = useState<'distance' | 'cone' | 'name'>('distance')
   const [nearbyViewMode, setNearbyViewMode] = useState<'list' | 'gallery'>('list')
 
+  // Ref for keyboard navigation within the scrollable item list
+  const scrollRef = useRef<HTMLDivElement>(null)
+
   // ── Derived data ────────────────────────────────────────────
   const surfaceTypes = useMemo(
     () => new Set(proximityStats.nearby.map(n => n.surfaceType)),
@@ -108,6 +111,74 @@ export function NearbyList({
     }
     return list
   }, [proximityStats.nearby, nearbyFilter, nearbyPhotoOnly, nearbySortBy, nearbyGlazes])
+
+  // ── Gallery grid keyboard navigation ────────────────────────
+  // Arrow keys move focus between items; Enter selects, Shift+Enter compares.
+  // In gallery mode, left/right move across columns, up/down move across rows.
+  // In list mode, up/down move linearly. Home/End jump to first/last.
+  const GALLERY_COLUMNS = 3 // matches CSS grid minmax(80px, 1fr) at typical sidebar width
+
+  const handleGridKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
+    const container = scrollRef.current
+    if (!container) return
+
+    const items = Array.from(container.querySelectorAll<HTMLElement>(
+      nearbyViewMode === 'gallery' ? '.gallery-card' : '.proximity-nearby-item',
+    ))
+    if (items.length === 0) return
+
+    const currentIdx = items.findIndex(el => el === document.activeElement)
+    let nextIdx = -1
+
+    switch (e.key) {
+      case 'ArrowDown':
+        if (nearbyViewMode === 'gallery') {
+          nextIdx = currentIdx < 0 ? 0 : Math.min(currentIdx + GALLERY_COLUMNS, items.length - 1)
+        } else {
+          nextIdx = currentIdx < 0 ? 0 : Math.min(currentIdx + 1, items.length - 1)
+        }
+        break
+      case 'ArrowUp':
+        if (nearbyViewMode === 'gallery') {
+          nextIdx = currentIdx < 0 ? 0 : Math.max(currentIdx - GALLERY_COLUMNS, 0)
+        } else {
+          nextIdx = currentIdx < 0 ? 0 : Math.max(currentIdx - 1, 0)
+        }
+        break
+      case 'ArrowRight':
+        if (nearbyViewMode === 'gallery') {
+          nextIdx = currentIdx < 0 ? 0 : Math.min(currentIdx + 1, items.length - 1)
+        }
+        break
+      case 'ArrowLeft':
+        if (nearbyViewMode === 'gallery') {
+          nextIdx = currentIdx < 0 ? 0 : Math.max(currentIdx - 1, 0)
+        }
+        break
+      case 'Home':
+        nextIdx = 0
+        break
+      case 'End':
+        nextIdx = items.length - 1
+        break
+      case 'Enter':
+        if (currentIdx >= 0) {
+          items[currentIdx].click()
+        }
+        return
+      default:
+        return
+    }
+
+    if (nextIdx >= 0 && nextIdx !== currentIdx) {
+      e.preventDefault()
+      items[nextIdx].focus()
+      items[nextIdx].scrollIntoView({ block: 'nearest' })
+      // Trigger hover preview for the focused item
+      const neighborId = filteredNearby[nextIdx]?.id ?? null
+      onHoverNeighbor(neighborId)
+    }
+  }, [nearbyViewMode, filteredNearby, onHoverNeighbor])
 
   // Hovered neighbor for mini preview
   const hoveredNeighbor = hoveredNeighborId
@@ -226,7 +297,13 @@ export function NearbyList({
         )}
       </div>
 
-      <div className={`proximity-nearby-scroll${nearbyViewMode === 'gallery' ? ' gallery-mode' : ''}`}>
+      <div
+        ref={scrollRef}
+        className={`proximity-nearby-scroll${nearbyViewMode === 'gallery' ? ' gallery-mode' : ''}`}
+        onKeyDown={handleGridKeyDown}
+        role="listbox"
+        aria-label={`Nearby glazes ${nearbyViewMode} view`}
+      >
         {nearbyViewMode === 'gallery' ? (
           /* Gallery grid view */
           filteredNearby.map((n, i) => {
@@ -239,6 +316,10 @@ export function NearbyList({
                 onClick={(e) => navigateToNeighbor(e, n)}
                 onMouseEnter={() => onHoverNeighbor(n.id)}
                 onMouseLeave={() => onHoverNeighbor(null)}
+                onFocus={() => onHoverNeighbor(n.id)}
+                onBlur={() => onHoverNeighbor(null)}
+                role="option"
+                aria-selected={selectedGlaze?.id === n.id}
                 title={`${n.name}\nSiO\u2082: ${n.x.toFixed(2)}, Al\u2082O\u2083: ${n.y.toFixed(2)}\nShift+click to compare`}
               >
                 <div className="gallery-thumb">
@@ -280,6 +361,10 @@ export function NearbyList({
                 onClick={(e) => navigateToNeighbor(e, n)}
                 onMouseEnter={() => onHoverNeighbor(n.id)}
                 onMouseLeave={() => onHoverNeighbor(null)}
+                onFocus={() => onHoverNeighbor(n.id)}
+                onBlur={() => onHoverNeighbor(null)}
+                role="option"
+                aria-selected={selectedGlaze?.id === n.id}
                 title={`SiO\u2082: ${n.x.toFixed(2)}, Al\u2082O\u2083: ${n.y.toFixed(2)}, ${zAxisLabel(zAxis)}: ${n.z.toFixed(3)}\nShift+click to compare`}
               >
                 {thumbUrl ? (
