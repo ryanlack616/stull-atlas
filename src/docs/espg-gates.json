@@ -1,10 +1,78 @@
 {
   "$schema": "https://stullatlas.com/schemas/espg.v1.json",
   "meta": {
-    "name": "Epistemic Safety Product Gates",
+    "framework": "Agent Stratigraphy",
+    "component": "Epistemic Safety Product Gates",
     "version": "1.0.0",
     "updated": "2026-02-10",
-    "axiom": "Belief ≠ truth; every belief has confidence, decay, and authority"
+    "creators": ["Ryan Howells", "Claude-Howell"],
+    "axiom": "Belief ≠ truth; every belief has confidence, decay, and authority",
+    "tagline": "The strata don't lie."
+  },
+
+  "stratigraphic_palette": {
+    "layers": [
+      {
+        "name": "Bedrock",
+        "gates": [0, 1],
+        "meaning": "Do we know the ground we stand on?",
+        "colors": {
+          "gate_0": { "name": "Garnet", "hex": "#7C1D1D" },
+          "gate_1": { "name": "Sienna", "hex": "#A0522D" }
+        }
+      },
+      {
+        "name": "Foundation",
+        "gates": [2, 3],
+        "meaning": "Is our building material real?",
+        "colors": {
+          "gate_2": { "name": "Sandstone", "hex": "#B8860B" },
+          "gate_3": { "name": "Mudstone", "hex": "#8B7355" }
+        }
+      },
+      {
+        "name": "Growth",
+        "gates": [4, 5],
+        "meaning": "Is the system alive and healthy?",
+        "colors": {
+          "gate_4": { "name": "Forest", "hex": "#2D5A27" },
+          "gate_5": { "name": "Sea Green", "hex": "#2E8B57" }
+        }
+      },
+      {
+        "name": "Surface",
+        "gates": [6, 7],
+        "meaning": "Can we face the world?",
+        "colors": {
+          "gate_6": { "name": "Teal", "hex": "#1A7A7A" },
+          "gate_7": { "name": "Steel Blue", "hex": "#2070B4" }
+        }
+      },
+      {
+        "name": "Atmosphere",
+        "gates": [8, 9],
+        "meaning": "Are we learning from what's above?",
+        "colors": {
+          "gate_8": { "name": "Slate Blue", "hex": "#5B4FA0" },
+          "gate_9": { "name": "Amethyst", "hex": "#7B52AB" }
+        }
+      },
+      {
+        "name": "Horizon",
+        "gates": [10],
+        "meaning": "Can we end well?",
+        "colors": {
+          "gate_10": { "name": "Goldenrod", "hex": "#DAA520" }
+        }
+      }
+    ],
+    "status_modifiers": {
+      "passed": { "saturation": 1.0, "description": "Full saturation of gate color" },
+      "partial": { "saturation": 0.5, "description": "50% saturation, white-blended" },
+      "not-started": { "saturation": 0.15, "description": "Near gray" },
+      "failed": { "border": "#DC2626", "description": "Gate color with red border" },
+      "stale": { "border": "#D97706", "style": "dashed", "description": "Amber dashed border" }
+    }
   },
 
   "principles": [
@@ -18,6 +86,8 @@
     {
       "id": 0,
       "name": "Problem Legitimacy",
+      "layer": "Bedrock",
+      "color": { "name": "Garnet", "hex": "#7C1D1D" },
       "question": "Do we know the problem actually exists?",
       "required_evidence": [
         "Written problem statement with falsifiable claims",
@@ -40,6 +110,8 @@
     {
       "id": 1,
       "name": "User & Stakeholder Reality",
+      "layer": "Bedrock",
+      "color": { "name": "Sienna", "hex": "#A0522D" },
       "question": "Do we know who experiences the problem and how?",
       "required_evidence": [
         "Identified user classes with authority boundaries",
@@ -62,6 +134,8 @@
     {
       "id": 2,
       "name": "Requirements Truth",
+      "layer": "Foundation",
+      "color": { "name": "Sandstone", "hex": "#B8860B" },
       "question": "Are requirements grounded in reality rather than desire?",
       "required_evidence": [
         "Functional requirements traceable to user evidence",
@@ -84,6 +158,8 @@
     {
       "id": 3,
       "name": "Feasibility & Capability",
+      "layer": "Foundation",
+      "color": { "name": "Mudstone", "hex": "#8B7355" },
       "question": "Can this be built with known constraints?",
       "required_evidence": [
         "Capability map (what the system can / cannot do)",
@@ -106,6 +182,8 @@
     {
       "id": 4,
       "name": "Architectural Truth",
+      "layer": "Growth",
+      "color": { "name": "Forest", "hex": "#2D5A27" },
       "question": "Does the architecture reflect operational reality?",
       "required_evidence": [
         "Explicit authority model (who decides truth?)",
@@ -128,6 +206,8 @@
     {
       "id": 5,
       "name": "Implementation Safety",
+      "layer": "Growth",
+      "color": { "name": "Sea Green", "hex": "#2E8B57" },
       "question": "Is code doing only what we believe it does?",
       "required_evidence": [
         "Tests tied to claims (not coverage)",
@@ -150,6 +230,8 @@
     {
       "id": 6,
       "name": "Pre-Release Truth",
+      "layer": "Surface",
+      "color": { "name": "Teal", "hex": "#1A7A7A" },
       "question": "Does reality match our beliefs so far?",
       "required_evidence": [
         "Performance measured vs assumed",
@@ -177,6 +259,8 @@
     {
       "id": 7,
       "name": "Launch Authorization",
+      "layer": "Surface",
+      "color": { "name": "Steel Blue", "hex": "#2070B4" },
       "question": "Are we justified in exposing others to this system?",
       "required_evidence": [
         "Monitoring in place for unknowns",
@@ -204,6 +288,8 @@
     {
       "id": 8,
       "name": "Operational Belief Management",
+      "layer": "Atmosphere",
+      "color": { "name": "Slate Blue", "hex": "#5B4FA0" },
       "question": "Are we updating beliefs from reality continuously?",
       "required_evidence": [
         "Telemetry tied to original assumptions",
@@ -231,6 +317,8 @@
     {
       "id": 9,
       "name": "Iteration & Change",
+      "layer": "Atmosphere",
+      "color": { "name": "Amethyst", "hex": "#7B52AB" },
       "question": "Are changes epistemically reversible?",
       "required_evidence": [
         "Change impact analysis",
@@ -258,6 +346,8 @@
     {
       "id": 10,
       "name": "Sunset & Exit",
+      "layer": "Horizon",
+      "color": { "name": "Goldenrod", "hex": "#DAA520" },
       "question": "Can we end this without epistemic harm?",
       "required_evidence": [
         "Data export & deletion verified",

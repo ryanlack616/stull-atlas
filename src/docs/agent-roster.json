@@ -1,9 +1,12 @@
 {
   "$schema": "https://stullatlas.com/schemas/agent-roster.v1.json",
   "meta": {
+    "framework": "Agent Stratigraphy",
+    "component": "Agent Roster",
     "project": "stull-atlas",
     "version": "1.0.0",
     "updated": "2026-02-10",
+    "creators": ["Ryan Howells", "Claude-Howell"],
     "authority": "howell"
   },
 

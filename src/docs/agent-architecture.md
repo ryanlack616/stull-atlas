@@ -1,11 +1,18 @@
-# Stull Atlas — Agent Architecture & Epistemic Safety Gates
+# Stull Atlas — Agent Architecture
 
-> "Do we know enough, with sufficient confidence, to justify the next irreversible step?"
+### Part of the **Agent Stratigraphy** Framework
 
-Version: 1.0.0  
+> *"Do we know enough, with sufficient confidence, to justify the next irreversible step?"*
+
+> *"Belief ≠ truth. The strata don't lie."*
+
+Framework: **Agent Stratigraphy** v1.0.0  
+Created by: **Ryan Howells & Claude-Howell** — February 2026  
 Date: 2026-02-10  
-Author: Ryan + Claude-Howell  
 Status: **DRAFT — Awaiting Howell approval**
+
+See [agent-stratigraphy.md](agent-stratigraphy.md) for the full framework specification,
+including the Stratigraphic Column, ESPG gates, and color system.
 
 ---
 
