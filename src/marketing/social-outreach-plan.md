@@ -34,7 +34,7 @@
 
 ### Week 1 (Feb 10-16): Setup
 - [ ] Create @stullatlas Instagram account (or post from @myclaycorner)
-- [ ] Bio: "Glaze chemistry explorer · 3,200+ recipes on interactive Stull charts · Free to try · Coming to NCECA 2026"
+- [ ] Bio: "Glaze chemistry explorer · 9,000+ recipes on interactive Stull charts · Free to try · Coming to NCECA 2026"
 - [ ] Link in bio → stullatlas.app/#/nceca
 - [ ] First post: Screenshot of the 2D explorer with a real glaze selected. Caption tells the story — "114 years after Stull's original chart..."
 
@@ -47,7 +47,7 @@
 ### Week 3 (Feb 24-Mar 2): AI + Optimizer
 - [ ] **Post 1**: Screen recording of the AI suggestion engine. Type "matte celadon cone 6" → get a recipe. This is the hook.
 - [ ] **Post 2**: Optimizer in action — set UMF targets, watch it converge. Nerdy crowd loves this.
-- [ ] **Reddit post**: r/pottery — "I built a free glaze chemistry explorer with 3,200+ glazes — would love feedback"
+- [ ] **Reddit post**: r/pottery — "I built a free glaze chemistry explorer with 9,000+ glazes — would love feedback"
 - [ ] Cross-post to r/ceramics
 
 ### Week 4 (Mar 3-9): NCECA Buildup
@@ -101,19 +101,19 @@
 > Stull Atlas — A computational glaze chemistry explorer, 114 years after Stull.
 
 ### Elevator Pitch (30 seconds)
-> Stull Atlas maps 3,200+ real glaze recipes on interactive Stull charts. You can 
+> Stull Atlas maps 9,000+ real glaze recipes on interactive Stull charts. You can 
 > filter by cone, surface, and color — click any point to see the full recipe and 
 > UMF. It also has blend calculators, a recipe optimizer, and an AI engine that 
 > takes plain-English descriptions like "satin celadon, cone 6" and gives you 
 > optimized recipes. The explorer and UMF calculator are always free.
 
 ### NCECA Booth Pitch (10 seconds)
-> "It's like Google Maps for glaze chemistry — 3,000+ real glazes mapped on a 
+> "It's like Google Maps for glaze chemistry — 9,000+ real glazes mapped on a 
 > Stull chart. Try it free, scan the QR code."
 
 ### For Facebook Groups / Reddit
 > Hey all — I'm a potter in Howell, MI and I've been building a glaze chemistry 
-> tool called Stull Atlas. It plots 3,200+ Glazy recipes on interactive Stull 
+> tool called Stull Atlas. It plots 9,000+ Glazy recipes on interactive Stull 
 > charts and has blend calculators, a UMF calculator, and an AI suggestion engine. 
 > The dataset comes from Glazy (credited prominently — huge thanks to Derek Au) 
 > and the materials data from Digitalfire.

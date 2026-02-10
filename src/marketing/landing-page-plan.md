@@ -44,7 +44,7 @@ site (even a single HTML page on Netlify/Vercel).
 │     The ceramicist's workbench              │
 │     for glaze chemistry                     │
 │                                             │
-│     3,200+ real glazes mapped on            │
+│     9,000+ real glazes mapped on            │
 │     interactive Stull charts.               │
 │     Blend, optimize, discover.              │
 │                                             │
@@ -126,7 +126,7 @@ hello@stullatlas.app
 ### Meta Tags (when you build the static page)
 ```html
 <title>Stull Atlas — Glaze Chemistry Explorer for Ceramic Artists</title>
-<meta name="description" content="Map 3,200+ real glazes on interactive Stull charts. Blend calculators, recipe optimizer, and AI suggestions for ceramic artists. Free to explore." />
+<meta name="description" content="Map 9,000+ real glazes on interactive Stull charts. Blend calculators, recipe optimizer, and AI suggestions for ceramic artists. Free to explore." />
 <meta property="og:title" content="Stull Atlas" />
 <meta property="og:description" content="A computational glaze chemistry explorer — 114 years after Stull." />
 <meta property="og:image" content="/og-image.png" />
@@ -136,7 +136,7 @@ hello@stullatlas.app
 ### Content Marketing Ideas (post-launch)
 1. **Blog post**: "Understanding the Stull Chart — A Modern Guide" (evergreen SEO play)
 2. **Blog post**: "How to Plan a Triaxial Blend Test" (practical, links to tool)
-3. **Blog post**: "What 3,200 Glazes Tell Us About Cone 6 Chemistry" (data analysis)
+3. **Blog post**: "What 9,000 Glazes Tell Us About Cone 6 Chemistry" (data analysis)
 4. **Video**: "5-Minute Tour of Stull Atlas" (YouTube, embed on homepage)
 5. **PDF**: "Quick Reference: Stull Chart Regions" (lead magnet for email signups)
 

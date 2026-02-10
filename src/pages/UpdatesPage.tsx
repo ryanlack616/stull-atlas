@@ -299,7 +299,7 @@ export function UpdatesPage() {
 
         {/* â”€â”€ Data & Filtering â”€â”€ */}
         <section className="about-section">
-          <h2>3,000+ Glazes</h2>
+          <h2>9,000+ Glazes</h2>
           <p>
             The dataset is sourced from <a href="https://glazy.org" target="_blank"
             rel="noopener noreferrer">Glazy</a> â€” the open ceramic recipe database.

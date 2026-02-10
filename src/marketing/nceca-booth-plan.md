@@ -59,7 +59,7 @@ npm run dev
 
 ### Demo Script (5 minutes, flexible)
 
-**Hook** (30 sec): "This is Stull Atlas — 3,200 real glazes mapped on a Stull chart. Every dot is a recipe someone mixed and fired."
+**Hook** (30 sec): "This is Stull Atlas — 9,000 real glazes mapped on a Stull chart. Every dot is a recipe someone mixed and fired."
 
 **Explore** (90 sec): Click a point → show recipe + UMF → show similarity panel → "See these 5 similar glazes? They're ranked by oxide distance." Toggle 3D mode briefly — visual wow.
 
@@ -168,7 +168,7 @@ Print the form QR on a small standing card: "Get free Pro access through April �
 > "The explorer, UMF calculator, materials database, and guide are always free. Blend calculators, the optimizer, and AI suggestions are in the Pro tier — $18/month or we've got a $29 for 3 months NCECA deal."
 
 **"What data do you use?"**
-> "3,200+ recipes from Glazy's open database, all CC BY-NC-SA 4.0. Materials data informed by Digitalfire. Both are credited prominently on the About page."
+> "9,000+ recipes from Glazy's open database, all CC BY-NC-SA 4.0. Materials data informed by Digitalfire. Both are credited prominently on the About page."
 
 **"Can I import my own recipes?"**
 > "Yes — JSON or CSV import. You can also export everything you save."

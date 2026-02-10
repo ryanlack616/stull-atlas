@@ -2028,9 +2028,9 @@ export const EVENTS: TimelineEvent[] = [
   {
     year: 2026,
     title: 'Stull Atlas — Interactive Explorer',
-    description: 'This application: an interactive Stull chart explorer plotting 3,000+ real-world glaze recipes by UMF, with 3D visualization, blend calculators, materials database, recipe optimizer, AI-assisted glaze suggestion, and similarity tools. Built to preserve and extend the tradition from Wedgwood to Glazy.',
+    description: 'This application: an interactive Stull chart explorer plotting 9,000+ real-world glaze recipes by UMF, with 3D visualization, blend calculators, materials database, recipe optimizer, AI-assisted glaze suggestion, and similarity tools. Built to preserve and extend the tradition from Wedgwood to Glazy.',
     descriptionSimple: 'This app! An interactive version of Stull’s century-old chart that lets you explore thousands of real glaze recipes, calculate your own, and see how they all relate to the science. Built to make glaze chemistry visual, approachable, and fun for everyone.',
-    descriptionDetailed: 'Stull Atlas is an interactive Stull chart explorer plotting 3,000+ real-world glaze recipes by UMF, with 3D visualization, blend calculators, comprehensive materials database, genetic-algorithm recipe optimizer, AI-assisted glaze suggestion, and similarity tools. Built to preserve and extend the analytical tradition from Seger (1886) through Stull (1912) to Glazy (2016) — making 140 years of ceramic science accessible through modern web technology.',
+    descriptionDetailed: 'Stull Atlas is an interactive Stull chart explorer plotting 9,000+ real-world glaze recipes by UMF, with 3D visualization, blend calculators, comprehensive materials database, genetic-algorithm recipe optimizer, AI-assisted glaze suggestion, and similarity tools. Built to preserve and extend the analytical tradition from Seger (1886) through Stull (1912) to Glazy (2016) — making 140 years of ceramic science accessible through modern web technology.',
     category: 'digital',
     significance: 1,
     inflectionPoint: true,

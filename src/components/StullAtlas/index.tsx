@@ -16,6 +16,8 @@ import type { ZAxisOption, CameraPreset, LightPosition, ProximityStats, Proximit
 import { zAxisLabel, DEFAULT_PROXIMITY_WEIGHTS } from './StullPlot3D'
 import type { SurfaceGrid } from '@/analysis/surfaceFit'
 import { UMFFingerprint, FluxDonut, OxideRadar, GlazeTypeBadge, ConeRangeBar, MiniStull, DatasetStats, RecipeBar, OxideTd } from '@/components/UMFVisuals'
+import { NearbyList } from './NearbyList'
+import { ImageCarousel } from './ImageCarousel'
 import { explorerStyles } from './explorer-styles'
 import { exportPlotAsImage, exportAsPrintPDF, exportSurfaceAsOBJ, exportSurfaceAsSTL, exportScatterAsCSV } from '@/utils'
 
@@ -198,13 +200,6 @@ export function StullAtlas() {
   const [proximityStats, setProximityStats] = useState<ProximityStats | null>(null)
   const [pinnedCenterId, setPinnedCenterId] = useState<string | null>(null)
   const [hoveredNeighborId, setHoveredNeighborId] = useState<string | null>(null)
-  const [nearbyFilter, setNearbyFilter] = useState<Set<string>>(new Set()) // empty = show all
-  const [nearbyPhotoOnly, setNearbyPhotoOnly] = useState(false)
-  const [nearbySortBy, setNearbySortBy] = useState<'distance' | 'cone' | 'name'>('distance')
-  const [nearbyViewMode, setNearbyViewMode] = useState<'list' | 'gallery'>('list')
-  const [carouselIndex, setCarouselIndex] = useState(0)
-  const [lightboxOpen, setLightboxOpen] = useState(false)
-  const [lightboxZoom, setLightboxZoom] = useState(1)
   const [explorationPath, setExplorationPath] = useState<{ id: string; name: string }[]>([]) // breadcrumb trail
   // Aesthetic Compass — weighted similarity sliders
   const [compassWeights, setCompassWeights] = useState<ProximityWeights>({ ...DEFAULT_PROXIMITY_WEIGHTS })
@@ -255,61 +250,13 @@ export function StullAtlas() {
   const showSidebar = useSelectionStore(s => s.showSidebar)
   const sidebarTab = useSelectionStore(s => s.sidebarTab)
 
-  // Auto-disable proximity when no glaze is selected; reset carousel
+  // Auto-disable proximity when no glaze is selected
   useEffect(() => {
-    setCarouselIndex(0)
-    setLightboxOpen(false)
-    setLightboxZoom(1)
     if (!selectedGlaze) {
       setProximityEnabled(false)
       setPinnedCenterId(null)
     }
   }, [selectedGlaze])
-
-  // ─── Keyboard shortcuts for carousel & lightbox ───────────────
-  useEffect(() => {
-    const images = selectedGlaze?.images
-    if (!images || images.length === 0) return
-
-    const handler = (e: KeyboardEvent) => {
-      const el = e.target as HTMLElement
-      if (el?.tagName === 'INPUT' || el?.tagName === 'TEXTAREA' || el?.tagName === 'SELECT' || el?.isContentEditable) return
-
-      if (lightboxOpen) {
-        if (e.key === 'Escape') {
-          setLightboxOpen(false)
-          setLightboxZoom(1)
-          e.preventDefault()
-        } else if (e.key === 'ArrowLeft') {
-          setCarouselIndex(i => (i - 1 + images.length) % images.length)
-          e.preventDefault()
-        } else if (e.key === 'ArrowRight') {
-          setCarouselIndex(i => (i + 1) % images.length)
-          e.preventDefault()
-        } else if (e.key === '+' || e.key === '=') {
-          setLightboxZoom(z => Math.min(z + 0.5, 4))
-          e.preventDefault()
-        } else if (e.key === '-') {
-          setLightboxZoom(z => Math.max(z - 0.5, 0.5))
-          e.preventDefault()
-        } else if (e.key === '0') {
-          setLightboxZoom(1)
-          e.preventDefault()
-        }
-      } else if (sidebarTab === 'detail') {
-        if (e.key === 'ArrowLeft' && images.length > 1) {
-          setCarouselIndex(i => (i - 1 + images.length) % images.length)
-          e.preventDefault()
-        } else if (e.key === 'ArrowRight' && images.length > 1) {
-          setCarouselIndex(i => (i + 1) % images.length)
-          e.preventDefault()
-        }
-      }
-    }
-
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [selectedGlaze, lightboxOpen, sidebarTab])
   const toggleSidebar = useSelectionStore(s => s.toggleSidebar)
   const setSidebarTab = useSelectionStore(s => s.setSidebarTab)
   const setSelectedGlaze = useSelectionStore(s => s.setSelectedGlaze)
@@ -763,284 +710,22 @@ export function StullAtlas() {
                 })()}
 
                 {/* Nearby glazes list */}
-                {proximityEnabled && proximityStats && proximityStats.nearby.length > 0 && (() => {
-                  // Surface type filter: empty set = show all
-                  const surfaceTypes = new Set(proximityStats.nearby.map(n => n.surfaceType))
-                  let filteredNearby = nearbyFilter.size === 0
-                    ? [...proximityStats.nearby]
-                    : proximityStats.nearby.filter(n => nearbyFilter.has(n.surfaceType))
-
-                  // Photo-only filter
-                  if (nearbyPhotoOnly) {
-                    filteredNearby = filteredNearby.filter(n => {
-                      const g = glazes.get(n.id)
-                      return g?.images && g.images.length > 0
-                    })
-                  }
-                  const photoCount = proximityStats.nearby.filter(n => {
-                    const g = glazes.get(n.id)
-                    return g?.images && g.images.length > 0
-                  }).length
-
-                  // Sort
-                  if (nearbySortBy === 'cone') {
-                    filteredNearby.sort((a, b) => (a.cone ?? 99) - (b.cone ?? 99) || a.distance - b.distance)
-                  } else if (nearbySortBy === 'name') {
-                    filteredNearby.sort((a, b) => a.name.localeCompare(b.name))
-                  }
-                  // 'distance' is already the default sort from StullPlot3D
-
-                  const SURFACE_PILLS: { key: string; label: string }[] = [
-                    { key: 'gloss', label: 'G' },
-                    { key: 'matte', label: 'M' },
-                    { key: 'satin', label: 'S' },
-                    { key: 'crystalline', label: 'X' },
-                    { key: 'crawl', label: 'C' },
-                    { key: 'unknown', label: '?' },
-                  ]
-
-                  // Hovered neighbor for mini preview
-                  const hoveredNeighbor = hoveredNeighborId
-                    ? proximityStats.nearby.find(n => n.id === hoveredNeighborId) ?? null
-                    : null
-                  const hoveredGlaze = hoveredNeighborId ? glazes.get(hoveredNeighborId) ?? null : null
-
-                  return (
-                    <div className="proximity-nearby-list">
-                      {/* Exploration breadcrumb */}
-                      {explorationPath.length > 0 && (
-                        <div className="proximity-breadcrumb">
-                          {explorationPath.map((crumb, i) => (
-                            <React.Fragment key={crumb.id}>
-                              {i > 0 && <span className="breadcrumb-arrow">\u203A</span>}
-                              <button
-                                className="breadcrumb-btn"
-                                onClick={() => {
-                                  const glaze = glazes.get(crumb.id)
-                                  if (glaze) {
-                                    setSelectedGlaze(glaze)
-                                    // Trim breadcrumb to this point
-                                    setExplorationPath(prev => prev.slice(0, i))
-                                  }
-                                }}
-                                title={crumb.name}
-                              >{crumb.name.length > 12 ? crumb.name.slice(0, 11) + '\u2026' : crumb.name}</button>
-                            </React.Fragment>
-                          ))}
-                        </div>
-                      )}
-
-                      <div className="proximity-nearby-header">
-                        <span>Nearby ({filteredNearby.length}{nearbyFilter.size > 0 ? `/${proximityStats.nearby.length}` : ''})</span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                          {/* View mode toggle */}
-                          <div className="proximity-sort-btns">
-                            <button
-                              className={`proximity-sort-btn${nearbyViewMode === 'list' ? ' on' : ''}`}
-                              onClick={() => setNearbyViewMode('list')}
-                              title="List view"
-                            >≡</button>
-                            <button
-                              className={`proximity-sort-btn${nearbyViewMode === 'gallery' ? ' on' : ''}`}
-                              onClick={() => setNearbyViewMode('gallery')}
-                              title="Gallery view"
-                            >▦</button>
-                          </div>
-                          {/* Sort mode buttons */}
-                          <div className="proximity-sort-btns">
-                            {(['distance', 'cone', 'name'] as const).map(mode => (
-                              <button
-                                key={mode}
-                                className={`proximity-sort-btn${nearbySortBy === mode ? ' on' : ''}`}
-                                onClick={() => setNearbySortBy(mode)}
-                                title={`Sort by ${mode}`}
-                              >{mode === 'distance' ? '\u2194' : mode === 'cone' ? '\u25B3' : 'Az'}</button>
-                            ))}
-                          </div>
-                          <button
-                            className={`proximity-pin-btn${pinnedCenterId ? ' pinned' : ''}`}
-                            onClick={() => {
-                              if (pinnedCenterId) {
-                                setPinnedCenterId(null)
-                              } else if (selectedGlaze) {
-                                setPinnedCenterId(selectedGlaze.id)
-                              }
-                            }}
-                            title={pinnedCenterId ? 'Unpin center \u2014 proximity follows selection' : 'Pin center \u2014 keep this neighborhood while exploring'}
-                          >
-                            {pinnedCenterId ? '\uD83D\uDCCC' : '\uD83D\uDCCCPin'}
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Surface type filter pills */}
-                      <div className="proximity-filter-pills">
-                        {SURFACE_PILLS.filter(p => surfaceTypes.has(p.key)).map(p => (
-                          <button
-                            key={p.key}
-                            className={`proximity-pill st-${p.key}${nearbyFilter.has(p.key) ? ' on' : ''}`}
-                            onClick={() => setNearbyFilter(prev => {
-                              const next = new Set(prev)
-                              if (next.has(p.key)) next.delete(p.key)
-                              else next.add(p.key)
-                              return next
-                            })}
-                            title={p.key}
-                          >{p.label}</button>
-                        ))}
-                        {/* Photo-only filter */}
-                        <button
-                          className={`proximity-pill photo-pill${nearbyPhotoOnly ? ' on' : ''}`}
-                          onClick={() => setNearbyPhotoOnly(prev => !prev)}
-                          title={`Show only glazes with photos (${photoCount})`}
-                        >\uD83D\uDCF7{nearbyPhotoOnly ? ` ${photoCount}` : ''}</button>
-                        {(nearbyFilter.size > 0 || nearbyPhotoOnly) && (
-                          <button
-                            className="proximity-pill clear"
-                            onClick={() => { setNearbyFilter(new Set()); setNearbyPhotoOnly(false) }}
-                            title="Clear all filters"
-                          >\u00D7</button>
-                        )}
-                      </div>
-
-                      <div className={`proximity-nearby-scroll${nearbyViewMode === 'gallery' ? ' gallery-mode' : ''}`}>
-                        {nearbyViewMode === 'gallery' ? (
-                          /* Gallery grid view */
-                          filteredNearby.map((n, i) => {
-                            const nGlaze = glazes.get(n.id)
-                            const thumbUrl = nGlaze?.images?.[0] ?? null
-                            return (
-                              <button
-                                key={n.id}
-                                className={`gallery-card${selectedGlaze?.id === n.id ? ' active' : ''}${hoveredNeighborId === n.id ? ' hovered' : ''}`}
-                                onClick={(e) => {
-                                  const glaze = glazes.get(n.id)
-                                  if (!glaze) return
-                                  if (e.shiftKey) { addToCompare(glaze) } else {
-                                    if (selectedGlaze && !pinnedCenterId) {
-                                      setExplorationPath(prev => {
-                                        if (prev.length > 0 && prev[prev.length - 1].id === selectedGlaze.id) return prev
-                                        const next = [...prev, { id: selectedGlaze.id, name: selectedGlaze.name }]
-                                        return next.slice(-10)
-                                      })
-                                    }
-                                    setSelectedGlaze(glaze)
-                                  }
-                                }}
-                                onMouseEnter={() => setHoveredNeighborId(n.id)}
-                                onMouseLeave={() => setHoveredNeighborId(null)}
-                                title={`${n.name}\nSiO\u2082: ${n.x.toFixed(2)}, Al\u2082O\u2083: ${n.y.toFixed(2)}\nShift+click to compare`}
-                              >
-                                <div className="gallery-thumb">
-                                  {thumbUrl ? (
-                                    <img src={thumbUrl} alt={n.name} loading="lazy" />
-                                  ) : (
-                                    <div className="gallery-no-photo">
-                                      <span className={`proximity-nearby-surface st-${n.surfaceType}`}>{n.surfaceType === 'gloss' ? 'G' : n.surfaceType === 'matte' ? 'M' : n.surfaceType === 'satin' ? 'S' : n.surfaceType === 'crystalline' ? 'X' : n.surfaceType === 'crawl' ? 'C' : '?'}</span>
-                                    </div>
-                                  )}
-                                  <span className="gallery-rank">#{i + 1}</span>
-                                  {(nGlaze?.images?.length ?? 0) > 1 && (
-                                    <span className="gallery-photo-count">\uD83D\uDCF7{nGlaze!.images!.length}</span>
-                                  )}
-                                  <span className="gallery-dist">{n.distance.toFixed(2)}</span>
-                                </div>
-                                <div className="gallery-info">
-                                  <span className="gallery-name">{n.name}</span>
-                                  <div className="gallery-meta">
-                                    {n.cone != null && <span className="proximity-nearby-cone">\u25B3{n.cone}</span>}
-                                    <span className={`proximity-nearby-surface st-${n.surfaceType}`}>{n.surfaceType === 'gloss' ? 'G' : n.surfaceType === 'matte' ? 'M' : n.surfaceType === 'satin' ? 'S' : n.surfaceType === 'crystalline' ? 'X' : n.surfaceType === 'crawl' ? 'C' : '?'}</span>
-                                  </div>
-                                </div>
-                              </button>
-                            )
-                          })
-                        ) : (
-                          /* List view with mini thumbnails */
-                          filteredNearby.map((n, i) => {
-                            const nGlaze = glazes.get(n.id)
-                            const thumbUrl = nGlaze?.images?.[0] ?? null
-                            return (
-                              <button
-                                key={n.id}
-                                className={`proximity-nearby-item${selectedGlaze?.id === n.id ? ' active' : ''}${hoveredNeighborId === n.id ? ' hovered' : ''}`}
-                                onClick={(e) => {
-                                  const glaze = glazes.get(n.id)
-                                  if (!glaze) return
-                                  if (e.shiftKey) {
-                                    addToCompare(glaze)
-                                  } else {
-                                    if (selectedGlaze && !pinnedCenterId) {
-                                      setExplorationPath(prev => {
-                                        if (prev.length > 0 && prev[prev.length - 1].id === selectedGlaze.id) return prev
-                                        const next = [...prev, { id: selectedGlaze.id, name: selectedGlaze.name }]
-                                        return next.slice(-10)
-                                      })
-                                    }
-                                    setSelectedGlaze(glaze)
-                                  }
-                                }}
-                                onMouseEnter={() => setHoveredNeighborId(n.id)}
-                                onMouseLeave={() => setHoveredNeighborId(null)}
-                                title={`SiO\u2082: ${n.x.toFixed(2)}, Al\u2082O\u2083: ${n.y.toFixed(2)}, ${zAxisLabel(zAxis)}: ${n.z.toFixed(3)}\nShift+click to compare`}
-                              >
-                                {thumbUrl ? (
-                                  <img className="list-thumb" src={thumbUrl} alt="" loading="lazy" />
-                                ) : (
-                                  <span className="list-thumb-placeholder" />
-                                )}
-                                {(nGlaze?.images?.length ?? 0) > 1 && (
-                                  <span className="list-photo-count">{nGlaze!.images!.length}</span>
-                                )}
-                                <span className="proximity-nearby-rank">{i + 1}</span>
-                                <span className="proximity-nearby-name">{n.name}</span>
-                                {n.cone != null && <span className="proximity-nearby-cone">\u25B3{typeof n.cone === 'number' && n.cone === Math.floor(n.cone) ? n.cone : n.cone}</span>}
-                                <span className={`proximity-nearby-surface st-${n.surfaceType}`} title={n.surfaceType}>{n.surfaceType === 'gloss' ? 'G' : n.surfaceType === 'matte' ? 'M' : n.surfaceType === 'satin' ? 'S' : n.surfaceType === 'crystalline' ? 'X' : n.surfaceType === 'crawl' ? 'C' : '?'}</span>
-                                {/* Per-axis similarity bars */}
-                                <span className="proximity-nearby-bars" title={`SiO\u2082: ${(Math.max(0, 1 - n.dx) * 100).toFixed(0)}% | Al\u2082O\u2083: ${(Math.max(0, 1 - n.dy) * 100).toFixed(0)}% | ${zAxisLabel(zAxis)}: ${(Math.max(0, 1 - n.dz) * 100).toFixed(0)}%`}>
-                                  <span className="sim-bar bar-x" style={{ width: `${Math.max(0, 1 - n.dx) * 100}%` }} />
-                                  <span className="sim-bar bar-y" style={{ width: `${Math.max(0, 1 - n.dy) * 100}%` }} />
-                                  <span className="sim-bar bar-z" style={{ width: `${Math.max(0, 1 - n.dz) * 100}%` }} />
-                                </span>
-                                <span className="proximity-nearby-dist">{n.distance.toFixed(2)}</span>
-                              </button>
-                            )
-                          })
-                        )}
-                      </div>
-
-                      {/* Mini UMF preview on hover */}
-                      {hoveredGlaze?.umf && hoveredNeighbor && (
-                        <div className="proximity-preview">
-                          <div className="proximity-preview-top">
-                            {hoveredGlaze.images?.[0] && (
-                              <img className="preview-thumb" src={hoveredGlaze.images[0]} alt="" loading="lazy" />
-                            )}
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div className="proximity-preview-name">{hoveredGlaze.name}</div>
-                              <div className="proximity-preview-meta">
-                                {hoveredGlaze.coneRange?.[0] != null && <span>\u25B3{hoveredGlaze.coneRange[0]}{hoveredGlaze.coneRange[1] !== hoveredGlaze.coneRange[0] ? `\u2013${hoveredGlaze.coneRange[1]}` : ''}</span>}
-                                <span>{hoveredGlaze.surfaceType}</span>
-                                <span>{hoveredGlaze.atmosphere}</span>
-                                <span>d={hoveredNeighbor.distance.toFixed(3)}</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="proximity-preview-row">
-                            <UMFFingerprint umf={hoveredGlaze.umf} width={120} height={10} compact />
-                            <FluxDonut umf={hoveredGlaze.umf} size={32} innerRadius={0.55} />
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="proximity-nearby-legend">
-                        <span className="sim-legend-item"><span className="sim-dot dot-x" />SiO\u2082</span>
-                        <span className="sim-legend-item"><span className="sim-dot dot-y" />Al\u2082O\u2083</span>
-                        <span className="sim-legend-item"><span className="sim-dot dot-z" />{zAxisLabel(zAxis)}</span>
-                      </div>
-                    </div>
-                  )
-                })()}
+                {proximityEnabled && proximityStats && proximityStats.nearby.length > 0 && (
+                  <NearbyList
+                    proximityStats={proximityStats}
+                    glazes={glazes}
+                    selectedGlaze={selectedGlaze}
+                    pinnedCenterId={pinnedCenterId}
+                    hoveredNeighborId={hoveredNeighborId}
+                    explorationPath={explorationPath}
+                    zAxis={zAxis}
+                    onSelectGlaze={setSelectedGlaze}
+                    onCompareGlaze={addToCompare}
+                    onHoverNeighbor={setHoveredNeighborId}
+                    onPinCenter={setPinnedCenterId}
+                    onExplorationPathChange={setExplorationPath}
+                  />
+                )}
 
                 {/* Keyboard shortcut hints */}
                 <div className="three-d-shortcuts-hint">
@@ -1382,49 +1067,13 @@ export function StullAtlas() {
                 })()}
 
                 {/* Glaze Image Carousel */}
-                {selectedGlaze.images && selectedGlaze.images.length > 0 && (() => {
-                  const images = selectedGlaze.images!
-                  const idx = Math.min(carouselIndex, images.length - 1)
-                  return (
-                    <div className="detail-section">
-                      <h4>Photo{images.length > 1 ? `s (${idx + 1}/${images.length})` : ''}</h4>
-                      <div className="carousel-container">
-                        <img
-                          src={images[idx]}
-                          alt={`${selectedGlaze.name} — photo ${idx + 1}`}
-                          loading="lazy"
-                          className="carousel-img"
-                          onClick={() => { setLightboxOpen(true); setLightboxZoom(1) }}
-                          style={{ cursor: 'zoom-in' }}
-                          title="Click to enlarge (← → to cycle, Esc to close)"
-                        />
-                        {images.length > 1 && (
-                          <>
-                            <button
-                              className="carousel-btn carousel-prev"
-                              onClick={() => setCarouselIndex(i => (i - 1 + images.length) % images.length)}
-                              title="Previous photo"
-                            >\u2039</button>
-                            <button
-                              className="carousel-btn carousel-next"
-                              onClick={() => setCarouselIndex(i => (i + 1) % images.length)}
-                              title="Next photo"
-                            >\u203A</button>
-                            <div className="carousel-dots">
-                              {images.map((_, di) => (
-                                <button
-                                  key={di}
-                                  className={`carousel-dot${di === idx ? ' active' : ''}`}
-                                  onClick={() => setCarouselIndex(di)}
-                                />
-                              ))}
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  )
-                })()}
+                {selectedGlaze.images && selectedGlaze.images.length > 0 && (
+                  <ImageCarousel
+                    images={selectedGlaze.images}
+                    glazeName={selectedGlaze.name}
+                    sidebarTab={sidebarTab}
+                  />
+                )}
 
                 <div className="detail-section">
                   <h4>Recipe</h4>
@@ -1571,57 +1220,7 @@ export function StullAtlas() {
           </aside>
         )}
 
-      {/* ─── Lightbox overlay ─── */}
-      {lightboxOpen && selectedGlaze?.images && selectedGlaze.images.length > 0 && (() => {
-        const images = selectedGlaze.images!
-        const idx = Math.min(carouselIndex, images.length - 1)
-        return (
-          <div
-            className="lightbox-overlay"
-            onClick={(e) => { if (e.target === e.currentTarget) { setLightboxOpen(false); setLightboxZoom(1) } }}
-            role="dialog"
-            aria-label="Image lightbox"
-          >
-            <div className="lightbox-content">
-              <img
-                src={images[idx]}
-                alt={`${selectedGlaze.name} — photo ${idx + 1}`}
-                className="lightbox-img"
-                style={{ transform: `scale(${lightboxZoom})` }}
-                draggable={false}
-              />
-              {images.length > 1 && (
-                <>
-                  <button
-                    className="lightbox-nav lightbox-prev"
-                    onClick={() => setCarouselIndex(i => (i - 1 + images.length) % images.length)}
-                    title="Previous (←)"
-                  >{'\u2039'}</button>
-                  <button
-                    className="lightbox-nav lightbox-next"
-                    onClick={() => setCarouselIndex(i => (i + 1) % images.length)}
-                    title="Next (→)"
-                  >{'\u203A'}</button>
-                </>
-              )}
-              <div className="lightbox-toolbar">
-                <span className="lightbox-caption">
-                  {selectedGlaze.name}{images.length > 1 ? ` (${idx + 1}/${images.length})` : ''}
-                </span>
-                <div className="lightbox-zoom-controls">
-                  <button onClick={() => setLightboxZoom(z => Math.max(z - 0.5, 0.5))} title="Zoom out (−)">−</button>
-                  <span>{(lightboxZoom * 100).toFixed(0)}%</span>
-                  <button onClick={() => setLightboxZoom(z => Math.min(z + 0.5, 4))} title="Zoom in (+)">+</button>
-                  {lightboxZoom !== 1 && (
-                    <button onClick={() => setLightboxZoom(1)} title="Reset zoom (0)">1:1</button>
-                  )}
-                </div>
-                <button className="lightbox-close" onClick={() => { setLightboxOpen(false); setLightboxZoom(1) }} title="Close (Esc)">✕</button>
-              </div>
-            </div>
-          </div>
-        )
-      })()}
+      {/* Lightbox is now rendered inside ImageCarousel */}
       
       <style>{explorerStyles}</style>
     </div>

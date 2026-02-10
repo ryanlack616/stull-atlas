@@ -160,37 +160,102 @@ as edges, the whole dataset as a navigable graph you can fly through.
 
 ---
 
-## v3.9 — The Studio
+## v3.9 — The Controls
+*"Turn the keyboard into an instrument for navigating glaze space."*
+
+Every spatial tool worth mastering has a dedicated input scheme. Stull Atlas
+is no longer a chart viewer — it's a landscape you walk through. The controls
+should feel like a physical control surface, not a list of menu clicks.
+
+**Philosophy:** Mouse-only always works for beginners. Keyboard unlocks speed
+for power users. Mouse+key combos unlock expert features. Studio (Tauri
+desktop) gets the full set; web edition gets ~70% (browser reserves some keys).
+
+### v3.9.0 — Spatial Navigation Keys
+- [ ] `W` / `A` / `S` / `D` — Orbit camera (3D) or pan (2D)
+- [ ] `Q` / `E` — Roll / tilt horizon
+- [ ] `Scroll` — Zoom in/out
+- [ ] `Middle-drag` — Free orbit
+- [ ] `Shift+Scroll` — Precision zoom (slower)
+- [ ] `Space` — Reset view to home position
+- [ ] `F` — Focus: zoom to selected glaze + show neighbors
+- [ ] Modifier awareness: keys do different things by context (detail open, lightbox, etc.)
+
+### v3.9.1 — Exploration Shortcuts
+- [ ] `Click` — Select glaze
+- [ ] `Double-click` — Select + fly camera to it
+- [ ] `Right-click` — Context menu (Walk Toward, Compare, Add to recipe…)
+- [ ] `Hover + T` — Teleport: fly camera to hovered glaze
+- [ ] `N` — Toggle nearby list
+- [ ] `G` — Toggle gallery mode
+- [ ] `B` — Drop breadcrumb / bookmark current glaze
+- [ ] `← →` — Carousel prev/next (when detail panel open)
+- [ ] `L` — Open lightbox
+- [ ] `Esc` — Close lightbox / deselect / back one level
+
+### v3.9.2 — Analysis & Overlay Toggles
+- [ ] `1`–`5` — Switch Aesthetic Compass preset
+- [ ] `H` — Toggle surface prediction heatmap
+- [ ] `P` — Toggle proximity sphere
+- [ ] `C` — Toggle constellations overlay (v3.7)
+- [ ] `Ctrl+Click` — Multi-select (compare mode)
+- [ ] `Shift+Click` — "Walk Toward" — start interpolation path (v3.6)
+
+### v3.9.3 — Mouse+Key Power Combos
+- [ ] `Alt+Click` — Anchor: set reference point, all distances relative to it
+- [ ] `Alt+Drag` — Lasso select region
+- [ ] `Ctrl+Scroll` — Adjust proximity radius live
+- [ ] `Shift+Hover` — Peek: show mini detail card without selecting
+- [ ] `Ctrl+Drag` — Draw interpolation path manually between two points
+
+### v3.9.4 — Help & Discoverability
+- [ ] `?` key → fullscreen shortcut overlay (like Gmail/GitHub)
+- [ ] Shortcut hints on tooltips ("Press T to teleport here")
+- [ ] Progressive disclosure: track which shortcuts the user has discovered
+- [ ] Printable keyboard reference card (PDF export for potters to pin by their monitor)
+- [ ] Studio vs. Web indicator: grayed-out keys that only work in desktop edition
+
+**Technical notes:**
+- Use `useEffect` + `keydown`/`keyup` listeners with context-aware dispatch
+- Prevent default only for keys we claim — don't break browser shortcuts
+- Tauri can capture `Ctrl+W`, `Ctrl+N`, etc. that browsers reserve
+- Key bindings stored in user preferences (Zustand) — customizable later
+- Modal state machine: `idle` → `detail-open` → `lightbox` → determines key behavior
+- Mouse combos need `mousedown` + modifier key tracking (not just `click`)
+
+---
+
+## v3.10 — The Studio
 *"Your bench, your materials, your journey."*
 
-### v3.9.0 — Material Substitution
+### v3.10.0 — Material Substitution
 - [ ] Pick a material in your recipe → see available substitutes
 - [ ] Show UMF shift as arrow on Stull chart
 - [ ] Color-code arrows by predicted surface change
 - [ ] "Still in matte territory? ✓" confirmation
 
-### v3.9.1 — Recipe Bridge (Bidirectional)
+### v3.10.1 — Recipe Bridge (Bidirectional)
 - [ ] Live sync: edit recipe ↔ watch point drift on chart
 - [ ] Click any point on chart → snap to nearest achievable recipe
 - [ ] "Cost of distance" — how much recipe change is needed to reach each neighbor
 
-### v3.9.2 — Region Annotations
+### v3.10.2 — Region Annotations
 - [ ] Users can tag regions with notes
 - [ ] Notes as floating markers on the chart
 - [ ] Shared annotations for community collaboration (future)
 
 ---
 
-## v4.0 — The Community
+## v4.1 — The Community
 *"A living document of collective ceramic knowledge."*
 
-### v4.0.0 — User Profiles & Saved Explorations
+### v4.1.0 — User Profiles & Saved Explorations
 - [ ] Auth integration (Supabase already wired)
 - [ ] Save and name exploration paths
 - [ ] Personal glaze library with notes
 - [ ] Upload your own test tile photos
 
-### v4.0.1 — Social Exploration
+### v4.1.1 — Social Exploration
 - [ ] Share exploration paths as URLs
 - [ ] "X potters explored this region this week"
 - [ ] Community annotations on the Stull chart

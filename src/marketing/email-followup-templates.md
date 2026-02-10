@@ -16,7 +16,7 @@ chemistry with you in Detroit.
 
 Your free Pro access is active through April. Here's what you can do with it:
 
-• Explorer — 3,200+ glazes on interactive Stull charts
+• Explorer — 9,000+ glazes on interactive Stull charts
   stullatlas.app
 
 • Blend Calculators — line, triaxial, biaxial, quadaxial, radial, space-filling
@@ -147,7 +147,7 @@ stullatlas.app
 **For Email 1:**
 - "Thanks for stopping by — your Stull Atlas Pro access is live"
 - "Your glaze chemistry toolkit from NCECA is ready"
-- "3,200 glazes are waiting for you"
+- "9,000 glazes are waiting for you"
 
 **For Email 3:**
 - "Your Stull Atlas access expires in 2 weeks — have you tried the AI suggest?"

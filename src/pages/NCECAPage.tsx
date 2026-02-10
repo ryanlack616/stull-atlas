@@ -72,7 +72,7 @@ export function NCECAPage() {
           <div className="feature-grid">
             <div className="feature-item">
               <h3>Explore</h3>
-              <p>Map 3,200+ glazes on an interactive Stull chart. Filter by cone, surface, color, and more.</p>
+              <p>Map 9,000+ glazes on an interactive Stull chart. Filter by cone, surface, color, and more.</p>
               <Link to="/">Open Explorer</Link>
             </div>
             <div className="feature-item">
@@ -97,8 +97,8 @@ export function NCECAPage() {
           <h2>See It in Action</h2>
           <div className="screenshot-gallery">
             <figure className="screenshot-item">
-              <img src={screenshotExplorer} alt="Stull Atlas Explorer — interactive Stull chart with 3,200+ glazes" loading="lazy" />
-              <figcaption>Interactive Stull chart with 3,200+ glazes — filter by cone, surface, color, and more</figcaption>
+              <img src={screenshotExplorer} alt="Stull Atlas Explorer — interactive Stull chart with 9,000+ glazes" loading="lazy" />
+              <figcaption>Interactive Stull chart with 9,000+ glazes — filter by cone, surface, color, and more</figcaption>
             </figure>
             <figure className="screenshot-item">
               <img src={screenshotDetail} alt="Stull Atlas glaze detail — UMF analysis, recipe breakdown, and similar glazes" loading="lazy" />

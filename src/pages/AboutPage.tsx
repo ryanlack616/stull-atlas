@@ -254,7 +254,7 @@ export function AboutPage() {
               both the 2D and 3D plots in Stull Atlas. Before Derek's work, this kind of 
               data-driven glaze visualization was locked away in academic papers and proprietary 
               software. He made it accessible to everyone. The entire Stull Atlas dataset of 
-              3,200+ glazes comes from Glazy's open data. Thank you, Derek.
+              9,000+ glazes comes from Glazy's open data. Thank you, Derek.
             </li>
             <li>
               <strong><a href="https://digitalfire.com" target="_blank" rel="noopener noreferrer">Digitalfire Reference Library</a></strong> (Tony Hansen) — 
@@ -317,7 +317,7 @@ export function AboutPage() {
                   <h3>Glazy</h3>
                   <p className="card-author">Derek Philip Au</p>
                   <p className="card-desc">
-                    The world's largest open glaze recipe database — 3,200+ recipes with full 
+                    The world's largest open glaze recipe database — 9,000+ recipes with full 
                     UMF analysis, all CC BY-NC-SA 4.0 licensed. Derek's Stull region geometry, 
                     temperature contours, and ceramic-chemistry-visualization project made 
                     data-driven glaze exploration possible for everyone. The entire dataset 
