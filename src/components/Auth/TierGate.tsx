@@ -108,6 +108,22 @@ const FEATURE_DESCRIPTIONS: Partial<Record<Feature, { title: string; desc: strin
     title: 'Surface Fitting',
     desc: 'Fit a continuous surface through glaze data points for trend visualization.',
   },
+  proximity_3d: {
+    title: 'Proximity Exploration',
+    desc: 'Find glazes near any point in 3D space — weighted similarity, ranked neighbors, distance lines.',
+  },
+  export_3d: {
+    title: '3D Export',
+    desc: 'Export the 3D Stull chart as OBJ, STL, or CSV for 3D printing or external analysis.',
+  },
+  lighting_3d: {
+    title: 'Lighting & Material Controls',
+    desc: 'Adjust light position, surface specularity, and material appearance in the 3D view.',
+  },
+  camera_presets_3d: {
+    title: 'Camera Presets',
+    desc: 'Preset camera angles, auto-rotate turntable, and perspective control for 3D exploration.',
+  },
 }
 
 export function TierGate({ feature, children, title, description }: TierGateProps) {

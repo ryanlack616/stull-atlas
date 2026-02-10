@@ -24,6 +24,7 @@ import { useGlazeStore, useSelectionStore, useRecipeStore, useThemeStore, useMol
 import { OxideSymbol, GlazePlotPoint, SurfaceType, EpistemicState } from '@/types'
 import { getOxideValue } from '@/calculator/umf'
 import { fitSurface, type SurfaceGrid } from '@/analysis/surfaceFit'
+import { classifySurface, SURFACE_TYPE_COLORS_RGBA, type SurfaceClassifyGrid } from '@/analysis/surfaceClassify'
 import { glazeTypeColor, glazeTypeName } from '@/domain/glaze'
 import { useFilteredPoints } from '@/hooks'
 
@@ -100,6 +101,8 @@ interface StullPlot3DProps {
   perspective?: number
   // Light source position
   lightPosition?: LightPosition
+  // Surface type prediction heatmap on the floor plane
+  showPrediction?: boolean
   // Callback when fitted surface grid updates (for export)
   onSurfaceGridReady?: (grid: SurfaceGrid | null, scatterPoints: { x: number; y: number; z: number; name: string }[]) => void
   // 3D-specific controls
@@ -460,6 +463,7 @@ export function StullPlot3D({
   highlightCircle,
   showSurface = true,
   surfaceOpacity = 0.35,
+  showPrediction = false,
   cameraPreset = 'default',
   perspective = 0.5,
   lightPosition,
@@ -783,6 +787,117 @@ export function StullPlot3D({
     onSurfaceGridReady?.(surfaceGrid, plotData.map((p: any) => ({ x: p.x, y: p.y, z: p.z, name: p.name ?? '' })))
   }, [surfaceGrid, plotData, onSurfaceGridReady])
 
+  // ─── Surface type prediction heatmap ──────────────────────────
+
+  const predictionGrid = useMemo((): SurfaceClassifyGrid | null => {
+    if (!showPrediction || plotData.length < 10) return null
+
+    // Use ALL plotData for prediction (not just visible/proximity-filtered)
+    const points = plotData
+      .filter(p => p.surfaceType && p.surfaceType !== 'unknown')
+      .map(p => ({ x: p.x, y: p.y, surfaceType: p.surfaceType }))
+
+    if (points.length < 5) return null
+
+    return classifySurface(points, {
+      xRange: [0.5, 7.2],
+      yRange: [0.0, 1.0],
+      resolution: 30,
+    })
+  }, [plotData, showPrediction])
+
+  // Build mesh3d trace for prediction heatmap on the floor plane
+  const predictionTrace = useMemo((): PlotData | null => {
+    if (!predictionGrid) return null
+
+    const { xCoords, yCoords, cells } = predictionGrid
+    const nx = xCoords.length
+    const ny = yCoords.length
+
+    // Build a triangle mesh: each grid cell becomes 2 triangles
+    // Vertices: one per grid node
+    const vertX: number[] = []
+    const vertY: number[] = []
+    const vertZ: number[] = []
+    // Per-vertex color (facecolor at vertex based on cell prediction)
+    const vertIntensity: number[] = []
+    // Triangles
+    const iArr: number[] = []
+    const jArr: number[] = []
+    const kArr: number[] = []
+    // Face colors
+    const faceColors: string[] = []
+
+    // Put vertices on the floor plane, slightly above to avoid z-fighting
+    const meshZ = zFloor + (zRange.max - zRange.min) * 0.001
+
+    // Create vertex grid
+    for (let yi = 0; yi < ny; yi++) {
+      for (let xi = 0; xi < nx; xi++) {
+        vertX.push(xCoords[xi])
+        vertY.push(yCoords[yi])
+        vertZ.push(meshZ)
+        const cell = cells[yi]?.[xi]
+        vertIntensity.push(cell?.confidence ?? 0)
+      }
+    }
+
+    // Create triangles — only where both cells are valid
+    for (let yi = 0; yi < ny - 1; yi++) {
+      for (let xi = 0; xi < nx - 1; xi++) {
+        const cell = cells[yi]?.[xi]
+        const cellRight = cells[yi]?.[xi + 1]
+        const cellUp = cells[yi + 1]?.[xi]
+        const cellUpRight = cells[yi + 1]?.[xi + 1]
+
+        // Skip if any corner is invalid
+        if (!cell || !cellRight || !cellUp || !cellUpRight) continue
+
+        // Vertex indices
+        const bl = yi * nx + xi       // bottom-left
+        const br = yi * nx + xi + 1   // bottom-right
+        const tl = (yi + 1) * nx + xi     // top-left
+        const tr = (yi + 1) * nx + xi + 1 // top-right
+
+        // Use the dominant surface type for the face color
+        // Average confidence for alpha
+        const avgConf1 = (cell.confidence + cellRight.confidence + cellUp.confidence) / 3
+        const avgConf2 = (cellRight.confidence + cellUp.confidence + cellUpRight.confidence) / 3
+
+        // Triangle 1: bl, br, tl
+        iArr.push(bl)
+        jArr.push(br)
+        kArr.push(tl)
+        faceColors.push(SURFACE_TYPE_COLORS_RGBA(cell.type, 0.15 + avgConf1 * 0.35))
+
+        // Triangle 2: br, tr, tl
+        iArr.push(br)
+        jArr.push(tr)
+        kArr.push(tl)
+        faceColors.push(SURFACE_TYPE_COLORS_RGBA(cellUpRight.type, 0.15 + avgConf2 * 0.35))
+      }
+    }
+
+    if (iArr.length === 0) return null
+
+    return {
+      type: 'mesh3d' as const,
+      x: vertX,
+      y: vertY,
+      z: vertZ,
+      i: iArr,
+      j: jArr,
+      k: kArr,
+      facecolor: faceColors,
+      opacity: 0.6,
+      flatshading: true,
+      hoverinfo: 'skip' as const,
+      name: 'Surface Prediction',
+      showlegend: false,
+      lighting: { ambient: 1, diffuse: 0, specular: 0 },
+    } as unknown as PlotData
+  }, [predictionGrid, zFloor, zRange.max])
+
   // ─── Main scatter trace ───────────────────────────────────────
 
   const scatterTrace = useMemo((): PlotData => {
@@ -1092,6 +1207,9 @@ export function StullPlot3D({
 
     if (dropLines) t.push(dropLines)
 
+    // Surface prediction heatmap (floor overlay)
+    if (predictionTrace) t.push(predictionTrace)
+
     if (surfaceGrid && showSurface) {
       const proximityActive = proximityRadius != null && visibleData.length < plotData.length
       t.push(buildSurfaceTrace(
@@ -1173,6 +1291,7 @@ export function StullPlot3D({
   }, [
     regionTraces, tempContours, qLineTrace, regionLabels,
     dropLines, surfaceGrid, showSurface, surfaceOpacity, zAxis, isDark, lightPosition,
+    predictionTrace,
     scatterTrace, highlightTrace, voidTrace, blendTrace,
     selectedTrace, selectedDropLine, proximitySphereTrace,
     proximityRadius, visibleData.length, plotData.length,

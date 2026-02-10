@@ -187,6 +187,11 @@ export function UserMenu() {
           color: #2ecc71;
         }
 
+        .tier-atlas_3d {
+          background: rgba(255, 165, 0, 0.2);
+          color: #ffa500;
+        }
+
         .user-dropdown {
           position: absolute;
           top: calc(100% + 6px);

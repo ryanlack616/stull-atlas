@@ -35,7 +35,11 @@ const FEATURE_LABELS: Record<Feature, string> = {
   analysis_clustering: 'DBSCAN Clustering',
   analysis_density: 'Density Analysis',
   analysis_voids: 'Void Detection',
-  surface_fit_3d: 'Surface Fitting',
+  surface_fit_3d: '3D Surface Fitting',
+  proximity_3d: 'Proximity Exploration',
+  export_3d: '3D Export (OBJ / STL / CSV)',
+  lighting_3d: 'Lighting & Material Controls',
+  camera_presets_3d: 'Camera Presets & Auto-Rotate',
   materials_browse: 'Materials Browser',
   guide: 'Interactive Guide',
   validation_warnings: 'Limit Warnings',
@@ -87,6 +91,7 @@ export function PricingPage() {
   const freeFeatures = featuresForTier('free')
   const soloFeatures = featuresForTier('solo')
   const proFeatures = featuresForTier('pro')
+  const atlas3dFeatures = featuresForTier('atlas_3d')
 
   const handleFreeAction = () => {
     if (!user) {
@@ -103,10 +108,12 @@ export function PricingPage() {
     const monthlyLinks: Record<string, string> = {
       solo: import.meta.env.VITE_STRIPE_LINK_SOLO ?? '#',
       pro: import.meta.env.VITE_STRIPE_LINK_PRO ?? '#',
+      atlas_3d: import.meta.env.VITE_STRIPE_LINK_ATLAS3D ?? '#',
     }
     const annualLinks: Record<string, string> = {
       solo: import.meta.env.VITE_STRIPE_LINK_SOLO_ANNUAL ?? '#',
       pro: import.meta.env.VITE_STRIPE_LINK_PRO_ANNUAL ?? '#',
+      atlas_3d: import.meta.env.VITE_STRIPE_LINK_ATLAS3D_ANNUAL ?? '#',
     }
     const links = billing === 'annual' ? annualLinks : monthlyLinks
     const link = links[tier]
@@ -162,7 +169,7 @@ export function PricingPage() {
           />
           <TierCard
             name="Solo"
-            price={billing === 'annual' ? '$72' : '$8'}
+            price={billing === 'annual' ? '$89' : '$10'}
             period={billing === 'annual' ? 'year' : 'month'}
             description="For the studio potter who wants deeper glaze analysis"
             features={soloFeatures}
@@ -172,27 +179,31 @@ export function PricingPage() {
           />
           <TierCard
             name="Pro"
-            price={billing === 'annual' ? '$156' : '$18'}
+            price={billing === 'annual' ? '$219' : '$25'}
             period={billing === 'annual' ? 'year' : 'month'}
             description="Full toolset — optimizer, AI suggestions, advanced analysis"
             features={proFeatures}
-            highlight
             cta={freePeriod ? 'Free Through April' : 'Upgrade to Pro'}
             onAction={() => freePeriod ? setShowAuth(true) : handlePaidAction('pro')}
             current={currentTier === 'pro'}
           />
           <TierCard
-            name="Education"
-            price="Free – $500"
-            period="year"
-            description="Student, classroom, and department licenses for ceramic arts programs"
-            features={proFeatures}
-            cta="See Edu Plans"
-            onAction={() => {
-              document.getElementById('edu-section')?.scrollIntoView({ behavior: 'smooth' })
-            }}
-            current={currentTier === 'edu_individual' || currentTier === 'edu_classroom'}
+            name="Atlas 3D"
+            price={billing === 'annual' ? '$349' : '$40'}
+            period={billing === 'annual' ? 'year' : 'month'}
+            description="Everything in Pro plus full 3D exploration, proximity analysis, and model export"
+            features={atlas3dFeatures}
+            highlight
+            cta={freePeriod ? 'Free Through April' : 'Upgrade to Atlas 3D'}
+            onAction={() => freePeriod ? setShowAuth(true) : handlePaidAction('atlas_3d')}
+            current={currentTier === 'atlas_3d'}
           />
+        </div>
+
+        {/* Education */}
+        <div className="edu-callout">
+          <span>Students, professors & departments —</span>{' '}
+          <button className="edu-callout-link" onClick={() => document.getElementById('edu-section')?.scrollIntoView({ behavior: 'smooth' })}>see education pricing</button>
         </div>
 
         {/* Education tiers */}
@@ -209,14 +220,14 @@ export function PricingPage() {
             </div>
             <div className="edu-card edu-card-highlight">
               <h3>Classroom</h3>
-              <div className="edu-price">$200<span className="edu-period">/year</span></div>
+              <div className="edu-price">$300<span className="edu-period">/year</span></div>
               <p className="edu-desc">Pro access for up to 30 students. Perfect for a single course section in glaze calculation or ceramic chemistry.</p>
               <a className="edu-cta" href="mailto:contact@stullatlas.app?subject=Classroom%20License%20Inquiry">Request Classroom License</a>
             </div>
             <div className="edu-card">
               <h3>Department</h3>
-              <div className="edu-price">$500<span className="edu-period">/year</span></div>
-              <p className="edu-desc">Pro access for unlimited seats across your entire ceramics program. All students and faculty.</p>
+              <div className="edu-price">$750<span className="edu-period">/year</span></div>
+              <p className="edu-desc">Full Atlas 3D access for unlimited seats across your entire ceramics program. All students and faculty.</p>
               <a className="edu-cta" href="mailto:contact@stullatlas.app?subject=Department%20License%20Inquiry">Request Department License</a>
             </div>
           </div>
@@ -253,7 +264,7 @@ export function PricingPage() {
 
           <details>
             <summary>Do you offer a conference discount?</summary>
-            <p>Yes! At NCECA 2026 in Detroit (March 25–28): <strong>3 months of Pro for $29</strong> (46% off) — sign up at the booth or online through March 28. Pro annual plans are also available for $110/year.</p>
+            <p>Yes! At NCECA 2026 in Detroit (March 25–28): <strong>3 months of Pro for $29</strong> or <strong>3 months of Atlas 3D for $49</strong> — sign up at the booth or online through March 28.</p>
           </details>
         </section>
       </div>
@@ -642,6 +653,23 @@ export function PricingPage() {
 
         .edu-footnote a {
           color: var(--accent);
+        }
+
+        .edu-callout {
+          text-align: center;
+          font-size: 14px;
+          color: var(--text-secondary);
+          margin-bottom: 60px;
+        }
+
+        .edu-callout-link {
+          background: none;
+          border: none;
+          color: var(--text-link);
+          font-size: 14px;
+          cursor: pointer;
+          padding: 0;
+          text-decoration: underline;
         }
 
         .upgrade-overlay {

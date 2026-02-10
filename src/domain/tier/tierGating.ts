@@ -19,7 +19,6 @@ export type Feature =
   | 'guide'
   | 'materials_browse'
   // Solo features
-  | 'explorer_3d'
   | 'similarity_search'
   | 'compare_glazes'
   | 'recipe_save'
@@ -38,7 +37,13 @@ export type Feature =
   | 'analysis_clustering'
   | 'analysis_density'
   | 'analysis_voids'
+  // Atlas 3D features
+  | 'explorer_3d'
   | 'surface_fit_3d'
+  | 'proximity_3d'
+  | 'export_3d'
+  | 'lighting_3d'
+  | 'camera_presets_3d'
 
 /** Minimum tier required for each feature */
 const FEATURE_TIERS: Record<Feature, Tier> = {
@@ -50,7 +55,6 @@ const FEATURE_TIERS: Record<Feature, Tier> = {
   materials_browse: 'free',
 
   // Solo — core workflows for individual potters
-  explorer_3d: 'solo',
   similarity_search: 'solo',
   compare_glazes: 'solo',
   recipe_save: 'solo',
@@ -70,7 +74,14 @@ const FEATURE_TIERS: Record<Feature, Tier> = {
   analysis_clustering: 'pro',
   analysis_density: 'pro',
   analysis_voids: 'pro',
-  surface_fit_3d: 'pro',
+
+  // Atlas 3D — premium 3D visualization and exploration
+  explorer_3d: 'atlas_3d',
+  surface_fit_3d: 'atlas_3d',
+  proximity_3d: 'atlas_3d',
+  export_3d: 'atlas_3d',
+  lighting_3d: 'atlas_3d',
+  camera_presets_3d: 'atlas_3d',
 }
 
 /** Tier hierarchy for comparison */
@@ -80,6 +91,7 @@ const TIER_RANK: Record<Tier, number> = {
   edu_individual: 1,
   pro: 2,
   edu_classroom: 2,
+  atlas_3d: 3,
 }
 
 /** Check if a tier has access to a feature */
@@ -98,6 +110,7 @@ export function tierDisplayName(tier: Tier): string {
     free: 'Free',
     solo: 'Studio Solo',
     pro: 'Studio Pro',
+    atlas_3d: 'Atlas 3D',
     edu_individual: 'Studio Edu',
     edu_classroom: 'Studio Edu (Classroom)',
   }

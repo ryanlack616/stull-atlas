@@ -6,7 +6,7 @@
  */
 
 /** Product tiers */
-export type Tier = 'free' | 'solo' | 'pro' | 'edu_individual' | 'edu_classroom'
+export type Tier = 'free' | 'solo' | 'pro' | 'atlas_3d' | 'edu_individual' | 'edu_classroom'
 
 /** Trial status */
 export type TrialStatus = 'none' | 'active' | 'expired'

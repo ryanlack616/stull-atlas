@@ -157,6 +157,7 @@ export function StullAtlas() {
   const [zAxis, setZAxis] = useState<ZAxisOption>('B2O3')
   const [showSurface, setShowSurface] = useState(true)
   const [surfaceOpacity, setSurfaceOpacity] = useState(0.35)
+  const [showPrediction, setShowPrediction] = useState(false)
   const [cameraPreset, setCameraPreset] = useState<CameraPreset>('default')
   const [showLimits, setShowLimits] = useState(false)
   const [limitCone, setLimitCone] = useState<string>('6')
@@ -402,6 +403,23 @@ export function StullAtlas() {
                         onChange={e => setSurfaceOpacity(Number(e.target.value))}
                       />
                       <span className="opacity-value">{Math.round(surfaceOpacity * 100)}%</span>
+                    </div>
+                  )}
+
+                  <label className="surface-toggle">
+                    <input
+                      type="checkbox"
+                      checked={showPrediction}
+                      onChange={e => setShowPrediction(e.target.checked)}
+                    />
+                    Predict Surface
+                  </label>
+                  {showPrediction && (
+                    <div className="prediction-legend">
+                      <span className="pred-dot" style={{ background: '#22c55e' }} />Matte
+                      <span className="pred-dot" style={{ background: '#3b82f6' }} />Gloss
+                      <span className="pred-dot" style={{ background: '#f59e0b' }} />Satin
+                      <span className="pred-dot" style={{ background: '#a855f7' }} />Crystal
                     </div>
                   )}
                 </div>
@@ -1003,6 +1021,7 @@ export function StullAtlas() {
                 highlightCircle={highlightCircle}
                 showSurface={showSurface}
                 surfaceOpacity={surfaceOpacity}
+                showPrediction={showPrediction}
                 cameraPreset={cameraPreset}
                 perspective={perspective}
                 lightPosition={lightEnabled ? lightPosition : undefined}

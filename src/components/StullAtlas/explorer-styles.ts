@@ -1165,4 +1165,23 @@ export const explorerStyles = `
     opacity: 1;
     text-decoration: underline;
   }
+
+  /* ─── Surface Prediction Legend ──────────────────────────── */
+
+  .prediction-legend {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    color: var(--text-secondary, #999);
+    padding: 4px 0 2px 22px;
+    flex-wrap: wrap;
+  }
+  .pred-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    margin-right: 2px;
+  }
 `

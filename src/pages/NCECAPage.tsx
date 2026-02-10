@@ -112,14 +112,20 @@ export function NCECAPage() {
         </section>
 
         <section className="nceca-deal">
-          <h2>NCECA Deal — $29 for 3 Months of Pro</h2>
-          <p className="deal-subtitle">Full Pro access through your spring firing season. That's <strong>46% off</strong> the monthly rate.</p>
-          <div className="deal-details">
-            <div className="deal-features">
-              <p>✓ All blend calculators · ✓ Recipe optimizer · ✓ AI suggestions · ✓ Full analysis suite</p>
+          <h2>NCECA Deals</h2>
+          <div className="deal-cards">
+            <div className="deal-card">
+              <h3>Pro — $29 / 3 months</h3>
+              <p className="deal-subtitle">Full optimizer, AI suggestions, all blend calculators, analysis suite.</p>
+              <p className="deal-features">✓ Optimizer · ✓ AI Suggestions · ✓ All Blends · ✓ Analysis</p>
             </div>
-            <p className="deal-fine">Available at the booth or online through March 28, 2026.</p>
+            <div className="deal-card deal-card-highlight">
+              <h3>Atlas 3D — $49 / 3 months</h3>
+              <p className="deal-subtitle">Everything in Pro <strong>plus</strong> the full 3D explorer, proximity analysis, surface fitting, and 3D model export.</p>
+              <p className="deal-features">✓ Everything in Pro · ✓ 3D Explorer · ✓ Proximity · ✓ OBJ/STL Export</p>
+            </div>
           </div>
+          <p className="deal-fine">Available at the booth or online through March 28, 2026.</p>
         </section>
 
         <section className="nceca-cta">
@@ -342,14 +348,46 @@ export function NCECAPage() {
         .nceca-deal h2 {
           font-size: 22px;
           font-weight: 700;
+          margin: 0 0 16px;
+          color: var(--text-bright);
+        }
+
+        .deal-cards {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+          margin-bottom: 16px;
+        }
+
+        @media (max-width: 540px) {
+          .deal-cards { grid-template-columns: 1fr; }
+        }
+
+        .deal-card {
+          background: var(--bg-primary, #111);
+          border: 1px solid var(--border-primary);
+          border-radius: 10px;
+          padding: 20px;
+          text-align: left;
+        }
+
+        .deal-card h3 {
+          font-size: 17px;
+          font-weight: 600;
           margin: 0 0 8px;
           color: var(--text-bright);
         }
 
+        .deal-card-highlight {
+          border-color: var(--accent);
+          box-shadow: 0 0 0 1px var(--accent);
+        }
+
         .deal-subtitle {
-          font-size: 15px;
+          font-size: 13px;
           color: var(--text-secondary);
-          margin: 0 0 16px;
+          margin: 0 0 12px;
+          line-height: 1.5;
         }
 
         .deal-features p {

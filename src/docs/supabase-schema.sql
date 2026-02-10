@@ -10,7 +10,7 @@
 -- ============================================================================
 
 -- ── Enum types ─────────────────────────────────────────────────────
-CREATE TYPE public.tier AS ENUM ('free', 'solo', 'pro', 'edu_individual', 'edu_classroom');
+CREATE TYPE public.tier AS ENUM ('free', 'solo', 'pro', 'atlas_3d', 'edu_individual', 'edu_classroom');
 CREATE TYPE public.code_status AS ENUM ('unused', 'redeemed', 'disabled');
 
 -- ── Profiles table ─────────────────────────────────────────────────
