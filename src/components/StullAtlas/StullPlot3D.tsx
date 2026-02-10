@@ -122,6 +122,8 @@ interface StullPlot3DProps {
   onProximityStats?: (stats: ProximityStats | null) => void
   // Callback to reset camera from inside (e.g. double-click)
   onResetCamera?: () => void
+  // Kiosk/booth mode — hides modebar, disables interactions
+  kioskMode?: boolean
 }
 
 type PlotData = any
@@ -478,6 +480,7 @@ export function StullPlot3D({
   hoveredNeighborId = null,
   onProximityStats,
   onResetCamera,
+  kioskMode = false,
 }: StullPlot3DProps) {
   const [PlotComponent, setPlotComponent] = useState<PlotComponentType | null>(null)
   const [plotError, setPlotError] = useState(false)
@@ -1460,11 +1463,11 @@ export function StullPlot3D({
   }, [setHoveredPoint])
 
   const config = useMemo(() => ({
-    displayModeBar: true,
+    displayModeBar: !kioskMode,
     modeBarButtonsToRemove: ['select2d', 'lasso2d', 'toImage'] as any[],
-    scrollZoom: true,
+    scrollZoom: !kioskMode,
     displaylogo: false,
-  }), [])
+  }), [kioskMode])
 
   // ─── Loading state ────────────────────────────────────────────
 

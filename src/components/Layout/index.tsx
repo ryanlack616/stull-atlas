@@ -14,6 +14,7 @@ import { GuidedTour, useTour } from '@/components/GuidedTour'
 import { useGlazeLoader } from '@/hooks'
 import { useOmniSearch } from '@/hooks'
 import { useOnlineStatus } from '@/hooks'
+import { useKioskMode } from '@/hooks'
 import { edition } from '@/edition'
 
 const OmniSearch = lazy(() => import('@/components/OmniSearch'))
@@ -32,6 +33,7 @@ export function Layout() {
   const location = useLocation()
   const { open: omniOpen, toggle: toggleOmni } = useOmniSearch()
   const { isOnline, hasUpdate, applyUpdate } = useOnlineStatus()
+  const kiosk = useKioskMode()
 
   // Close mobile menu on route change
   useEffect(() => { setMenuOpen(false) }, [location.pathname])
@@ -44,8 +46,9 @@ export function Layout() {
   }, [initialize])
 
   return (
-    <div className="app-layout">
+    <div className={`app-layout${kiosk.active ? ' kiosk-layout' : ''}`}>
       <a href="#main-content" className="skip-link">Skip to main content</a>
+      {!kiosk.active && (
       <header className="atlas-header" role="banner">
         <div className="header-left">
           <NavLink to="/" className="logo-link">
@@ -132,6 +135,7 @@ export function Layout() {
           </span>
         </div>
       </header>
+      )}
 
       {/* Offline / update banners */}
       {!isOnline && (
@@ -544,6 +548,14 @@ export function Layout() {
 
         .update-btn:hover {
           background: #2980b9;
+        }
+
+        /* ── Kiosk / booth mode ── */
+        .kiosk-layout .atlas-header {
+          display: none;
+        }
+        .kiosk-layout .page-content {
+          height: 100vh;
         }
       `}</style>
     </div>
