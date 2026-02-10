@@ -198,6 +198,47 @@ as edges, the whole dataset as a navigable graph you can fly through.
 
 ---
 
+## Maintenance & Agent Actions
+
+*Standing tasks the agent should evaluate and act on when triggers are met.
+These are not versioned features — they're hygiene items that keep the codebase
+healthy as features ship. The agent may execute any of these autonomously
+when the trigger condition is true.*
+
+### Component Extraction
+| Action | Trigger | Details |
+|--------|---------|---------|
+| Extract `<NearbyList>` component | `index.tsx` > 1600 lines (currently **1631**) | Move gallery grid, list view, photo filter, and carousel into `components/StullAtlas/NearbyList.tsx`. Wire via props/callbacks. Reduces index.tsx by ~300 lines. |
+| Extract `<ImageCarousel>` component | When `<NearbyList>` is extracted | Carousel logic (state, keyboard nav, lightbox) into its own file. Reusable for future gallery contexts. |
+
+### Image Resilience
+| Action | Trigger | Details |
+|--------|---------|---------|
+| Add `onError` fallback to all `<img>` tags | Any new `<img>` added without it | Replace broken images with surface-type badge placeholder. Prevents white rectangles when Glazy URLs 404. |
+| Validate image URLs at load time | Before next Gallery enhancement | Scan `glazes` Map on load, flag entries where `images[0]` returns 404. Cache results in sessionStorage. Log count to console. |
+
+### Performance
+| Action | Trigger | Details |
+|--------|---------|---------|
+| Memoize `glazes.get()` lookups in nearby list | Nearby list renders > 50 items | Wrap filtered nearby mapping in `useMemo` keyed on `[nearbyList, nearbyPhotoOnly, nearbySortMode]`. Currently re-creates on every render. |
+| Bundle size check | Before any new dependency added | Run `npx vite-bundle-visualizer` and compare against last snapshot. Plotly already dominates — new deps should add < 50 KB gzipped. |
+| Dead CSS audit | After extracting NearbyList | Grep for unused CSS classes in `explorer-styles.ts`. Remove orphans. |
+
+### Accessibility & UX
+| Action | Trigger | Details |
+|--------|---------|---------|
+| Mobile breakpoints for gallery | Before any public demo on mobile | Gallery grid → 2-wide at 768px, 1-wide at 480px. Carousel prev/next → swipe gesture. Lightbox → full-viewport. |
+| Keyboard nav for gallery grid | Before v3.6 ships | Arrow keys to move between gallery cards, Enter to select. Focus ring visible. Tab order: filter pills → view toggle → gallery cards. |
+| Carousel boundary tests | Next test-writing session | Unit tests for carousel: wrapping at boundaries, dot count, keyboard events, lightbox open/close. Add to `__tests__/`. |
+
+### Data Quality
+| Action | Trigger | Details |
+|--------|---------|---------|
+| Re-scrape Glazy for image URLs | When Gallery is demoed / marketed | Only ~13 glazes currently have images. A targeted scrape of Glazy photo pages would unlock the Gallery's full potential. Coordinate with `data/glazes/` loaders. |
+| Audit `GlazeRecipe` type coverage | Before v3.7 Constellations | Ensure all fields used by clustering, similarity, and gallery are typed and non-optional where expected. |
+
+---
+
 ## Version Summary
 
 | Version | Codename | Core Idea | Status |
