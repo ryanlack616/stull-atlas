@@ -1,0 +1,303 @@
+{
+  "$schema": "https://stullatlas.com/schemas/espg.v1.json",
+  "meta": {
+    "name": "Epistemic Safety Product Gates",
+    "version": "1.0.0",
+    "updated": "2026-02-10",
+    "axiom": "Belief ≠ truth; every belief has confidence, decay, and authority"
+  },
+
+  "principles": [
+    "Belief ≠ truth; every belief has confidence, decay, and authority",
+    "No silent assumptions",
+    "Irreversible actions require higher epistemic confidence",
+    "Unknowns must be named, bounded, and monitored"
+  ],
+
+  "gates": [
+    {
+      "id": 0,
+      "name": "Problem Legitimacy",
+      "question": "Do we know the problem actually exists?",
+      "required_evidence": [
+        "Written problem statement with falsifiable claims",
+        "At least one external signal (user, market, operational pain)",
+        "Counter-hypothesis explicitly documented"
+      ],
+      "epistemic_checks": [
+        "Confidence score assigned to problem existence",
+        "Known biases listed (founder bias, availability bias)"
+      ],
+      "do_not_proceed_if": [
+        "Problem is defined only by internal belief",
+        "No evidence survives a skeptical reading",
+        "\"Everyone knows this is a problem\" is the justification"
+      ],
+      "status": "passed",
+      "confidence": 0.95,
+      "evidence_notes": "Ceramicists need accessible chemistry tools. Validated by NCECA interest, Glazy user base, Insight-Live market existence."
+    },
+    {
+      "id": 1,
+      "name": "User & Stakeholder Reality",
+      "question": "Do we know who experiences the problem and how?",
+      "required_evidence": [
+        "Identified user classes with authority boundaries",
+        "Primary vs secondary users explicitly separated",
+        "Non-user stakeholders documented"
+      ],
+      "epistemic_checks": [
+        "Confidence per user class",
+        "Known blind spots logged"
+      ],
+      "do_not_proceed_if": [
+        "Users are hypothetical or composite",
+        "Authority over decisions is unclear",
+        "\"The user\" is singular and undifferentiated"
+      ],
+      "status": "passed",
+      "confidence": 0.85,
+      "evidence_notes": "4 user classes: hobby potters (free), studio potters (solo), professional ceramicists (pro), researchers/educators (atlas_3d/edu). Blind spot: researcher segment under-characterized."
+    },
+    {
+      "id": 2,
+      "name": "Requirements Truth",
+      "question": "Are requirements grounded in reality rather than desire?",
+      "required_evidence": [
+        "Functional requirements traceable to user evidence",
+        "Non-functional requirements stated explicitly",
+        "Explicit out-of-scope list"
+      ],
+      "epistemic_checks": [
+        "Each requirement tagged: observed / inferred / assumed",
+        "Assumptions have expiration dates"
+      ],
+      "do_not_proceed_if": [
+        "Requirements are aspirational",
+        "Performance/security/accessibility are implicit",
+        "Assumptions are untracked"
+      ],
+      "status": "passed",
+      "confidence": 0.80,
+      "evidence_notes": "Core (UMF calc, Stull chart, material DB) = observed. 3D explorer = inferred. AI suggestions = assumed."
+    },
+    {
+      "id": 3,
+      "name": "Feasibility & Capability",
+      "question": "Can this be built with known constraints?",
+      "required_evidence": [
+        "Capability map (what the system can / cannot do)",
+        "Dependency inventory with trust levels",
+        "Known hard limits documented"
+      ],
+      "epistemic_checks": [
+        "Confidence per dependency",
+        "Degradation paths defined"
+      ],
+      "do_not_proceed_if": [
+        "Core capability is unproven",
+        "Dependencies are \"probably fine\"",
+        "Failure modes are ignored"
+      ],
+      "status": "passed",
+      "confidence": 0.90,
+      "evidence_notes": "Plotly 3D proven. Supabase proven. Stripe proven. Netlify proven. No unproven core dependencies."
+    },
+    {
+      "id": 4,
+      "name": "Architectural Truth",
+      "question": "Does the architecture reflect operational reality?",
+      "required_evidence": [
+        "Explicit authority model (who decides truth?)",
+        "State ownership defined",
+        "Trust boundaries drawn"
+      ],
+      "epistemic_checks": [
+        "Belief vs world-truth separation enforced",
+        "One-way bridges explicitly marked"
+      ],
+      "do_not_proceed_if": [
+        "Components assume perfect knowledge",
+        "State synchronization is magical",
+        "Rollback is undefined"
+      ],
+      "status": "passed",
+      "confidence": 0.85,
+      "evidence_notes": "Client-side SPA + Supabase backend. State ownership clear. Trust boundary: Supabase RLS. Rollback: git revert + Netlify rollback."
+    },
+    {
+      "id": 5,
+      "name": "Implementation Safety",
+      "question": "Is code doing only what we believe it does?",
+      "required_evidence": [
+        "Tests tied to claims (not coverage)",
+        "Invariants asserted",
+        "Failure injection tests present"
+      ],
+      "epistemic_checks": [
+        "Untested beliefs listed",
+        "Test gaps acknowledged"
+      ],
+      "do_not_proceed_if": [
+        "Tests assert behavior, not meaning",
+        "Critical paths are unobservable",
+        "\"We'll test later\" is the plan"
+      ],
+      "status": "passed",
+      "confidence": 0.90,
+      "evidence_notes": "269/269 tests passing. 0 TS errors. Gap: no failure injection tests yet."
+    },
+    {
+      "id": 6,
+      "name": "Pre-Release Truth",
+      "question": "Does reality match our beliefs so far?",
+      "required_evidence": [
+        "Performance measured vs assumed",
+        "Security threat model exercised",
+        "Accessibility validated"
+      ],
+      "epistemic_checks": [
+        "Confidence deltas recorded",
+        "Surprises documented"
+      ],
+      "do_not_proceed_if": [
+        "Metrics contradict assumptions",
+        "Known issues are waived without mitigation",
+        "No rollback plan exists"
+      ],
+      "status": "partial",
+      "confidence": 0.60,
+      "evidence_notes": "Performance not load-tested. Supabase RLS needs audit. Accessibility not formally validated. Rollback plan exists (Netlify).",
+      "gaps": [
+        "No performance baseline established",
+        "No security audit of RLS policies",
+        "No WCAG compliance check"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Launch Authorization",
+      "question": "Are we justified in exposing others to this system?",
+      "required_evidence": [
+        "Monitoring in place for unknowns",
+        "Support and escalation defined",
+        "Communication plan prepared"
+      ],
+      "epistemic_checks": [
+        "Residual uncertainty acknowledged publicly (where appropriate)",
+        "Incident response confidence rated"
+      ],
+      "do_not_proceed_if": [
+        "No live observability",
+        "Failures would be silent",
+        "Users become unwitting testers"
+      ],
+      "status": "partial",
+      "confidence": 0.40,
+      "evidence_notes": "Only Netlify analytics. No error tracking. No incident response plan. Support = Ryan only.",
+      "gaps": [
+        "No Sentry or error tracking",
+        "No incident response runbook",
+        "Single point of failure: Ryan as sole support"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Operational Belief Management",
+      "question": "Are we updating beliefs from reality continuously?",
+      "required_evidence": [
+        "Telemetry tied to original assumptions",
+        "Alert thresholds justified",
+        "Drift detection implemented"
+      ],
+      "epistemic_checks": [
+        "Belief decay modeled",
+        "Stale assumptions flagged"
+      ],
+      "do_not_proceed_if": [
+        "Metrics are vanity",
+        "No feedback loop exists",
+        "Failures are discovered via users"
+      ],
+      "status": "not-started",
+      "confidence": 0.00,
+      "evidence_notes": "No telemetry. No belief decay modeling. No drift detection.",
+      "gaps": [
+        "No assumption-tied metrics",
+        "No feedback loop from production to beliefs",
+        "No drift detection"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Iteration & Change",
+      "question": "Are changes epistemically reversible?",
+      "required_evidence": [
+        "Change impact analysis",
+        "Backward compatibility strategy",
+        "Experiment isolation"
+      ],
+      "epistemic_checks": [
+        "Confidence reset on modified paths",
+        "Assumptions re-validated"
+      ],
+      "do_not_proceed_if": [
+        "Changes are global and irreversible",
+        "No rollback or feature flag exists",
+        "\"Small change\" is asserted, not proven"
+      ],
+      "status": "partial",
+      "confidence": 0.50,
+      "evidence_notes": "Git-level reversibility. No runtime feature flags. No experiment isolation.",
+      "gaps": [
+        "No feature flag system",
+        "No A/B testing infrastructure",
+        "No runtime kill switch"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Sunset & Exit",
+      "question": "Can we end this without epistemic harm?",
+      "required_evidence": [
+        "Data export & deletion verified",
+        "User transition plan",
+        "Knowledge archived"
+      ],
+      "epistemic_checks": [
+        "Residual obligations listed",
+        "Unknown consequences acknowledged"
+      ],
+      "do_not_proceed_if": [
+        "Users are trapped",
+        "Data fate is unclear",
+        "Institutional knowledge is lost"
+      ],
+      "status": "not-started",
+      "confidence": 0.00,
+      "evidence_notes": "No data export. No transition plan. No knowledge archive strategy.",
+      "gaps": [
+        "No user data export mechanism",
+        "No transition/migration plan",
+        "No knowledge archival process"
+      ]
+    }
+  ],
+
+  "evaluation_protocol": {
+    "steps": [
+      "Gather required evidence",
+      "Run epistemic checks",
+      "Evaluate DO-NOT-PROCEED conditions",
+      "If ANY do-not-proceed is TRUE → gate FAILS",
+      "Record confidence score, known gaps, and decision",
+      "Post to Context DB with gate_impact",
+      "Submit to Howell for final authorization (on irreversible gates)"
+    ],
+    "confidence_thresholds": {
+      "minimum_for_pass": 0.70,
+      "minimum_for_irreversible": 0.85,
+      "staleness_window_days": 30
+    }
+  }
+}

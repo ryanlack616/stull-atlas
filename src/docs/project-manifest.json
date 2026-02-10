@@ -1,0 +1,173 @@
+{
+  "$schema": "https://stullatlas.com/schemas/project-manifest.v1.json",
+  "meta": {
+    "project": "stull-atlas",
+    "version": "3.6.0",
+    "updated": "2026-02-10",
+    "agent": "Claude-Howell"
+  },
+
+  "phases": {
+    "develop": {
+      "status": "complete",
+      "description": "Feature code, tests, type-checking",
+      "gate": "269/269 tests pass, 0 TS errors in project files",
+      "artifacts": [
+        "src/domain/tier/tierGating.ts",
+        "src/infra/supabase/types.ts",
+        "src/pages/PricingPage.tsx",
+        "src/pages/NCECAPage.tsx",
+        "src/components/Auth/TierGate.tsx",
+        "src/components/Auth/UserMenu.tsx",
+        "src/hooks/useKioskMode.ts",
+        "src/components/StullAtlas/index.tsx",
+        "src/components/StullAtlas/StullPlot3D.tsx",
+        "src/components/StullAtlas/explorer-styles.ts",
+        "src/components/Layout/index.tsx"
+      ]
+    },
+
+    "integrate": {
+      "status": "blocked",
+      "description": "Wire code to external services",
+      "depends_on": "develop",
+      "tasks": [
+        {
+          "id": "stripe-atlas3d",
+          "action": "Create Stripe payment links for Atlas 3D tier",
+          "detail": "Monthly ($40) and Annual ($349). Set env vars VITE_STRIPE_LINK_ATLAS3D and VITE_STRIPE_LINK_ATLAS3D_ANNUAL in Netlify.",
+          "owner": "ryan",
+          "status": "not-started",
+          "blocking": true
+        },
+        {
+          "id": "supabase-enum",
+          "action": "Add atlas_3d to Supabase tier enum",
+          "detail": "Run: ALTER TYPE public.tier ADD VALUE 'atlas_3d';",
+          "owner": "ryan",
+          "status": "not-started",
+          "blocking": true
+        },
+        {
+          "id": "stripe-price-update",
+          "action": "Update existing Stripe prices (Solo $10/$89, Pro $25/$219)",
+          "detail": "Archive old price objects, create new ones, update env vars.",
+          "owner": "ryan",
+          "status": "not-started",
+          "blocking": false
+        }
+      ]
+    },
+
+    "deploy": {
+      "status": "not-started",
+      "description": "Push to production",
+      "depends_on": "integrate",
+      "tasks": [
+        {
+          "id": "git-push",
+          "action": "Push master to origin",
+          "detail": "git push origin master — triggers Netlify build",
+          "owner": "ryan",
+          "status": "not-started",
+          "blocking": true
+        },
+        {
+          "id": "verify-prod",
+          "action": "Smoke test production deployment",
+          "detail": "Check /#/pricing shows Atlas 3D, /#/?kiosk=1 works, tier gate prompts upgrade correctly.",
+          "owner": "ryan",
+          "status": "not-started",
+          "blocking": true
+        }
+      ]
+    },
+
+    "launch": {
+      "status": "not-started",
+      "description": "External assets and outreach for NCECA 2026",
+      "depends_on": "deploy",
+      "tasks": [
+        {
+          "id": "qr-code",
+          "action": "Generate QR code for handout card",
+          "detail": "Target URL: stullatlas.com/#/nceca — print at 300dpi, min 1.5in square.",
+          "owner": "ryan",
+          "status": "not-started",
+          "blocking": true
+        },
+        {
+          "id": "og-image",
+          "action": "Create og-image.png for social sharing",
+          "detail": "1200x630px, dark background, 3D explorer screenshot, 'Stull Atlas' branding.",
+          "owner": "agent",
+          "status": "not-started",
+          "blocking": false
+        },
+        {
+          "id": "permission-emails",
+          "action": "Send attribution/permission emails",
+          "detail": "Glazy (Matt Katz), Digitalfire (Tony Hansen), Stull estate. Templates in marketing/logo-permission-emails.md.",
+          "owner": "ryan",
+          "status": "not-started",
+          "blocking": true
+        },
+        {
+          "id": "domain-analytics",
+          "action": "Verify domain, email, and analytics",
+          "detail": "DNS, SSL, Google Analytics or Plausible, transactional email (Resend/Postmark).",
+          "owner": "ryan",
+          "status": "not-started",
+          "blocking": false
+        },
+        {
+          "id": "handout-print",
+          "action": "Print handout cards",
+          "detail": "Design in marketing/nceca-handout-card.html. Print 200+ copies on heavy cardstock.",
+          "owner": "ryan",
+          "status": "not-started",
+          "blocking": true
+        },
+        {
+          "id": "booth-hardware",
+          "action": "Booth monitor + laptop setup",
+          "detail": "External monitor for kiosk display. Load stullatlas.com/#/?kiosk=1, F11 fullscreen. Laptop for interactive demos.",
+          "owner": "ryan",
+          "status": "not-started",
+          "blocking": true
+        }
+      ]
+    }
+  },
+
+  "gaps": [
+    {
+      "between": ["develop", "integrate"],
+      "risk": "Code references env vars that don't exist yet",
+      "mitigation": "Stripe links fall back to '#' gracefully — no runtime error, just no-op button"
+    },
+    {
+      "between": ["develop", "integrate"],
+      "risk": "Supabase enum doesn't include atlas_3d — user assigned this tier gets rejected",
+      "mitigation": "FREE_UNTIL gate bypasses tier check through April 30. Migration must happen before May 1."
+    },
+    {
+      "between": ["deploy", "launch"],
+      "risk": "Site is live with new pricing but no printed materials / QR codes",
+      "mitigation": "NCECA page and pricing page are self-contained. Cards just accelerate discovery."
+    },
+    {
+      "between": ["integrate", "deploy"],
+      "risk": "Old Stripe prices still active — users buy at old rate",
+      "mitigation": "Archive old prices in Stripe dashboard before deploying new pricing page."
+    }
+  ],
+
+  "invariants": [
+    "269/269 tests pass on every commit",
+    "No TypeScript errors in src/ (excluding bridge/)",
+    "FREE_UNTIL = 2026-04-30 — all signed-in users get full access until then",
+    "Edition.allUnlocked bypasses all tier gating in Studio builds",
+    "Kiosk mode activates via ?kiosk=1 URL param, exits with ESC"
+  ]
+}

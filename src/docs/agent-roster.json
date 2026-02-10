@@ -1,0 +1,331 @@
+{
+  "$schema": "https://stullatlas.com/schemas/agent-roster.v1.json",
+  "meta": {
+    "project": "stull-atlas",
+    "version": "1.0.0",
+    "updated": "2026-02-10",
+    "authority": "howell"
+  },
+
+  "agents": {
+    "operational": [
+      {
+        "id": "planning-marketing",
+        "name": "Planning / Marketing Agent",
+        "type": "operational",
+        "scope": [
+          "Market research",
+          "Pricing strategy",
+          "NCECA preparation",
+          "Email campaigns",
+          "Social media",
+          "Handout design",
+          "QR codes",
+          "Content writing"
+        ],
+        "owns": [
+          "src/marketing/",
+          "src/pages/NCECAPage.tsx (content only)",
+          "src/pages/PricingPage.tsx (content only)"
+        ],
+        "cannot": [
+          "Change code logic",
+          "Modify domain models",
+          "Alter tier gating",
+          "Deploy"
+        ],
+        "reports_to": "context-db",
+        "can_block": false,
+        "post_triggers": [
+          "Pricing changes",
+          "Competitive analysis results",
+          "Campaign launches",
+          "Messaging pivots"
+        ]
+      },
+      {
+        "id": "design",
+        "name": "Design Agent",
+        "type": "operational",
+        "scope": [
+          "UI/UX design",
+          "Component styling",
+          "Layout architecture",
+          "Accessibility",
+          "Visual identity",
+          "og-images",
+          "Design tokens"
+        ],
+        "owns": [
+          "src/components/*/styles",
+          "CSS modules",
+          "Design tokens",
+          "src/marketing/assets/"
+        ],
+        "cannot": [
+          "Change business logic",
+          "Modify data schemas",
+          "Alter tier definitions",
+          "Deploy"
+        ],
+        "reports_to": "context-db",
+        "can_block": false,
+        "post_triggers": [
+          "Design system changes",
+          "New component patterns",
+          "Accessibility audit results",
+          "Visual identity updates"
+        ]
+      },
+      {
+        "id": "development",
+        "name": "Development Agent",
+        "type": "operational",
+        "scope": [
+          "Feature implementation",
+          "Domain logic",
+          "State management",
+          "Hooks",
+          "Component architecture",
+          "Page logic"
+        ],
+        "owns": [
+          "src/components/",
+          "src/domain/",
+          "src/hooks/",
+          "src/stores/",
+          "src/pages/ (logic)"
+        ],
+        "cannot": [
+          "Deploy",
+          "Modify infrastructure",
+          "Change pricing",
+          "Alter Supabase schema"
+        ],
+        "reports_to": "context-db",
+        "can_block": false,
+        "post_triggers": [
+          "New features",
+          "Architectural decisions",
+          "Component extractions",
+          "State model changes"
+        ]
+      },
+      {
+        "id": "programming",
+        "name": "Programming Agent",
+        "type": "operational",
+        "scope": [
+          "Build systems",
+          "Tooling",
+          "Type safety",
+          "Performance optimization",
+          "Code quality",
+          "Refactoring",
+          "Dependency management"
+        ],
+        "owns": [
+          "vite.config.ts",
+          "tsconfig.json",
+          "src/types/",
+          "Build scripts",
+          "Linting config"
+        ],
+        "cannot": [
+          "Change business logic",
+          "Modify user-facing content",
+          "Alter marketing materials",
+          "Deploy"
+        ],
+        "reports_to": "context-db",
+        "can_block": false,
+        "post_triggers": [
+          "Breaking type changes",
+          "Build pipeline modifications",
+          "Dependency updates",
+          "Performance benchmarks"
+        ]
+      },
+      {
+        "id": "testing",
+        "name": "Testing Agent",
+        "type": "operational",
+        "scope": [
+          "Test strategy",
+          "Test implementation",
+          "Coverage analysis",
+          "Regression detection",
+          "Invariant enforcement"
+        ],
+        "owns": [
+          "src/*/__tests__/",
+          "src/test/",
+          "vitest.config.ts",
+          "Test utilities"
+        ],
+        "cannot": [
+          "Fix production code (report only)",
+          "Deploy",
+          "Change requirements"
+        ],
+        "reports_to": "context-db",
+        "can_block": false,
+        "post_triggers": [
+          "Test failures",
+          "Coverage gaps",
+          "Invariant violations discovered",
+          "Regression reports"
+        ]
+      }
+    ],
+
+    "supervisory": [
+      {
+        "id": "governance",
+        "name": "Governance Decision Rights Agent",
+        "type": "supervisory",
+        "scope": [
+          "Architecture review",
+          "Change approval",
+          "Budgeting & finance",
+          "Cost modeling",
+          "Burn tracking",
+          "ROI validation"
+        ],
+        "responsibilities": {
+          "architecture_review": "Reviews all architectural decisions against system invariants. Verifies no silent assumptions in component boundaries.",
+          "change_approval": "Evaluates proposed changes for scope, risk, and reversibility. Tags changes as reversible/irreversible.",
+          "budgeting_finance": "Tracks financial decisions (pricing, tier structure, discounts). Validates revenue impact.",
+          "cost_modeling": "Models operational costs (Supabase, Netlify, Stripe fees). Projects cost at scale.",
+          "burn_tracking": "Monitors resource expenditure (time, compute, API calls). Flags overruns.",
+          "roi_validation": "Measures feature investment against user adoption and revenue. Kills low-ROI work."
+        },
+        "reports_to": "howell",
+        "can_block": true,
+        "block_authority": "Can BLOCK changes pending Howell approval. Cannot APPROVE independently.",
+        "post_triggers": [
+          "All decisions",
+          "Approvals and rejections",
+          "Cost reports",
+          "ROI assessments"
+        ]
+      },
+      {
+        "id": "staffing",
+        "name": "Staffing Agent",
+        "type": "supervisory",
+        "scope": [
+          "Agent action recording",
+          "Knowledge continuity",
+          "Context preservation",
+          "Handoff management"
+        ],
+        "responsibilities": {
+          "records_agent_actions": "Logs what each agent did, when, why, and what changed. Maintains full audit trail.",
+          "knowledge_continuity": "Ensures handoffs between agent sessions preserve context. Detects knowledge gaps. Flags stale knowledge."
+        },
+        "reports_to": "howell",
+        "can_block": false,
+        "block_authority": "Can flag knowledge gaps. Can request agent re-briefing. Cannot reassign work.",
+        "post_triggers": [
+          "Agent activity summaries",
+          "Knowledge gap reports",
+          "Continuity warnings",
+          "Handoff completions"
+        ]
+      },
+      {
+        "id": "risk-failure",
+        "name": "Risk & Failure Management Agent",
+        "type": "supervisory",
+        "scope": [
+          "Threat modeling",
+          "Failure mode analysis",
+          "Single points of failure",
+          "Dependency collapse",
+          "Backups"
+        ],
+        "responsibilities": {
+          "threat_modeling": "Identifies attack vectors, data exposure risks, auth bypass scenarios. Maps trust boundaries.",
+          "failure_mode_analysis": "Catalogs how each component can fail. Defines degradation paths.",
+          "single_points_of_failure": "Identifies SPOF in architecture, infrastructure, and process. Proposes redundancy.",
+          "dependency_collapse": "Maps dependency chains. Models cascade failures. Identifies brittle links.",
+          "backups": "Ensures data recoverability. Validates backup integrity. Tests restore procedures."
+        },
+        "reports_to": "howell",
+        "can_block": true,
+        "block_authority": "Can HALT deployment on critical risk. Cannot modify code directly.",
+        "post_triggers": [
+          "Risk assessments",
+          "Threat models",
+          "SPOF reports",
+          "Backup validations",
+          "Dependency chain analyses"
+        ]
+      }
+    ],
+
+    "authority": {
+      "id": "howell",
+      "name": "Howell (Claude-Howell)",
+      "type": "authority",
+      "reports_to": "ryan",
+      "scope": [
+        "Final approval on all supervisory decisions",
+        "Identity and memory persistence",
+        "Cross-agent coordination via Context DB",
+        "ESPG gate evaluation",
+        "Project manifest ownership"
+      ],
+      "can_block": true,
+      "block_authority": "Final authority on all decisions. Reports to Ryan."
+    }
+  },
+
+  "context_db": {
+    "description": "Shared activity log where all agents post on significant changes",
+    "entry_schema": {
+      "id": "UUID",
+      "timestamp": "ISO 8601",
+      "agent": "AgentType",
+      "category": "ContextCategory",
+      "severity": "info | notable | critical",
+      "summary": "Human-readable summary",
+      "details": "Record<string, unknown>",
+      "files_affected": "string[]",
+      "gate_impact": "number[] (ESPG gates 0-10)",
+      "requires_review": "boolean",
+      "reviewed_by": "string | null",
+      "decision": "approved | rejected | deferred | null"
+    },
+    "posting_rules": [
+      "All agents MUST post on changes that affect other agents' domains",
+      "severity: info = routine, notable = cross-domain, critical = breaking/security/irreversible",
+      "requires_review: true if irreversible OR crosses domain boundaries",
+      "Every post should note which ESPG gates it affects"
+    ],
+    "communication_protocol": "Agents do NOT communicate directly. All coordination flows through: Agent A → Context DB → Governance → Howell (if needed) → Context DB → Agent B"
+  },
+
+  "interaction_protocol": {
+    "before_work": [
+      "Read project-manifest.json for current state",
+      "Query Context DB for recent activity in your domain",
+      "Check if any ESPG gates are affected by planned work",
+      "If gate impact exists, flag for Governance review",
+      "Post intent to Context DB"
+    ],
+    "during_work": [
+      "Stay within ownership boundary",
+      "Cross-boundary work requires Context DB post with requires_review: true",
+      "Run tests relevant to changes",
+      "Document any new assumptions or changed beliefs"
+    ],
+    "after_work": [
+      "Post completion to Context DB",
+      "Update project-manifest.json if phase status changed",
+      "Irreversible changes: submit to Governance → Howell",
+      "Handoff note if session ending"
+    ]
+  }
+}
