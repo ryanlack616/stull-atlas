@@ -270,11 +270,10 @@ export function AboutPage() {
           </ul>
         </section>
 
-        {edition.id === 'studio' && (
-          <section className="about-section studio-appreciation">
+        <section className="about-section studio-appreciation">
             <h2>Standing on Shoulders</h2>
             <p className="appreciation-intro">
-              Stull Atlas Studio wouldn't exist without the generosity of the ceramics 
+              Stull Atlas wouldn't exist without the generosity of the ceramics 
               community. Two projects in particular made this tool possible — both built by 
               individuals who chose to share their life's work openly.
             </p>
@@ -330,10 +329,9 @@ export function AboutPage() {
 
             <p className="appreciation-closing">
               These two projects represent decades of work given freely to the ceramics community. 
-              Stull Atlas Studio is proud to stand on their shoulders.
+              Stull Atlas is proud to stand on their shoulders.
             </p>
           </section>
-        )}
 
         <section className="about-section about-footer">
           <p>

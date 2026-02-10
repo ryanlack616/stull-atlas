@@ -11,6 +11,10 @@ import { usePageTitle } from '@/hooks'
 import { useAuthStore, isFreePeriodActive } from '@/stores'
 import { AuthModal } from '@/components/Auth'
 
+import screenshotExplorer from '@/marketing/assets/screenshots/02-explorer-main.png'
+import screenshotDetail from '@/marketing/assets/screenshots/03-explorer-detail.png'
+import screenshotCalculators from '@/marketing/assets/screenshots/05-calculators.png'
+
 export function NCECAPage() {
   usePageTitle('NCECA 2026 — Stull Atlas')
   const { user } = useAuthStore()
@@ -86,6 +90,24 @@ export function NCECAPage() {
               <p>Describe what you want in plain English. The AI engine recommends recipes.</p>
               <Link to="/suggest">Open Suggestions</Link>
             </div>
+          </div>
+        </section>
+
+        <section className="nceca-screenshots">
+          <h2>See It in Action</h2>
+          <div className="screenshot-gallery">
+            <figure className="screenshot-item">
+              <img src={screenshotExplorer} alt="Stull Atlas Explorer — interactive Stull chart with 3,200+ glazes" loading="lazy" />
+              <figcaption>Interactive Stull chart with 3,200+ glazes — filter by cone, surface, color, and more</figcaption>
+            </figure>
+            <figure className="screenshot-item">
+              <img src={screenshotDetail} alt="Stull Atlas glaze detail — UMF analysis, recipe breakdown, and similar glazes" loading="lazy" />
+              <figcaption>Glaze detail panel — UMF analysis, recipe breakdown, and related glazes</figcaption>
+            </figure>
+            <figure className="screenshot-item">
+              <img src={screenshotCalculators} alt="Stull Atlas calculators — UMF, line blends, triaxial, and optimizer" loading="lazy" />
+              <figcaption>Calculators: UMF converter, blend tools, optimizer, and AI suggestions</figcaption>
+            </figure>
           </div>
         </section>
 
@@ -268,6 +290,44 @@ export function NCECAPage() {
 
         .feature-item a:hover {
           text-decoration: underline;
+        }
+
+        .nceca-screenshots {
+          margin-bottom: 48px;
+        }
+
+        .nceca-screenshots h2 {
+          font-size: 22px;
+          font-weight: 600;
+          margin: 0 0 20px;
+          color: var(--text-bright);
+        }
+
+        .screenshot-gallery {
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+        }
+
+        .screenshot-item {
+          margin: 0;
+          border-radius: 10px;
+          overflow: hidden;
+          border: 1px solid var(--border-primary);
+          background: var(--bg-secondary);
+        }
+
+        .screenshot-item img {
+          width: 100%;
+          display: block;
+          border-bottom: 1px solid var(--border-primary);
+        }
+
+        .screenshot-item figcaption {
+          padding: 12px 16px;
+          font-size: 13px;
+          color: var(--text-secondary);
+          line-height: 1.4;
         }
 
         .nceca-deal {

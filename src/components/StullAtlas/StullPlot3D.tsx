@@ -43,6 +43,27 @@ export interface LightPosition {
   z: number
 }
 
+export interface ProximityNeighbor {
+  id: string
+  name: string
+  distance: number // normalized Euclidean distance
+  x: number
+  y: number
+  z: number
+  cone: number | null
+  surfaceType: string
+  // Per-axis similarity (0 = identical, 1 = max range apart)
+  dx: number  // normalized delta on SiO2
+  dy: number  // normalized delta on Al2O3
+  dz: number  // normalized delta on Z-axis
+}
+
+export interface ProximityStats {
+  visible: number
+  total: number
+  nearby: ProximityNeighbor[]
+}
+
 interface StullPlot3DProps {
   zAxis?: ZAxisOption
   colorBy?: ColorByOption
@@ -63,6 +84,21 @@ interface StullPlot3DProps {
   lightPosition?: LightPosition
   // Callback when fitted surface grid updates (for export)
   onSurfaceGridReady?: (grid: SurfaceGrid | null, scatterPoints: { x: number; y: number; z: number; name: string }[]) => void
+  // 3D-specific controls
+  autoRotate?: boolean
+  autoRotateSpeed?: number
+  pointSize?: number
+  zStretch?: number
+  // Proximity filter — only show glazes within this normalized radius of the selected glaze
+  proximityRadius?: number | null
+  // Override which glaze ID is the center of the proximity sphere ("pin" feature)
+  proximityCenterId?: string | null
+  // Glaze ID hovered in the nearby list — show highlight marker in 3D
+  hoveredNeighborId?: string | null
+  // Callback reporting proximity filter stats (visible count, total count, ranked nearby list)
+  onProximityStats?: (stats: ProximityStats | null) => void
+  // Callback to reset camera from inside (e.g. double-click)
+  onResetCamera?: () => void
 }
 
 type PlotData = any
@@ -408,15 +444,27 @@ export function StullPlot3D({
   perspective = 0.5,
   lightPosition,
   onSurfaceGridReady,
+  autoRotate = false,
+  autoRotateSpeed = 0.5,
+  pointSize = 2.5,
+  zStretch = 0.8,
+  proximityRadius = null,
+  proximityCenterId = null,
+  hoveredNeighborId = null,
+  onProximityStats,
+  onResetCamera,
 }: StullPlot3DProps) {
   const [PlotComponent, setPlotComponent] = useState<PlotComponentType | null>(null)
   const [plotError, setPlotError] = useState(false)
   const [loadSlow, setLoadSlow] = useState(false)
   const [retryCount, setRetryCount] = useState(0)
   const plotRef = useRef<any>(null)
+  const plotlyRef = useRef<any>(null) // Plotly module for programmatic calls
 
   // Track user camera so selecting a glaze doesn't reset the view
   const userCameraRef = useRef<any>(null)
+  const rotationAngleRef = useRef(0)
+  const animFrameRef = useRef<number | null>(null)
 
   useEffect(() => {
     let active = true
@@ -426,7 +474,9 @@ export function StullPlot3D({
     import('plotly.js-gl3d-dist-min').then((mod) => {
       if (!active) return
       clearTimeout(slowTimer)
-      const Plot = createPlotlyComponent((mod as any).default ?? mod)
+      const Plotly = (mod as any).default ?? mod
+      plotlyRef.current = Plotly
+      const Plot = createPlotlyComponent(Plotly)
       setPlotComponent(() => Plot)
     }).catch(() => {
       if (!active) return
@@ -490,16 +540,130 @@ export function StullPlot3D({
       }
 
       return { ...p, z }
-    })
+    }).filter(p => isFinite(p.z))
   }, [filteredPoints, glazes, zAxis])
+
+  // ─── Proximity filter ─────────────────────────────────────────
+  // Normalize each axis to 0-1 based on data range, then Euclidean distance
+
+  const { visibleData, proximityCenter, axisRanges, nearby } = useMemo(() => {
+    if (proximityRadius == null || !selectedGlaze || plotData.length === 0) {
+      return { visibleData: plotData, proximityCenter: null, axisRanges: null, nearby: [] as ProximityNeighbor[] }
+    }
+
+    // Find center point — use pinned center if provided, else selected glaze
+    const centerId = proximityCenterId ?? selectedGlaze.id
+    const center = plotData.find(p => p.id === centerId)
+    if (!center) {
+      return { visibleData: plotData, proximityCenter: null, axisRanges: null, nearby: [] as ProximityNeighbor[] }
+    }
+
+    // Compute axis ranges for normalization (use reduce to avoid stack overflow on large datasets)
+    let xMin = Infinity, xMax = -Infinity
+    let yMin = Infinity, yMax = -Infinity
+    let zMin_ = Infinity, zMax_ = -Infinity
+    for (const p of plotData) {
+      if (p.x < xMin) xMin = p.x
+      if (p.x > xMax) xMax = p.x
+      if (p.y < yMin) yMin = p.y
+      if (p.y > yMax) yMax = p.y
+      if (isFinite(p.z)) {
+        if (p.z < zMin_) zMin_ = p.z
+        if (p.z > zMax_) zMax_ = p.z
+      }
+    }
+    const xRange = Math.max(xMax - xMin, 0.001)
+    const yRange = Math.max(yMax - yMin, 0.001)
+    const zRange_ = Math.max(zMin_ < Infinity ? zMax_ - zMin_ : 1, 0.001)
+    const ranges = { x: xRange, y: yRange, z: zRange_ }
+
+    const filtered: typeof plotData = []
+    const distances: { point: typeof plotData[0]; dist: number; dx: number; dy: number; dz: number }[] = []
+
+    for (const p of plotData) {
+      const dx = (p.x - center.x) / ranges.x
+      const dy = (p.y - center.y) / ranges.y
+      const dz = (p.z - center.z) / ranges.z
+      const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
+      if (dist <= proximityRadius) {
+        filtered.push(p)
+        if (p.id !== center.id) {
+          distances.push({ point: p, dist, dx: Math.abs(dx), dy: Math.abs(dy), dz: Math.abs(dz) })
+        }
+      }
+    }
+
+    // Always include the center point
+    if (!filtered.find(p => p.id === center.id)) {
+      filtered.push(center)
+    }
+
+    // Sort by distance for the ranked list
+    distances.sort((a, b) => a.dist - b.dist)
+    const nearby: ProximityNeighbor[] = distances.slice(0, 50).map(d => ({
+      id: d.point.id,
+      name: d.point.name,
+      distance: d.dist,
+      x: d.point.x,
+      y: d.point.y,
+      z: d.point.z,
+      cone: d.point.cone,
+      surfaceType: d.point.surfaceType ?? 'unknown',
+      dx: d.dx,
+      dy: d.dy,
+      dz: d.dz,
+    }))
+
+    return {
+      visibleData: filtered,
+      proximityCenter: center,
+      axisRanges: ranges,
+      nearby,
+    }
+  }, [plotData, selectedGlaze, proximityRadius, proximityCenterId])
+
+  // Report proximity stats to parent
+  useEffect(() => {
+    if (proximityRadius != null && proximityCenter) {
+      onProximityStats?.({ visible: visibleData.length, total: plotData.length, nearby })
+    } else {
+      onProximityStats?.(null)
+    }
+  }, [visibleData.length, plotData.length, proximityRadius, proximityCenter, nearby, onProximityStats])
+
+  // ─── Stable color range from full dataset ─────────────────────
+  // Prevents color scale from shifting when proximity filter changes the visible subset
+
+  const colorRange = useMemo(() => {
+    if (colorBy === 'cone' || colorBy === 'glaze_type') return null
+    let min = Infinity, max = -Infinity
+    for (const p of plotData) {
+      let v: number
+      switch (colorBy) {
+        case 'z_axis': v = p.z; break
+        case 'surface': v = surfaceToNum(p.surfaceType); break
+        case 'source': v = sourceToNum(p.source); break
+        case 'flux_ratio': v = p.fluxRatio; break
+        case 'confidence': v = confToNum(p.confidence); break
+        case 'boron': v = p.boron; break
+        default: v = 0
+      }
+      if (isFinite(v)) {
+        if (v < min) min = v
+        if (v > max) max = v
+      }
+    }
+    if (min === Infinity) return null
+    return { min, max: max === min ? min + 1 : max }
+  }, [plotData, colorBy])
 
   // ─── Color values ─────────────────────────────────────────────
 
   const colorValues = useMemo(() => {
     if (colorBy === 'glaze_type') {
-      return plotData.map(p => glazeTypeColor(p.glazeTypeId))
+      return visibleData.map(p => glazeTypeColor(p.glazeTypeId))
     }
-    return plotData.map(p => {
+    return visibleData.map(p => {
       switch (colorBy) {
         case 'z_axis': return p.z
         case 'cone': return p.cone ?? 6
@@ -512,15 +676,20 @@ export function StullPlot3D({
       }
     })
   },
-  [plotData, colorBy])
+  [visibleData, colorBy])
 
   // ─── Z range and floor ────────────────────────────────────────
 
   const zRange = useMemo(() => {
-    const zs = plotData.map(p => p.z).filter(z => isFinite(z) && !isNaN(z))
-    if (zs.length === 0) return { min: 0, max: 1 }
-    const min = Math.min(...zs)
-    const max = Math.max(...zs)
+    let min = Infinity, max = -Infinity
+    for (const p of plotData) {
+      const z = p.z
+      if (isFinite(z) && !isNaN(z)) {
+        if (z < min) min = z
+        if (z > max) max = z
+      }
+    }
+    if (min === Infinity) return { min: 0, max: 1 }
     return { min, max: max === min ? min + 1 : max }
   }, [plotData])
 
@@ -552,20 +721,20 @@ export function StullPlot3D({
     return {
       type: 'scatter3d' as const,
       mode: 'markers' as const,
-      x: plotData.map(p => p.x),
-      y: plotData.map(p => p.y),
-      z: plotData.map(p => p.z),
-      customdata: plotData.map(p => p.id),
-      text: plotData.map(p => p.name),
+      x: visibleData.map(p => p.x),
+      y: visibleData.map(p => p.y),
+      z: visibleData.map(p => p.z),
+      customdata: visibleData.map(p => p.id),
+      text: visibleData.map(p => p.name),
       marker: {
-        size: 2.5,
+        size: pointSize,
         opacity: showSurface ? 0.65 : 0.8,
         color: colorValues,
         ...(colorBy === 'glaze_type' ? {} : {
           colorscale: isCone ? CONE_COLORSCALE : (COLOR_SCALES[colorBy] || 'Viridis'),
           reversescale: false,
-          cmin: isCone ? -4 : undefined,
-          cmax: isCone ? 10 : undefined,
+          cmin: isCone ? -4 : colorRange?.min,
+          cmax: isCone ? 10 : colorRange?.max,
           colorbar: {
             title: colorBy === 'z_axis' ? zAxisLabel(zAxis) : getColorBarTitle(colorBy),
             thickness: 15,
@@ -577,22 +746,28 @@ export function StullPlot3D({
         line: { width: 0 },
       },
       hoverinfo: 'text' as const,
-      hovertemplate:
-        '<b>%{text}</b><br>' +
-        'SiO\u2082: %{x:.2f}<br>' +
-        'Al\u2082O\u2083: %{y:.2f}<br>' +
-        `${zAxisLabel(zAxis)}: %{z:.3f}<br>` +
-        '<extra></extra>',
+      hovertemplate: visibleData.map(p => {
+        const parts = [
+          `<b>${p.name}</b>`,
+          `SiO\u2082: ${p.x.toFixed(2)}`,
+          `Al\u2082O\u2083: ${p.y.toFixed(2)}`,
+          `${zAxisLabel(zAxis)}: ${zAxis === 'cone' ? p.z : p.z.toFixed(3)}`,
+        ]
+        if (p.cone != null) parts.push(`Cone: ${p.cone}`)
+        if (p.surfaceType && p.surfaceType !== 'unknown') parts.push(`Surface: ${p.surfaceType}`)
+        if (p.source && p.source !== 'unknown') parts.push(`Source: ${p.source}`)
+        return parts.join('<br>') + '<extra></extra>'
+      }),
       name: 'Glazes',
       showlegend: false,
     }
-  }, [plotData, colorValues, colorBy, zAxis, showSurface])
+  }, [visibleData, colorValues, colorBy, colorRange, zAxis, showSurface, pointSize])
 
   // ─── Selected glaze highlight ─────────────────────────────────
 
   const selectedTrace = useMemo((): PlotData | null => {
     if (!selectedGlaze) return null
-    const match = plotData.find(p => p.id === selectedGlaze.id)
+    const match = visibleData.find(p => p.id === selectedGlaze.id)
     if (!match) return null
 
     return {
@@ -613,13 +788,13 @@ export function StullPlot3D({
       name: 'Selected',
       showlegend: false,
     }
-  }, [selectedGlaze, plotData])
+  }, [selectedGlaze, visibleData])
 
   // ─── Selected glaze drop line ─────────────────────────────────
 
   const selectedDropLine = useMemo((): PlotData | null => {
     if (!selectedGlaze) return null
-    const match = plotData.find(p => p.id === selectedGlaze.id)
+    const match = visibleData.find(p => p.id === selectedGlaze.id)
     if (!match) return null
 
     return {
@@ -633,7 +808,7 @@ export function StullPlot3D({
       showlegend: false,
       name: 'selected-drop',
     }
-  }, [selectedGlaze, plotData, zFloor])
+  }, [selectedGlaze, visibleData, zFloor])
 
   // ─── Blend overlay ────────────────────────────────────────────
 
@@ -690,7 +865,7 @@ export function StullPlot3D({
 
   const highlightTrace = useMemo((): PlotData | null => {
     if (!highlightPointIds || highlightPointIds.length === 0) return null
-    const highlighted = plotData.filter(p => highlightPointIds.includes(p.id))
+    const highlighted = visibleData.filter(p => highlightPointIds.includes(p.id))
     if (highlighted.length === 0) return null
 
     return {
@@ -716,7 +891,7 @@ export function StullPlot3D({
       name: 'Highlighted',
       showlegend: false,
     }
-  }, [highlightPointIds, plotData, zAxis])
+  }, [highlightPointIds, visibleData, zAxis])
 
   // ─── Void highlight sphere ────────────────────────────────────
 
@@ -733,13 +908,13 @@ export function StullPlot3D({
   // ─── Smart drop lines ────────────────────────────────────────
 
   const dropLines = useMemo((): PlotData | null => {
-    if (plotData.length > 300) return null
+    if (visibleData.length > 300) return null
 
     const xs: (number | null)[] = []
     const ys: (number | null)[] = []
     const zs: (number | null)[] = []
 
-    for (const p of plotData) {
+    for (const p of visibleData) {
       xs.push(p.x, p.x, null)
       ys.push(p.y, p.y, null)
       zs.push(p.z, zFloor, null)
@@ -754,7 +929,7 @@ export function StullPlot3D({
       showlegend: false,
       name: 'droplines',
     }
-  }, [plotData, zFloor])
+  }, [visibleData, zFloor])
 
   // ─── Floor region traces ──────────────────────────────────────
 
@@ -777,6 +952,65 @@ export function StullPlot3D({
     name: 'labels',
   }), [zFloor, plotColors])
 
+  // ─── Proximity sphere wireframe ─────────────────────────────
+
+  const proximitySphereTrace = useMemo((): PlotData | null => {
+    if (!proximityCenter || !axisRanges || proximityRadius == null) return null
+
+    const N = 24 // meridians / parallels
+    const cx = proximityCenter.x
+    const cy = proximityCenter.y
+    const cz = proximityCenter.z
+    const rx = proximityRadius * axisRanges.x
+    const ry = proximityRadius * axisRanges.y
+    const rz = proximityRadius * axisRanges.z
+
+    const xs: (number | null)[] = []
+    const ys: (number | null)[] = []
+    const zs: (number | null)[] = []
+
+    // Latitude rings (horizontal circles)
+    for (let i = 0; i <= N; i += 3) {
+      const phi = (Math.PI * i) / N - Math.PI / 2
+      const cosPhi = Math.cos(phi)
+      const sinPhi = Math.sin(phi)
+      for (let j = 0; j <= N; j++) {
+        const theta = (2 * Math.PI * j) / N
+        xs.push(cx + rx * cosPhi * Math.cos(theta))
+        ys.push(cy + ry * cosPhi * Math.sin(theta))
+        zs.push(cz + rz * sinPhi)
+      }
+      xs.push(null); ys.push(null); zs.push(null) // break line
+    }
+
+    // Longitude rings (vertical circles)
+    for (let j = 0; j < N; j += 3) {
+      const theta = (2 * Math.PI * j) / N
+      const cosTheta = Math.cos(theta)
+      const sinTheta = Math.sin(theta)
+      for (let i = 0; i <= N; i++) {
+        const phi = (Math.PI * i) / N - Math.PI / 2
+        xs.push(cx + rx * Math.cos(phi) * cosTheta)
+        ys.push(cy + ry * Math.cos(phi) * sinTheta)
+        zs.push(cz + rz * Math.sin(phi))
+      }
+      xs.push(null); ys.push(null); zs.push(null)
+    }
+
+    return {
+      type: 'scatter3d',
+      mode: 'lines',
+      x: xs,
+      y: ys,
+      z: zs,
+      line: { color: 'rgba(255,165,0,0.35)', width: 1.5 },
+      hoverinfo: 'skip',
+      showlegend: false,
+      name: 'proximity-sphere',
+      connectgaps: false,
+    } as unknown as PlotData
+  }, [proximityCenter, axisRanges, proximityRadius])
+
   // ─── Assemble all traces ──────────────────────────────────────
 
   const traces = useMemo(() => {
@@ -790,7 +1024,12 @@ export function StullPlot3D({
     if (dropLines) t.push(dropLines)
 
     if (surfaceGrid && showSurface) {
-      t.push(buildSurfaceTrace(surfaceGrid, zAxis, surfaceOpacity, isDark, lightPosition))
+      const proximityActive = proximityRadius != null && visibleData.length < plotData.length
+      t.push(buildSurfaceTrace(
+        surfaceGrid, zAxis,
+        proximityActive ? Math.min(surfaceOpacity, 0.15) : surfaceOpacity,
+        isDark, lightPosition,
+      ))
     }
 
     t.push(scatterTrace)
@@ -800,13 +1039,75 @@ export function StullPlot3D({
     if (blendTrace) t.push(blendTrace)
     if (selectedTrace) t.push(selectedTrace)
     if (selectedDropLine) t.push(selectedDropLine)
+    if (proximitySphereTrace) t.push(proximitySphereTrace)
+
+    // Distance lines from center to top neighbors
+    if (proximityCenter && nearby.length > 0) {
+      const topN = nearby.slice(0, 8) // lines to 8 nearest
+      const lineXs: (number | null)[] = []
+      const lineYs: (number | null)[] = []
+      const lineZs: (number | null)[] = []
+      for (const n of topN) {
+        lineXs.push(proximityCenter.x, n.x, null)
+        lineYs.push(proximityCenter.y, n.y, null)
+        lineZs.push(proximityCenter.z, n.z, null)
+      }
+      t.push({
+        type: 'scatter3d',
+        mode: 'lines',
+        x: lineXs, y: lineYs, z: lineZs,
+        line: { color: 'rgba(250, 204, 21, 0.25)', width: 1.5, dash: 'dot' },
+        hoverinfo: 'skip',
+        showlegend: false,
+        name: 'proximity-lines',
+        connectgaps: false,
+      } as unknown as PlotData)
+    }
+
+    // Hovered neighbor cross-highlight
+    if (hoveredNeighborId) {
+      const hovered = visibleData.find(p => p.id === hoveredNeighborId)
+      if (hovered) {
+        t.push({
+          type: 'scatter3d' as const,
+          mode: 'markers' as const,
+          x: [hovered.x],
+          y: [hovered.y],
+          z: [hovered.z],
+          text: [hovered.name],
+          marker: {
+            size: 12,
+            symbol: 'circle',
+            color: 'rgba(250, 204, 21, 0.2)',
+            line: { width: 2.5, color: '#facc15' },
+          },
+          hoverinfo: 'skip' as const,
+          showlegend: false,
+          name: 'hovered-neighbor',
+        })
+        // Drop line for hovered neighbor
+        t.push({
+          type: 'scatter3d' as const,
+          mode: 'lines' as const,
+          x: [hovered.x, hovered.x],
+          y: [hovered.y, hovered.y],
+          z: [hovered.z, zFloor],
+          line: { color: 'rgba(250, 204, 21, 0.4)', width: 1.5, dash: 'dot' as const },
+          hoverinfo: 'skip' as const,
+          showlegend: false,
+          name: 'hovered-drop',
+        })
+      }
+    }
 
     return t
   }, [
     regionTraces, tempContours, qLineTrace, regionLabels,
     dropLines, surfaceGrid, showSurface, surfaceOpacity, zAxis, isDark, lightPosition,
     scatterTrace, highlightTrace, voidTrace, blendTrace,
-    selectedTrace, selectedDropLine,
+    selectedTrace, selectedDropLine, proximitySphereTrace,
+    proximityRadius, visibleData.length, plotData.length,
+    proximityCenter, nearby, hoveredNeighborId, zFloor,
   ])
 
   // ─── Layout ───────────────────────────────────────────────────
@@ -819,6 +1120,74 @@ export function StullPlot3D({
   useEffect(() => {
     userCameraRef.current = null
   }, [cameraPreset, zoom])
+
+  // ─── Auto-rotate turntable ────────────────────────────────────
+
+  useEffect(() => {
+    if (!autoRotate) {
+      if (animFrameRef.current) {
+        cancelAnimationFrame(animFrameRef.current)
+        animFrameRef.current = null
+      }
+      return
+    }
+
+    let lastTime = performance.now()
+
+    const tick = (now: number) => {
+      const el = plotRef.current?.el
+      const Plotly = plotlyRef.current
+
+      // Poll until Plotly DOM is ready (handles toggling rotate before load)
+      if (!el || !Plotly) {
+        lastTime = now // keep timer current to avoid angle jump when ready
+        animFrameRef.current = requestAnimationFrame(tick)
+        return
+      }
+
+      const dt = (now - lastTime) / 1000
+      lastTime = now
+      rotationAngleRef.current += autoRotateSpeed * dt * 0.5
+
+      const angle = rotationAngleRef.current
+      const radius = 2.5 / zoom
+      const eye = {
+        x: Math.cos(angle) * radius,
+        y: Math.sin(angle) * radius,
+        z: 1.2 / zoom,
+      }
+
+      try {
+        Plotly.relayout(el, {
+          'scene.camera.eye': eye,
+          'scene.camera.up': { x: 0, y: 0, z: 1 },
+        })
+      } catch { /* element detached or not ready */ }
+
+      animFrameRef.current = requestAnimationFrame(tick)
+    }
+
+    animFrameRef.current = requestAnimationFrame(tick)
+
+    return () => {
+      if (animFrameRef.current) {
+        cancelAnimationFrame(animFrameRef.current)
+        animFrameRef.current = null
+      }
+    }
+  }, [autoRotate, autoRotateSpeed, zoom])
+
+  // Stop auto-rotate when user manually orbits
+  const handleRelayoutWrapped = useCallback((update: any) => {
+    const cam = update?.['scene.camera']
+    if (cam && !autoRotate) {
+      userCameraRef.current = cam
+    }
+    // If user manually drags while auto-rotating, capture the angle
+    if (cam?.eye && autoRotate) {
+      rotationAngleRef.current = Math.atan2(cam.eye.y, cam.eye.x)
+    }
+  }, [autoRotate])
 
   // Perspective projection config (Plotly uses "projection" inside camera)
   const cameraWithProjection = useMemo(() => ({
@@ -856,7 +1225,7 @@ export function StullPlot3D({
       bgcolor: plotColors.bg,
       camera: cameraWithProjection,
       aspectmode: 'manual' as const,
-      aspectratio: { x: 2, y: 1, z: 0.8 },
+      aspectratio: { x: 2, y: 1, z: zStretch },
     },
     paper_bgcolor: plotColors.paper,
     font: { color: plotColors.font },
@@ -864,21 +1233,16 @@ export function StullPlot3D({
     hovermode: 'closest' as const,
     showlegend: false,
     uirevision: 'stull3d',
-  }), [zAxis, plotColors, cameraWithProjection])
+  }), [zAxis, plotColors, cameraWithProjection, zStretch])
 
   // ─── Event handlers ───────────────────────────────────────────
 
-  // Capture user's manual camera changes (orbit, pan, zoom)
-  const handleRelayout = useCallback((update: any) => {
-    const cam = update?.['scene.camera']
-    if (cam) {
-      userCameraRef.current = cam
-    }
-  }, [])
+  // Capture user's manual camera changes — handled in handleRelayoutWrapped above
 
   const handleClick = useCallback((event: any) => {
     const point = event.points?.[0]
-    if (point?.customdata) {
+    // Only select from scatter traces (not surface/mesh/region traces)
+    if (point?.customdata && point?.data?.type === 'scatter3d' && point?.data?.mode === 'markers') {
       const glaze = useGlazeStore.getState().glazes.get(point.customdata)
       if (glaze) setSelectedGlaze(glaze)
     }
@@ -886,28 +1250,33 @@ export function StullPlot3D({
 
   const handleHover = useCallback((event: any) => {
     const point = event.points?.[0]
-    if (point?.customdata) {
-      setHoveredPoint({
-        id: point.customdata,
-        name: point.text,
-        source: 'unknown',
-        x: point.x,
-        y: point.y,
-        cone: null,
-        surfaceType: 'unknown',
-        fluxRatio: 0,
-        boron: 0,
-        confidence: 'inferred',
-        glazeTypeId: null
-      })
+    if (point?.customdata && point?.data?.type === 'scatter3d' && point?.data?.mode === 'markers') {
+      const glaze = useGlazeStore.getState().glazes.get(point.customdata)
+      if (glaze) {
+        const coneVal = glaze.coneRange?.[0]
+        setHoveredPoint({
+          id: point.customdata,
+          name: glaze.name,
+          source: glaze.source ?? 'unknown',
+          x: point.x,
+          y: point.y,
+          cone: typeof coneVal === 'number' ? coneVal : null,
+          surfaceType: glaze.surfaceType ?? 'unknown',
+          fluxRatio: glaze.umf?._meta?.R2O_RO_ratio ?? 0,
+          boron: glaze.umf?.B2O3?.value ?? 0,
+          confidence: glaze.umfConfidence ?? 'inferred',
+          glazeTypeId: glaze.glazeTypeId ?? null
+        })
+      }
     }
   }, [setHoveredPoint])
 
-  const config = {
+  const config = useMemo(() => ({
     displayModeBar: true,
-    modeBarButtonsToRemove: ['select2d', 'lasso2d'] as any[],
+    modeBarButtonsToRemove: ['select2d', 'lasso2d', 'toImage'] as any[],
     scrollZoom: true,
-  }
+    displaylogo: false,
+  }), [])
 
   // ─── Loading state ────────────────────────────────────────────
 
@@ -955,7 +1324,7 @@ export function StullPlot3D({
       config={config}
       onClick={handleClick}
       onHover={handleHover}
-      onRelayout={handleRelayout}
+      onRelayout={handleRelayoutWrapped}
       useResizeHandler
       style={{ width: width || '100%', height: height || '100%' }}
     />

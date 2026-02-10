@@ -12,7 +12,7 @@ import { useSelectionStore, useGlazeStore, useFilterStore } from '@/stores'
 import { useSimilarity } from '@/hooks'
 import { OxideSymbol, GlazeRecipe } from '@/types'
 import type { DensityMap } from '@/analysis/density'
-import type { ZAxisOption, CameraPreset, LightPosition } from './StullPlot3D'
+import type { ZAxisOption, CameraPreset, LightPosition, ProximityStats } from './StullPlot3D'
 import { zAxisLabel } from './StullPlot3D'
 import type { SurfaceGrid } from '@/analysis/surfaceFit'
 import { UMFFingerprint, FluxDonut, OxideRadar, GlazeTypeBadge, ConeRangeBar, MiniStull, DatasetStats, RecipeBar, OxideTd } from '@/components/UMFVisuals'
@@ -166,11 +166,56 @@ export function StullAtlas() {
   const [surfaceGridRef, setSurfaceGridRef] = useState<SurfaceGrid | null>(null)
   const [scatterPointsRef, setScatterPointsRef] = useState<{ x: number; y: number; z: number; name: string }[]>([])
   
+  // 3D-specific controls
+  const [autoRotate, setAutoRotate] = useState(false)
+  const [autoRotateSpeed, setAutoRotateSpeed] = useState(0.5)
+  const [pointSize3D, setPointSize3D] = useState(2.5)
+  const [zStretch, setZStretch] = useState(0.8)
+  const [proximityEnabled, setProximityEnabled] = useState(false)
+  const [proximityRadius, setProximityRadius] = useState(0.35)
+  const [proximityStats, setProximityStats] = useState<ProximityStats | null>(null)
+  const [pinnedCenterId, setPinnedCenterId] = useState<string | null>(null)
+  const [hoveredNeighborId, setHoveredNeighborId] = useState<string | null>(null)
+  const [nearbyFilter, setNearbyFilter] = useState<Set<string>>(new Set()) // empty = show all
+  const [nearbySortBy, setNearbySortBy] = useState<'distance' | 'cone' | 'name'>('distance')
+  const [explorationPath, setExplorationPath] = useState<{ id: string; name: string }[]>([]) // breadcrumb trail
+  const [cameraKey, setCameraKey] = useState(0) // increment to force-reset camera
   const handleSurfaceGridReady = useCallback((grid: SurfaceGrid | null, scatter: { x: number; y: number; z: number; name: string }[]) => {
     setSurfaceGridRef(grid)
     setScatterPointsRef(scatter)
   }, [])
-  
+
+  const handleResetCamera = useCallback(() => {
+    setCameraKey(k => k + 1)
+  }, [])
+
+  // ─── Keyboard shortcuts for 3D ───────────────────────────────
+  useEffect(() => {
+    if (!is3D) return
+
+    const presets: CameraPreset[] = ['default', 'top', 'side-x', 'side-y']
+
+    const handler = (e: KeyboardEvent) => {
+      // Don't fire when typing in inputs or editable elements
+      const el = e.target as HTMLElement
+      if (el?.tagName === 'INPUT' || el?.tagName === 'TEXTAREA' || el?.tagName === 'SELECT' || el?.isContentEditable) return
+
+      if (e.key >= '1' && e.key <= '4') {
+        setCameraPreset(presets[Number(e.key) - 1])
+        e.preventDefault()
+      } else if (e.key === 'r' || e.key === 'R') {
+        setAutoRotate(prev => !prev)
+        e.preventDefault()
+      } else if (e.key === '0') {
+        handleResetCamera()
+        e.preventDefault()
+      }
+    }
+
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [is3D, handleResetCamera])
+
   // Auto-switch to z_axis coloring when entering 3D or changing Z axis
   useEffect(() => {
     if (is3D) setColorBy('z_axis')
@@ -179,6 +224,14 @@ export function StullAtlas() {
   const selectedGlaze = useSelectionStore(s => s.selectedGlaze)
   const showSidebar = useSelectionStore(s => s.showSidebar)
   const sidebarTab = useSelectionStore(s => s.sidebarTab)
+
+  // Auto-disable proximity when no glaze is selected
+  useEffect(() => {
+    if (!selectedGlaze) {
+      setProximityEnabled(false)
+      setPinnedCenterId(null)
+    }
+  }, [selectedGlaze])
   const toggleSidebar = useSelectionStore(s => s.toggleSidebar)
   const setSidebarTab = useSelectionStore(s => s.setSidebarTab)
   const setSelectedGlaze = useSelectionStore(s => s.setSelectedGlaze)
@@ -359,10 +412,10 @@ export function StullAtlas() {
                         className={`preset-btn ${cameraPreset === preset ? 'active' : ''}`}
                         onClick={() => setCameraPreset(preset)}
                         title={{
-                          default: 'Perspective view',
-                          top: 'Top-down (birds eye)',
-                          'side-x': 'Side view along Al\u2082O\u2083',
-                          'side-y': 'Side view along SiO\u2082',
+                          default: 'Perspective view (1)',
+                          top: 'Top-down / birds eye (2)',
+                          'side-x': 'Side view along Al\u2082O\u2083 (3)',
+                          'side-y': 'Side view along SiO\u2082 (4)',
                         }[preset]}
                       >
                         {{
@@ -373,12 +426,78 @@ export function StullAtlas() {
                         }[preset]}
                       </button>
                     ))}
+                    <button
+                      className="preset-btn"
+                      onClick={handleResetCamera}
+                      title="Reset camera to current preset"
+                    >
+                      ↺
+                    </button>
                   </div>
                 </div>
 
-                <div className="perspective-control">
-                  <span className="presets-label">Perspective</span>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                {/* Auto-rotate */}
+                <div className="three-d-control-row">
+                  <label className="surface-toggle">
+                    <input
+                      type="checkbox"
+                      checked={autoRotate}
+                      onChange={e => setAutoRotate(e.target.checked)}
+                    />
+                    Auto-Rotate
+                  </label>
+                  {autoRotate && (
+                    <div className="inline-slider">
+                      <input
+                        type="range"
+                        min="0.1"
+                        max="2"
+                        step="0.1"
+                        value={autoRotateSpeed}
+                        onChange={e => setAutoRotateSpeed(Number(e.target.value))}
+                        title={`Speed: ${autoRotateSpeed.toFixed(1)}x`}
+                      />
+                      <span className="slider-value">{autoRotateSpeed.toFixed(1)}x</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Point size */}
+                <div className="three-d-control-row">
+                  <span className="control-row-label">Point Size</span>
+                  <div className="inline-slider">
+                    <input
+                      type="range"
+                      min="1"
+                      max="8"
+                      step="0.5"
+                      value={pointSize3D}
+                      onChange={e => setPointSize3D(Number(e.target.value))}
+                    />
+                    <span className="slider-value">{pointSize3D.toFixed(1)}</span>
+                  </div>
+                </div>
+
+                {/* Z stretch */}
+                <div className="three-d-control-row">
+                  <span className="control-row-label">Z Stretch</span>
+                  <div className="inline-slider">
+                    <input
+                      type="range"
+                      min="0.2"
+                      max="2.0"
+                      step="0.1"
+                      value={zStretch}
+                      onChange={e => setZStretch(Number(e.target.value))}
+                    />
+                    <span className="slider-value">{zStretch.toFixed(1)}</span>
+                  </div>
+                </div>
+
+                {/* Perspective */}
+                <div className="three-d-control-row">
+                  <span className="control-row-label">Perspective</span>
+                  <div className="inline-slider">
                     <input
                       type="range"
                       min="0"
@@ -387,9 +506,8 @@ export function StullAtlas() {
                       value={perspective}
                       onChange={e => setPerspective(Number(e.target.value))}
                       title={perspective < 0.01 ? 'Orthographic' : `Perspective: ${Math.round(perspective * 100)}%`}
-                      style={{ flex: 1 }}
                     />
-                    <span style={{ fontSize: 11, color: 'var(--text-secondary)', minWidth: 36, textAlign: 'right' }}>
+                    <span className="slider-value">
                       {perspective < 0.01 ? 'Ortho' : `${Math.round(perspective * 100)}%`}
                     </span>
                   </div>
@@ -425,6 +543,225 @@ export function StullAtlas() {
                       ))}
                     </div>
                   )}
+                </div>
+
+                {/* Proximity radius filter */}
+                <div className="three-d-control-row proximity-control">
+                  <label className="surface-toggle" style={{ margin: 0 }}>
+                    <input
+                      type="checkbox"
+                      checked={proximityEnabled}
+                      onChange={e => setProximityEnabled(e.target.checked)}
+                      disabled={!selectedGlaze}
+                    />
+                    Proximity
+                  </label>
+                  {proximityEnabled && selectedGlaze && (
+                    <div className="inline-slider">
+                      <input
+                        type="range"
+                        min="0.05"
+                        max="1.5"
+                        step="0.05"
+                        value={proximityRadius}
+                        onChange={e => setProximityRadius(Number(e.target.value))}
+                        title={`Radius: ${(proximityRadius * 100).toFixed(0)}%`}
+                      />
+                      <span className="slider-value">
+                        {proximityStats
+                          ? `${proximityStats.visible}/${proximityStats.total}`
+                          : `${(proximityRadius * 100).toFixed(0)}%`
+                        }
+                      </span>
+                    </div>
+                  )}
+                  {proximityEnabled && !selectedGlaze && (
+                    <span className="slider-value" style={{ fontSize: 10, opacity: 0.6 }}>Select a glaze</span>
+                  )}
+                </div>
+
+                {/* Nearby glazes list */}
+                {proximityEnabled && proximityStats && proximityStats.nearby.length > 0 && (() => {
+                  // Surface type filter: empty set = show all
+                  const surfaceTypes = new Set(proximityStats.nearby.map(n => n.surfaceType))
+                  let filteredNearby = nearbyFilter.size === 0
+                    ? [...proximityStats.nearby]
+                    : proximityStats.nearby.filter(n => nearbyFilter.has(n.surfaceType))
+
+                  // Sort
+                  if (nearbySortBy === 'cone') {
+                    filteredNearby.sort((a, b) => (a.cone ?? 99) - (b.cone ?? 99) || a.distance - b.distance)
+                  } else if (nearbySortBy === 'name') {
+                    filteredNearby.sort((a, b) => a.name.localeCompare(b.name))
+                  }
+                  // 'distance' is already the default sort from StullPlot3D
+
+                  const SURFACE_PILLS: { key: string; label: string }[] = [
+                    { key: 'gloss', label: 'G' },
+                    { key: 'matte', label: 'M' },
+                    { key: 'satin', label: 'S' },
+                    { key: 'crystalline', label: 'X' },
+                    { key: 'crawl', label: 'C' },
+                    { key: 'unknown', label: '?' },
+                  ]
+
+                  // Hovered neighbor for mini preview
+                  const hoveredNeighbor = hoveredNeighborId
+                    ? proximityStats.nearby.find(n => n.id === hoveredNeighborId) ?? null
+                    : null
+                  const hoveredGlaze = hoveredNeighborId ? glazes.get(hoveredNeighborId) ?? null : null
+
+                  return (
+                    <div className="proximity-nearby-list">
+                      {/* Exploration breadcrumb */}
+                      {explorationPath.length > 0 && (
+                        <div className="proximity-breadcrumb">
+                          {explorationPath.map((crumb, i) => (
+                            <React.Fragment key={crumb.id}>
+                              {i > 0 && <span className="breadcrumb-arrow">\u203A</span>}
+                              <button
+                                className="breadcrumb-btn"
+                                onClick={() => {
+                                  const glaze = glazes.get(crumb.id)
+                                  if (glaze) {
+                                    setSelectedGlaze(glaze)
+                                    // Trim breadcrumb to this point
+                                    setExplorationPath(prev => prev.slice(0, i))
+                                  }
+                                }}
+                                title={crumb.name}
+                              >{crumb.name.length > 12 ? crumb.name.slice(0, 11) + '\u2026' : crumb.name}</button>
+                            </React.Fragment>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="proximity-nearby-header">
+                        <span>Nearby ({filteredNearby.length}{nearbyFilter.size > 0 ? `/${proximityStats.nearby.length}` : ''})</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                          {/* Sort mode buttons */}
+                          <div className="proximity-sort-btns">
+                            {(['distance', 'cone', 'name'] as const).map(mode => (
+                              <button
+                                key={mode}
+                                className={`proximity-sort-btn${nearbySortBy === mode ? ' on' : ''}`}
+                                onClick={() => setNearbySortBy(mode)}
+                                title={`Sort by ${mode}`}
+                              >{mode === 'distance' ? '\u2194' : mode === 'cone' ? '\u25B3' : 'Az'}</button>
+                            ))}
+                          </div>
+                          <button
+                            className={`proximity-pin-btn${pinnedCenterId ? ' pinned' : ''}`}
+                            onClick={() => {
+                              if (pinnedCenterId) {
+                                setPinnedCenterId(null)
+                              } else if (selectedGlaze) {
+                                setPinnedCenterId(selectedGlaze.id)
+                              }
+                            }}
+                            title={pinnedCenterId ? 'Unpin center \u2014 proximity follows selection' : 'Pin center \u2014 keep this neighborhood while exploring'}
+                          >
+                            {pinnedCenterId ? '\uD83D\uDCCC' : '\uD83D\uDCCCPin'}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Surface type filter pills */}
+                      <div className="proximity-filter-pills">
+                        {SURFACE_PILLS.filter(p => surfaceTypes.has(p.key)).map(p => (
+                          <button
+                            key={p.key}
+                            className={`proximity-pill st-${p.key}${nearbyFilter.has(p.key) ? ' on' : ''}`}
+                            onClick={() => setNearbyFilter(prev => {
+                              const next = new Set(prev)
+                              if (next.has(p.key)) next.delete(p.key)
+                              else next.add(p.key)
+                              return next
+                            })}
+                            title={p.key}
+                          >{p.label}</button>
+                        ))}
+                        {nearbyFilter.size > 0 && (
+                          <button
+                            className="proximity-pill clear"
+                            onClick={() => setNearbyFilter(new Set())}
+                            title="Clear filters"
+                          >\u00D7</button>
+                        )}
+                      </div>
+
+                      <div className="proximity-nearby-scroll">
+                        {filteredNearby.map((n, i) => (
+                          <button
+                            key={n.id}
+                            className={`proximity-nearby-item${selectedGlaze?.id === n.id ? ' active' : ''}${hoveredNeighborId === n.id ? ' hovered' : ''}`}
+                            onClick={(e) => {
+                              const glaze = glazes.get(n.id)
+                              if (!glaze) return
+                              if (e.shiftKey) {
+                                addToCompare(glaze)
+                              } else {
+                                // Add current selection to breadcrumb trail before navigating
+                                if (selectedGlaze && !pinnedCenterId) {
+                                  setExplorationPath(prev => {
+                                    // Don't add if it's already the last item
+                                    if (prev.length > 0 && prev[prev.length - 1].id === selectedGlaze.id) return prev
+                                    // Cap breadcrumb length at 10
+                                    const next = [...prev, { id: selectedGlaze.id, name: selectedGlaze.name }]
+                                    return next.slice(-10)
+                                  })
+                                }
+                                setSelectedGlaze(glaze)
+                              }
+                            }}
+                            onMouseEnter={() => setHoveredNeighborId(n.id)}
+                            onMouseLeave={() => setHoveredNeighborId(null)}
+                            title={`SiO\u2082: ${n.x.toFixed(2)}, Al\u2082O\u2083: ${n.y.toFixed(2)}, ${zAxisLabel(zAxis)}: ${n.z.toFixed(3)}\nShift+click to compare`}
+                          >
+                            <span className="proximity-nearby-rank">{i + 1}</span>
+                            <span className="proximity-nearby-name">{n.name}</span>
+                            {n.cone != null && <span className="proximity-nearby-cone">\u25B3{typeof n.cone === 'number' && n.cone === Math.floor(n.cone) ? n.cone : n.cone}</span>}
+                            <span className={`proximity-nearby-surface st-${n.surfaceType}`} title={n.surfaceType}>{n.surfaceType === 'gloss' ? 'G' : n.surfaceType === 'matte' ? 'M' : n.surfaceType === 'satin' ? 'S' : n.surfaceType === 'crystalline' ? 'X' : n.surfaceType === 'crawl' ? 'C' : '?'}</span>
+                            {/* Per-axis similarity bars */}
+                            <span className="proximity-nearby-bars" title={`SiO\u2082: ${(Math.max(0, 1 - n.dx) * 100).toFixed(0)}% | Al\u2082O\u2083: ${(Math.max(0, 1 - n.dy) * 100).toFixed(0)}% | ${zAxisLabel(zAxis)}: ${(Math.max(0, 1 - n.dz) * 100).toFixed(0)}%`}>
+                              <span className="sim-bar bar-x" style={{ width: `${Math.max(0, 1 - n.dx) * 100}%` }} />
+                              <span className="sim-bar bar-y" style={{ width: `${Math.max(0, 1 - n.dy) * 100}%` }} />
+                              <span className="sim-bar bar-z" style={{ width: `${Math.max(0, 1 - n.dz) * 100}%` }} />
+                            </span>
+                            <span className="proximity-nearby-dist">{n.distance.toFixed(2)}</span>
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Mini UMF preview on hover */}
+                      {hoveredGlaze?.umf && hoveredNeighbor && (
+                        <div className="proximity-preview">
+                          <div className="proximity-preview-name">{hoveredGlaze.name}</div>
+                          <div className="proximity-preview-row">
+                            <UMFFingerprint umf={hoveredGlaze.umf} width={120} height={10} compact />
+                            <FluxDonut umf={hoveredGlaze.umf} size={32} innerRadius={0.55} />
+                          </div>
+                          <div className="proximity-preview-meta">
+                            {hoveredGlaze.coneRange?.[0] != null && <span>\u25B3{hoveredGlaze.coneRange[0]}{hoveredGlaze.coneRange[1] !== hoveredGlaze.coneRange[0] ? `\u2013${hoveredGlaze.coneRange[1]}` : ''}</span>}
+                            <span>{hoveredGlaze.surfaceType}</span>
+                            <span>{hoveredGlaze.atmosphere}</span>
+                            <span>d={hoveredNeighbor.distance.toFixed(3)}</span>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="proximity-nearby-legend">
+                        <span className="sim-legend-item"><span className="sim-dot dot-x" />SiO\u2082</span>
+                        <span className="sim-legend-item"><span className="sim-dot dot-y" />Al\u2082O\u2083</span>
+                        <span className="sim-legend-item"><span className="sim-dot dot-z" />{zAxisLabel(zAxis)}</span>
+                      </div>
+                    </div>
+                  )
+                })()}
+
+                {/* Keyboard shortcut hints */}
+                <div className="three-d-shortcuts-hint">
+                  <kbd>1</kbd>–<kbd>4</kbd> camera presets &nbsp; <kbd>R</kbd> rotate &nbsp; <kbd>0</kbd> reset
                 </div>
               </>
             )}
@@ -569,6 +906,7 @@ export function StullAtlas() {
           {is3D ? (
             <Suspense fallback={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, color: 'var(--text-secondary)', fontSize: 14 }}>Loading 3D view...</div>}>
               <StullPlot3D
+                key={cameraKey}
                 zAxis={zAxis}
                 colorBy={colorBy}
                 zoom={zoom}
@@ -580,6 +918,15 @@ export function StullAtlas() {
                 perspective={perspective}
                 lightPosition={lightEnabled ? lightPosition : undefined}
                 onSurfaceGridReady={handleSurfaceGridReady}
+                autoRotate={autoRotate}
+                autoRotateSpeed={autoRotateSpeed}
+                pointSize={pointSize3D}
+                zStretch={zStretch}
+                proximityRadius={proximityEnabled && selectedGlaze ? proximityRadius : null}
+                proximityCenterId={pinnedCenterId}
+                hoveredNeighborId={hoveredNeighborId}
+                onProximityStats={setProximityStats}
+                onResetCamera={handleResetCamera}
               />
             </Suspense>
           ) : (
