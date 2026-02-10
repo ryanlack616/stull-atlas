@@ -71,12 +71,22 @@ export function NearbyList({
     [proximityStats.nearby],
   )
 
+  // Pre-compute glaze lookups for all neighbors (single pass)
+  const nearbyGlazes = useMemo(() => {
+    const m = new Map<string, GlazeRecipe>()
+    for (const n of proximityStats.nearby) {
+      const g = glazes.get(n.id)
+      if (g) m.set(n.id, g)
+    }
+    return m
+  }, [proximityStats.nearby, glazes])
+
   const photoCount = useMemo(
     () => proximityStats.nearby.filter(n => {
-      const g = glazes.get(n.id)
+      const g = nearbyGlazes.get(n.id)
       return g?.images && g.images.length > 0
     }).length,
-    [proximityStats.nearby, glazes],
+    [proximityStats.nearby, nearbyGlazes],
   )
 
   const filteredNearby = useMemo(() => {
@@ -86,7 +96,7 @@ export function NearbyList({
 
     if (nearbyPhotoOnly) {
       list = list.filter(n => {
-        const g = glazes.get(n.id)
+        const g = nearbyGlazes.get(n.id)
         return g?.images && g.images.length > 0
       })
     }
@@ -97,17 +107,17 @@ export function NearbyList({
       list.sort((a, b) => a.name.localeCompare(b.name))
     }
     return list
-  }, [proximityStats.nearby, nearbyFilter, nearbyPhotoOnly, nearbySortBy, glazes])
+  }, [proximityStats.nearby, nearbyFilter, nearbyPhotoOnly, nearbySortBy, nearbyGlazes])
 
   // Hovered neighbor for mini preview
   const hoveredNeighbor = hoveredNeighborId
     ? proximityStats.nearby.find(n => n.id === hoveredNeighborId) ?? null
     : null
-  const hoveredGlaze = hoveredNeighborId ? glazes.get(hoveredNeighborId) ?? null : null
+  const hoveredGlaze = hoveredNeighborId ? nearbyGlazes.get(hoveredNeighborId) ?? null : null
 
   // ── Navigate to a neighbor glaze ────────────────────────────
   const navigateToNeighbor = (e: React.MouseEvent, n: ProximityNeighbor) => {
-    const glaze = glazes.get(n.id)
+    const glaze = nearbyGlazes.get(n.id)
     if (!glaze) return
     if (e.shiftKey) {
       onCompareGlaze(glaze)
@@ -220,7 +230,7 @@ export function NearbyList({
         {nearbyViewMode === 'gallery' ? (
           /* Gallery grid view */
           filteredNearby.map((n, i) => {
-            const nGlaze = glazes.get(n.id)
+            const nGlaze = nearbyGlazes.get(n.id)
             const thumbUrl = nGlaze?.images?.[0] ?? null
             return (
               <button
@@ -261,7 +271,7 @@ export function NearbyList({
         ) : (
           /* List view with mini thumbnails */
           filteredNearby.map((n, i) => {
-            const nGlaze = glazes.get(n.id)
+            const nGlaze = nearbyGlazes.get(n.id)
             const thumbUrl = nGlaze?.images?.[0] ?? null
             return (
               <button

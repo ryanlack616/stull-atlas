@@ -6,6 +6,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
+import { wrapIndex, safeIndex, stepZoom, isFormElement } from './carouselUtils'
 
 export interface ImageCarouselProps {
   images: string[]
@@ -31,8 +32,7 @@ export function ImageCarousel({ images, glazeName, sidebarTab }: ImageCarouselPr
     if (!images || images.length === 0) return
 
     const handler = (e: KeyboardEvent) => {
-      const el = e.target as HTMLElement
-      if (el?.tagName === 'INPUT' || el?.tagName === 'TEXTAREA' || el?.tagName === 'SELECT' || el?.isContentEditable) return
+      if (isFormElement(e.target)) return
 
       if (lightboxOpen) {
         if (e.key === 'Escape') {
@@ -40,16 +40,16 @@ export function ImageCarousel({ images, glazeName, sidebarTab }: ImageCarouselPr
           setLightboxZoom(1)
           e.preventDefault()
         } else if (e.key === 'ArrowLeft') {
-          setCarouselIndex(i => (i - 1 + images.length) % images.length)
+          setCarouselIndex(i => wrapIndex(i, -1, images.length))
           e.preventDefault()
         } else if (e.key === 'ArrowRight') {
-          setCarouselIndex(i => (i + 1) % images.length)
+          setCarouselIndex(i => wrapIndex(i, 1, images.length))
           e.preventDefault()
         } else if (e.key === '+' || e.key === '=') {
-          setLightboxZoom(z => Math.min(z + 0.5, 4))
+          setLightboxZoom(z => stepZoom(z, 0.5))
           e.preventDefault()
         } else if (e.key === '-') {
-          setLightboxZoom(z => Math.max(z - 0.5, 0.5))
+          setLightboxZoom(z => stepZoom(z, -0.5))
           e.preventDefault()
         } else if (e.key === '0') {
           setLightboxZoom(1)
@@ -57,10 +57,10 @@ export function ImageCarousel({ images, glazeName, sidebarTab }: ImageCarouselPr
         }
       } else if (sidebarTab === 'detail') {
         if (e.key === 'ArrowLeft' && images.length > 1) {
-          setCarouselIndex(i => (i - 1 + images.length) % images.length)
+          setCarouselIndex(i => wrapIndex(i, -1, images.length))
           e.preventDefault()
         } else if (e.key === 'ArrowRight' && images.length > 1) {
-          setCarouselIndex(i => (i + 1) % images.length)
+          setCarouselIndex(i => wrapIndex(i, 1, images.length))
           e.preventDefault()
         }
       }
@@ -70,7 +70,7 @@ export function ImageCarousel({ images, glazeName, sidebarTab }: ImageCarouselPr
     return () => window.removeEventListener('keydown', handler)
   }, [images, lightboxOpen, sidebarTab])
 
-  const idx = Math.min(carouselIndex, images.length - 1)
+  const idx = safeIndex(carouselIndex, images.length)
 
   return (
     <>
@@ -96,12 +96,12 @@ export function ImageCarousel({ images, glazeName, sidebarTab }: ImageCarouselPr
             <>
               <button
                 className="carousel-btn carousel-prev"
-                onClick={() => setCarouselIndex(i => (i - 1 + images.length) % images.length)}
+                onClick={() => setCarouselIndex(i => wrapIndex(i, -1, images.length))}
                 title="Previous photo"
               >{'\u2039'}</button>
               <button
                 className="carousel-btn carousel-next"
-                onClick={() => setCarouselIndex(i => (i + 1) % images.length)}
+                onClick={() => setCarouselIndex(i => wrapIndex(i, 1, images.length))}
                 title="Next photo"
               >{'\u203A'}</button>
               <div className="carousel-dots">
@@ -144,12 +144,12 @@ export function ImageCarousel({ images, glazeName, sidebarTab }: ImageCarouselPr
               <>
                 <button
                   className="lightbox-nav lightbox-prev"
-                  onClick={() => setCarouselIndex(i => (i - 1 + images.length) % images.length)}
+                  onClick={() => setCarouselIndex(i => wrapIndex(i, -1, images.length))}
                   title="Previous (←)"
                 >{'\u2039'}</button>
                 <button
                   className="lightbox-nav lightbox-next"
-                  onClick={() => setCarouselIndex(i => (i + 1) % images.length)}
+                  onClick={() => setCarouselIndex(i => wrapIndex(i, 1, images.length))}
                   title="Next (→)"
                 >{'\u203A'}</button>
               </>
@@ -159,9 +159,9 @@ export function ImageCarousel({ images, glazeName, sidebarTab }: ImageCarouselPr
                 {glazeName}{images.length > 1 ? ` (${idx + 1}/${images.length})` : ''}
               </span>
               <div className="lightbox-zoom-controls">
-                <button onClick={() => setLightboxZoom(z => Math.max(z - 0.5, 0.5))} title="Zoom out (−)">{'\u2212'}</button>
+                <button onClick={() => setLightboxZoom(z => stepZoom(z, -0.5))} title="Zoom out (−)">{'\u2212'}</button>
                 <span>{(lightboxZoom * 100).toFixed(0)}%</span>
-                <button onClick={() => setLightboxZoom(z => Math.min(z + 0.5, 4))} title="Zoom in (+)">+</button>
+                <button onClick={() => setLightboxZoom(z => stepZoom(z, 0.5))} title="Zoom in (+)">+</button>
                 {lightboxZoom !== 1 && (
                   <button onClick={() => setLightboxZoom(1)} title="Reset zoom (0)">1:1</button>
                 )}
