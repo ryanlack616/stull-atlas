@@ -233,12 +233,15 @@ export function NearbyList({
               >
                 <div className="gallery-thumb">
                   {thumbUrl ? (
-                    <img src={thumbUrl} alt={n.name} loading="lazy" />
-                  ) : (
-                    <div className="gallery-no-photo">
-                      <span className={`proximity-nearby-surface st-${n.surfaceType}`}>{surfaceLabel(n.surfaceType)}</span>
-                    </div>
-                  )}
+                    <img src={thumbUrl} alt={n.name} loading="lazy" onError={(e) => {
+                      const el = e.currentTarget; el.style.display = 'none';
+                      const fallback = el.nextElementSibling as HTMLElement | null;
+                      if (fallback) fallback.style.display = '';
+                    }} />
+                  ) : null}
+                  <div className="gallery-no-photo" style={thumbUrl ? { display: 'none' } : undefined}>
+                    <span className={`proximity-nearby-surface st-${n.surfaceType}`}>{surfaceLabel(n.surfaceType)}</span>
+                  </div>
                   <span className="gallery-rank">#{i + 1}</span>
                   {(nGlaze?.images?.length ?? 0) > 1 && (
                     <span className="gallery-photo-count">{'\uD83D\uDCF7'}{nGlaze!.images!.length}</span>
@@ -270,10 +273,13 @@ export function NearbyList({
                 title={`SiO\u2082: ${n.x.toFixed(2)}, Al\u2082O\u2083: ${n.y.toFixed(2)}, ${zAxisLabel(zAxis)}: ${n.z.toFixed(3)}\nShift+click to compare`}
               >
                 {thumbUrl ? (
-                  <img className="list-thumb" src={thumbUrl} alt="" loading="lazy" />
-                ) : (
-                  <span className="list-thumb-placeholder" />
-                )}
+                  <img className="list-thumb" src={thumbUrl} alt="" loading="lazy" onError={(e) => {
+                    const el = e.currentTarget; el.style.display = 'none';
+                    const fallback = el.nextElementSibling as HTMLElement | null;
+                    if (fallback) fallback.style.display = '';
+                  }} />
+                ) : null}
+                <span className="list-thumb-placeholder" style={thumbUrl ? { display: 'none' } : undefined} />
                 {(nGlaze?.images?.length ?? 0) > 1 && (
                   <span className="list-photo-count">{nGlaze!.images!.length}</span>
                 )}
@@ -299,7 +305,9 @@ export function NearbyList({
         <div className="proximity-preview">
           <div className="proximity-preview-top">
             {hoveredGlaze.images?.[0] && (
-              <img className="preview-thumb" src={hoveredGlaze.images[0]} alt="" loading="lazy" />
+              <img className="preview-thumb" src={hoveredGlaze.images[0]} alt="" loading="lazy"
+                onError={(e) => { e.currentTarget.style.display = 'none' }}
+              />
             )}
             <div style={{ flex: 1, minWidth: 0 }}>
               <div className="proximity-preview-name">{hoveredGlaze.name}</div>

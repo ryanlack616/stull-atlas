@@ -85,7 +85,13 @@ export function ImageCarousel({ images, glazeName, sidebarTab }: ImageCarouselPr
             onClick={() => { setLightboxOpen(true); setLightboxZoom(1) }}
             style={{ cursor: 'zoom-in' }}
             title="Click to enlarge (← → to cycle, Esc to close)"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              const fallback = e.currentTarget.nextElementSibling as HTMLElement | null;
+              if (fallback?.classList.contains('carousel-img-fallback')) fallback.style.display = 'flex';
+            }}
           />
+          <div className="carousel-img-fallback" style={{ display: 'none', alignItems: 'center', justifyContent: 'center', height: 200, color: 'var(--text-secondary, #888)', fontSize: 13 }}>Image unavailable</div>
           {images.length > 1 && (
             <>
               <button
@@ -127,7 +133,13 @@ export function ImageCarousel({ images, glazeName, sidebarTab }: ImageCarouselPr
               className="lightbox-img"
               style={{ transform: `scale(${lightboxZoom})` }}
               draggable={false}
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                const fallback = e.currentTarget.nextElementSibling as HTMLElement | null;
+                if (fallback?.classList.contains('lightbox-img-fallback')) fallback.style.display = 'flex';
+              }}
             />
+            <div className="lightbox-img-fallback" style={{ display: 'none', alignItems: 'center', justifyContent: 'center', color: '#ccc', fontSize: 16 }}>Image unavailable</div>
             {images.length > 1 && (
               <>
                 <button

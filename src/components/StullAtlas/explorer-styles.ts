@@ -331,12 +331,6 @@ export const explorerStyles = `
     color: var(--text-label);
   }
 
-  .proximity-axis-label {
-    font-size: 10px;
-    font-weight: 400;
-    color: var(--text-muted);
-  }
-
   .proximity-nearby-scroll {
     max-height: 240px;
     overflow-y: auto;
@@ -1618,5 +1612,136 @@ export const explorerStyles = `
   }
   .kiosk-overlay .kiosk-hint {
     animation: kiosk-fade-in 2s ease-out 0.5s both;
+  }
+
+  /* ── Mobile breakpoints ── */
+
+  /* Tablet / small desktop */
+  @media (max-width: 768px) {
+    .proximity-nearby-scroll.gallery-mode {
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 8px;
+      max-height: none;
+      padding: 4px;
+    }
+
+    .gallery-card {
+      font-size: 12px;
+    }
+
+    .gallery-name {
+      font-size: 10px;
+    }
+
+    .carousel-btn {
+      opacity: 1;
+      width: 32px;
+      height: 32px;
+      font-size: 18px;
+    }
+
+    .lightbox-prev { left: 8px; }
+    .lightbox-next { right: 8px; }
+
+    .lightbox-content {
+      max-width: 96vw;
+      max-height: 88vh;
+    }
+    .lightbox-img {
+      max-width: 96vw;
+      max-height: 82vh;
+    }
+
+    .lightbox-toolbar {
+      bottom: -44px;
+      gap: 8px;
+    }
+
+    .proximity-preview {
+      display: none;
+    }
+  }
+
+  /* Phone portrait */
+  @media (max-width: 480px) {
+    .proximity-nearby-scroll.gallery-mode {
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .gallery-thumb {
+      aspect-ratio: 4/3;
+    }
+
+    .gallery-info {
+      padding: 5px 6px;
+    }
+
+    .gallery-name {
+      font-size: 11px;
+    }
+
+    .gallery-rank {
+      font-size: 9px;
+      padding: 1px 4px;
+    }
+
+    .gallery-dist {
+      font-size: 9px;
+      padding: 1px 4px;
+    }
+
+    .carousel-img {
+      max-height: 180px;
+    }
+
+    .carousel-btn {
+      width: 36px;
+      height: 36px;
+      font-size: 20px;
+    }
+
+    .lightbox-nav {
+      width: 44px;
+      height: 44px;
+      font-size: 24px;
+    }
+    .lightbox-prev { left: 4px; }
+    .lightbox-next { right: 4px; }
+
+    .lightbox-toolbar {
+      flex-wrap: wrap;
+      justify-content: center;
+      bottom: -52px;
+      gap: 6px;
+    }
+
+    .lightbox-close {
+      width: 32px;
+      height: 32px;
+    }
+
+    .lightbox-zoom-controls button {
+      width: 28px;
+      height: 28px;
+    }
+
+    .proximity-nearby-header {
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .proximity-filter-pills {
+      flex-wrap: wrap;
+    }
+
+    .proximity-nearby-item {
+      font-size: 11px;
+    }
+
+    .list-thumb {
+      width: 28px;
+      height: 28px;
+    }
   }
 `
