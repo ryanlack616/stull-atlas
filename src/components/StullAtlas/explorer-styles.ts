@@ -788,6 +788,101 @@ export const explorerStyles = `
     border: 1px solid var(--border-secondary);
   }
 
+  /* ── Photo filter pill ── */
+  .proximity-pill.photo-pill {
+    font-size: 10px;
+    letter-spacing: -0.5px;
+  }
+  .proximity-pill.photo-pill.on {
+    background: var(--accent-primary, #6366f1);
+    color: white;
+    border-color: var(--accent-primary, #6366f1);
+  }
+
+  /* ── Gallery photo count badge ── */
+  .gallery-photo-count {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    font-size: 8px;
+    padding: 1px 3px;
+    border-radius: 3px;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.3px;
+  }
+
+  /* ── Image Carousel ── */
+  .carousel-container {
+    position: relative;
+    width: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border-primary);
+    background: var(--bg-tertiary);
+  }
+  .carousel-img {
+    display: block;
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+  }
+  .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 2;
+  }
+  .carousel-container:hover .carousel-btn {
+    opacity: 1;
+  }
+  .carousel-btn:hover {
+    background: rgba(0,0,0,0.75);
+  }
+  .carousel-prev { left: 6px; }
+  .carousel-next { right: 6px; }
+  .carousel-dots {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+    z-index: 2;
+  }
+  .carousel-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.4);
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.15s;
+  }
+  .carousel-dot.active {
+    background: #fff;
+  }
+  .carousel-dot:hover {
+    background: rgba(255,255,255,0.8);
+  }
+
   .plot-container {
     flex: 1;
     min-width: 0;

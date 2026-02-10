@@ -199,8 +199,10 @@ export function StullAtlas() {
   const [pinnedCenterId, setPinnedCenterId] = useState<string | null>(null)
   const [hoveredNeighborId, setHoveredNeighborId] = useState<string | null>(null)
   const [nearbyFilter, setNearbyFilter] = useState<Set<string>>(new Set()) // empty = show all
+  const [nearbyPhotoOnly, setNearbyPhotoOnly] = useState(false)
   const [nearbySortBy, setNearbySortBy] = useState<'distance' | 'cone' | 'name'>('distance')
   const [nearbyViewMode, setNearbyViewMode] = useState<'list' | 'gallery'>('list')
+  const [carouselIndex, setCarouselIndex] = useState(0)
   const [explorationPath, setExplorationPath] = useState<{ id: string; name: string }[]>([]) // breadcrumb trail
   // Aesthetic Compass — weighted similarity sliders
   const [compassWeights, setCompassWeights] = useState<ProximityWeights>({ ...DEFAULT_PROXIMITY_WEIGHTS })
@@ -251,8 +253,9 @@ export function StullAtlas() {
   const showSidebar = useSelectionStore(s => s.showSidebar)
   const sidebarTab = useSelectionStore(s => s.sidebarTab)
 
-  // Auto-disable proximity when no glaze is selected
+  // Auto-disable proximity when no glaze is selected; reset carousel
   useEffect(() => {
+    setCarouselIndex(0)
     if (!selectedGlaze) {
       setProximityEnabled(false)
       setPinnedCenterId(null)
@@ -718,6 +721,18 @@ export function StullAtlas() {
                     ? [...proximityStats.nearby]
                     : proximityStats.nearby.filter(n => nearbyFilter.has(n.surfaceType))
 
+                  // Photo-only filter
+                  if (nearbyPhotoOnly) {
+                    filteredNearby = filteredNearby.filter(n => {
+                      const g = glazes.get(n.id)
+                      return g?.images && g.images.length > 0
+                    })
+                  }
+                  const photoCount = proximityStats.nearby.filter(n => {
+                    const g = glazes.get(n.id)
+                    return g?.images && g.images.length > 0
+                  }).length
+
                   // Sort
                   if (nearbySortBy === 'cone') {
                     filteredNearby.sort((a, b) => (a.cone ?? 99) - (b.cone ?? 99) || a.distance - b.distance)
@@ -824,11 +839,17 @@ export function StullAtlas() {
                             title={p.key}
                           >{p.label}</button>
                         ))}
-                        {nearbyFilter.size > 0 && (
+                        {/* Photo-only filter */}
+                        <button
+                          className={`proximity-pill photo-pill${nearbyPhotoOnly ? ' on' : ''}`}
+                          onClick={() => setNearbyPhotoOnly(prev => !prev)}
+                          title={`Show only glazes with photos (${photoCount})`}
+                        >\uD83D\uDCF7{nearbyPhotoOnly ? ` ${photoCount}` : ''}</button>
+                        {(nearbyFilter.size > 0 || nearbyPhotoOnly) && (
                           <button
                             className="proximity-pill clear"
-                            onClick={() => setNearbyFilter(new Set())}
-                            title="Clear filters"
+                            onClick={() => { setNearbyFilter(new Set()); setNearbyPhotoOnly(false) }}
+                            title="Clear all filters"
                           >\u00D7</button>
                         )}
                       </div>
@@ -870,6 +891,9 @@ export function StullAtlas() {
                                     </div>
                                   )}
                                   <span className="gallery-rank">#{i + 1}</span>
+                                  {(nGlaze?.images?.length ?? 0) > 1 && (
+                                    <span className="gallery-photo-count">\uD83D\uDCF7{nGlaze!.images!.length}</span>
+                                  )}
                                   <span className="gallery-dist">{n.distance.toFixed(2)}</span>
                                 </div>
                                 <div className="gallery-info">
@@ -1305,24 +1329,47 @@ export function StullAtlas() {
                   )
                 })()}
 
-                {/* Glaze Image */}
-                {selectedGlaze.images && selectedGlaze.images.length > 0 && (
-                  <div className="detail-section">
-                    <h4>Photo</h4>
-                    <img
-                      src={selectedGlaze.images[0]}
-                      alt={selectedGlaze.name}
-                      loading="lazy"
-                      style={{
-                        width: '100%',
-                        maxHeight: 180,
-                        objectFit: 'cover',
-                        borderRadius: 6,
-                        border: '1px solid var(--border-primary)',
-                      }}
-                    />
-                  </div>
-                )}
+                {/* Glaze Image Carousel */}
+                {selectedGlaze.images && selectedGlaze.images.length > 0 && (() => {
+                  const images = selectedGlaze.images!
+                  const idx = Math.min(carouselIndex, images.length - 1)
+                  return (
+                    <div className="detail-section">
+                      <h4>Photo{images.length > 1 ? `s (${idx + 1}/${images.length})` : ''}</h4>
+                      <div className="carousel-container">
+                        <img
+                          src={images[idx]}
+                          alt={`${selectedGlaze.name} — photo ${idx + 1}`}
+                          loading="lazy"
+                          className="carousel-img"
+                        />
+                        {images.length > 1 && (
+                          <>
+                            <button
+                              className="carousel-btn carousel-prev"
+                              onClick={() => setCarouselIndex(i => (i - 1 + images.length) % images.length)}
+                              title="Previous photo"
+                            >\u2039</button>
+                            <button
+                              className="carousel-btn carousel-next"
+                              onClick={() => setCarouselIndex(i => (i + 1) % images.length)}
+                              title="Next photo"
+                            >\u203A</button>
+                            <div className="carousel-dots">
+                              {images.map((_, di) => (
+                                <button
+                                  key={di}
+                                  className={`carousel-dot${di === idx ? ' active' : ''}`}
+                                  onClick={() => setCarouselIndex(di)}
+                                />
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })()}
 
                 <div className="detail-section">
                   <h4>Recipe</h4>
