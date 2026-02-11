@@ -1,0 +1,49 @@
+<!-- Supabase Auth: Magic Link Email Template -->
+<!-- Subject: Your Stull Atlas login link -->
+<div style="max-width:600px;margin:0 auto;font-family:'Courier New',Courier,monospace;background:#121212;color:#e0e0e0;padding:0;border-radius:8px;overflow:hidden;">
+
+  <!-- Header -->
+  <div style="background:#121212;padding:24px 0 0 0;text-align:center;">
+    <img src="https://stullatlas.app/email-header.png" alt="Stull Atlas" width="600" style="display:block;margin:0 auto;max-width:100%;height:auto;" />
+  </div>
+
+  <!-- Body -->
+  <div style="padding:32px 40px;">
+    <h2 style="color:#6366F1;font-size:20px;margin:0 0 16px 0;font-family:'Courier New',Courier,monospace;font-weight:normal;">
+      Your login link
+    </h2>
+
+    <p style="color:#bbb;font-size:14px;line-height:1.7;margin:0 0 24px 0;">
+      Click the button below to sign in to Stull Atlas.<br/>
+      This link expires in 24 hours.
+    </p>
+
+    <!-- CTA Button -->
+    <div style="text-align:center;margin:32px 0;">
+      <a href="{{ .ConfirmationURL }}"
+         style="display:inline-block;background:#6366F1;color:#ffffff;padding:14px 36px;text-decoration:none;border-radius:6px;font-size:15px;font-family:'Courier New',Courier,monospace;font-weight:bold;letter-spacing:0.5px;">
+        Sign In
+      </a>
+    </div>
+
+    <p style="color:#666;font-size:12px;line-height:1.6;margin:24px 0 0 0;">
+      If you didn't request this link, you can safely ignore this email.
+    </p>
+
+    <!-- Divider -->
+    <div style="border-top:1px solid #333;margin:32px 0 24px 0;"></div>
+
+    <!-- Footer -->
+    <div style="text-align:center;">
+      <p style="color:#555;font-size:11px;margin:0;letter-spacing:0.5px;">
+        STULL ATLAS &middot; Ceramic Glaze Explorer
+      </p>
+      <p style="color:#444;font-size:11px;margin:8px 0 0 0;">
+        <a href="https://stullatlas.app" style="color:#6366F1;text-decoration:none;">stullatlas.app</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Bottom accent bar -->
+  <div style="height:3px;background:#6366F1;"></div>
+</div>
