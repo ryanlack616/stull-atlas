@@ -31,6 +31,16 @@ Stull drew his map in 1912 with ~50 glazes at cone 11. We have 113 years of accu
 
 ---
 
+## First Principle: Useful for Potters
+
+**Non-negotiable.** If it's not useful to a working potter, it doesn't ship.
+
+This is not a visualization toy. It's not a tech demo. It's a tool for people who mix glazes from raw materials, load kilns, and need to understand what's happening in their chemistry. Every feature, every interface decision, every version must pass one test: *does this help someone in the studio?*
+
+This principle comes from Henry Crissman (Ceramics School, Hamtramck) and is held in place by a network of potters who will tell us the truth — Ken Shenstone (Albion Anagama), Steven Johnson (Rovin Ceramics), Brett Gray and Kevin Kwiatkowski (Pewabic Pottery). If they wouldn't use it, we don't build it.
+
+---
+
 ## Philosophy: Smart, Not Intelligent
 
 The calculator must be:

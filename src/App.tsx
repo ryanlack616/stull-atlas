@@ -54,6 +54,7 @@ const PricingPage = lazyRetry(() => import('./pages/PricingPage').then(m => ({ d
 const NCECAPage = lazyRetry(() => import('./pages/NCECAPage').then(m => ({ default: m.NCECAPage })))
 const VariabilityPage = lazyRetry(() => import('./pages/VariabilityPage').then(m => ({ default: m.VariabilityPage })))
 const ExplorerPage = lazyRetry(() => import('./pages/ExplorerPage').then(m => ({ default: m.ExplorerPage })))
+const HenryPage = lazyRetry(() => import('./pages/HenryPage').then(m => ({ default: m.HenryPage })))
 const NotFoundPage = lazyRetry(() => import('./pages/NotFoundPage').then(m => ({ default: m.NotFoundPage })))
 
 // Clear the retry flag on successful load so future failures can retry again
@@ -152,6 +153,7 @@ function App() {
         <Route path="pricing" element={<LazyPage><PricingPage /></LazyPage>} />
         <Route path="nceca" element={<LazyPage><NCECAPage /></LazyPage>} />
         <Route path="help/variability" element={<LazyPage><VariabilityPage /></LazyPage>} />
+        <Route path="henry" element={<LazyPage><HenryPage /></LazyPage>} />
         <Route path="*" element={<LazyPage><NotFoundPage /></LazyPage>} />
       </Route>
     </Routes>
