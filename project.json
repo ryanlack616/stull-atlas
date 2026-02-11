@@ -1,0 +1,88 @@
+{
+  "name": "stull-atlas",
+  "title": "Stull Atlas",
+  "description": "Interactive ceramic glaze chemistry visualization — plots glaze compositions on Stull charts with real-time oxide calculations. Live at stullatlas.app.",
+  "version": "3.5.0",
+  "status": "active",
+  "category": "web-app",
+  "audience": "public",
+  "tags": [
+    "ceramics",
+    "glaze",
+    "chemistry",
+    "plotly",
+    "react",
+    "vite",
+    "tauri",
+    "supabase"
+  ],
+  "created": "2025-01-01",
+  "updated": "2026-02-11",
+  "author": "Howell",
+  "language": "typescript",
+  "architecture": "React + Vite frontend with Plotly.js for interactive charts. Tauri wrapper for desktop app. Supabase backend for user data and glaze storage. SPA with client-side routing.",
+  "dependencies": [
+    "react",
+    "react-dom",
+    "vite",
+    "plotly.js",
+    "@tauri-apps/api"
+  ],
+  "run_command": "npm run dev",
+  "health_check": "curl -s http://localhost:5173",
+  "ports": [
+    5173
+  ],
+  "deployment": "manual",
+  "vcs": "git",
+  "entry_points": {
+    "app": "src/"
+  },
+  "key_files": [
+    "package.json",
+    "vite.config.ts",
+    "index.html",
+    "tsconfig.json"
+  ],
+  "data_files": [],
+  "generated_files": [
+    "dist/",
+    "node_modules/"
+  ],
+  "sensitive_files": [
+    ".env.local",
+    ".env.deploy"
+  ],
+  "env_vars": [],
+  "external_services": [
+    "Supabase"
+  ],
+  "design_decisions": [
+    "Plotly.js for interactive, zoomable glaze chemistry charts",
+    "Vite for fast HMR during development",
+    "Tauri for optional native desktop wrapper",
+    "Supabase for auth and cloud glaze storage",
+    "React for component-based UI with complex state management"
+  ],
+  "gotchas": [
+    "Port 5173 is Vite's default — conflicts with other Vite projects",
+    "Tauri requires Rust toolchain installed for desktop builds",
+    "Supabase project must be active for cloud features",
+    "Plotly bundles are large — impacts initial load time",
+    "Has active git repo — coordinate changes carefully"
+  ],
+  "known_issues": [],
+  "last_known_state": "working",
+  "history": [
+    "v3.5.0 — current public release at stullatlas.app"
+  ],
+  "related_projects": [
+    "ceramics-community",
+    "myclaystudio"
+  ],
+  "urls": [
+    "https://stullatlas.app"
+  ],
+  "shortcuts": [],
+  "notes": "Flagship project. Public-facing with real users. Has git history. Treat with care."
+}

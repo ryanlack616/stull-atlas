@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Stull Atlas — Master Plan · NCECA 2026</title>
+  <style>
+    /* ── Print layout ───────────────────────────────── */
+    @page {
+      size: letter;
+      margin: 0.75in 0.85in;
+    }
+
+    /* ── Reset & base ───────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.55;
+      color: #1a1a2e;
+      background: #fff;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* ── Cover page ─────────────────────────────────── */
+    .cover {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+      page-break-after: always;
+      padding: 2in 1in;
+    }
+    .cover-icon { font-size: 72pt; margin-bottom: 24px; }
+    .cover h1 {
+      font-size: 36pt;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: #1a1a2e;
+      margin-bottom: 8px;
+    }
+    .cover h1 span { color: #4f46e5; }
+    .cover .cover-subtitle {
+      font-size: 14pt;
+      font-weight: 400;
+      color: #555;
+      margin-bottom: 40px;
+      line-height: 1.5;
+    }
+    .cover .cover-meta {
+      font-size: 11pt;
+      color: #888;
+      line-height: 1.8;
+    }
+    .cover .cover-meta strong { color: #1a1a2e; }
+    .cover-divider {
+      width: 120px;
+      height: 3px;
+      background: #4f46e5;
+      border: none;
+      margin: 32px auto;
+      border-radius: 2px;
+    }
+    .cover-badge {
+      display: inline-block;
+      background: #4f46e5;
+      color: #fff;
+      font-size: 9pt;
+      font-weight: 700;
+      padding: 5px 18px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    /* ── TOC ─────────────────────────────────────────── */
+    .toc {
+      page-break-after: always;
+      padding: 40px 0;
+    }
+    .toc h2 {
+      font-size: 18pt;
+      font-weight: 700;
+      color: #4f46e5;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #4f46e5;
+      padding-bottom: 8px;
+    }
+    .toc-list {
+      list-style: none;
+      counter-reset: toc-part;
+    }
+    .toc-part {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-top: 16px;
+      margin-bottom: 4px;
+    }
+    .toc-item {
+      font-size: 10.5pt;
+      font-weight: 400;
+      color: #444;
+      padding-left: 20px;
+      line-height: 1.8;
+    }
+
+    /* ── Section structure ───────────────────────────── */
+    .part-header {
+      page-break-before: always;
+      margin-top: 0;
+      padding-top: 20px;
+    }
+    .part-header h2 {
+      font-size: 20pt;
+      font-weight: 800;
+      color: #4f46e5;
+      border-bottom: 3px solid #4f46e5;
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+      letter-spacing: -0.5px;
+    }
+
+    h3 {
+      font-size: 14pt;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-top: 28px;
+      margin-bottom: 10px;
+    }
+    h4 {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #333;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+    h5 {
+      font-size: 10.5pt;
+      font-weight: 600;
+      color: #4f46e5;
+      margin-top: 16px;
+      margin-bottom: 6px;
+    }
+
+    p {
+      margin-bottom: 10px;
+    }
+
+    strong { font-weight: 700; }
+    em { font-style: italic; }
+
+    /* ── Blockquotes ────────────────────────────────── */
+    blockquote {
+      border-left: 3px solid #4f46e5;
+      padding: 8px 16px;
+      margin: 12px 0;
+      background: #f8f7ff;
+      font-style: italic;
+      color: #333;
+      border-radius: 0 4px 4px 0;
+    }
+
+    /* ── Lists ───────────────────────────────────────── */
+    ul, ol {
+      margin: 8px 0 12px 24px;
+    }
+    li {
+      margin-bottom: 4px;
+    }
+
+    /* ── Tables ──────────────────────────────────────── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 20px;
+      font-size: 9.5pt;
+    }
+    th {
+      background: #4f46e5;
+      color: #fff;
+      font-weight: 700;
+      text-align: left;
+      padding: 6px 10px;
+      font-size: 9pt;
+      letter-spacing: 0.3px;
+    }
+    td {
+      border-bottom: 1px solid #e0e0e0;
+      padding: 5px 10px;
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #f9f9fb; }
+    tr:last-child td { border-bottom: 2px solid #4f46e5; }
+
+    /* ── Status badges ──────────────────────────────── */
+    .status-done {
+      display: inline-block;
+      background: #059669;
+      color: #fff;
+      font-size: 8pt;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: 10px;
+    }
+    .status-todo {
+      display: inline-block;
+      background: #dc2626;
+      color: #fff;
+      font-size: 8pt;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: 10px;
+    }
+    .status-planned {
+      display: inline-block;
+      background: #d97706;
+      color: #fff;
+      font-size: 8pt;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: 10px;
+    }
+
+    /* ── Callout boxes ──────────────────────────────── */
+    .callout {
+      border: 1px solid #e0e0e0;
+      border-left: 4px solid #4f46e5;
+      padding: 12px 16px;
+      margin: 14px 0;
+      background: #fafaff;
+      border-radius: 0 6px 6px 0;
+    }
+    .callout-title {
+      font-weight: 700;
+      font-size: 10pt;
+      color: #4f46e5;
+      margin-bottom: 4px;
+    }
+    .callout-warn {
+      border-left-color: #d97706;
+      background: #fffdf5;
+    }
+    .callout-warn .callout-title { color: #d97706; }
+
+    /* ── Code ────────────────────────────────────────── */
+    code {
+      font-family: 'Cascadia Code', 'Consolas', monospace;
+      font-size: 9pt;
+      background: #f3f3f5;
+      padding: 1px 5px;
+      border-radius: 3px;
+      color: #4f46e5;
+    }
+
+    /* ── Avoid page break inside ─────────────────────── */
+    .keep-together {
+      page-break-inside: avoid;
+    }
+
+    /* ── Divider ─────────────────────────────────────── */
+    hr {
+      border: none;
+      height: 1px;
+      background: #ddd;
+      margin: 28px 0;
+    }
+
+    /* ── Footer ──────────────────────────────────────── */
+    .doc-footer {
+      margin-top: 40px;
+      padding-top: 12px;
+      border-top: 1px solid #ccc;
+      font-size: 9pt;
+      color: #999;
+      text-align: center;
+    }
+
+    @media print {
+      body { background: #fff; }
+      .cover { min-height: auto; height: 100vh; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- COVER PAGE                                             -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-badge">Confidential — Internal Use</div>
+  <div class="cover-icon">⚗</div>
+  <h1>Stull <span>Atlas</span></h1>
+  <p class="cover-subtitle">
+    Master Plan<br />
+    Product Strategy · NCECA 2026 · Marketing Execution
+  </p>
+  <hr class="cover-divider" />
+  <p class="cover-meta">
+    <strong>Ryan Lack</strong> — My Clay Corner Studio · Howell, Michigan<br />
+    February 10, 2026<br /><br />
+    Version 3.5.0 · 269/269 Tests Passing · 9,000+ Glazes<br />
+    NCECA Detroit · March 25–27, 2026
+  </p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TABLE OF CONTENTS                                       -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <ul class="toc-list">
+    <li class="toc-part">Part I — The Product</li>
+    <li class="toc-item">1. What Stull Atlas Is</li>
+    <li class="toc-item">2. Current Product State (v3.5.0)</li>
+    <li class="toc-item">3. Feature Inventory — What Exists Today</li>
+    <li class="toc-item">4. The 3D Glaze Exploration — Scope &amp; Vision</li>
+
+    <li class="toc-part">Part II — NCECA 2026 Conference Plan</li>
+    <li class="toc-item">5. Conference Overview &amp; Goals</li>
+    <li class="toc-item">6. Booth Setup &amp; Operations</li>
+    <li class="toc-item">7. Lead Capture Strategy</li>
+
+    <li class="toc-part">Part III — Marketing Materials Inventory</li>
+    <li class="toc-item">8. What Exists and How Each Piece Gets Used</li>
+
+    <li class="toc-part">Part IV — Marketing Execution Timeline</li>
+    <li class="toc-item">9. Six-Week Countdown (Feb 10 → March 25)</li>
+
+    <li class="toc-part">Part V — Technical Gaps &amp; Infrastructure</li>
+    <li class="toc-item">10. Things That Must Be Done Before NCECA</li>
+
+    <li class="toc-part">Part VI — Revenue Model &amp; Projections</li>
+    <li class="toc-item">11. Pricing Architecture</li>
+
+    <li class="toc-part">Part VII — Positioning &amp; Messaging</li>
+    <li class="toc-item">12. Who This Is For</li>
+    <li class="toc-item">13. Key Messages</li>
+
+    <li class="toc-part">Part VIII — Post-NCECA Growth</li>
+    <li class="toc-item">14. After the Conference</li>
+
+    <li class="toc-part">Part IX — Risk Register</li>
+    <li class="toc-item">15. What Could Go Wrong</li>
+
+    <li class="toc-part">Appendices</li>
+    <li class="toc-item">A. File Reference</li>
+    <li class="toc-item">B. Key Dates Summary</li>
+    <li class="toc-item">C. Brand Assets</li>
+  </ul>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PART I — THE PRODUCT                                    -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="part-header">
+  <h2>Part I — The Product</h2>
+</div>
+
+<h3>1. What Stull Atlas Is</h3>
+
+<p>Stull Atlas is a computational glaze chemistry explorer for ceramic artists. It maps <strong>9,000+ real-world glaze recipes</strong> onto an interactive Stull chart — the 114-year-old coordinate system that plots SiO₂ (silica) against Al₂O₃ (alumina) to predict glaze surface quality. Every dot on the chart is a recipe someone actually mixed, fired, and documented.</p>
+
+<p>In a field where most tools are spreadsheets with chemistry behind them, Stull Atlas is a <strong>spatial, visual, AI-augmented workbench</strong>. You don't search for a glaze — you walk through glaze space and find what's there.</p>
+
+<div class="callout keep-together">
+  <div class="callout-title">One-Liner</div>
+  <em>A computational glaze chemistry explorer — 114 years after Stull.</em>
+</div>
+
+<div class="callout keep-together">
+  <div class="callout-title">Elevator Pitch (30 seconds)</div>
+  Stull Atlas maps 9,000+ real glaze recipes on interactive Stull charts. Filter by cone, surface, color — click any point to see the full recipe and UMF breakdown. It has blend calculators, a recipe optimizer, and an AI engine that takes plain-English descriptions like "satin celadon, cone 6" and gives you optimized recipes. The explorer and UMF calculator are always free.
+</div>
+
+<div class="callout keep-together">
+  <div class="callout-title">Conference Pitch (10 seconds)</div>
+  "It's like Google Maps for glaze chemistry — 9,000+ real glazes on a Stull chart. Try it free, scan the QR code."
+</div>
+
+<hr />
+
+<h3>2. Current Product State (v3.5.0)</h3>
+
+<table class="keep-together">
+  <tr><th>Version</th><th>Codename</th><th>What Shipped</th><th>Status</th></tr>
+  <tr><td><strong>3.4</strong></td><td>The Compass</td><td>Weighted 5-axis similarity, surface prediction heatmap, proximity system, exploration breadcrumbs</td><td><span class="status-done">Shipped</span></td></tr>
+  <tr><td><strong>3.5</strong></td><td>The Gallery</td><td>Photo thumbnails in nearby list, gallery mode, image carousel, click-to-zoom lightbox</td><td><span class="status-done">Shipped</span></td></tr>
+</table>
+
+<p><strong>Stability:</strong> 269/269 tests passing, TypeScript clean, production build at HEAD (018348f on master).</p>
+<p><strong>Dataset:</strong> 9,000+ glazes sourced from Glazy (CC BY-NC-SA 4.0), materials data from Digitalfire.</p>
+
+<hr />
+
+<h3>3. Feature Inventory — What Exists Today</h3>
+
+<h4>Always Free (No Account Needed)</h4>
+<table>
+  <tr><th>Feature</th><th>Description</th></tr>
+  <tr><td><strong>2D Stull Chart Explorer</strong></td><td>Interactive scatter plot of all 9,000+ glazes by SiO₂ vs. Al₂O₃. Stull region overlays (Matte, Bright Gloss, Semi-Matte, Crazed, Underfired, Unfused). Temperature contour lines.</td></tr>
+  <tr><td><strong>Glaze Detail Panel</strong></td><td>Click any dot → full recipe, UMF breakdown, firing info, source link</td></tr>
+  <tr><td><strong>UMF Calculator</strong></td><td>Enter a recipe by weight → get Unity Molecular Formula</td></tr>
+  <tr><td><strong>Materials Browser</strong></td><td>Searchable raw materials database with oxide analyses (from Digitalfire)</td></tr>
+  <tr><td><strong>Interactive Guide</strong></td><td>In-depth documentation: reading Stull charts, UMF, blend planning, glossary</td></tr>
+  <tr><td><strong>Color Modes</strong></td><td>Color by cone, surface type, source, flux ratio (R₂O:RO), boron, confidence</td></tr>
+  <tr><td><strong>Light/Dark Mode</strong></td><td>Theme preference saved between sessions</td></tr>
+  <tr><td><strong>Print Support</strong></td><td>Ctrl+P on any page → clean paper layout</td></tr>
+</table>
+
+<h4>Solo Tier — $10/month or $89/year</h4>
+<table>
+  <tr><th>Feature</th><th>Description</th></tr>
+  <tr><td><strong>Similarity Search</strong></td><td>5 most similar glazes ranked by oxide distance</td></tr>
+  <tr><td><strong>Glaze Compare</strong></td><td>Side-by-side UMF comparison of up to 3 glazes</td></tr>
+  <tr><td><strong>Save Recipes</strong></td><td>Persistent personal glaze library</td></tr>
+  <tr><td><strong>Import/Export</strong></td><td>JSON, CSV, Insight XML import + export</td></tr>
+  <tr><td><strong>Line Blend Calculator</strong></td><td>Interpolate between 2 recipes across N steps</td></tr>
+  <tr><td><strong>Limit Warnings</strong></td><td>Oxide limit validation alerts</td></tr>
+</table>
+
+<h4>Pro Tier — $25/month or $219/year</h4>
+<table>
+  <tr><th>Feature</th><th>Description</th></tr>
+  <tr><td><strong>Triaxial Blend</strong></td><td>3-corner blend with configurable divisions</td></tr>
+  <tr><td><strong>Biaxial Blend</strong></td><td>2-axis grid blend (4 corners)</td></tr>
+  <tr><td><strong>Quadaxial Blend</strong></td><td>4-material blend</td></tr>
+  <tr><td><strong>Radial Blend</strong></td><td>Circular blend pattern around center</td></tr>
+  <tr><td><strong>Space-Filling Designs</strong></td><td>Algorithmic blend exploration using space-filling curves</td></tr>
+  <tr><td><strong>Recipe Optimizer</strong></td><td>Set UMF targets → gradient descent finds material recipe</td></tr>
+  <tr><td><strong>Genetic Optimizer</strong></td><td>Evolutionary algorithm explores broader recipe space</td></tr>
+  <tr><td><strong>AI Suggestion Engine</strong></td><td>Plain-English input ("satin celadon cone 6") → optimized recipe</td></tr>
+  <tr><td><strong>DBSCAN Clustering</strong></td><td>Auto-detect clusters in glaze data</td></tr>
+  <tr><td><strong>Density Analysis</strong></td><td>Heatmap of where glazes concentrate</td></tr>
+  <tr><td><strong>Void Detection</strong></td><td>Find unexplored gaps in chemistry space</td></tr>
+</table>
+
+<h4>Atlas 3D Tier — $40/month or $349/year</h4>
+<table>
+  <tr><th>Feature</th><th>Description</th></tr>
+  <tr><td><strong>3D Stull Chart Explorer</strong></td><td>SiO₂ × Al₂O₃ × configurable Z-axis (cone, flux ratio, boron, any oxide). Full orbit, zoom, rotate.</td></tr>
+  <tr><td><strong>Proximity Exploration</strong></td><td>Sphere-based neighborhood with distance lines, cross-highlight, filter pills</td></tr>
+  <tr><td><strong>3D Surface Fitting</strong></td><td>Fit mathematical surfaces to glaze regions</td></tr>
+  <tr><td><strong>3D Export (OBJ / STL / CSV)</strong></td><td>Export 3D glaze landscapes as meshable geometry</td></tr>
+  <tr><td><strong>Lighting &amp; Material Controls</strong></td><td>Adjustable lighting, surface materials for 3D rendering</td></tr>
+  <tr><td><strong>Camera Presets &amp; Auto-Rotate</strong></td><td>Named viewpoints, cinematic auto-rotation</td></tr>
+  <tr><td><strong>Aesthetic Compass</strong></td><td>5-axis weighted similarity with presets (Balanced, Chemistry Twin, Same Surface, Same Cone, Flux Sibling)</td></tr>
+  <tr><td><strong>Surface Prediction Heatmap</strong></td><td>Nadaraya-Watson kernel classification paints the Stull floor with matte/gloss/satin predictions</td></tr>
+</table>
+
+<h4>Education Pricing</h4>
+<table class="keep-together">
+  <tr><th>Tier</th><th>Price</th><th>Scope</th></tr>
+  <tr><td><strong>Student</strong></td><td>Free</td><td>Solo-level access with .edu email — auto-verified</td></tr>
+  <tr><td><strong>Classroom</strong></td><td>$300/year</td><td>Pro access for up to 30 students (one course section)</td></tr>
+  <tr><td><strong>Department</strong></td><td>$750/year</td><td>Full Atlas 3D for unlimited seats across the entire ceramics program</td></tr>
+</table>
+
+<hr />
+
+<h3>4. The 3D Glaze Exploration — Scope &amp; Vision</h3>
+
+<p>The 3D explorer is the differentiator. <strong>No one else is building spatial glaze navigation.</strong></p>
+
+<h4>What It Does Today</h4>
+<ul>
+  <li>Plots all 9,000+ glazes in three dimensions: SiO₂ (x) × Al₂O₃ (y) × configurable Z-axis</li>
+  <li>Z-axis options: cone temperature, flux ratio, boron content, individual oxides</li>
+  <li>Full orbit camera: drag to rotate, scroll to zoom, middle-drag for free orbit</li>
+  <li>15-level discrete cone colorscale (cone 04 through 10, each cone gets a unique color)</li>
+  <li>Stull regions and temperature contours projected onto the chart floor</li>
+  <li>Click any point → detail panel with recipe, UMF, similarity panel</li>
+  <li>Proximity sphere: adjustable radius shows nearby glazes with distance lines</li>
+  <li>Surface prediction heatmap paints the floor with matte/gloss/satin predictions</li>
+  <li>Aesthetic Compass: 5-axis weighted similarity with named presets</li>
+  <li>Gallery mode: photo thumbnails in the nearby list, image carousel in detail panel</li>
+  <li>3D export: OBJ, STL, and CSV output of the glaze landscape</li>
+  <li>Camera presets and auto-rotate for presentation/demo use</li>
+</ul>
+
+<h4>Product Roadmap</h4>
+<table>
+  <tr><th>Version</th><th>Codename</th><th>Description</th></tr>
+  <tr><td><strong>v3.6</strong></td><td>The Walk</td><td>Animated recipe interpolation path between two glazes. Slider shows UMF step by step, surface prediction updates, recipe delta as material adjustments.</td></tr>
+  <tr><td><strong>v3.7</strong></td><td>The Constellations</td><td>Auto-detected clusters with names ("Celadon Territory," "Tenmoku Belt"), boundary polygons, navigation picker.</td></tr>
+  <tr><td><strong>v3.8</strong></td><td>The Knowledge Graph</td><td>Force-directed graph with photos inside nodes, relationship edges, "fly to" search, exploration history trails.</td></tr>
+  <tr><td><strong>v3.9</strong></td><td>The Controls</td><td>WASD orbit, keyboard shortcuts for every feature, mouse+key power combos, printable reference card.</td></tr>
+  <tr><td><strong>v3.10</strong></td><td>The Studio</td><td>Material substitution — pick a material → see substitutes → see UMF shift on chart. Live recipe ↔ chart sync.</td></tr>
+  <tr><td><strong>v4.0</strong></td><td>The Community</td><td>User profiles, saved exploration paths, shared annotations, federated database.</td></tr>
+</table>
+
+<div class="callout keep-together">
+  <div class="callout-title">Architecture Principle</div>
+  Each version builds on the last: Compass (defines "similar") → Gallery (shows what "similar" looks like) → Walk (shows how to get there) → Constellations (groups become named places) → Knowledge Graph (places become a navigable world) → Studio (the world connects back to the bench) → Community (the world becomes shared). Each layer is independently valuable.
+</div>
+
+<h4>Why This Matters</h4>
+<p>Traditional glaze tools (Insight, Glazy, HyperGlaze) show you a recipe as a list of numbers. Stull Atlas shows you a <em>landscape</em>. You can see where your glaze lives, what's near it, and what terrain you'd cross to get somewhere else. The 3D explorer makes that literal — you're not reading a spreadsheet, you're orbiting a world of 9,000 glazes.</p>
+
+<p><strong>No one is building this.</strong> Not Glazy (social-first), not Digitalfire (reference-first), not Insight (desktop calculator). We're building the first tool where you can SEE what a glaze looks like, UNDERSTAND where it lives in chemistry space, and WALK toward what you want to make.</p>
+
+<h4>Competitive Position</h4>
+<table>
+  <tr><th>Capability</th><th>Glazy</th><th>Digitalfire</th><th>Insight</th><th>Stull Atlas</th></tr>
+  <tr><td>Recipe calculator</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+  <tr><td>UMF display</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+  <tr><td>Stull chart</td><td>—</td><td>static</td><td>—</td><td><strong>Interactive 3D</strong></td></tr>
+  <tr><td>Weighted similarity</td><td>—</td><td>—</td><td>—</td><td><strong>✓ v3.4</strong></td></tr>
+  <tr><td>Surface prediction</td><td>—</td><td>—</td><td>—</td><td><strong>✓ v3.4</strong></td></tr>
+  <tr><td>Photo exploration</td><td>list</td><td>—</td><td>—</td><td><strong>✓ v3.5</strong></td></tr>
+  <tr><td>Recipe interpolation</td><td>—</td><td>—</td><td>—</td><td><strong>Planned v3.6</strong></td></tr>
+  <tr><td>Glaze families</td><td>tags</td><td>—</td><td>—</td><td><strong>Planned v3.7</strong></td></tr>
+  <tr><td>Knowledge graph</td><td>—</td><td>—</td><td>—</td><td><strong>Vision v3.8</strong></td></tr>
+  <tr><td>AI suggestion engine</td><td>—</td><td>—</td><td>—</td><td><strong>✓ Now</strong></td></tr>
+  <tr><td>6 blend calculators</td><td>—</td><td>—</td><td>—</td><td><strong>✓ Now</strong></td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PART II — NCECA 2026 CONFERENCE PLAN                    -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="part-header">
+  <h2>Part II — NCECA 2026 Conference Plan</h2>
+</div>
+
+<h3>5. Conference Overview</h3>
+
+<table class="keep-together">
+  <tr><th>Item</th><th>Detail</th></tr>
+  <tr><td><strong>Event</strong></td><td>NCECA (National Council on Education for the Ceramic Arts) Annual Conference</td></tr>
+  <tr><td><strong>Location</strong></td><td>Detroit, Michigan</td></tr>
+  <tr><td><strong>Dates</strong></td><td>March 25–27, 2026 (Resource Hall closed March 28)</td></tr>
+  <tr><td><strong>Booth</strong></td><td>Resource Hall — 6-foot table, 2 chairs, 3 four-day passes, signage</td></tr>
+  <tr><td><strong>Contact</strong></td><td>resourcehall@nceca.net</td></tr>
+  <tr><td><strong>Distance</strong></td><td>~1 hour from Howell, MI — no hotel needed</td></tr>
+</table>
+
+<h4>Conference Goals (Prioritized)</h4>
+<ol>
+  <li><strong>Lead generation</strong> — Collect 50–100 email addresses of serious glaze potters</li>
+  <li><strong>Brand awareness</strong> — Establish Stull Atlas as a known name in the glaze chemistry community</li>
+  <li><strong>Revenue</strong> — Sell $29/3-month Pro deals at the booth</li>
+  <li><strong>Feedback</strong> — Hear what potters actually want from a glaze tool</li>
+  <li><strong>Community</strong> — Connect with Derek Au (Glazy), Tony Hansen (Digitalfire), educators, and working potters</li>
+</ol>
+
+<hr />
+
+<h3>6. Booth Setup &amp; Operations</h3>
+
+<h4>Hardware Kit</h4>
+<table>
+  <tr><th>Item</th><th>Purpose</th><th>Priority</th></tr>
+  <tr><td>Laptop #1</td><td>Attendee hands-on exploration</td><td>Must-have</td></tr>
+  <tr><td>Laptop #2 or tablet</td><td>Presenter demo screen</td><td>Must-have</td></tr>
+  <tr><td>External monitor (15-17" USB-C)</td><td>Aisle-visible draw-in display</td><td>Must-have</td></tr>
+  <tr><td>Personal wifi hotspot</td><td>Conference wifi will fail</td><td>Must-have</td></tr>
+  <tr><td>Power strip + 10ft extension</td><td>Tables have inconvenient outlets</td><td>Must-have</td></tr>
+  <tr><td>iPad or tablet</td><td>Email signup kiosk (Google Form)</td><td>Nice-to-have</td></tr>
+  <tr><td>Table cloth (dark, wrinkle-free)</td><td>Professional look, hide cables</td><td>Nice-to-have</td></tr>
+</table>
+
+<h4>Pre-loaded Demo State</h4>
+<ul>
+  <li>Explorer with cone 6 filter active (most attendees fire cone 6)</li>
+  <li>A glaze selected in detail panel (e.g., a classic tenmoku)</li>
+  <li>Triaxial blend pre-configured and ready to show</li>
+  <li>AI suggest panel ready with "satin celadon cone 6" typed</li>
+</ul>
+
+<h4>Physical Props (The Secret Weapon)</h4>
+<p>A tech demo at a ceramics conference needs a physical bridge:</p>
+<ul>
+  <li><strong>3–5 fired test tiles</strong> from a triaxial blend — laid on the table next to the screen showing the same triaxial in the app. Physical + digital side by side = instant credibility.</li>
+  <li><strong>A notebook</strong> with handwritten glaze notes next to the import/export feature = "bring your notebook into the digital age"</li>
+  <li><strong>A mug or bowl</strong> you glazed with a recipe from the app. If someone asks "does it work?" you hand them the proof.</li>
+</ul>
+
+<h4>Demo Script (5 minutes, flexible)</h4>
+<table>
+  <tr><th>Segment</th><th>Time</th><th>What to Show</th></tr>
+  <tr><td><strong>Hook</strong></td><td>30 sec</td><td>"This is Stull Atlas — 9,000 real glazes mapped on a Stull chart. Every dot is a recipe someone mixed and fired."</td></tr>
+  <tr><td><strong>Explore</strong></td><td>90 sec</td><td>Click a point → recipe + UMF → similarity panel → "See these 5 similar glazes? Ranked by oxide distance." Toggle 3D briefly.</td></tr>
+  <tr><td><strong>Calculate</strong></td><td>60 sec</td><td>Triaxial blend → "Pick 3 glazes, set divisions, get every blend point with recipes. Export CSV."</td></tr>
+  <tr><td><strong>Optimize</strong></td><td>60 sec</td><td>Optimizer → "Set your target UMF — SiO₂ 3.5, Al₂O₃ 0.35 — it finds material recipes that hit those numbers."</td></tr>
+  <tr><td><strong>Suggest</strong></td><td>30 sec</td><td>AI suggest → type "matte white cone 6, no barium" → show result. The jaw-dropper.</td></tr>
+  <tr><td><strong>Close</strong></td><td>30 sec</td><td>"$29 gets you 3 months of Pro — scan the QR or grab a card."</td></tr>
+</table>
+
+<h4>Daily Schedule</h4>
+<table>
+  <tr><th>Time</th><th>Activity</th></tr>
+  <tr><td>8:00 AM</td><td>Arrive, power on everything, test QR</td></tr>
+  <tr><td>8:30 AM</td><td>Instagram story: "Day [X] at NCECA"</td></tr>
+  <tr><td>9:00 AM – 5:00 PM</td><td>Demos, conversations, card handouts</td></tr>
+  <tr><td>12:00 PM</td><td>Lunch — stagger if second person available</td></tr>
+  <tr><td>3:00 PM</td><td>Quick social post: interesting conversation, demo clip</td></tr>
+  <tr><td>5:00 PM</td><td>Pack sensitive items if booth unsecured overnight</td></tr>
+  <tr><td>Evening</td><td>Review collected emails, note memorable conversations</td></tr>
+</table>
+
+<h4>Talking Points for Common Questions</h4>
+
+<div class="keep-together">
+<h5>"How is this different from Glazy?"</h5>
+<blockquote>"Glazy is the database — Derek Au did amazing work making it open. Stull Atlas is a different lens on that data — interactive Stull charts, blend calculators, an optimizer, AI suggestions. They're complementary."</blockquote>
+</div>
+
+<div class="keep-together">
+<h5>"How is this different from Insight?"</h5>
+<blockquote>"Insight is recipe-level calculation. Stull Atlas starts from the other direction — see the whole landscape first, then drill into recipes. Plus blend calculators and AI suggestions are unique."</blockquote>
+</div>
+
+<div class="keep-together">
+<h5>"Is this free?"</h5>
+<blockquote>"The explorer, UMF calculator, materials database, and guide are always free. Blend calculators, optimizer, and AI suggestions are Pro — $18/month or $29 for 3 months NCECA deal."</blockquote>
+</div>
+
+<div class="keep-together">
+<h5>"Who built this?"</h5>
+<blockquote>"I did — I'm Ryan Lack, a potter in Howell, Michigan, about an hour from here. I wanted a better way to visualize glaze chemistry, and this is what happened."</blockquote>
+</div>
+
+<h4>Emergency Fallbacks</h4>
+<table>
+  <tr><th>Failure</th><th>Fallback</th></tr>
+  <tr><td>No wifi, hotspot dead</td><td><code>npx serve dist</code> — entire app works offline once built</td></tr>
+  <tr><td>Laptop dies</td><td>Demo from phone (responsive), or backup screenshots on USB</td></tr>
+  <tr><td>External monitor fails</td><td>Demo from laptop, angle toward aisle</td></tr>
+  <tr><td>Nobody comes</td><td>Walk the floor with business cards</td></tr>
+  <tr><td>QR doesn't scan</td><td>URL printed on card: stullatlas.app/nceca</td></tr>
+  <tr><td>Supabase/auth down</td><td>Demo mode bypasses auth entirely</td></tr>
+</table>
+
+<hr />
+
+<h3>7. Lead Capture Strategy</h3>
+
+<div class="keep-together">
+<h4>Method 1: QR → NCECA Landing Page (Primary)</h4>
+<p>Attendees scan QR at booth or later from hotel → <code>stullatlas.app/#/nceca</code> handles signup. Lowest friction — already built.</p>
+
+<h4>Method 2: iPad Kiosk (Backup)</h4>
+<p>Google Form in Safari Guided Access mode on iPad. Fields: Name, Email, Cone Range, "What would be most useful?"</p>
+
+<h4>Method 3: Handout Card (Passive)</h4>
+<p>Card with QR → NCECA page. They sign up on their own time. 200 printed.</p>
+
+<div class="callout">
+  <div class="callout-title">Target</div>
+  50–100 emails over 3 days. Follow up within 48 hours.
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PART III — MARKETING MATERIALS INVENTORY                -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="part-header">
+  <h2>Part III — Marketing Materials Inventory</h2>
+</div>
+
+<h3>8. What Exists and How Each Piece Gets Used</h3>
+
+<h4>Print Materials</h4>
+<table>
+  <tr><th>Material</th><th>Status</th><th>Qty</th><th>How It Gets Used</th></tr>
+  <tr><td><strong>Handout Cards</strong></td><td><span class="status-done">Designed</span></td><td>200</td><td>Half-page cardstock. Handed to every person who stops at the booth. Has QR code, feature list, pricing, URL. They take it to their hotel and scan it later. 60% of signups will come from these.</td></tr>
+  <tr><td><strong>QR Poster (tabletop)</strong></td><td><span class="status-todo">Needs creation</span></td><td>2</td><td>11"×17" standing poster on table. QR points to stullatlas.app/#/nceca. Visible from 3–4 feet. Draws people to scan while you're talking to someone else.</td></tr>
+  <tr><td><strong>QR Poster (standing)</strong></td><td><span class="status-todo">Needs creation</span></td><td>1</td><td>24"×36" foam board or retractable banner. Visible from the aisle 10+ feet away. The "billboard" — it pulls foot traffic.</td></tr>
+  <tr><td><strong>Business Cards</strong></td><td><span class="status-todo">Needs creation</span></td><td>100</td><td>Standard 3.5"×2". For networking — educators, gallery owners, vendors. URL + QR + tagline.</td></tr>
+</table>
+
+<h4>Digital Assets</h4>
+<table>
+  <tr><th>Asset</th><th>Status</th><th>How It Gets Used</th></tr>
+  <tr><td><strong>NCECA Landing Page</strong></td><td><span class="status-done">Built</span></td><td>URL: /#/nceca. Every QR code points here. Hero + signup + features + deal cards + screenshots.</td></tr>
+  <tr><td><strong>Pricing Page</strong></td><td><span class="status-done">Built</span></td><td>4-tier grid + monthly/annual toggle + education section + FAQ. Where people decide to pay.</td></tr>
+  <tr><td><strong>About Page</strong></td><td><span class="status-done">Built</span></td><td>Full explanation, Stull chart history, UMF primer, credits. Establishes credibility.</td></tr>
+  <tr><td><strong>og-image.png</strong></td><td><span class="status-todo">Needs creation</span></td><td>1200×630px. Shows when links are shared on social media. Without this, shared links look broken.</td></tr>
+  <tr><td><strong>Demo Mode</strong></td><td><span class="status-done">Built</span></td><td>VITE_DEMO_MODE=true or ?demo=1. Bypasses auth with fake Pro profile. Used at booth.</td></tr>
+  <tr><td><strong>Screenshots</strong></td><td><span class="status-done">Exist</span></td><td>Used on NCECA page, social posts, handout card. 3 screenshots: explorer, detail, calculators.</td></tr>
+</table>
+
+<h4>Social Media Templates</h4>
+<table>
+  <tr><th>Template Set</th><th>Status</th><th>How It Gets Used</th></tr>
+  <tr><td><strong>Instagram Posts (8)</strong></td><td><span class="status-done">Written</span></td><td>8 ready-to-use captions with image specs. Introduction, history, triaxial, AI suggest, 3D explorer, optimizer, NCECA announcement, origin story. Post 1/week through NCECA.</td></tr>
+  <tr><td><strong>Instagram Reels (5)</strong></td><td><span class="status-done">Written</span></td><td>15–30 sec screen recordings. "Every dot is a glaze," "Type what you want," "Plan your triaxial," "1912 → 2026," "Booth setup." Reels get 3–5x reach.</td></tr>
+  <tr><td><strong>Hashtag Sets (4)</strong></td><td><span class="status-done">Written</span></td><td>Copy-paste ready: Primary, Secondary (rotating), NCECA-specific (start March 3), Discovery/reach.</td></tr>
+</table>
+
+<h4>Outreach Templates</h4>
+<table>
+  <tr><th>Template</th><th>Status</th><th>How It Gets Used</th></tr>
+  <tr><td><strong>Logo Permission Emails</strong></td><td><span class="status-done">Drafted</span></td><td>2 emails: Derek Au (Glazy) + Tony Hansen (Digitalfire). Requesting logo display permission next to attribution. Send by Feb 14.</td></tr>
+  <tr><td><strong>Post-NCECA Follow-ups (4)</strong></td><td><span class="status-done">Written</span></td><td>4-email drip: (1) Thank you, (2) Personalized for engaged convos, (3) 2-week trial reminder, (4) End of free period.</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PART IV — MARKETING EXECUTION TIMELINE                  -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="part-header">
+  <h2>Part IV — Marketing Execution Timeline</h2>
+</div>
+
+<h3>9. Six-Week Countdown (Feb 10 → March 25)</h3>
+
+<h4>WEEK 1: Feb 10–16 — Setup &amp; Permissions</h4>
+<p><em>Theme: Get foundations in place. Nothing public yet except Instagram.</em></p>
+<table>
+  <tr><th>Task</th><th>Owner</th><th>Deadline</th><th>Status</th></tr>
+  <tr><td>Create @stullatlas Instagram account</td><td>Ryan</td><td>Feb 10</td><td><span class="status-todo">Todo</span></td></tr>
+  <tr><td>First Instagram post (Introduction)</td><td>Ryan</td><td>Feb 12</td><td><span class="status-todo">Todo</span></td></tr>
+  <tr><td>Link in bio → stullatlas.app/#/nceca</td><td>Ryan</td><td>Feb 10</td><td><span class="status-todo">Todo</span></td></tr>
+  <tr><td>Send permission email to Derek Au (Glazy)</td><td>Ryan</td><td>Feb 14</td><td><span class="status-todo">Todo</span></td></tr>
+  <tr><td>Send permission email to Tony Hansen (Digitalfire)</td><td>Ryan</td><td>Feb 14</td><td><span class="status-todo">Todo</span></td></tr>
+  <tr><td>Confirm Resource Hall with NCECA</td><td>Ryan</td><td>Feb 14</td><td><span class="status-todo">Todo</span></td></tr>
+  <tr><td>Create og-image.png (1200×630px)</td><td>Agent</td><td>Feb 14</td><td><span class="status-todo">Todo</span></td></tr>
+  <tr><td>Generate QR code (300 DPI, Level H)</td><td>Ryan</td><td>Feb 16</td><td><span class="status-todo">Todo</span></td></tr>
+</table>
+
+<h4>WEEK 2: Feb 17–23 — Feature Showcases</h4>
+<p><em>Theme: Show the product. Educational + visual content.</em></p>
+<table>
+  <tr><th>Task</th><th>Owner</th><th>Deadline</th></tr>
+  <tr><td>POST 2: Then vs. Now (1912 chart side-by-side)</td><td>Ryan</td><td>Feb 17</td></tr>
+  <tr><td>POST 3: Triaxial Blend screenshot</td><td>Ryan</td><td>Feb 19</td></tr>
+  <tr><td>REEL 1: "Every dot is a glaze" (15 sec)</td><td>Ryan</td><td>Feb 21</td></tr>
+  <tr><td>Join 2–3 Facebook groups, answer a question</td><td>Ryan</td><td>Feb 17–20</td></tr>
+  <tr><td>Set up Stripe payment links</td><td>Ryan</td><td>Feb 20</td></tr>
+</table>
+
+<h4>WEEK 3: Feb 24 – Mar 2 — AI &amp; Optimizer + Reddit</h4>
+<p><em>Theme: Show the "wow" features. Expand beyond Instagram.</em></p>
+<table>
+  <tr><th>Task</th><th>Owner</th><th>Deadline</th></tr>
+  <tr><td>POST 4: AI Suggest (screen recording)</td><td>Ryan</td><td>Feb 24</td></tr>
+  <tr><td>POST 5: 3D Explorer (dramatic screenshot)</td><td>Ryan</td><td>Feb 26</td></tr>
+  <tr><td>Reddit post: r/pottery</td><td>Ryan</td><td>Feb 24</td></tr>
+  <tr><td>Cross-post to r/ceramics</td><td>Ryan</td><td>Feb 25</td></tr>
+  <tr><td>POST 6: Optimizer in action</td><td>Ryan</td><td>Feb 28</td></tr>
+  <tr><td>Add analytics (Plausible)</td><td>Ryan</td><td>Mar 1</td></tr>
+</table>
+
+<h4>WEEK 4: Mar 3–9 — NCECA Buildup</h4>
+<p><em>Theme: Start branding as a conference presence. The deal goes public.</em></p>
+<table>
+  <tr><th>Task</th><th>Owner</th><th>Deadline</th></tr>
+  <tr><td>Start #NCECA2026 on every post</td><td>Ryan</td><td>Mar 3</td></tr>
+  <tr><td>POST 7: NCECA Announcement</td><td>Ryan</td><td>Mar 3</td></tr>
+  <tr><td>POST 8: "Built by a Potter" (studio photo)</td><td>Ryan</td><td>Mar 5</td></tr>
+  <tr><td>$29/3-month deal graphic</td><td>Ryan</td><td>Mar 7</td></tr>
+  <tr><td>3D explorer "wow" screenshot</td><td>Ryan</td><td>Mar 9</td></tr>
+</table>
+
+<h4>WEEK 5: Mar 10–16 — Pre-Conference Push</h4>
+<p><em>Theme: Urgency. Countdown. Print.</em></p>
+<table>
+  <tr><th>Task</th><th>Owner</th><th>Deadline</th></tr>
+  <tr><td>"1 week until NCECA" countdown post</td><td>Ryan</td><td>Mar 10</td></tr>
+  <tr><td>Feature summary carousel (5 slides)</td><td>Ryan</td><td>Mar 12</td></tr>
+  <tr><td>Print handout cards (200, heavy cardstock)</td><td>Ryan</td><td>Mar 10</td></tr>
+  <tr><td>Print QR posters (tabletop + standing)</td><td>Ryan</td><td>Mar 10</td></tr>
+  <tr><td>Print business cards (100)</td><td>Ryan</td><td>Mar 12</td></tr>
+  <tr><td>Go live: deploy to stullatlas.app root</td><td>Ryan</td><td>Mar 14–18</td></tr>
+  <tr><td>Post in Facebook groups: "Heading to NCECA"</td><td>Ryan</td><td>Mar 14</td></tr>
+</table>
+
+<h4>WEEK 6: Mar 17–24 — Week Of</h4>
+<p><em>Theme: Final prep. Last social push. Pack.</em></p>
+<table>
+  <tr><th>Task</th><th>Owner</th><th>Deadline</th></tr>
+  <tr><td>Test demo mode end-to-end</td><td>Ryan</td><td>Mar 20</td></tr>
+  <tr><td>Pack gear: laptops, monitor, power strip, hotspot</td><td>Ryan</td><td>Mar 22</td></tr>
+  <tr><td>Prepare test tiles + fired pieces</td><td>Ryan</td><td>Mar 22</td></tr>
+  <tr><td>"See you tomorrow at NCECA" post</td><td>Ryan</td><td>Mar 24</td></tr>
+  <tr><td>Setup booth</td><td>Ryan</td><td>Mar 24–25</td></tr>
+</table>
+
+<h4>Post-NCECA: March 28+</h4>
+<table>
+  <tr><th>Task</th><th>Owner</th><th>Deadline</th></tr>
+  <tr><td>Follow-up emails (within 48 hours)</td><td>Ryan</td><td>Mar 30</td></tr>
+  <tr><td>Thank-you post with booth photos</td><td>Ryan</td><td>Mar 28</td></tr>
+  <tr><td>Share attendee reactions/quotes</td><td>Ryan</td><td>Mar 30</td></tr>
+  <tr><td>Blog: "What I Learned at NCECA"</td><td>Ryan</td><td>Apr 5</td></tr>
+  <tr><td>Pitch Ceramics Monthly for coverage</td><td>Ryan</td><td>Apr 10</td></tr>
+  <tr><td>2-week follow-up email (non-engagers)</td><td>Ryan</td><td>Apr 10</td></tr>
+  <tr><td>End-of-trial email</td><td>Ryan</td><td>Apr 25</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PART V — TECHNICAL GAPS                                 -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="part-header">
+  <h2>Part V — Technical Gaps &amp; Infrastructure</h2>
+</div>
+
+<h3>10. Things That Must Be Done Before NCECA</h3>
+
+<h4>Critical Path (Blocking)</h4>
+<table>
+  <tr><th>Task</th><th>Detail</th><th>Owner</th><th>Deadline</th></tr>
+  <tr><td><strong>Stripe payment links</strong></td><td>Create products + prices. Solo ($10/$89), Pro ($25/$219), Atlas 3D ($40/$349), NCECA deal ($29/3mo). Set env vars in Netlify.</td><td>Ryan</td><td>Mar 1</td></tr>
+  <tr><td><strong>Supabase project setup</strong></td><td>Schema SQL ready. Create project, run migrations, add atlas_3d to tier enum. Set env vars.</td><td>Ryan</td><td>Mar 1</td></tr>
+  <tr><td><strong>Domain verification</strong></td><td>Verify stullatlas.app is live, DNS correct, SSL working.</td><td>Ryan</td><td>Feb 20</td></tr>
+  <tr><td><strong>Email setup</strong></td><td>Verify hello@stullatlas.app and contact@stullatlas.app work.</td><td>Ryan</td><td>Feb 20</td></tr>
+  <tr><td><strong>QR code generation</strong></td><td>300 DPI, Level H error correction, brand purple on white. Test scan from 6 feet.</td><td>Ryan</td><td>Feb 16</td></tr>
+  <tr><td><strong>Print materials</strong></td><td>Cards (200), tabletop poster (2), standing poster (1), business cards (100). Order by Mar 10.</td><td>Ryan</td><td>Mar 10</td></tr>
+</table>
+
+<h4>Important (Not Blocking, But Highly Valuable)</h4>
+<table>
+  <tr><th>Task</th><th>Detail</th><th>Owner</th><th>Deadline</th></tr>
+  <tr><td><strong>og-image.png</strong></td><td>1200×630px for social sharing. Without this, shared links show generic preview.</td><td>Agent</td><td>Feb 14</td></tr>
+  <tr><td><strong>Analytics</strong></td><td>Plausible or Fathom (privacy-respecting). One script tag.</td><td>Ryan</td><td>Mar 1</td></tr>
+  <tr><td><strong>Logo permission responses</strong></td><td>Need replies from Derek and Tony before March 10 print deadline.</td><td>Ryan</td><td>Mar 10</td></tr>
+  <tr><td><strong>Re-scrape Glazy for images</strong></td><td>Only ~13 glazes have photos. Would unlock Gallery's full potential for demos.</td><td>Agent</td><td>Mar 1</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PART VI — REVENUE MODEL                                 -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="part-header">
+  <h2>Part VI — Revenue Model &amp; Projections</h2>
+</div>
+
+<h3>11. Pricing Architecture</h3>
+
+<div class="callout keep-together">
+  <div class="callout-title">NCECA Special: $29 for 3 Months Pro</div>
+  <p>46% off monthly Pro rate ($25 × 3 = $75 → $29). Gets people past the "I'll try it later" barrier. Three months covers spring firing season — if they use it, they'll convert.</p>
+</div>
+
+<h4>Steady-State Pricing</h4>
+<table>
+  <tr><th>Tier</th><th>Monthly</th><th>Annual</th><th>Savings</th></tr>
+  <tr><td>Free</td><td>$0</td><td>$0</td><td>—</td></tr>
+  <tr><td>Solo</td><td>$10</td><td>$89</td><td>2 months free</td></tr>
+  <tr><td>Pro</td><td>$25</td><td>$219</td><td>2 months free</td></tr>
+  <tr><td>Atlas 3D</td><td>$40</td><td>$349</td><td>2 months free</td></tr>
+</table>
+
+<h4>Free Through April Strategy</h4>
+<p>All signed-up users get full Pro access through April 30, 2026. No credit card required. This:</p>
+<ul>
+  <li>Removes friction at the booth ("just sign up, it's free through April")</li>
+  <li>Gives everyone a real trial, not a crippled one</li>
+  <li>Creates a natural conversion point in late April</li>
+</ul>
+
+<h4>Revenue Scenarios (Conservative)</h4>
+<table>
+  <tr><th>Scenario</th><th>NCECA Signups</th><th>Conversion (10–20%)</th><th>Annual Revenue</th></tr>
+  <tr><td>Low</td><td>50</td><td>5 at Solo ($89)</td><td>$445/yr</td></tr>
+  <tr><td>Base</td><td>100</td><td>15 mixed Solo/Pro</td><td>~$2,200/yr</td></tr>
+  <tr><td>Good</td><td>100</td><td>10 Solo + 5 Pro + 2 Atlas 3D</td><td>~$2,588/yr</td></tr>
+  <tr><td>Word-of-mouth (6 mo)</td><td>+200 organic</td><td>30 mixed</td><td>~$5,000+/yr</td></tr>
+</table>
+
+<p><em>Revenue is a secondary goal. Primary goals are community awareness and product validation. If 100 potters try it and 15 come back, the product works.</em></p>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PART VII — POSITIONING & MESSAGING                      -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="part-header">
+  <h2>Part VII — Positioning &amp; Messaging</h2>
+</div>
+
+<h3>12. Who This Is For</h3>
+
+<h4>Primary Audience</h4>
+<ul>
+  <li><strong>Studio potters who mix from raw materials</strong> — They read Digitalfire, care about UMF, do triaxial tests. They'll immediately understand what the Stull chart means.</li>
+  <li><strong>Ceramic arts students and professors</strong> — Glaze chemistry courses need visualization tools. Education pricing makes institutional adoption possible.</li>
+</ul>
+
+<h4>Secondary Audience</h4>
+<ul>
+  <li><strong>Hobby potters exploring glaze chemistry for the first time</strong> — The free explorer and guide are their entry point. "Click a dot, see a recipe" hooks them.</li>
+  <li><strong>Production potters optimizing existing recipes</strong> — The optimizer and material substitution features save them time.</li>
+</ul>
+
+<h4>Not Our Audience</h4>
+<ul>
+  <li>Potters who only use commercial glazes (don't mix, don't care about chemistry)</li>
+  <li>Industrial ceramics engineers (they have Factsage, HSC Chemistry, etc.)</li>
+  <li>People looking for a social network (that's Glazy)</li>
+</ul>
+
+<hr />
+
+<h3>13. Key Messages</h3>
+
+<h4>What We Say</h4>
+<ol>
+  <li><strong>"114 years after Stull."</strong> — We're extending a respected framework, not inventing something unproven.</li>
+  <li><strong>"Every dot is a real glaze."</strong> — This is data, not theory. Someone mixed and fired each one.</li>
+  <li><strong>"Built by a potter."</strong> — Solo maker, not a tech company. Same values as the audience.</li>
+  <li><strong>"Free to explore."</strong> — Remove the barrier. Let curiosity pull people in.</li>
+  <li><strong>"Glazy is the database. We're the lens."</strong> — Complementary, not competitive.</li>
+</ol>
+
+<h4>What We Don't Say</h4>
+<ul>
+  <li>We <strong>never</strong> position against Glazy or Insight. They're respected community resources. We complement them.</li>
+  <li>We don't use the word "disrupt." We're serving a community.</li>
+  <li>We don't oversell the AI. It's constraint optimization with NLP, not magic. But it feels like magic.</li>
+  <li>We don't call it "the best" or "the only." We call it "a new way to see glaze chemistry."</li>
+</ul>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PART VIII — POST-NCECA GROWTH                           -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="part-header">
+  <h2>Part VIII — Post-NCECA Growth</h2>
+</div>
+
+<h3>14. After the Conference</h3>
+
+<h4>Immediate (March 28 – April 30)</h4>
+<ol>
+  <li>Email everyone within 48 hours (templates ready)</li>
+  <li>Social content: booth photos, attendee reactions, demo clips</li>
+  <li>Blog post: "What I Learned at NCECA" — pitch to Ceramics Monthly or Ceramic Arts Network</li>
+  <li>Monitor: who's using the free trial? Which features? How deep?</li>
+  <li>Personal follow-ups with educators (classroom/department sales = highest LTV)</li>
+</ol>
+
+<h4>Short-term (May – August 2026)</h4>
+<ol>
+  <li>Free period ends April 30 — send end-of-trial email, conversion push</li>
+  <li>Build separate marketing homepage for SEO</li>
+  <li>Content marketing: 3 blog posts targeting "glaze chemistry," "stull chart," "glaze calculator" keywords</li>
+  <li>YouTube: 5-minute tour video (evergreen content)</li>
+  <li>PDF lead magnet: "Quick Reference: Stull Chart Regions"</li>
+</ol>
+
+<h4>Medium-term (Fall 2026)</h4>
+<ol>
+  <li>Ship v3.6 The Walk — recipe interpolation ("how do I make this?")</li>
+  <li>Ship v3.7 Constellations — named glaze families</li>
+  <li>Target fall semester: push education pricing to ceramics departments</li>
+  <li>Consider a webinar: "Introduction to Glaze Chemistry with Stull Atlas"</li>
+</ol>
+
+<h4>Long-term (2027+)</h4>
+<ol>
+  <li>Stull Atlas Studio (Tauri desktop app) — full offline support</li>
+  <li>v3.8 Knowledge Graph — the capstone spatial experience</li>
+  <li>Community features: shared exploration, user annotations</li>
+  <li>Potential: Ceramics Monthly or CAD partnership</li>
+</ol>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PART IX — RISK REGISTER                                 -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="part-header">
+  <h2>Part IX — Risk Register</h2>
+</div>
+
+<h3>15. What Could Go Wrong</h3>
+
+<table>
+  <tr><th>Risk</th><th>Severity</th><th>Likelihood</th><th>Mitigation</th></tr>
+  <tr><td>Nobody comes to the booth</td><td>Medium</td><td>Low</td><td>Walk the floor with cards. Post in hallways. The app demos itself.</td></tr>
+  <tr><td>Conference wifi dies</td><td>High</td><td>Very High</td><td>Personal hotspot. App works offline from <code>npx serve dist</code>.</td></tr>
+  <tr><td>Stripe not set up in time</td><td>High</td><td>Medium</td><td>Free-through-April bypass means nobody needs to pay at NCECA.</td></tr>
+  <tr><td>Derek/Tony say no to logo use</td><td>Low</td><td>Low</td><td>Use text-only attribution. Already credited in About page.</td></tr>
+  <tr><td>Supabase not set up</td><td>Medium</td><td>Medium</td><td>Demo mode + free-through-April. Auth not required at NCECA.</td></tr>
+  <tr><td>Can't answer a chemistry question</td><td>Low</td><td>Medium</td><td>Be honest: "I don't know, let's look it up on the chart."</td></tr>
+  <tr><td>Negative comparison to Glazy/Insight</td><td>Medium</td><td>Medium</td><td>Prepared talking points. Always complementary, never competitive.</td></tr>
+  <tr><td>Print materials arrive late</td><td>High</td><td>Low</td><td>Order by March 10. PDF backup — print at FedEx same-day.</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- APPENDICES                                              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="part-header">
+  <h2>Appendices</h2>
+</div>
+
+<h3>A. File Reference</h3>
+<table>
+  <tr><th>File</th><th>Location</th><th>Purpose</th></tr>
+  <tr><td>MASTER-PLAN.md</td><td>marketing/</td><td>This document — unified strategy</td></tr>
+  <tr><td>nceca-booth-plan.md</td><td>marketing/</td><td>Detailed booth operations</td></tr>
+  <tr><td>social-outreach-plan.md</td><td>marketing/</td><td>6-week social calendar</td></tr>
+  <tr><td>instagram-post-templates.md</td><td>marketing/</td><td>8 posts + 5 reels + hashtags</td></tr>
+  <tr><td>email-followup-templates.md</td><td>marketing/</td><td>4-email post-NCECA drip</td></tr>
+  <tr><td>logo-permission-emails.md</td><td>marketing/</td><td>Derek Au + Tony Hansen emails</td></tr>
+  <tr><td>landing-page-plan.md</td><td>marketing/</td><td>Homepage strategy + SEO</td></tr>
+  <tr><td>nceca-handout-card.html</td><td>marketing/</td><td>Print-ready handout card</td></tr>
+  <tr><td>roadmap.md</td><td>docs/</td><td>Product roadmap v3.5 → v4.0</td></tr>
+  <tr><td>project-manifest.json</td><td>docs/</td><td>Phase tracking + integration gaps</td></tr>
+</table>
+
+<h3>B. Key Dates Summary</h3>
+<table>
+  <tr><th>Date</th><th>Milestone</th></tr>
+  <tr><td><strong>Feb 10</strong></td><td>Week 1 starts: Instagram, first post</td></tr>
+  <tr><td><strong>Feb 14</strong></td><td>Permission emails to Derek + Tony</td></tr>
+  <tr><td><strong>Feb 14</strong></td><td>Confirm Resource Hall with NCECA</td></tr>
+  <tr><td><strong>Feb 20</strong></td><td>Domain + email verification</td></tr>
+  <tr><td><strong>Feb 24</strong></td><td>Reddit launch post</td></tr>
+  <tr><td><strong>Mar 1</strong></td><td>Stripe setup, analytics, Supabase</td></tr>
+  <tr><td><strong>Mar 3</strong></td><td>Start #NCECA2026 content</td></tr>
+  <tr><td><strong>Mar 10</strong></td><td>Order print materials</td></tr>
+  <tr><td><strong>Mar 14–18</strong></td><td>Go live: deploy to stullatlas.app root</td></tr>
+  <tr><td><strong>Mar 20</strong></td><td>Full demo test, pack gear</td></tr>
+  <tr><td><strong>Mar 24</strong></td><td>"See you tomorrow" post</td></tr>
+  <tr><td><strong>Mar 25–27</strong></td><td>NCECA Resource Hall — live</td></tr>
+  <tr><td><strong>Mar 28</strong></td><td>Follow-up emails + thank-you post</td></tr>
+  <tr><td><strong>Apr 30</strong></td><td>Free period ends — conversion push</td></tr>
+</table>
+
+<h3>C. Brand Assets</h3>
+<table>
+  <tr><th>Asset</th><th>Value</th></tr>
+  <tr><td>Brand color</td><td style="color:#4f46e5; font-weight:700;">Indigo #4f46e5</td></tr>
+  <tr><td>Font</td><td>Segoe UI / system-ui / -apple-system</td></tr>
+  <tr><td>Icon</td><td>⚗ (alembic emoji)</td></tr>
+  <tr><td>Tagline</td><td>"A computational glaze chemistry explorer — 114 years after Stull"</td></tr>
+  <tr><td>Domain</td><td>stullatlas.app</td></tr>
+  <tr><td>Contact</td><td>hello@stullatlas.app</td></tr>
+</table>
+
+<div class="doc-footer">
+  Stull Atlas Master Plan · February 10, 2026 · Ryan Lack / My Clay Corner Studio · Howell, Michigan<br />
+  Prepared for internal review. Confidential.
+</div>
+
+</body>
+</html>
