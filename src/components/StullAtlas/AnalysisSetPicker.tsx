@@ -118,7 +118,7 @@ export function AnalysisSetPicker() {
         </div>
       )}
 
-      <p className="analysis-thanks">Thanks, Tony.</p>
+      <p className="analysis-thanks">Thanks, Tony</p>
 
       <style>{`
         .analysis-set-picker {

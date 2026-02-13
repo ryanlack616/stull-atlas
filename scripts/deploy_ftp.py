@@ -6,8 +6,8 @@ import os
 import sys
 from pathlib import Path
 
-FTP_HOST = "pixie-ss1-ftp.porkbun.com"
-FTP_USER = "rlv.lol"
+FTP_HOST = os.environ.get("FTP_HOST", "pixie-ss1-ftp.porkbun.com")
+FTP_USER = os.environ.get("FTP_USER", "stullatlas.app")
 FTP_PASS = os.environ.get("FTP_PASS", "")
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -39,13 +39,22 @@ def ensure_dir(ftp, path):
             pass  # already exists
 
 
-def upload_file(ftp, local_path, remote_path):
-    """Upload a single file."""
+def upload_file(ftp, local_path, remote_path, retries=3):
+    """Upload a single file with retry."""
     ensure_dir(ftp, os.path.dirname(remote_path))
-    with open(local_path, "rb") as f:
-        ftp.storbinary(f"STOR {remote_path}", f)
-    size = os.path.getsize(local_path)
-    print(f"  {remote_path} ({size:,} bytes)")
+    for attempt in range(retries):
+        try:
+            with open(local_path, "rb") as f:
+                ftp.storbinary(f"STOR {remote_path}", f)
+            size = os.path.getsize(local_path)
+            print(f"  {remote_path} ({size:,} bytes)")
+            return
+        except Exception as e:
+            if attempt < retries - 1:
+                print(f"  RETRY {remote_path} (attempt {attempt+2}): {e}")
+                import time; time.sleep(2)
+            else:
+                raise
 
 
 def upload_directory(ftp, local_dir, remote_base="/"):
