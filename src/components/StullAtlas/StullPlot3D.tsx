@@ -1121,7 +1121,8 @@ export function StullPlot3D({
   // ─── Floor region traces ──────────────────────────────────────
 
   const regionTraces = useMemo(() => buildStullRegionTraces(zFloor), [zFloor])
-  const tempContours = useMemo(() => buildTempContourTraces(zFloor, isDark), [zFloor, isDark])
+  // Temperature contours hidden for NCECA
+  const tempContours: PlotData[] = [] // useMemo(() => buildTempContourTraces(zFloor, isDark), [zFloor, isDark])
   const qLineTrace = useMemo(() => buildQLineTrace(zFloor), [zFloor])
 
   // ─── Region labels ────────────────────────────────────────────

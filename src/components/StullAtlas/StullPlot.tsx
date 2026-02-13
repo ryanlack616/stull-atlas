@@ -497,12 +497,12 @@ export function StullPlot({
       { x: 1.2, y: 0.08, text: 'CRAZED', showarrow: false, font: { color: plotColors.regionLabelStrong, size: 10 } },
       // Q-line label
       { x: 6.8, y: 0.88, text: 'Q', showarrow: false, font: { color: plotColors.qLabel, size: 11, family: 'serif' } },
-      // Temperature contour labels
-      { x: 6.4, y: 0.42, text: '1280°C', showarrow: false, font: { color: plotColors.tempLabel, size: 9 } },
-      { x: 6.4, y: 0.48, text: '1270°C', showarrow: false, font: { color: 'rgba(255,255,204,0.6)', size: 9 } },
-      { x: 6.4, y: 0.52, text: '1260°C', showarrow: false, font: { color: 'rgba(255,255,136,0.7)', size: 9 } },
-      { x: 6.4, y: 0.60, text: '1250°C', showarrow: false, font: { color: 'rgba(255,255,34,0.7)', size: 9 } },
-      { x: 5.9, y: 0.68, text: '1240°C', showarrow: false, font: { color: 'rgba(255,221,0,0.8)', size: 9 } },
+      // Temperature contour labels (hidden for NCECA)
+      // { x: 6.4, y: 0.42, text: '1280°C', showarrow: false, font: { color: plotColors.tempLabel, size: 9 } },
+      // { x: 6.4, y: 0.48, text: '1270°C', showarrow: false, font: { color: 'rgba(255,255,204,0.6)', size: 9 } },
+      // { x: 6.4, y: 0.52, text: '1260°C', showarrow: false, font: { color: 'rgba(255,255,136,0.7)', size: 9 } },
+      // { x: 6.4, y: 0.60, text: '1250°C', showarrow: false, font: { color: 'rgba(255,255,34,0.7)', size: 9 } },
+      // { x: 5.9, y: 0.68, text: '1240°C', showarrow: false, font: { color: 'rgba(255,221,0,0.8)', size: 9 } },
       // Limit formula labels
       ...limitOverlay.annotations,
     ] as any,
@@ -523,14 +523,14 @@ export function StullPlot({
         line: { color: STULL_Q_LINE.color, width: 1.5, dash: 'dot' as const },
         layer: 'below' as const
       },
-      // Temperature contour lines (stroke only, no fill)
-      ...Object.values(TEMP_CONTOURS).map(contour => ({
-        type: 'path' as const,
-        path: contour.path,
-        fillcolor: 'transparent',
-        line: { color: contour.color, width: 1 },
-        layer: 'below' as const
-      })),
+      // Temperature contour lines (hidden for NCECA)
+      // ...Object.values(TEMP_CONTOURS).map(contour => ({
+      //   type: 'path' as const,
+      //   path: contour.path,
+      //   fillcolor: 'transparent',
+      //   line: { color: contour.color, width: 1 },
+      //   layer: 'below' as const
+      // })),
       // Limit formula rectangles (dynamic per axis pair)
       ...limitOverlay.shapes,
       ...(circleShape ? [circleShape] : [])

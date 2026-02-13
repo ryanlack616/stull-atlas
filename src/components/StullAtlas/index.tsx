@@ -854,8 +854,8 @@ export function StullAtlas() {
           <AnalysisSetPicker />
           <DatasetStats />
 
-          {/* ── Filter Panel ── */}
-          <FilterPanel />
+          {/* ── Filter Panel (hidden for NCECA) ── */}
+          {/* <FilterPanel /> */}
           
           {densityMap && (
             <div className="control-group">
@@ -957,7 +957,8 @@ export function StullAtlas() {
               >
                 Analysis
               </button>
-              <button 
+              {/* ── Knowledge tab (hidden for NCECA) ── */}
+              {/* <button 
                 className={`sidebar-tab ${sidebarTab === 'knowledge' ? 'active' : ''}`}
                 onClick={() => setSidebarTab('knowledge')}
                 role="tab"
@@ -965,7 +966,7 @@ export function StullAtlas() {
                 title="Ceramic knowledge from Tony Hansen's Digitalfire Reference Library"
               >
                 Knowledge
-              </button>
+              </button> */}
             </div>
             
             {sidebarTab === 'detail' && (
@@ -1212,13 +1213,14 @@ export function StullAtlas() {
               </Suspense>
             )}
             
-            {sidebarTab === 'knowledge' && (
+            {/* ── Knowledge panel (hidden for NCECA) ── */}
+            {/* {sidebarTab === 'knowledge' && (
               <Suspense fallback={<div style={{ padding: 16, fontSize: 13, color: 'var(--text-secondary)' }}>Loading knowledge...</div>}>
                 <DigitalfirePanel
                   selectedGlaze={selectedGlaze}
                 />
               </Suspense>
-            )}
+            )} */}
           </aside>
         )}
 

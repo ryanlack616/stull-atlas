@@ -218,6 +218,7 @@ export function AboutPage() {
           </p>
         </section>
 
+        {/* Temperature Contours section hidden for NCECA
         <section className="about-section">
           <h2>Temperature Contours</h2>
           <p>
@@ -229,6 +230,7 @@ export function AboutPage() {
             these boundaries.
           </p>
         </section>
+        */}
 
         <section className="about-section">
           <h2>Credits & Sources</h2>
@@ -270,6 +272,7 @@ export function AboutPage() {
           </ul>
         </section>
 
+        {/* Standing on Shoulders section hidden for NCECA
         <section className="about-section studio-appreciation">
             <h2>Standing on Shoulders</h2>
             <p className="appreciation-intro">
@@ -328,15 +331,14 @@ export function AboutPage() {
             </div>
 
             <p className="appreciation-closing">
-              These two projects represent decades of work given freely to the ceramics community. 
-              Stull Atlas is proud to stand on their shoulders.
+              These two projects represent decades of work given freely to the ceramics community.
             </p>
           </section>
+        */}
 
         <section className="about-section about-footer">
           <p>
-            Built by Ryan Lack at <a href="https://myclaycorner.com" target="_blank" rel="noopener noreferrer">My Clay Corner Studio</a> — 
-            Howell, Michigan.
+            Built by Ryan L - Michigan.
           </p>
           <p style={{ marginTop: 8 }}>
             <Link to="/nceca" style={{ color: 'var(--text-link)' }}>NCECA 2026 — Detroit</Link>

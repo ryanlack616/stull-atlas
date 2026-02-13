@@ -392,11 +392,7 @@ export function UpdatesPage() {
 
         <section className="about-section about-footer">
           <p>
-            Built by Ryan Lack at{' '}
-            <a href="https://myclaycorner.com" target="_blank" rel="noopener noreferrer">
-              My Clay Corner Studio
-            </a>{' '}
-            â€” Howell, Michigan.
+            Built by Ryan L - Michigan.
           </p>
           <p className="version">v3.4.0</p>
         </section>
