@@ -1,0 +1,58 @@
+calcium: Dolomite
+calcium: Whiting
+calcium: Wollastonite
+clay: Albany Slip
+clay: Alberta Slip
+clay: Ball Clay
+clay: Barnard Slip
+clay: Bentonite
+clay: EPK Kaolin
+clay: Goldart
+clay: Grolleg Kaolin
+clay: Kaolin
+clay: Pyrophyllite
+clay: Redart
+clay: Tile #6 Kaolin
+colorant: Chrome Oxide
+colorant: Cobalt Carbonate
+colorant: Cobalt Oxide
+colorant: Copper Carbonate
+colorant: Copper Oxide
+colorant: Manganese Carbonate
+colorant: Manganese Dioxide
+colorant: Nickel Oxide
+colorant: Red Iron Oxide
+colorant: Rutile
+colorant: Titanium Dioxide
+feldspar: Cornwall Stone
+feldspar: Custer Feldspar
+feldspar: G-200 Feldspar
+feldspar: Minspar 200
+feldspar: Nepheline Syenite
+feldspar: Petalite
+feldspar: Potash Feldspar
+feldspar: Soda Feldspar
+feldspar: Spodumene
+flux: Barium Carbonate
+flux: Bone Ash
+flux: Borax
+flux: Boric Acid
+flux: Gerstley Borate
+flux: Gillespie Borate
+flux: Lithium Carbonate
+flux: Pearl Ash
+flux: Soda Ash
+flux: Strontium Carbonate
+flux: Zinc Oxide
+frit: Ferro Frit 3110
+frit: Ferro Frit 3124
+frit: Ferro Frit 3134
+frit: Ferro Frit 3195
+frit: Ferro Frit 3249
+magnesium: Magnesium Carbonate
+magnesium: Talc
+opacifier: Tin Oxide
+opacifier: Zircopax
+other: Alumina
+other: Alumina Hydrate
+silica: Silica

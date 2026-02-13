@@ -12,7 +12,7 @@ FTP_PASS = os.environ.get("FTP_PASS", "")
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DIST_DIR = PROJECT_ROOT / "dist"
-BRAIN_HTML = Path(r"C:\Users\PC\Desktop\claude-persist\bridge\brain.html")
+BRAIN_HTML = Path(r"C:\rje\tools\claude-persist\bridge\brain.html")
 
 SKIP_BUILD = "--skip-build" in sys.argv
 DRY_RUN = "--dry-run" in sys.argv

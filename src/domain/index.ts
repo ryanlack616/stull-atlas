@@ -62,6 +62,17 @@ export {
 } from './molarWeights'
 export type { MolarWeightSetId, MolarWeightSetInfo } from './molarWeights'
 
+// Material analysis sets
+export {
+  getAnalysisSetInfos,
+  getAnalysisOverrides,
+  getMaterialAnalysisForSet,
+  getDefaultAnalysisSetId,
+  getAnalysisSetIds,
+  compareAnalysisSets,
+} from './materialAnalysis'
+export type { MaterialAnalysisSetId, MaterialAnalysisSetInfo, MaterialAnalysisOverride } from './materialAnalysis'
+
 // Digitalfire reference
 export {
   searchKnowledge,

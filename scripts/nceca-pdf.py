@@ -376,7 +376,7 @@ def build_pdf():
     pdf.ln(3)
 
     # Save
-    out = r'C:\Users\PC\Desktop\projects\stull-atlas\docs\NCECA-2026-Checklist.pdf'
+    out = r'C:\rje\dev\stull-atlas\docs\NCECA-2026-Checklist.pdf'
     pdf.output(out)
     print(f'PDF saved: {out}')
 

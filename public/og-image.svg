@@ -5,12 +5,12 @@
       <stop offset="100%" stop-color="#121212"/>
     </linearGradient>
     <linearGradient id="matte" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#e74c3c" stop-opacity="0.15"/>
-      <stop offset="100%" stop-color="#e74c3c" stop-opacity="0.05"/>
+      <stop offset="0%" stop-color="#ef4444" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#ef4444" stop-opacity="0.05"/>
     </linearGradient>
     <linearGradient id="gloss" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#2ecc71" stop-opacity="0.15"/>
-      <stop offset="100%" stop-color="#2ecc71" stop-opacity="0.05"/>
+      <stop offset="0%" stop-color="#22c55e" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#22c55e" stop-opacity="0.05"/>
     </linearGradient>
   </defs>
 
@@ -35,76 +35,78 @@
     </g>
 
     <!-- Stull regions (simplified) -->
-    <polygon points="0,420 0,200 200,100 400,50 500,420" fill="url(#matte)" stroke="#e74c3c" stroke-width="1" stroke-opacity="0.3"/>
-    <polygon points="500,420 400,50 750,0 750,420" fill="url(#gloss)" stroke="#2ecc71" stroke-width="1" stroke-opacity="0.3"/>
+    <polygon points="0,420 0,200 200,100 400,50 500,420" fill="url(#matte)" stroke="#ef4444" stroke-width="1" stroke-opacity="0.3"/>
+    <polygon points="500,420 400,50 750,0 750,420" fill="url(#gloss)" stroke="#22c55e" stroke-width="1" stroke-opacity="0.3"/>
 
     <!-- Region labels -->
-    <text x="150" y="350" fill="#e74c3c" font-size="16" font-family="sans-serif" opacity="0.5" text-anchor="middle">MATTE</text>
-    <text x="620" y="350" fill="#2ecc71" font-size="16" font-family="sans-serif" opacity="0.5" text-anchor="middle">GLOSS</text>
+    <text x="150" y="350" fill="#ef4444" font-size="16" font-family="sans-serif" opacity="0.5" text-anchor="middle">MATTE</text>
+    <text x="620" y="350" fill="#22c55e" font-size="16" font-family="sans-serif" opacity="0.5" text-anchor="middle">GLOSS</text>
 
-    <!-- Scatter dots - simulating real data distribution -->
-    <!-- Cone 6 cluster -->
-    <circle cx="320" cy="280" r="3" fill="#3498db" opacity="0.7"/>
-    <circle cx="340" cy="260" r="3" fill="#3498db" opacity="0.6"/>
-    <circle cx="360" cy="270" r="3" fill="#3498db" opacity="0.8"/>
-    <circle cx="380" cy="250" r="3" fill="#3498db" opacity="0.7"/>
-    <circle cx="310" cy="300" r="3" fill="#3498db" opacity="0.5"/>
-    <circle cx="350" cy="290" r="3" fill="#e67e22" opacity="0.7"/>
-    <circle cx="370" cy="240" r="3" fill="#e67e22" opacity="0.6"/>
-    <circle cx="330" cy="310" r="3" fill="#e67e22" opacity="0.5"/>
-    <circle cx="400" cy="230" r="3" fill="#2ecc71" opacity="0.7"/>
-    <circle cx="420" cy="220" r="3" fill="#2ecc71" opacity="0.6"/>
-    <circle cx="290" cy="310" r="3" fill="#e74c3c" opacity="0.6"/>
-    <circle cx="300" cy="290" r="3" fill="#e74c3c" opacity="0.5"/>
-    <circle cx="440" cy="210" r="3" fill="#9b59b6" opacity="0.7"/>
-    <circle cx="460" cy="200" r="3" fill="#9b59b6" opacity="0.6"/>
-    <circle cx="500" cy="180" r="3" fill="#3498db" opacity="0.6"/>
-    <circle cx="480" cy="190" r="3" fill="#3498db" opacity="0.7"/>
-    <circle cx="520" cy="170" r="3" fill="#2ecc71" opacity="0.5"/>
-    <circle cx="250" cy="330" r="3" fill="#e67e22" opacity="0.6"/>
-    <circle cx="270" cy="320" r="3" fill="#e67e22" opacity="0.5"/>
-    <circle cx="200" cy="360" r="3" fill="#e74c3c" opacity="0.6"/>
-    <circle cx="220" cy="350" r="3" fill="#e74c3c" opacity="0.5"/>
-    <circle cx="180" cy="370" r="3" fill="#e74c3c" opacity="0.4"/>
-    <circle cx="550" cy="160" r="3" fill="#3498db" opacity="0.5"/>
-    <circle cx="580" cy="150" r="3" fill="#2ecc71" opacity="0.6"/>
-    <circle cx="600" cy="140" r="3" fill="#2ecc71" opacity="0.5"/>
-    <circle cx="350" cy="300" r="2.5" fill="#f1c40f" opacity="0.5"/>
-    <circle cx="380" cy="280" r="2.5" fill="#f1c40f" opacity="0.6"/>
-    <circle cx="410" cy="260" r="2.5" fill="#f1c40f" opacity="0.5"/>
-    <circle cx="330" cy="250" r="2.5" fill="#1abc9c" opacity="0.6"/>
-    <circle cx="360" cy="230" r="2.5" fill="#1abc9c" opacity="0.5"/>
-    <circle cx="280" cy="340" r="2.5" fill="#e74c3c" opacity="0.4"/>
-    <circle cx="240" cy="360" r="2.5" fill="#e67e22" opacity="0.4"/>
-    <circle cx="450" cy="240" r="2.5" fill="#9b59b6" opacity="0.5"/>
-    <circle cx="390" cy="260" r="2.5" fill="#3498db" opacity="0.6"/>
-    <circle cx="430" cy="250" r="2.5" fill="#2ecc71" opacity="0.5"/>
-    <circle cx="470" cy="220" r="2.5" fill="#3498db" opacity="0.5"/>
-    <circle cx="510" cy="190" r="2.5" fill="#e67e22" opacity="0.5"/>
-    <circle cx="540" cy="175" r="2.5" fill="#9b59b6" opacity="0.4"/>
-    <circle cx="310" cy="270" r="2.5" fill="#3498db" opacity="0.5"/>
-    <circle cx="340" cy="235" r="2.5" fill="#e67e22" opacity="0.5"/>
-    <circle cx="260" cy="320" r="2.5" fill="#e74c3c" opacity="0.5"/>
-    <circle cx="370" cy="255" r="2.5" fill="#2ecc71" opacity="0.6"/>
-    <circle cx="400" cy="245" r="2.5" fill="#f1c40f" opacity="0.5"/>
+    <!-- Scatter dots using actual cone colorscale -->
+    <!-- Cone 04 indigo cluster (low fire) -->
+    <circle cx="200" cy="360" r="3" fill="#6366f1" opacity="0.6"/>
+    <circle cx="220" cy="350" r="3" fill="#6366f1" opacity="0.5"/>
+    <circle cx="180" cy="370" r="3" fill="#6366f1" opacity="0.4"/>
+    <!-- Cone 02 cyan -->
+    <circle cx="250" cy="330" r="2.5" fill="#06b6d4" opacity="0.6"/>
+    <circle cx="270" cy="320" r="2.5" fill="#06b6d4" opacity="0.5"/>
+    <circle cx="280" cy="340" r="2.5" fill="#06b6d4" opacity="0.4"/>
+    <!-- Cone 1 green -->
+    <circle cx="290" cy="310" r="3" fill="#22c55e" opacity="0.6"/>
+    <circle cx="300" cy="290" r="3" fill="#22c55e" opacity="0.5"/>
+    <circle cx="260" cy="320" r="2.5" fill="#22c55e" opacity="0.5"/>
+    <!-- Cone 4 yellow -->
+    <circle cx="310" cy="300" r="2.5" fill="#facc15" opacity="0.5"/>
+    <circle cx="330" cy="250" r="2.5" fill="#facc15" opacity="0.6"/>
+    <circle cx="350" cy="300" r="2.5" fill="#facc15" opacity="0.5"/>
+    <!-- Cone 5 amber -->
+    <circle cx="350" cy="290" r="3" fill="#f59e0b" opacity="0.7"/>
+    <circle cx="370" cy="240" r="3" fill="#f59e0b" opacity="0.6"/>
+    <circle cx="330" cy="310" r="3" fill="#f59e0b" opacity="0.5"/>
+    <circle cx="340" cy="235" r="2.5" fill="#f59e0b" opacity="0.5"/>
+    <!-- Cone 6 orange (dominant cluster - most data is cone 6) -->
+    <circle cx="320" cy="280" r="3" fill="#f97316" opacity="0.7"/>
+    <circle cx="340" cy="260" r="3" fill="#f97316" opacity="0.6"/>
+    <circle cx="360" cy="270" r="3" fill="#f97316" opacity="0.8"/>
+    <circle cx="380" cy="250" r="3" fill="#f97316" opacity="0.7"/>
+    <circle cx="310" cy="270" r="2.5" fill="#f97316" opacity="0.5"/>
+    <circle cx="390" cy="260" r="2.5" fill="#f97316" opacity="0.6"/>
+    <circle cx="380" cy="280" r="2.5" fill="#f97316" opacity="0.6"/>
+    <!-- Cone 7 red -->
+    <circle cx="400" cy="230" r="3" fill="#ef4444" opacity="0.7"/>
+    <circle cx="420" cy="220" r="3" fill="#ef4444" opacity="0.6"/>
+    <circle cx="370" cy="255" r="2.5" fill="#ef4444" opacity="0.6"/>
+    <!-- Cone 8 crimson -->
+    <circle cx="440" cy="210" r="3" fill="#dc2626" opacity="0.7"/>
+    <circle cx="460" cy="200" r="3" fill="#dc2626" opacity="0.6"/>
+    <circle cx="450" cy="240" r="2.5" fill="#dc2626" opacity="0.5"/>
+    <!-- Cone 9 rose -->
+    <circle cx="500" cy="180" r="3" fill="#e11d48" opacity="0.6"/>
+    <circle cx="480" cy="190" r="3" fill="#e11d48" opacity="0.7"/>
+    <circle cx="510" cy="190" r="2.5" fill="#e11d48" opacity="0.5"/>
+    <!-- Cone 10 purple (high fire) -->
+    <circle cx="520" cy="170" r="3" fill="#a855f7" opacity="0.5"/>
+    <circle cx="550" cy="160" r="3" fill="#a855f7" opacity="0.5"/>
+    <circle cx="580" cy="150" r="2.5" fill="#a855f7" opacity="0.6"/>
+    <circle cx="600" cy="140" r="2.5" fill="#a855f7" opacity="0.5"/>
+    <circle cx="540" cy="175" r="2.5" fill="#a855f7" opacity="0.4"/>
 
     <!-- Axes labels -->
-    <text x="375" y="460" fill="#888" font-size="14" font-family="sans-serif" text-anchor="middle">SiO₂ (UMF)</text>
-    <text x="-40" y="210" fill="#888" font-size="14" font-family="sans-serif" text-anchor="middle" transform="rotate(-90, -40, 210)">Al₂O₃ (UMF)</text>
+    <text x="375" y="460" fill="#888" font-size="14" font-family="sans-serif" text-anchor="middle">SiO&#x2082; (UMF)</text>
+    <text x="-40" y="210" fill="#888" font-size="14" font-family="sans-serif" text-anchor="middle" transform="rotate(-90, -40, 210)">Al&#x2082;O&#x2083; (UMF)</text>
   </g>
 
   <!-- Title area -->
   <g transform="translate(980, 160)">
     <text x="0" y="0" fill="#fff" font-size="42" font-family="Georgia, serif" font-weight="700" text-anchor="middle">Stull Atlas</text>
     <text x="0" y="36" fill="#888" font-size="18" font-family="sans-serif" text-anchor="middle">Ceramic Glaze Explorer</text>
-    <line x1="-80" y1="56" x2="80" y2="56" stroke="#3498db" stroke-width="2" opacity="0.6"/>
-    <text x="0" y="90" fill="#666" font-size="14" font-family="sans-serif" text-anchor="middle">6,000+ glaze recipes</text>
+    <line x1="-80" y1="56" x2="80" y2="56" stroke="#6366F1" stroke-width="2" opacity="0.6"/>
+    <text x="0" y="90" fill="#666" font-size="14" font-family="sans-serif" text-anchor="middle">9,000+ glaze recipes</text>
     <text x="0" y="112" fill="#666" font-size="14" font-family="sans-serif" text-anchor="middle">mapped by UMF chemistry</text>
-    <text x="0" y="170" fill="#555" font-size="12" font-family="sans-serif" text-anchor="middle">UMF Calculator · Blend Tools</text>
-    <text x="0" y="192" fill="#555" font-size="12" font-family="sans-serif" text-anchor="middle">Similarity Search · Comparison</text>
-    <text x="0" y="240" fill="#3498db" font-size="14" font-family="sans-serif" text-anchor="middle" opacity="0.8">rlv.lol/stull</text>
+    <text x="0" y="170" fill="#555" font-size="12" font-family="sans-serif" text-anchor="middle">UMF Calculator &#xB7; Blend Tools</text>
+    <text x="0" y="192" fill="#555" font-size="12" font-family="sans-serif" text-anchor="middle">Similarity Search &#xB7; Comparison</text>
+    <text x="0" y="240" fill="#6366F1" font-size="14" font-family="sans-serif" text-anchor="middle" opacity="0.8">rlv.lol/stull</text>
   </g>
-
   <!-- Bottom accent line -->
-  <rect x="0" y="622" width="1200" height="8" fill="#3498db" opacity="0.4"/>
+  <rect x="0" y="622" width="1200" height="8" fill="#6366F1" opacity="0.4"/>
 </svg>

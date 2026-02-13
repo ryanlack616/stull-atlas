@@ -10,7 +10,7 @@ import React, { Suspense, lazy, Component, ReactNode } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { ErrorBoundary } from './components/ErrorBoundary'
-import { TierGate } from './components/Auth'
+// TierGate removed — all pages unrestricted for NCECA demo
 
 /**
  * Lazy import with automatic retry on chunk load failure.
@@ -136,19 +136,19 @@ function App() {
         <Route index element={<LazyPage><ExplorerPage /></LazyPage>} />
         <Route path="calc" element={<LazyPage><CalculatorsPage /></LazyPage>} />
         <Route path="calc/umf" element={<LazyPage><UMFCalculatorPage /></LazyPage>} />
-        <Route path="calc/line-blend" element={<LazyPage><TierGate feature="line_blend" title="Line Blend Calculator" description="Two recipes, n steps between them â€” the classic line blend test."><LineBlendPage /></TierGate></LazyPage>} />
-        <Route path="calc/triaxial" element={<LazyPage><TierGate feature="triaxial_blend" title="Triaxial Blend Calculator" description="Three corner recipes on a simplex triangle â€” the classic triaxial test tile layout."><TriaxialBlendPage /></TierGate></LazyPage>} />
-        <Route path="calc/quadaxial" element={<LazyPage><TierGate feature="quadaxial_blend" title="Quadaxial Blend Calculator" description="Four corner recipes â€” explore a wider material space."><QuadaxialBlendPage /></TierGate></LazyPage>} />
-        <Route path="calc/biaxial" element={<LazyPage><TierGate feature="biaxial_blend" title="Biaxial Blend Calculator" description="Grid blend of two axes â€” systematic variation of two recipe pairs."><BiaxialBlendPage /></TierGate></LazyPage>} />
-        <Route path="calc/radial" element={<LazyPage><TierGate feature="radial_blend" title="Radial Blend Calculator" description="Radial variation around a center recipe."><RadialBlendPage /></TierGate></LazyPage>} />
-        <Route path="calc/space-filling" element={<LazyPage><TierGate feature="space_filling" title="Space-Filling Design" description="Maximize coverage of the oxide space with minimal test tiles."><SpaceFillingPage /></TierGate></LazyPage>} />
-        <Route path="calc/optimizer" element={<LazyPage><TierGate feature="optimizer" title="Recipe Optimizer" description="Set UMF targets and let gradient descent or genetic algorithms find recipes that hit them."><OptimizerPage /></TierGate></LazyPage>} />
+        <Route path="calc/line-blend" element={<LazyPage><LineBlendPage /></LazyPage>} />
+        <Route path="calc/triaxial" element={<LazyPage><TriaxialBlendPage /></LazyPage>} />
+        <Route path="calc/quadaxial" element={<LazyPage><QuadaxialBlendPage /></LazyPage>} />
+        <Route path="calc/biaxial" element={<LazyPage><BiaxialBlendPage /></LazyPage>} />
+        <Route path="calc/radial" element={<LazyPage><RadialBlendPage /></LazyPage>} />
+        <Route path="calc/space-filling" element={<LazyPage><SpaceFillingPage /></LazyPage>} />
+        <Route path="calc/optimizer" element={<LazyPage><OptimizerPage /></LazyPage>} />
         <Route path="materials" element={<LazyPage><MaterialsPage /></LazyPage>} />
         <Route path="timeline" element={<LazyPage><TimelinePage /></LazyPage>} />
-        <Route path="import-export" element={<LazyPage><TierGate feature="import_export" title="Import / Export" description="Import glazes from JSON/CSV, export your saved recipes and collections."><ImportExportPage /></TierGate></LazyPage>} />
+        <Route path="import-export" element={<LazyPage><ImportExportPage /></LazyPage>} />
         <Route path="about" element={<LazyPage><AboutPage /></LazyPage>} />
         <Route path="guide" element={<LazyPage><GuidePage /></LazyPage>} />
-        <Route path="suggest" element={<LazyPage><TierGate feature="suggestion_engine" title="AI Recipe Suggestions" description="Describe the glaze you want in plain English â€” get optimized recipes with full UMF analysis."><SuggestionPage /></TierGate></LazyPage>} />
+        <Route path="suggest" element={<LazyPage><SuggestionPage /></LazyPage>} />
         <Route path="updates" element={<LazyPage><UpdatesPage /></LazyPage>} />
         <Route path="pricing" element={<LazyPage><PricingPage /></LazyPage>} />
         <Route path="nceca" element={<LazyPage><NCECAPage /></LazyPage>} />

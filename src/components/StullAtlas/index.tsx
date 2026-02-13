@@ -7,6 +7,7 @@
 import React, { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react'
 import { StullPlot } from './StullPlot'
 import { MolarSetPicker } from './MolarSetPicker'
+import { AnalysisSetPicker } from './AnalysisSetPicker'
 
 import { useSelectionStore, useGlazeStore, useFilterStore } from '@/stores'
 import { useSimilarity, useKioskMode } from '@/hooks'
@@ -850,6 +851,7 @@ export function StullAtlas() {
           </div>
           
           <MolarSetPicker />
+          <AnalysisSetPicker />
           <DatasetStats />
 
           {/* ── Filter Panel ── */}

@@ -89,7 +89,7 @@ but deliver the actual software, not just a link.
 
 ## Venues / Distribution
 
-- **NCECA 2026** (Detroit, March 18-21) — booth handout
+- **NCECA 2026** (Detroit, March 25-28) — booth handout
 - **Local clay guilds** — workshop demos
 - **Ceramic supply shops** — leave a few at the counter
   (Axner, Sheffield Pottery, Ceramic Supply Chicago, Seattle Pottery Supply)

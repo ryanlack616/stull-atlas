@@ -123,7 +123,7 @@ R.T. Stull at University of Illinois:
 
 ### Stull Atlas (113 years later)
 
-- 20,000+ data points vs ~50
+- 9,000+ data points vs ~50
 - Multiple temperatures vs cone 11 only
 - Variable flux ratios vs fixed
 - Multiple material datasets for uncertainty
@@ -212,7 +212,7 @@ function recipeToUMF(recipe, materials, dataset) {
 | Framework | React | Familiar, fast shipping |
 | Build | Vite | Fast, modern |
 | State | Zustand | Simple, performant |
-| Charts | Plotly (scattergl) | WebGL, handles 20k points |
+| Charts | Plotly (scattergl) | WebGL, handles 9k+ points |
 | Styling | CSS-in-JS | Component-scoped |
 | Types | TypeScript | Type safety |
 | Testing | Vitest | Vite native |

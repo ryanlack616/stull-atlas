@@ -109,6 +109,72 @@ class MaterialDatabase {
   getLoi(materialId: string): number | null {
     return this.lois.get(materialId) ?? null
   }
+
+  // ── Analysis set overrides ─────────────────────────────────
+
+  /** Original analyses from digitalfire.json — never mutated */
+  private baseAnalyses: Map<string, Record<OxideSymbol, number>> = new Map()
+  private baseLois: Map<string, number> = new Map()
+  private overridesActive = false
+
+  /**
+   * Snapshot the current (base) analyses so we can restore later.
+   * Called once, lazily, before the first override is applied.
+   */
+  private snapshotBase() {
+    if (this.baseAnalyses.size > 0) return // already snapshotted
+    for (const [id, analysis] of this.analyses) {
+      this.baseAnalyses.set(id, { ...analysis })
+    }
+    for (const [id, loi] of this.lois) {
+      this.baseLois.set(id, loi)
+    }
+  }
+
+  /**
+   * Apply analysis overrides from a material analysis set.
+   * Pass an empty map to restore base values (app_default).
+   *
+   * Only modifies materials that exist in the override map —
+   * all other materials keep their base values.
+   */
+  setAnalysisOverrides(
+    overrides: Map<string, { analysis: Partial<Record<OxideSymbol, number>>; loi?: number }>
+  ) {
+    this.snapshotBase()
+
+    // Start from base values
+    for (const [id, analysis] of this.baseAnalyses) {
+      this.analyses.set(id, { ...analysis })
+    }
+    for (const [id, loi] of this.baseLois) {
+      this.lois.set(id, loi)
+    }
+
+    // Apply overrides on top
+    if (overrides.size > 0) {
+      for (const [materialId, override] of overrides) {
+        if (!this.materials.has(materialId)) continue
+
+        // Merge override analysis with base — override wins
+        const base = this.baseAnalyses.get(materialId)
+        const merged = base ? { ...base, ...override.analysis } : { ...override.analysis }
+        this.analyses.set(materialId, merged as Record<OxideSymbol, number>)
+
+        if (override.loi !== undefined) {
+          this.lois.set(materialId, override.loi)
+        }
+      }
+      this.overridesActive = true
+    } else {
+      this.overridesActive = false
+    }
+  }
+
+  /** Whether non-default analysis overrides are currently active */
+  hasActiveOverrides(): boolean {
+    return this.overridesActive
+  }
 }
 
 /** Singleton — eagerly created at import time */

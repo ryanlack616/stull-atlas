@@ -1,0 +1,143 @@
+{
+  "metadata": {
+    "title": "Material Analysis Sets: Multi-Era Ceramic Material Chemistry",
+    "version": "1.0",
+    "created": "2026-02-13",
+    "description": "Historical oxide analyses for ceramic materials across eras, suppliers, and authorities. Each set provides a complete or partial mapping of material IDs to oxide weight-percent analyses. When a set lacks a material, the app falls back to the default set.",
+    "author": "Ryan - ConduitBridge / Ceramics Computing",
+    "last_updated": "2026-02-13"
+  },
+  "analysis_sets": [
+    {
+      "set_id": "app_default",
+      "name": "Stull Atlas Default",
+      "year": 2026,
+      "source": "Stull Atlas built-in database",
+      "authority": "Digitalfire / Tony Hansen (verified)",
+      "status": "populated",
+      "notes": "Current app defaults. Digitalfire 2024 analyses verified and corrected Feb 2026.",
+      "materials": {}
+    },
+    {
+      "set_id": "digitalfire_2024",
+      "name": "Digitalfire 2024",
+      "year": 2024,
+      "source": "digitalfire.com",
+      "authority": "Tony Hansen",
+      "status": "populated",
+      "notes": "Current Digitalfire Reference Library analyses, cross-checked Feb 2026 via MCP. Corrections applied where our stored values diverged from Digitalfire's current published data.",
+      "materials": {
+        "epk": {
+          "analysis": { "SiO2": 45.73, "Al2O3": 37.36, "Fe2O3": 0.79, "TiO2": 0.36, "CaO": 0.18, "MgO": 0.10, "K2O": 0.33, "Na2O": 0.06, "P2O5": 0.24 },
+          "loi": 13.2
+        },
+        "redart": {
+          "analysis": { "SiO2": 64.95, "Al2O3": 15.51, "Fe2O3": 7.04, "K2O": 4.15, "MgO": 1.59, "TiO2": 1.09, "Na2O": 0.38, "CaO": 0.26, "P2O5": 0.22 },
+          "loi": 4.80
+        },
+        "ball_clay": {
+          "analysis": { "SiO2": 59.0, "Al2O3": 25.0, "TiO2": 1.0, "Fe2O3": 0.97, "K2O": 0.90, "MgO": 0.29, "CaO": 0.27, "Na2O": 0.40 },
+          "loi": 12.0
+        },
+        "goldart": {
+          "analysis": { "SiO2": 55.2, "Al2O3": 28.8, "K2O": 1.9, "Fe2O3": 1.4, "TiO2": 1.8, "MgO": 0.40, "Na2O": 0.2, "CaO": 0.20 },
+          "loi": 10.0
+        },
+        "pyrophyllite": {
+          "analysis": { "SiO2": 67.70, "Al2O3": 28.3 },
+          "loi": 4.0
+        },
+        "red_iron_oxide": {
+          "analysis": { "Fe2O3": 95.0 },
+          "loi": 5.0
+        },
+        "cobalt_oxide": {
+          "analysis": { "CoO": 93.35 },
+          "loi": 6.65
+        },
+        "custer_feldspar": {
+          "analysis": { "SiO2": 68.5, "Al2O3": 17.0, "K2O": 10.0, "Na2O": 3.04, "CaO": 0.3, "Fe2O3": 0.08 },
+          "loi": 0.30
+        },
+        "frit_3134": {
+          "analysis": { "SiO2": 45.56, "Al2O3": 2.0, "B2O3": 22.79, "CaO": 19.51, "Na2O": 10.14 },
+          "loi": 0
+        },
+        "gerstley_borate": {
+          "analysis": { "B2O3": 26.8, "CaO": 19.4, "SiO2": 14.7, "Na2O": 4.09, "MgO": 3.5, "Al2O3": 1.03, "K2O": 0.51, "Fe2O3": 0.34, "SrO": 1.73, "P2O5": 0.04, "TiO2": 0.03 },
+          "loi": 29.5
+        }
+      }
+    },
+    {
+      "set_id": "rhodes_1973",
+      "name": "Rhodes (1973)",
+      "year": 1973,
+      "source": "Clay and Glazes for the Potter, 2nd Ed.",
+      "authority": "Daniel Rhodes",
+      "status": "stub",
+      "notes": "THE classic reference. Many potters still formulate from these values. Material analyses reflect 1960s-70s mining and supplier data.",
+      "materials": {}
+    },
+    {
+      "set_id": "cardew_1969",
+      "name": "Cardew (1969)",
+      "year": 1969,
+      "source": "Pioneer Pottery",
+      "authority": "Michael Cardew",
+      "status": "stub",
+      "notes": "Influential stoneware/wood fire reference. Analyses reflect British and West African raw materials of the era.",
+      "materials": {}
+    },
+    {
+      "set_id": "hamer_1986",
+      "name": "Hamer & Hamer (1986)",
+      "year": 1986,
+      "source": "The Potter's Dictionary of Materials and Techniques",
+      "authority": "Frank & Janet Hamer",
+      "status": "stub",
+      "notes": "Comprehensive UK/international reference. Widely used in European ceramics education.",
+      "materials": {}
+    },
+    {
+      "set_id": "nelson_1984",
+      "name": "Nelson (1984)",
+      "year": 1984,
+      "source": "Ceramics: A Potter's Handbook, 5th Ed.",
+      "authority": "Glenn C. Nelson",
+      "status": "stub",
+      "notes": "Standard American university ceramics textbook for decades.",
+      "materials": {}
+    },
+    {
+      "set_id": "hesselberth_2002",
+      "name": "Hesselberth & Roy (2002)",
+      "year": 2002,
+      "source": "Mastering Cone 6 Glazes",
+      "authority": "John Hesselberth & Ron Roy",
+      "status": "stub",
+      "notes": "Modern mid-fire reference. Analyses reflect late 1990s-early 2000s supplier data.",
+      "materials": {}
+    },
+    {
+      "set_id": "glazy_current",
+      "name": "Glazy (current)",
+      "year": 2024,
+      "source": "glazy.org",
+      "authority": "Derek Au / Community",
+      "status": "stub",
+      "notes": "Open-source glaze database. Community-maintained analyses.",
+      "materials": {}
+    },
+    {
+      "set_id": "insight_legacy",
+      "name": "Insight / Foresight (~1995)",
+      "year": 1995,
+      "source": "Digitalfire Insight desktop software",
+      "authority": "Tony Hansen",
+      "status": "stub",
+      "notes": "Tony Hansen's original desktop glaze software. These were the standard digital analyses for the pre-web era.",
+      "materials": {}
+    }
+  ]
+}

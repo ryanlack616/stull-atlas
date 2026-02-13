@@ -331,9 +331,9 @@ export function PricingPage() {
           margin-top: 16px;
           padding: 10px 20px;
           border-radius: 8px;
-          background: rgba(46, 204, 113, 0.12);
-          border: 1px solid rgba(46, 204, 113, 0.3);
-          color: #2ecc71;
+          background: rgba(16, 185, 129, 0.12);
+          border: 1px solid rgba(16, 185, 129, 0.3);
+          color: #10b981;
           font-size: 14px;
           font-weight: 500;
         }
@@ -341,7 +341,7 @@ export function PricingPage() {
         .pricing-free-link {
           background: none;
           border: none;
-          color: #2ecc71;
+          color: #10b981;
           text-decoration: underline;
           cursor: pointer;
           font-size: 14px;
@@ -382,7 +382,7 @@ export function PricingPage() {
 
         .billing-save {
           font-size: 11px;
-          color: #2ecc71;
+          color: #10b981;
           font-weight: 600;
           margin-left: 6px;
         }
@@ -418,7 +418,7 @@ export function PricingPage() {
         }
 
         .tier-current {
-          border-color: #2ecc71;
+          border-color: var(--accent);
         }
 
         .tier-current-badge {
@@ -426,7 +426,7 @@ export function PricingPage() {
           top: -10px;
           left: 50%;
           transform: translateX(-50%);
-          background: #2ecc71;
+          background: var(--accent);
           color: #000;
           font-size: 11px;
           font-weight: 600;
@@ -507,7 +507,7 @@ export function PricingPage() {
 
         .tier-features li::before {
           content: '✓ ';
-          color: #2ecc71;
+          color: #10b981;
           font-weight: 600;
         }
 

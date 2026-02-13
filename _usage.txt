@@ -1,0 +1,339 @@
+
+Filename                 LineNumber Line
+--------                 ---------- ----
+geneticOptimizer.test.ts         18 getAnalysis(id: string) {
+grid.test.ts                      3 import { createOxideValue, type MaterialDatabase } from '@/calculator/umf'
+grid.test.ts                      6 const materials: MaterialDatabase = {
+grid.test.ts                     12 getAnalysis: (materialId: string) => {
+optimizer.test.ts                 7 * Uses the real MaterialDatabase singleton.
+optimizer.test.ts                27 getAnalysis(materialId: string) {
+responseSurface.test.ts          17 getAnalysis(id: string) {
+umf.test.ts                       8 type MaterialDatabase,
+umf.test.ts                      27 const testMaterials: MaterialDatabase = {
+umf.test.ts                      41 getAnalysis(materialId: string) {
+umf.test.ts                     233 const partialDb: MaterialDatabase = {
+umf.test.ts                     235 getAnalysis(materialId) {
+umf.test.ts                     237 return testMaterials.getAnalysis(materialId)
+grid.ts                          18 import { MaterialDatabase, recipeToUMF, createOxideValue } from '../umf'
+grid.ts                          67 materials: MaterialDatabase,
+grid.ts                         184 materials: MaterialDatabase,
+grid.ts                         201 materials: MaterialDatabase,
+geneticOptimizer.ts              22 import type { MaterialDatabase as IMatDB } from './umf'
+geneticOptimizer.ts              75 const analysis = mat ? db.getAnalysis(mat.id) : null
+optimizer.ts                     14 *   - Works with the existing MaterialDatabase
+optimizer.ts                     19 import type { MaterialDatabase as IMatDB } from './umf'
+optimizer.ts                    100 const analysis = mat ? db.getAnalysis(mat.id) : null
+responseSurface.ts               17 import type { MaterialDatabase as IMatDB } from './umf'
+responseSurface.ts               62 const analysis = mat ? db.getAnalysis(mat.id) : null
+umf.ts                           36 export interface MaterialDatabase {
+umf.ts                           38 getAnalysis(materialId: string): Record<OxideSymbol, number> | null
+umf.ts                           46 materials: MaterialDatabase,
+umf.ts                           77 const analysis = materials.getAnalysis(material.id)
+validation.ts                    18 * Compiled from Digitalfire, Hamer & Hamer, ceramic literature
+index.tsx                         2 * Digitalfire Knowledge Panel
+index.tsx                         5 * Digitalfire Reference Library. Every entry links back to the
+index.tsx                         6 * original source page at digitalfire.com.
+index.tsx                        17 import { searchKnowledge, getContextualRefs, DIGITALFIRE_ATTRIBUTION, type DigitalfireRef } from '@/domain/digitalfire'
+index.tsx                        20 type DigitalfirePage,
+index.tsx                        21 } from '@/domain/digitalfire/fullTextStore'
+index.tsx                        24 interface DigitalfirePanelProps {
+index.tsx                        54 function RefCard({ ref: entry }: { ref: DigitalfireRef }) {
+index.tsx                        63 title="Read more at Digitalfire"
+index.tsx                        73 <span className="df-ref-link">Read at digitalfire.com &rarr;</span>
+index.tsx                        80 function ArticleCard({ page }: { page: DigitalfirePage }) {
+index.tsx                       110 View original at digitalfire.com &rarr;
+index.tsx                       130 export function DigitalfirePanel({ selectedGlaze }: DigitalfirePanelProps) {
+index.tsx                       306 <p>Loading Digitalfire Reference Library...</p>
+index.tsx                       317 The full Digitalfire library is available in the Studio Edition.
+index.tsx                       326 <p>Search the complete Digitalfire Reference Library.</p>
+index.tsx                       358 <a href={DIGITALFIRE_ATTRIBUTION.url} target="_blank" rel="noopener noreferrer">
+index.tsx                       359 {DIGITALFIRE_ATTRIBUTION.text}
+index.tsx                       363 <style>{digitalfirePanelStyles}</style>
+index.tsx                       370 const digitalfirePanelStyles = `
+index.tsx                       663 export default DigitalfirePanel
+index.tsx                         7 * - Digitalfire Reference Library (oxides, materials, glossary, articles, troubles)
+index.tsx                         9 * Every Digitalfire result links to digitalfire.com and credits Tony Hansen.
+index.tsx                        16 import { DIGITALFIRE_ATTRIBUTION } from '@/data/digitalfire/attribution'
+index.tsx                        23 knowledge: 'Digitalfire Reference',
+index.tsx                       101 // Open Digitalfire URL in new tab
+index.tsx                       157 Type to search across glazes, Digitalfire materials, oxides, glossary, and more.
+index.tsx                       213 {DIGITALFIRE_ATTRIBUTION.text} ·{' '}
+index.tsx                       214 <a href={DIGITALFIRE_ATTRIBUTION.url} target="_blank" rel="noopener noreferrer">
+index.tsx                       215 digitalfire.com
+index.tsx                        10 import { materialDatabase } from '@/domain/material'
+index.tsx                        54 return materialDatabase.getAllMaterials().map(m => m.primaryName).sort()
+index.tsx                        63 const mat = materialDatabase.resolve(name.trim())
+index.tsx                        28 const DigitalfirePanel = lazy(() => import('@/components/DigitalfirePanel').then(m => ({ default: m.DigitalfirePanel })))
+index.tsx                       788 Safe oxide ranges from Digitalfire &amp; ceramic literature
+index.tsx                       963 title="Ceramic knowledge from Tony Hansen's Digitalfire Reference Library"
+index.tsx                      1215 <DigitalfirePanel
+StullPlot.tsx                   647 digitalfire: 2,
+StullPlot3D.tsx                1531 return ({ glazy: 1, digitalfire: 2, user: 3, calculated: 4 })[s] ?? 0
+OxideLink.tsx                     4 * Renders an oxide symbol as a clickable link to its Digitalfire reference page
+OxideLink.tsx                    11 import { lookupOxide } from '@/domain/digitalfire'
+OxideLink.tsx                    29 const ref = lookupOxide(oxide)
+OxideLink.tsx                    41 title={`Learn about ${display} on Digitalfire`}
+OxideLink.tsx                    56 * Renders the oxide as a subscripted link when a Digitalfire reference exists.
+attribution.ts                    2 * Digitalfire Attribution — isolated from the barrel so importing
+attribution.ts                    5 export const DIGITALFIRE_ATTRIBUTION = {
+attribution.ts                    7 source: 'Digitalfire Reference Library',
+attribution.ts                    8 url: 'https://digitalfire.com',
+attribution.ts                    9 text: 'Source: Tony Hansen, Digitalfire Reference Library',
+index.ts                          2 * Digitalfire Reference Library — Data Index
+index.ts                          4 * Static JSON data extracted from Tony Hansen's Digitalfire Reference Library
+index.ts                          5 * (digitalfire.com). All content belongs to Tony Hansen / Digitalfire Corp.
+index.ts                          8 * and links back to the original source pages at digitalfire.com.
+index.ts                         20 export interface DigitalfireOxide {
+index.ts                         28 export interface DigitalfireMaterial {
+index.ts                         36 export interface DigitalfireGlossary {
+index.ts                         44 export interface DigitalfireTrouble {
+index.ts                         51 export interface DigitalfireArticle {
+index.ts                         58 export interface DigitalfireTest {
+index.ts                         65 /** A reference link back to digitalfire.com with attribution */
+index.ts                         66 export interface DigitalfireRef {
+index.ts                         75 export const oxides = oxidesData as DigitalfireOxide[]
+index.ts                         76 export const materials = materialsData as DigitalfireMaterial[]
+index.ts                         77 export const glossary = glossaryData as DigitalfireGlossary[]
+index.ts                         78 export const troubles = troublesData as DigitalfireTrouble[]
+index.ts                         79 export const articles = articlesData as DigitalfireArticle[]
+index.ts                         80 export const tests = testsData as DigitalfireTest[]
+index.ts                         84 export { DIGITALFIRE_ATTRIBUTION } from './attribution'
+fullTextStore.ts                  2 * Digitalfire Full-Text Store
+fullTextStore.ts                  4 * Lazy-loads the Digitalfire Reference Library (~4,200 pages).
+fullTextStore.ts                  7 * Web edition:    fetched from /data/digitalfire/pages.json on demand.
+fullTextStore.ts                  9 * Generated by scripts/extract-digitalfire.py from the SQLite database.
+fullTextStore.ts                 19 const URL_PREFIX = 'https://digitalfire.com/'
+fullTextStore.ts                 23 export interface DigitalfirePage {
+fullTextStore.ts                 42 let pages: DigitalfirePage[] | null = null
+fullTextStore.ts                 43 let urlIndex: Map<string, DigitalfirePage> | null = null
+fullTextStore.ts                 44 let loadPromise: Promise<DigitalfirePage[]> | null = null
+fullTextStore.ts                 68 export async function loadLibrary(): Promise<DigitalfirePage[]> {
+fullTextStore.ts                 79 const p = '@/data/digitalfire/' + 'pages.json'
+fullTextStore.ts                 85 const resp = await fetch(`${base}data/digitalfire/pages.json`)
+fullTextStore.ts                123 export function getArticle(url: string): DigitalfirePage | null {
+fullTextStore.ts                133 export function searchFullText(query: string, limit = 20): DigitalfirePage[] {
+fullTextStore.ts                140 const scored: { page: DigitalfirePage; score: number }[] = []
+fullTextStore.ts                188 export function getByCategory(category: string): DigitalfirePage[] {
+index.ts                          2 * Digitalfire Knowledge Service
+index.ts                          5 * Digitalfire Reference Library (digitalfire.com).
+index.ts                         14 type DigitalfireRef, type DigitalfireOxide, type DigitalfireMaterial,
+index.ts                         15 } from '@/data/digitalfire'
+index.ts                         16 import { DIGITALFIRE_ATTRIBUTION } from '@/data/digitalfire/attribution'
+index.ts                         19 export type { DigitalfireRef, DigitalfireOxide, DigitalfireMaterial }
+index.ts                         20 export { DIGITALFIRE_ATTRIBUTION }
+index.ts                         24 let oxideIndex: Map<string, DigitalfireOxide> | null = null
+index.ts                         25 let materialIndex: Map<string, DigitalfireMaterial> | null = null
+index.ts                         27 function getOxideIndex(): Map<string, DigitalfireOxide> {
+index.ts                         47 function getMaterialIndex(): Map<string, DigitalfireMaterial> {
+index.ts                         68 * Returns the Digitalfire reference page for that oxide.
+index.ts                         70 export function lookupOxide(formula: OxideSymbol | string): DigitalfireRef | null {
+index.ts                         86 export function lookupMaterial(name: string): DigitalfireRef | null {
+index.ts                         87 const idx = getMaterialIndex()
+index.ts                        107 export function searchKnowledge(query: string, limit = 8): DigitalfireRef[] {
+index.ts                        111 const results: (DigitalfireRef & { score: number })[] = []
+index.ts                        162 * find the most relevant Digitalfire articles.
+index.ts                        171 }): DigitalfireRef[] {
+index.ts                        172 const refs: DigitalfireRef[] = []
+index.ts                        175 const addUnique = (ref: DigitalfireRef | null) => {
+index.ts                        201 addUnique(lookupOxide(ox))
+index.ts                        208 addUnique(lookupMaterial(name))
+index.ts                        225 export function getTroubleRef(defect: string): DigitalfireRef | null {
+glazeService.ts                  25 import { materialDatabase } from '@/infra/materials'
+glazeService.ts                  82 const result = recipeToUMF(recipe, materialDatabase)
+index.ts                          4 * Thin facade over the infra MaterialDatabase.
+index.ts                          8 export { materialDatabase, getAllMaterials } from './materialService'
+materialService.ts                4 * Thin wrapper around the infra MaterialDatabase for domain consumers.
+materialService.ts                8 import { materialDatabase } from '@/infra/materials'
+materialService.ts               11 export { materialDatabase }
+materialService.ts               17 return materialDatabase.resolve(name)
+materialService.ts               23 export function getMaterialAnalysis(
+materialService.ts               26 return materialDatabase.getAnalysis(materialId)
+materialService.ts               32 export function getAllMaterials(): Material[] {
+materialService.ts               33 return materialDatabase.getAllMaterials()
+index.ts                         24 | 'digitalfire_current'
+archetypes.ts                     5 * Compiled from Digitalfire, Hamer & Hamer, John Britt, Matt Katz, ceramic literature.
+suggestionEngine.ts              14 import { materialDatabase } from '@/domain/material'
+suggestionEngine.ts              21 import { getContextualRefs, getTroubleRef, type DigitalfireRef } from '@/domain/digitalfire'
+suggestionEngine.ts              55 /** Relevant references from Tony Hansen's Digitalfire Reference Library */
+suggestionEngine.ts              56 digitalfireRefs: DigitalfireRef[]
+suggestionEngine.ts             270 const mat = materialDatabase.resolve(id) ??
+suggestionEngine.ts             271 materialDatabase.getMaterial(id)
+suggestionEngine.ts             293 return materialDatabase.resolve(name) ??
+suggestionEngine.ts             294 materialDatabase.getMaterial(name) ?? null
+suggestionEngine.ts             296 getAnalysis(id: string) {
+suggestionEngine.ts             297 return materialDatabase.getAnalysis(id)
+suggestionEngine.ts             352 // Gather relevant Digitalfire references for this suggestion
+suggestionEngine.ts             353 const digitalfireRefs = getContextualRefs({
+suggestionEngine.ts             372 digitalfireRefs,
+suggestionEngine.ts             442 const mat = materialDatabase.resolve(materialId) ??
+suggestionEngine.ts             443 materialDatabase.getMaterial(materialId)
+index.ts                          9 *   domain/material     – MaterialDatabase facade
+index.ts                         13 *   domain/digitalfire  – Digitalfire reference library lookups
+index.ts                         36 export { materialDatabase, getAllMaterials } from './material'
+index.ts                         65 // Digitalfire reference
+index.ts                         68 lookupOxide,
+index.ts                         69 lookupMaterial,
+index.ts                         70 DIGITALFIRE_ATTRIBUTION,
+index.ts                         71 } from './digitalfire'
+index.ts                         72 export type { DigitalfireRef, DigitalfireOxide, DigitalfireMaterial } from './digitalfire'
+useMaterialLookup.ts              8 import { materialDatabase, getAllMaterials } from '@/domain/material'
+useMaterialLookup.ts             12 * Returns the materialDatabase singleton and a memoized list of all materials.
+useMaterialLookup.ts             15 const allMaterials = useMemo(() => getAllMaterials(), [])
+useMaterialLookup.ts             18 materialDatabase,
+useMaterialLookup.ts             20 resolve: (name: string) => materialDatabase.resolve(name),
+useMaterialLookup.ts             21 getAnalysis: (materialId: string) => materialDatabase.getAnalysis(materialId),
+useOmniSearch.ts                  6 * - Digitalfire reference library (materials, oxides, glossary, articles, troubles, tests)
+useOmniSearch.ts                 16 // Lazy-loaded to keep ~700 KB of digitalfire JSON out of the initial bundle.
+useOmniSearch.ts                 18 let dfModule: typeof import('@/domain/digitalfire') | null = null
+useOmniSearch.ts                 20 if (!dfModule) dfModule = await import('@/domain/digitalfire')
+useOmniSearch.ts                 33 /** For glazes: glaze id. For knowledge: digitalfire URL. For pages: route path. */
+useOmniSearch.ts                 58 { title: 'About', path: '/about', keywords: 'about credits tony hansen digitalfire' },
+useOmniSearch.ts                140 async function searchDigitalfire(query: string, limit = 8): Promise<OmniResult[]> {
+useOmniSearch.ts                180 // Async digitalfire search (lazy-loaded)
+useOmniSearch.ts                185 searchDigitalfire(q).then(r => { if (!stale) setKnowledgeResults(r) })
+materialDatabase.test.ts          2 import { materialDatabase } from '../materialDatabase'
+materialDatabase.test.ts          4 describe('MaterialDatabase', () => {
+materialDatabase.test.ts          9 const mat = materialDatabase.resolve('EPK Kaolin')
+materialDatabase.test.ts         15 const mat = materialDatabase.resolve('edgar plastic kaolin')
+materialDatabase.test.ts         21 const mat = materialDatabase.resolve('Custer')
+materialDatabase.test.ts         27 const mat = materialDatabase.resolve('SILICA')
+materialDatabase.test.ts         33 expect(materialDatabase.resolve('')).toBeNull()
+materialDatabase.test.ts         37 expect(materialDatabase.resolve('   ')).toBeNull()
+materialDatabase.test.ts         41 expect(materialDatabase.resolve('XyzNotAMaterial')).toBeNull()
+materialDatabase.test.ts         45 expect(materialDatabase.resolve('ab')).toBeNull()
+materialDatabase.test.ts         51 describe('getAnalysis', () => {
+materialDatabase.test.ts         53 const analysis = materialDatabase.getAnalysis('silica')
+materialDatabase.test.ts         59 expect(materialDatabase.getAnalysis('nonexistent')).toBeNull()
+materialDatabase.test.ts         63 for (const mat of materialDatabase.getAllMaterials()) {
+materialDatabase.test.ts         64 const analysis = materialDatabase.getAnalysis(mat.id)
+materialDatabase.test.ts         75 // ── getAllMaterials ─────────────────────────────────────────
+materialDatabase.test.ts         77 describe('getAllMaterials', () => {
+materialDatabase.test.ts         79 expect(materialDatabase.getAllMaterials().length).toBeGreaterThanOrEqual(19)
+materialDatabase.test.ts         83 for (const mat of materialDatabase.getAllMaterials()) {
+materialDatabase.test.ts         91 const ids = materialDatabase.getAllMaterials().map(m => m.id)
+materialDatabase.test.ts        101 const loi = materialDatabase.getLoi('epk')
+materialDatabase.test.ts        107 const loi = materialDatabase.getLoi('nonexistent')
+materialDatabase.test.ts        116 const silica = materialDatabase.resolve('Silica')
+materialDatabase.test.ts        122 for (const mat of materialDatabase.getAllMaterials()) {
+index.ts                          7 export { materialDatabase, type MaterialDatabase } from './materialDatabase'
+materialDatabase.ts               9 import digitalfireData from '@/data/materials/digitalfire.json'
+materialDatabase.ts              11 class MaterialDatabase {
+materialDatabase.ts              18 this.loadDigitalfire()
+materialDatabase.ts              23 private loadDigitalfire() {
+materialDatabase.ts              24 const data = digitalfireData as any
+materialDatabase.ts              93 getAnalysis(materialId: string): Record<OxideSymbol, number> | null {
+materialDatabase.ts              97 getAllMaterials(): Material[] {
+materialDatabase.ts             101 getMaterial(id: string): Material | null {
+materialDatabase.ts             105 getMaterialCount(): number {
+materialDatabase.ts             115 export const materialDatabase = new MaterialDatabase()
+materialDatabase.ts             117 export default materialDatabase
+materialDatabase.ts             119 export type { MaterialDatabase }
+index.ts                          8 *   infra/materials    – MaterialDatabase singleton
+AboutPage.tsx                   129 Browse the raw materials database (sourced from Digitalfire). Search by name or category,
+AboutPage.tsx                   260 <strong><a href="https://digitalfire.com" target="_blank" rel="noopener noreferrer">Digitalfire Reference Library</a></strong> (Tony Hansen) —
+AboutPage.tsx                   268 <a href="https://digitalfire.com" target="_blank" rel="noopener noreferrer">digitalfire.com</a>.
+AboutPage.tsx                   282 <a href="https://digitalfire.com" target="_blank" rel="noopener noreferrer" className="appreciation-card">
+AboutPage.tsx                   283 <div className="card-logo digitalfire-logo">
+AboutPage.tsx                   292 <h3>Digitalfire</h3>
+BiaxialBlendPage.tsx             13 import { materialDatabase } from '@/domain/material'
+BiaxialBlendPage.tsx             74 const result = recipeToUMF(modifiedRecipe, materialDatabase)
+BiaxialBlendPage.tsx            349 {materialDatabase.getAllMaterials().map(m => (
+GuidePage.tsx                   789 If you've been using <strong>Digitalfire Insight</strong>, you'll recognize the chemistry concepts.
+HenryPage.tsx                    31 { id: 'digitalfire',     label: 'Digitalfire Integration' },
+HenryPage.tsx                   380 <li>Digitalfire reference links</li>
+HenryPage.tsx                   408 Source: Digitalfire analysis data. All materials link back to Tony Hansen's reference library.
+HenryPage.tsx                   515 {/* ━━━━━━━━━━━━ DIGITALFIRE ━━━━━━━━━━━━━━━━━━━━━━━ */}
+HenryPage.tsx                   516 <section id="digitalfire" className="henry-section">
+HenryPage.tsx                   517 <h2>Digitalfire Integration</h2>
+HenryPage.tsx                   519 Tony Hansen's Digitalfire Reference Library (~4,200 pages) is searchable from
+HenryPage.tsx                   524 The app also auto-suggests relevant Digitalfire references based on what you're
+HenryPage.tsx                   526 page for crawling. All results link back to digitalfire.com as the authoritative source.
+HenryPage.tsx                   555 <tr><td>Insight XML</td><td>Import</td><td>Auto-detects Digitalfire Insight format</td></tr>
+HenryPage.tsx                   595 Different sources disagree on material compositions. Digitalfire says Custer
+HenryPage.tsx                   830 The capstone. Every recipe, material, oxide, firing schedule, Digitalfire reference,
+HenryPage.tsx                   879 <li><strong>Tony Hansen / Digitalfire</strong> — 30+ years of reference material, materials database, oxide data, troubleshooting (~4,200 pages)</li>
+LineBlendPage.tsx                14 import { materialDatabase } from '@/domain/material'
+LineBlendPage.tsx                54 const umfA = recipeToUMF(a, materialDatabase)
+LineBlendPage.tsx                55 const umfB = recipeToUMF(b, materialDatabase)
+LineBlendPage.tsx               226 Materials are resolved against the Digitalfire database
+MaterialsPage.tsx                 4 * Browse the Digitalfire material database: search, filter by category,
+MaterialsPage.tsx                 9 import { materialDatabase } from '@/domain/material'
+MaterialsPage.tsx                10 import { Material, MaterialCategory, OxideSymbol } from '@/types'
+MaterialsPage.tsx                13 import { lookupMaterial, lookupOxide } from '@/domain/digitalfire'
+MaterialsPage.tsx                21 const CATEGORY_LABELS: Record<MaterialCategory, string> = {
+MaterialsPage.tsx                38 const [categoryFilter, setCategoryFilter] = useState<MaterialCategory | 'all'>('all')
+MaterialsPage.tsx                44 const allMaterials = useMemo(() => materialDatabase.getAllMaterials(), [])
+MaterialsPage.tsx                82 const getAnalysis = (mat: Material): Record<string, number> | null => {
+MaterialsPage.tsx                83 return materialDatabase.getAnalysis(mat.id)
+MaterialsPage.tsx               101 {allMaterials.length} materials from Digitalfire database
+MaterialsPage.tsx               128 {(Object.keys(CATEGORY_LABELS) as MaterialCategory[]).map(cat => (
+MaterialsPage.tsx               206 const analysis = getAnalysis(mat)
+MaterialsPage.tsx               207 const loi = materialDatabase.getLoi(mat.id)
+MaterialsPage.tsx               245 {/* Digitalfire attribution */}
+MaterialsPage.tsx               256 href="https://digitalfire.com"
+MaterialsPage.tsx               261 Digitalfire
+MaterialsPage.tsx               277 .map(id => materialDatabase.getMaterial(id))
+MaterialsPage.tsx               280 const analyses = materials.map(m => materialDatabase.getAnalysis(m.id))
+MaterialsPage.tsx               360 const loi = materialDatabase.getLoi(m.id)
+MaterialsPage.tsx               373 const loi = materialDatabase.getLoi(materials[i].id) ?? 0
+MaterialsPage.tsx               436 const analysis = materialDatabase.getAnalysis(material.id)
+MaterialsPage.tsx               437 const loi = materialDatabase.getLoi(material.id)
+MaterialsPage.tsx               438 const dfRef = lookupMaterial(material.primaryName)
+MaterialsPage.tsx               477 📖 View on Digitalfire Reference Library ↗
+MaterialsPage.tsx               484 <div style={{ fontSize: 10, color: 'var(--text-dim)', marginTop: 6 }}>Source: Tony Hansen, digitalfire.com</div>
+MaterialsPage.tsx               508 const oxRef = lookupOxide(oxide)
+MaterialsPage.tsx               513 <a href={oxRef.url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-link)', textDecoration: 'none' }} title={`Learn about ${oxide} on Digitalfire`}>{oxide}</a>
+OptimizerPage.tsx                10 import { materialDatabase } from '@/domain/material'
+OptimizerPage.tsx                20 const ALL_MATERIALS = materialDatabase.getAllMaterials()
+OptimizerPage.tsx               141 return materialDatabase.resolve(name) ??
+OptimizerPage.tsx               142 materialDatabase.getMaterial(name) ?? null
+OptimizerPage.tsx               144 getAnalysis(id: string) {
+OptimizerPage.tsx               145 return materialDatabase.getAnalysis(id)
+OptimizerPage.tsx               249 const m = materialDatabase.getMaterial(id)
+QuadaxialBlendPage.tsx           14 import { materialDatabase } from '@/domain/material'
+QuadaxialBlendPage.tsx           54 const umfResults = recs.map(r => recipeToUMF(r, materialDatabase))
+RadialBlendPage.tsx              14 import { materialDatabase } from '@/domain/material'
+RadialBlendPage.tsx              69 const centerResult = recipeToUMF(centerRecipe, materialDatabase)
+RadialBlendPage.tsx              76 const material = materialDatabase.resolve(a.material)
+RadialBlendPage.tsx              97 materialDatabase
+SuggestionPage.tsx              311 const { archetype, recipe, colorants, relevance, explanation, warnings, firingSchedule, substitutions, digitalfireRefs } = suggestion
+SuggestionPage.tsx              448 {/* Digitalfire References — links back to Tony Hansen's work */}
+SuggestionPage.tsx              449 {digitalfireRefs && digitalfireRefs.length > 0 && (
+SuggestionPage.tsx              453 {digitalfireRefs.slice(0, 4).map((ref, i) => (
+SuggestionPage.tsx              468 Source: <a href="https://digitalfire.com" target="_blank" rel="noopener noreferrer">
+SuggestionPage.tsx              469 Tony Hansen, Digitalfire Reference Library
+SuggestionPage.tsx             1315 /* Digitalfire Reference Links */
+timelineData.ts                1399 descriptionDetailed: 'The appearance of glaze databases on bulletin board systems (BBS) marked the beginning of digital ceramic knowledge. For the first time, glaze recipes could be shared electronically — searchable, copyable, and transmissible without physical
+                                    presence. This prefigured the web-based databases (Digitalfire, Glazy) that would transform ceramic knowledge sharing.',
+timelineData.ts                1537 title: 'Tony Hansen — Digitalfire.com & Insight',
+timelineData.ts                1538 description: 'Tony Hansen launched Digitalfire.com and the Insight glaze calculation software, creating the most comprehensive online ceramics encyclopedia with 7,730+ pages. West & Gerrow thermal expansion coefficients became the industry standard through
+                                    Insight.',
+timelineData.ts                1539 descriptionSimple: 'Tony Hansen created Digitalfire.com — a free website with over 7,000 pages about every ceramic material you can think of. He also made Insight, a glaze calculation program that became the industry standard.',
+timelineData.ts                1540 descriptionDetailed: 'Hansen launched Digitalfire.com and the Insight glaze calculation software, creating the most comprehensive online ceramics resource (7,730+ articles). Insight’s implementation of West & Gerrow thermal expansion coefficients became the
+                                    industry standard for coefficient-of-expansion calculation. Digitalfire’s systematic materials documentation — standardized testing data for virtually every commercially available ceramic material — democratized materials knowledge.',
+timelineData.ts                1544 { label: 'Digitalfire', url: 'https://digitalfire.com' },
+timelineData.ts                1583 descriptionDetailed: 'Browser-based glaze calculation tools eliminated software installation requirements, enabling platform-independent access and lowering the barrier to adoption. This shift from desktop to web prefigured the fully cloud-based systems (Glazy,
+                                    modern Digitalfire) that followed.',
+timelineData.ts                1734 title: 'Digitalfire Systematic Materials Testing',
+timelineData.ts                1736 descriptionSimple: 'Tony Hansen’s Digitalfire website grew into a massive database with scientific test data for almost every ceramic material you can buy — a free encyclopedia of ceramics.',
+timelineData.ts                2063 '1995 — Digitalfire.com brings ceramic knowledge online',
+timelineData.ts                2098 '1995 — Digitalfire makes knowledge freely accessible',
+TimelinePage.tsx                419 <strong>Hansen, Tony</strong>. Digitalfire — <a href="https://digitalfire.com" target="_blank" rel="noopener noreferrer">digitalfire.com</a>
+TriaxialBlendPage.tsx            14 import { materialDatabase } from '@/domain/material'
+TriaxialBlendPage.tsx            54 const umfResults = recs.map(r => recipeToUMF(r, materialDatabase))
+UMFCalculatorPage.tsx            17 import { materialDatabase } from '@/domain/material'
+UMFCalculatorPage.tsx            77 const result = recipeToUMF(recipe, materialDatabase)
+UMFCalculatorPage.tsx            84 const mat = materialDatabase.resolve(ing.material.trim())
+UMFCalculatorPage.tsx           432 Materials resolved against Digitalfire database
+UpdatesPage.tsx                 319 A searchable <Link to="/materials">materials database</Link> powered by Digitalfire
+recipeStore.ts                   35 // Legacy format: { digitalfire_2024: { SiO2: ..., Al2O3: ... } }
+themeStore.ts                     9 *   digitalfire – Tony Hansen's blue/navy academic aesthetic
+themeStore.ts                    19 type Skin = 'normal' | 'digitalfire' | 'glazy'
+themeStore.ts                    27 { id: 'digitalfire', label: 'Digitalfire', preview: '#2B5797' },
+themeStore.ts                    41 stored === 'normal' || stored === 'digitalfire' || stored === 'glazy') {
+glaze.ts                         13 | 'digitalfire'
+material.ts                       7 * Oxide analyses are stored on MaterialDatabase, not on the Material object.
+material.ts                      13 category: MaterialCategory
+material.ts                      27 export type MaterialCategory =
+
+

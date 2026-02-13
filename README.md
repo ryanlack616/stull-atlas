@@ -8,7 +8,7 @@
 
 ## Vision
 
-An interactive visualization of ~20,000 ceramic glaze recipes plotted in UMF (Unity Molecular Formula) space, allowing:
+An interactive visualization of over 9,000 ceramic glaze recipes plotted in UMF (Unity Molecular Formula) space, allowing:
 
 - Real-time pan/zoom exploration of glaze chemistry landscape
 - Dataset switching to reveal uncertainty (the "wiggle test")
@@ -17,7 +17,7 @@ An interactive visualization of ~20,000 ceramic glaze recipes plotted in UMF (Un
 
 ## The Core Insight
 
-Stull drew his map in 1912 with ~50 glazes at cone 11. We have 113 years of accumulated potter knowledge—20,000+ recipes that survived because they *worked*. The density, clustering, and voids in this data encode human knowledge about what's useful in glaze space.
+Stull drew his map in 1912 with ~50 glazes at cone 11. We have 113 years of accumulated potter knowledge—9,000+ recipes that survived because they *worked*. The density, clustering, and voids in this data encode human knowledge about what's useful in glaze space.
 
 ## Key Discoveries
 

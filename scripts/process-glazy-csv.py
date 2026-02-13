@@ -13,7 +13,7 @@ import sys
 from collections import defaultdict
 
 CSV_PATH = r"C:\Users\PC\Downloads\glazy-data-all-20211130.csv"
-OUT_PATH = r"C:\Users\PC\Desktop\projects\stull-atlas\src\data\glazes\glazy-processed.json"
+OUT_PATH = r"C:\rje\dev\stull-atlas\src\data\glazes\glazy-processed.json"
 
 # UMF oxides we care about
 UMF_OXIDES = {

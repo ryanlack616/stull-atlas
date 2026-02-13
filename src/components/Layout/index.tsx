@@ -65,14 +65,12 @@ export function Layout() {
           </button>
           <nav className={`main-nav${menuOpen ? ' show' : ''}`} id="main-nav" aria-label="Main navigation">
             <NavLink to="/" end>Explorer</NavLink>
-            <NavLink to="/suggest">AI Suggest</NavLink>
             <NavLink to="/calc">Calculators</NavLink>
             <NavLink to="/materials">Materials</NavLink>
             <NavLink to="/import-export">Import/Export</NavLink>
             <NavLink to="/timeline">Timeline</NavLink>
             <NavLink to="/guide">Guide</NavLink>
             <NavLink to="/about">About</NavLink>
-            <NavLink to="/updates">What's New</NavLink>
             {edition.showPricing && <NavLink to="/pricing">Pricing</NavLink>}
           </nav>
         </div>
@@ -86,16 +84,6 @@ export function Layout() {
             </span>
           )}
           <button
-            className="search-trigger"
-            onClick={toggleOmni}
-            title="Search everything (Ctrl+K)"
-            aria-label="Search everything"
-          >
-            <span className="search-trigger-icon">&#x1F50D;</span>
-            <span className="search-trigger-label">Search</span>
-            <kbd className="search-trigger-kbd">Ctrl K</kbd>
-          </button>
-          <button
             className="tour-trigger"
             onClick={startTour}
             title="Start guided tour"
@@ -103,7 +91,6 @@ export function Layout() {
           >
             ?
           </button>
-          {edition.showAuth && <UserMenu />}
           <button
             className="theme-toggle"
             onClick={toggle}

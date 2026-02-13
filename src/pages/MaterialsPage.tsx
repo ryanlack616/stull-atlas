@@ -241,6 +241,29 @@ export function MaterialsPage() {
             </div>
           </>
         )}
+
+        {/* Digitalfire attribution */}
+        <div style={{
+          marginTop: 'auto',
+          padding: '16px 20px',
+          borderTop: '1px solid var(--border-secondary)',
+          fontSize: 12,
+          color: 'var(--text-muted)',
+          lineHeight: 1.6,
+        }}>
+          Material oxide analyses sourced from{' '}
+          <a
+            href="https://digitalfire.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'var(--text-link)', textDecoration: 'none' }}
+          >
+            Digitalfire
+          </a>
+          , created and maintained by Tony Hansen.
+          Thank you, Tony, for decades of invaluable ceramic encyclopedic work
+          that the entire pottery community depends on.
+        </div>
       </div>
 
       <style>{calcStyles}</style>

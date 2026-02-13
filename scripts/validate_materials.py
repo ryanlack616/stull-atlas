@@ -11,7 +11,7 @@ import json, re, os
 from pathlib import Path
 
 DATA_DIR = Path(r"C:\home\claude\digitalfire")
-OUR_FILE = Path(r"c:\Users\PC\Desktop\projects\stull-atlas\src\data\materials\digitalfire.json")
+OUR_FILE = Path(r"C:\rje\dev\stull-atlas\src\data\materials\digitalfire.json")
 
 # ── Load our data ──────────────────────────────────────────────
 with open(OUR_FILE) as f:
