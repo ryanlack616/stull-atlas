@@ -124,9 +124,25 @@
 
         /* ─── HERO ─── */
         .hero {
-            padding-top: 8rem;
-            padding-bottom: 4rem;
+            padding-top: 6rem;
+            padding-bottom: 0;
             text-align: center;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 960px;
+            margin: 2.5rem auto 0;
+            border-radius: 12px;
+            overflow: hidden;
+            line-height: 0;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
         }
 
         .hero-title {
@@ -262,6 +278,60 @@
             line-height: 1.6;
         }
 
+        .pottery-card-img {
+            width: 100%;
+            aspect-ratio: 4/5;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        /* ─── GALLERY ─── */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+
+        .gallery-grid img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .gallery-grid img:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 30px rgba(61, 54, 50, 0.12);
+        }
+
+        /* ─── LIGHTBOX ─── */
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(42, 37, 35, 0.92);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .lightbox.open {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 16px 60px rgba(0,0,0,0.4);
+        }
+
         /* ─── SUPPLY SECTION ─── */
         #supply {
             background: var(--charcoal);
@@ -361,6 +431,13 @@
             background: var(--white);
         }
 
+        .about-photo {
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 24px rgba(61, 54, 50, 0.08);
+        }
+
         .about-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -378,6 +455,26 @@
         .about-text p:first-of-type::first-line {
             color: var(--stone);
             font-weight: 500;
+        }
+
+        .about-text blockquote {
+            margin: 1.5rem 0 1.5rem 0;
+            padding: 1.25rem 1.5rem;
+            border-left: 3px solid var(--copper-light);
+            background: var(--cream);
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            font-size: 0.92rem;
+            color: var(--stone-light);
+            line-height: 1.85;
+        }
+
+        .about-text blockquote cite {
+            display: block;
+            margin-top: 0.75rem;
+            font-style: normal;
+            font-size: 0.82rem;
+            color: var(--stone-dim);
         }
 
         .about-timeline {
@@ -603,9 +700,11 @@
             <a href="#" class="nav-brand"><span>Terrestrial</span> Forms</a>
             <ul class="nav-links" id="navLinks">
                 <li><a href="#pottery">Pottery</a></li>
+                <li><a href="#gallery">Gallery</a></li>
                 <li><a href="#supply">Clay & Glazes</a></li>
                 <li><a href="#kilns">Kilns</a></li>
                 <li><a href="#about">About</a></li>
+                <li><a href="plum-tree-pottery.html">Plum Tree</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
             <button class="nav-toggle" id="navToggle" aria-label="Menu">
@@ -624,6 +723,9 @@
                 <span><span class="dot"></span>Since 1968</span>
                 <span><span class="dot"></span>(734) 878-0541</span>
             </div>
+            <div class="hero-image">
+                <img src="img/hero-overhead.jpg" alt="Overhead view of Jan Sadowski's functional stoneware — chargers, plates, bowls, and planters" loading="eager">
+            </div>
         </div>
     </section>
 
@@ -637,28 +739,51 @@
             </div>
             <div class="pottery-grid">
                 <div class="pottery-card">
-                    <div class="pottery-icon">🏺</div>
+                    <div class="pottery-icon">&#x1F3FA;</div>
                     <h3>Jars & Planters</h3>
                     <p>Stoneware jars and planters with rich copper-amber glazes and sculptural detail.</p>
                 </div>
                 <div class="pottery-card">
-                    <div class="pottery-icon">🍽</div>
+                    <div class="pottery-icon">&#x1F37D;</div>
                     <h3>Plates & Chargers</h3>
                     <p>Dinner plates, pie plates (11" wide), and chargers for everyday use and special occasions.</p>
                 </div>
                 <div class="pottery-card">
-                    <div class="pottery-icon">🫗</div>
+                    <div class="pottery-icon">&#x1FAD7;</div>
                     <h3>Pitchers & Bowls</h3>
                     <p>Generous pitchers and serving bowls. Silver-copper glazes with carved abstract linear decoration.</p>
                 </div>
                 <div class="pottery-card">
-                    <div class="pottery-icon">🍞</div>
+                    <div class="pottery-icon">&#x1F35E;</div>
                     <h3>Platters & Trays</h3>
                     <p>Large platters, 18 to 20 inches, and serving trays. Built to last — some in daily use for 50+ years.</p>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- GALLERY -->
+    <section id="gallery" style="background: var(--cream);">
+        <div class="container">
+            <div class="pottery-intro">
+                <p class="section-label">Gallery</p>
+                <h2 class="section-title">The Work</h2>
+            </div>
+            <div class="gallery-grid">
+                <img src="img/hero-overhead.jpg" alt="Jan Sadowski functional stoneware" loading="lazy" onclick="openLightbox(this)">
+                <img src="img/jan-in-studio.jpg" alt="Jan Sadowski in his studio" loading="lazy" onclick="openLightbox(this)">
+                <img src="img/jan-work-detail.jpg" alt="Detail of Jan Sadowski pottery" loading="lazy" onclick="openLightbox(this)">
+                <img src="img/pottery-fair.jpg" alt="Pottery display at art fair" loading="lazy" onclick="openLightbox(this)">
+                <img src="img/pottery-studio.jpg" alt="The studio" loading="lazy" onclick="openLightbox(this)">
+                <img src="img/pottery-jars.jpg" alt="Stoneware jars" loading="lazy" onclick="openLightbox(this)">
+            </div>
+        </div>
+    </section>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="">
+    </div>
 
     <!-- CLAY SUPPLY -->
     <section id="supply">
@@ -764,8 +889,13 @@
             <h2 class="section-title">60+ Years in Clay</h2>
             <div class="about-content">
                 <div class="about-text">
+                    <img class="about-photo" src="img/jan-in-studio.jpg" alt="Jan Sadowski in his studio surrounded by pottery">
                     <p>Jan Sadowski has been making pottery since the 1960s, when he took an art class from George Landino at Groves High School in Birmingham, Michigan. "He had this incredible, inspiring class," Sadowski recalls. "The class just clicked. Everyone went on to be a professional."</p>
                     <p>Landino introduced Sadowski to renowned potter John Glick of Farmington Hills. Sadowski worked alongside Glick for four years while attending Wayne State University studying art.</p>
+                    <blockquote>
+                        "Jan Sadowski came as a high school student, very advanced in potting, with a lot of personal ambition. He worked with me after school and on weekends. My intent with Jan was to teach him studio throwing so that I could have a certain amount of production from his output, along the lines of the Leach pottery in England. In two or three months he was able to reproduce my more simple shapes with excellent results, and I began to pay him for piecework.&nbsp;… He had an unusually long stay, and I think what held us together was mutual respect and a need being fulfilled at both ends."
+                        <cite>— John Glick, "Studio Management (Part Two)"</cite>
+                    </blockquote>
                     <p>After graduation, he joined the Birmingham Bloomfield Art Association, eventually becoming artist in residence and head of the ceramics department — a position he held for more than 20 years.</p>
                     <p>Now working from his home studio in Howell, Sadowski sells his functional stoneware at a few select art fairs in Michigan and teaches pottery at Oakland Community College in Royal Oak.</p>
                     <p>"If I go to somebody's home where they use mass-produced dinnerware, it doesn't feel comfortable. There's a familiarity, a connection, to a hand-crafted piece. You get attuned to it."</p>
@@ -872,6 +1002,21 @@
         // Close nav on link click
         links.querySelectorAll('a').forEach(a => {
             a.addEventListener('click', () => links.classList.remove('open'));
+        });
+
+        // Lightbox
+        function openLightbox(img) {
+            const lb = document.getElementById('lightbox');
+            document.getElementById('lightbox-img').src = img.src;
+            lb.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeLightbox();
         });
     </script>
 

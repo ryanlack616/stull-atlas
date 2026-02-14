@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plum Tree Pottery — John Glick &amp; Jan Sadowski</title>
+    <meta name="description" content="Plum Tree Pottery, Farmington Hills, Michigan — John Glick's studio where Jan Sadowski apprenticed from the early 1970s. Includes archival material from The Studio Potter.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --copper: #b5613c;
+            --copper-light: #d4845e;
+            --copper-dark: #8c4528;
+            --amber: #c9943e;
+            --amber-light: #e2b66a;
+            --cream: #f5efe6;
+            --cream-dark: #ebe3d6;
+            --stone: #3d3632;
+            --stone-light: #5a524c;
+            --stone-dim: #7a706a;
+            --charcoal: #2a2523;
+            --kiln-red: #a04030;
+            --sage: #7a8c6e;
+            --white: #fdfcfa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--stone);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ─── HEADER / NAV ─── */
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: var(--cream);
+            border-bottom: 1px solid var(--cream-dark);
+            transition: box-shadow 0.3s;
+        }
+
+        header.scrolled {
+            box-shadow: 0 2px 20px rgba(61, 54, 50, 0.08);
+        }
+
+        nav {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.3rem;
+            color: var(--stone);
+            text-decoration: none;
+            letter-spacing: 0.02em;
+        }
+
+        .nav-brand span { color: var(--copper); }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--stone-light);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--copper); }
+
+        .nav-links a.active {
+            color: var(--copper);
+            border-bottom: 2px solid var(--copper);
+            padding-bottom: 2px;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--stone);
+            margin: 5px 0;
+            transition: all 0.3s;
+        }
+
+        /* ─── PAGE CONTENT ─── */
+        .page-hero {
+            padding-top: 8rem;
+            padding-bottom: 3rem;
+            text-align: center;
+        }
+
+        .logo-mark {
+            max-width: 200px;
+            height: auto;
+            margin: 0 auto 2rem;
+            display: block;
+        }
+
+        .page-title {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(2rem, 4.5vw, 3.2rem);
+            font-weight: 400;
+            color: var(--stone);
+            line-height: 1.15;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title em {
+            color: var(--copper);
+            font-style: italic;
+        }
+
+        .page-sub {
+            font-size: 1.05rem;
+            color: var(--stone-dim);
+            font-weight: 300;
+            letter-spacing: 0.06em;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .divider {
+            width: 60px;
+            height: 2px;
+            background: var(--copper-light);
+            margin: 0 auto 3rem;
+            opacity: 0.6;
+        }
+
+        section {
+            padding: 3rem 0;
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--copper);
+            margin-bottom: 0.75rem;
+        }
+
+        .section-title {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 400;
+            color: var(--stone);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .prose {
+            max-width: 680px;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--stone-light);
+        }
+
+        .prose p {
+            margin-bottom: 1.25rem;
+        }
+
+        .prose strong {
+            color: var(--stone);
+            font-weight: 500;
+        }
+
+        .prose em {
+            color: var(--copper);
+        }
+
+        /* ─── QUOTE ─── */
+        .pull-quote {
+            border-left: 3px solid var(--copper-light);
+            padding: 1.5rem 2rem;
+            margin: 2.5rem 0;
+            background: var(--white);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .pull-quote p {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.15rem;
+            font-style: italic;
+            color: var(--stone);
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .pull-quote cite {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            font-style: normal;
+            color: var(--stone-dim);
+            letter-spacing: 0.04em;
+        }
+
+        /* ─── ARTICLE IMAGES ─── */
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+        }
+
+        .article-grid img {
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 2px 12px rgba(61, 54, 50, 0.08);
+        }
+
+        .article-grid img:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(61, 54, 50, 0.12);
+        }
+
+        .article-caption {
+            font-size: 0.8rem;
+            color: var(--stone-dim);
+            text-align: center;
+            margin-top: 0.75rem;
+            font-style: italic;
+        }
+
+        /* ─── PDF LINK ─── */
+        .pdf-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.75rem;
+            background: var(--white);
+            border: 1px solid var(--cream-dark);
+            border-radius: 8px;
+            color: var(--stone);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin: 1.5rem 0;
+        }
+
+        .pdf-link:hover {
+            border-color: var(--copper-light);
+            box-shadow: 0 4px 16px rgba(181, 97, 60, 0.1);
+            color: var(--copper);
+        }
+
+        .pdf-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .pdf-link small {
+            font-weight: 300;
+            color: var(--stone-dim);
+            display: block;
+            font-size: 0.75rem;
+        }
+
+        /* ─── GALLERY GRID ─── */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+
+        .gallery-grid img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .gallery-grid img:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 16px rgba(61, 54, 50, 0.12);
+        }
+
+        /* ─── LIGHTBOX ─── */
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(42, 37, 35, 0.92);
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .lightbox.open {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+        }
+
+        /* ─── BACK LINK ─── */
+        .back-section {
+            padding: 3rem 0 5rem;
+            text-align: center;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--copper);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--copper-dark);
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            background: var(--charcoal);
+            color: var(--cream-dark);
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        footer .footer-brand {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.1rem;
+            color: var(--cream);
+            margin-bottom: 0.5rem;
+        }
+
+        footer p {
+            font-size: 0.8rem;
+            color: var(--stone-dim);
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0; right: 0;
+                background: var(--cream);
+                padding: 1.5rem 2rem;
+                border-bottom: 1px solid var(--cream-dark);
+                gap: 1rem;
+            }
+            .nav-toggle { display: block; }
+
+            .logo-mark { max-width: 150px; }
+            .pull-quote { padding: 1rem 1.25rem; }
+            .article-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="header">
+        <nav>
+            <a href="index.html" class="nav-brand">Terrestrial <span>Forms</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#pottery">Pottery</a></li>
+                <li><a href="index.html#gallery">Gallery</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="plum-tree-pottery.html" class="active">Plum Tree</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="page-hero">
+        <div class="container">
+            <img src="img/plum-tree-pottery.svg" alt="Plum Tree Pottery" class="logo-mark">
+            <h1 class="page-title">Plum Tree <em>Pottery</em></h1>
+            <p class="page-sub">Farmington Hills, Michigan — The studio of John Glick, where Jan Sadowski apprenticed and developed his craft.</p>
+        </div>
+    </section>
+
+    <!-- JOHN GLICK -->
+    <section id="glick">
+        <div class="container">
+            <div class="divider"></div>
+            <p class="section-label">The Master Potter</p>
+            <h2 class="section-title">John Glick &amp; Plum Tree Pottery</h2>
+            <div class="prose">
+                <p><strong>John Parker Glick</strong> (1938–2017) was one of the most influential studio potters in American ceramics. He established <strong>Plum Tree Pottery</strong> in Farmington Hills, Michigan in 1964, shortly after completing his MFA at Cranbrook Academy of Art. For over five decades, Plum Tree was both a working production studio and a training ground for the next generation of potters.</p>
+                <p>Glick was known for his inventive approach to functional stoneware — layered glazes, bold geometric patterns, and forms that balanced utility with visual complexity. His work is held in numerous museum collections including the Smithsonian American Art Museum, the Detroit Institute of Arts, and the Victoria and Albert Museum in London.</p>
+                <p>Beyond his own output, Glick was devoted to the broader ceramics community. He wrote candidly about the practical realities of running a studio, contributed to <em>The Studio Potter</em> journal, and mentored dozens of young potters through apprenticeships at Plum Tree.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- GLICK'S WORK -->
+    <section id="work" style="background: var(--white);">
+        <div class="container">
+            <div class="divider"></div>
+            <p class="section-label">The Work</p>
+            <h2 class="section-title">Glick's Pottery</h2>
+            <div class="prose">
+                <p>Functional stoneware from Plum Tree Pottery — layered glazes, bold color, and forms that balanced utility with visual complexity.</p>
+            </div>
+            <div class="gallery-grid">
+                <img src="img/upscale-1.jpg" alt="John Glick pottery" loading="lazy" onclick="openLightbox(this)">
+                <img src="img/upscale-2.jpg" alt="John Glick pottery" loading="lazy" onclick="openLightbox(this)">
+                <img src="img/upscale-3.jpg" alt="John Glick pottery" loading="lazy" onclick="openLightbox(this)">
+                <img src="img/upscale-4.jpg" alt="John Glick pottery" loading="lazy" onclick="openLightbox(this)">
+                <img src="img/upscale-5.jpg" alt="John Glick pottery" loading="lazy" onclick="openLightbox(this)">
+                <img src="img/upscale-6.jpg" alt="John Glick pottery" loading="lazy" onclick="openLightbox(this)">
+                <img src="img/upscale-7.jpg" alt="John Glick pottery" loading="lazy" onclick="openLightbox(this)">
+                <img src="img/upscale-8.jpg" alt="John Glick pottery" loading="lazy" onclick="openLightbox(this)">
+            </div>
+        </div>
+    </section>
+
+    <!-- JAN'S APPRENTICESHIP -->
+    <section id="apprenticeship">
+        <div class="container">
+            <div class="divider"></div>
+            <p class="section-label">Apprenticeship</p>
+            <h2 class="section-title">Jan Sadowski at Plum Tree</h2>
+            <div class="prose">
+                <p>Jan Sadowski came to Plum Tree Pottery as a high school student in the early 1970s. Even at that age, Glick recognized in Jan an unusual degree of skill and personal ambition. Jan apprenticed at Plum Tree for approximately four years, absorbing the rhythms and standards of a working production pottery.</p>
+
+                <div class="pull-quote">
+                    <p>"Jan Sadowski came as a high school student, very advanced in potting, with a lot of personal ambition."</p>
+                    <cite>— John Glick, "Studio Management Part Two," <em>The Studio Potter</em>, Winter 1973–74</cite>
+                </div>
+
+                <p>The apprenticeship at Plum Tree shaped the sensibility Jan would bring to his own work at Terrestrial Forms. The experience of working alongside Glick — loading kilns, mixing glazes, throwing production ware — provided a foundation in both the technical and practical aspects of sustaining a pottery studio.</p>
+                <p>Glick's essay in <em>The Studio Potter</em> offers a rare window into the apprenticeship system he developed at Plum Tree, including how the arrangement worked economically and creatively for both the master potter and the apprentice.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ARCHIVAL MATERIAL -->
+    <section id="archive">
+        <div class="container">
+            <div class="divider"></div>
+            <p class="section-label">Archival Material</p>
+            <h2 class="section-title">From <em>The Studio Potter</em></h2>
+            <div class="prose">
+                <p>The following pages are from John Glick's article <strong>"Studio Management Part Two"</strong> published in <em>The Studio Potter</em>, Winter 1973–74. The article describes the apprenticeship system at Plum Tree Pottery and includes a direct mention of Jan Sadowski on page 4.</p>
+            </div>
+
+            <div class="article-grid">
+                <img src="img/glick-article-p2.jpg" alt="Studio Management Part Two — Page 2" onclick="openLightbox(this)">
+                <img src="img/glick-article-p3.jpg" alt="Studio Management Part Two — Page 3" onclick="openLightbox(this)">
+            </div>
+            <p class="article-caption">Pages from John Glick's article in The Studio Potter, Winter 1973–74</p>
+
+            <div class="article-grid">
+                <img src="img/glick-article-p5.jpg" alt="Studio Management Part Two — Page 5" onclick="openLightbox(this)">
+                <img src="img/glick-article-p8.jpg" alt="Studio Management Part Two — Page 8" onclick="openLightbox(this)">
+            </div>
+            <p class="article-caption">Studio photographs and continuation of Glick's essay on apprenticeship</p>
+
+            <a href="img/glick-studio-potter-article.pdf" class="pdf-link" target="_blank" rel="noopener">
+                <span class="pdf-icon">📄</span>
+                <span>
+                    Read the Full Article (PDF)
+                    <small>John Glick — "Studio Management Part Two" — The Studio Potter, Winter 1973–74</small>
+                </span>
+            </a>
+        </div>
+    </section>
+
+    <!-- BACK -->
+    <section class="back-section">
+        <a href="index.html" class="back-link">← Back to Terrestrial Forms</a>
+    </section>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="Enlarged view">
+    </div>
+
+    <footer>
+        <div class="container">
+            <p class="footer-brand">Terrestrial Forms</p>
+            <p>Jan Sadowski — Howell, Michigan</p>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll shadow
+        window.addEventListener('scroll', () => {
+            document.getElementById('header').classList.toggle('scrolled', window.scrollY > 10);
+        });
+
+        // Mobile nav
+        const toggle = document.getElementById('navToggle');
+        const links = document.getElementById('navLinks');
+        toggle.addEventListener('click', () => links.classList.toggle('open'));
+        links.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', () => links.classList.remove('open'));
+        });
+
+        // Lightbox
+        function openLightbox(img) {
+            const lb = document.getElementById('lightbox');
+            document.getElementById('lightbox-img').src = img.src;
+            lb.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+    </script>
+</body>
+</html>
