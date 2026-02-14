@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questions for Jan — Terrestrial Forms</title>
+    <meta name="description" content="55 questions for Jan Sadowski — about Groves High School, Plum Tree Pottery, John Glick, Pewabic, the Potters Market, and 60+ years in clay.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --copper: #b5613c;
+            --copper-light: #d4845e;
+            --copper-dark: #8c4528;
+            --amber: #c9943e;
+            --amber-light: #e2b66a;
+            --cream: #f5efe6;
+            --cream-dark: #ebe3d6;
+            --stone: #3d3632;
+            --stone-light: #5a524c;
+            --stone-dim: #7a706a;
+            --charcoal: #2a2523;
+            --kiln-red: #a04030;
+            --sage: #7a8c6e;
+            --white: #fdfcfa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--stone);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ─── HEADER / NAV ─── */
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: var(--cream);
+            transition: box-shadow 0.3s;
+        }
+        header.scrolled {
+            box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+        }
+        nav {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-brand {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.2rem;
+            color: var(--stone);
+            text-decoration: none;
+        }
+        .nav-brand span {
+            font-style: italic;
+            color: var(--copper);
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        .nav-links a {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--stone-dim);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--copper);
+        }
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        .nav-toggle span {
+            display: block;
+            width: 20px;
+            height: 2px;
+            background: var(--stone);
+            margin: 4px 0;
+            transition: all 0.3s;
+        }
+
+        /* ─── PAGE CONTENT ─── */
+        .page-hero {
+            padding-top: 7rem;
+            padding-bottom: 1rem;
+            text-align: center;
+        }
+
+        .page-title {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(2rem, 4.5vw, 3.2rem);
+            font-weight: 400;
+            color: var(--stone);
+            line-height: 1.15;
+            margin-bottom: 0.5rem;
+        }
+        .page-title em {
+            font-style: italic;
+            color: var(--copper);
+        }
+
+        .page-sub {
+            font-size: 0.95rem;
+            color: var(--stone-dim);
+            max-width: 540px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .intro {
+            max-width: 720px;
+            margin: 2rem auto 0;
+            padding: 2rem;
+            background: var(--white);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--stone-light);
+            line-height: 1.85;
+        }
+
+        /* ─── QUESTION SECTIONS ─── */
+        .q-section {
+            padding: 3rem 0 1rem;
+        }
+
+        .q-section:first-of-type {
+            padding-top: 2rem;
+        }
+
+        .divider {
+            width: 40px;
+            height: 2px;
+            background: var(--copper-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--copper);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(1.4rem, 3vw, 1.8rem);
+            font-weight: 400;
+            color: var(--stone);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .question-list {
+            list-style: none;
+            counter-reset: q-counter;
+        }
+
+        .question-list li {
+            counter-increment: q-counter;
+            position: relative;
+            padding: 1rem 0 1rem 2.5rem;
+            border-bottom: 1px solid var(--cream-dark);
+            font-size: 0.92rem;
+            color: var(--stone-light);
+            line-height: 1.75;
+        }
+
+        .question-list li:last-child {
+            border-bottom: none;
+        }
+
+        .question-list li::before {
+            content: counter(q-counter);
+            position: absolute;
+            left: 0;
+            top: 1rem;
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.1rem;
+            color: var(--copper-light);
+            font-weight: 400;
+            width: 1.8rem;
+            text-align: right;
+        }
+
+        .question-list li em {
+            color: var(--stone-dim);
+            font-style: italic;
+        }
+
+        /* ─── DOCUMENTS SECTION ─── */
+        .doc-list {
+            list-style: none;
+            padding: 0;
+        }
+        .doc-list li {
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--cream-dark);
+            font-size: 0.88rem;
+            color: var(--stone-light);
+            line-height: 1.6;
+        }
+        .doc-list li:last-child { border-bottom: none; }
+        .doc-list li::before {
+            content: "□ ";
+            color: var(--copper-light);
+        }
+
+        /* ─── BACK LINK ─── */
+        .back-section {
+            text-align: center;
+            padding: 3rem 0;
+        }
+        .back-link {
+            color: var(--copper);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: var(--charcoal);
+            color: var(--cream-dark);
+            font-size: 0.78rem;
+        }
+        footer .footer-brand {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0; right: 0;
+                background: var(--cream);
+                padding: 1rem 2rem;
+                gap: 0.8rem;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            }
+            .nav-toggle { display: block; }
+            .container { padding: 0 1.2rem; }
+            .question-list li { padding-left: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="header">
+        <nav>
+            <a href="index.html" class="nav-brand">Terrestrial <span>Forms</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#pottery">Pottery</a></li>
+                <li><a href="index.html#gallery">Gallery</a></li>
+                <li><a href="index.html#supply">Clay & Glazes</a></li>
+                <li><a href="index.html#kilns">Kilns</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="plum-tree-pottery.html">Plum Tree</a></li>
+                <li><a href="lineage.html">Lineage</a></li>
+                <li><a href="questions.html" class="active">Questions</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="page-hero">
+        <div class="container">
+            <h1 class="page-title">Questions for <em>Jan</em></h1>
+            <p class="page-sub">55 things we'd like to ask you &mdash; about the people, the places, and 60 years of making pots.</p>
+            <div class="intro">
+                <p>Jan, this page is a thank you. For your work, for what you've taught, for the people you've worked alongside. These questions came out of the research for this site &mdash; from reading John Glick's articles, from old magazine features, from conversations with the people who know you. We're asking because the answers matter, and because nobody else has written them down yet.</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+
+            <!-- 1. LANDINO & GROVES -->
+            <div class="q-section">
+                <div class="divider"></div>
+                <p class="section-label">The Beginning</p>
+                <h2 class="section-title">Landino &amp; Groves High School</h2>
+                <ol class="question-list">
+                    <li>What year did you start at Groves High School? What year did you first take Landino's class?</li>
+                    <li>The Detroit Design article quotes you saying "The class just clicked. Everyone went on to be a professional." Who else from that class became professionals? Can you name them?</li>
+                    <li>What was it about Landino's teaching style that was so transformative? What made his class different?</li>
+                    <li>Landino came from a family of 18 and taught for 42 years. Did you know about his personal background? What was he like as a person, not just a teacher?</li>
+                    <li>The article says "One day, Landino introduced Sadowski to John Glick." Tell me about that day. Where did you meet Glick? What was your first impression?</li>
+                    <li>Was it Landino's idea to send you to Glick, or did you ask? How did that introduction happen?</li>
+                </ol>
+            </div>
+
+            <!-- 2. PLUM TREE POTTERY & JOHN GLICK -->
+            <div class="q-section">
+                <div class="divider"></div>
+                <p class="section-label">Plum Tree Pottery</p>
+                <h2 class="section-title">John Glick &amp; the Apprenticeship</h2>
+                <ol class="question-list">
+                    <li>John Glick wrote about you by name in <em>The Studio Potter</em> (Winter 1973&ndash;74): "Jan Sadowski came as a high school student, very advanced in potting, with a lot of personal ambition." Did you know he wrote that? Do you have a copy of the article?</li>
+                    <li>What was your role at Plum Tree in those first days? What did Glick have you doing?</li>
+                    <li>Glick evolved his terminology for studio helpers from "apprentices" to "assistants" to "residents." What did he call you? How did he refer to your role?</li>
+                    <li>You worked alongside Glick for four years. What were the most important things he taught you &mdash; technically and philosophically?</li>
+                    <li>Were you doing your own work at Plum Tree, or exclusively assisting Glick?</li>
+                    <li>How did working at Plum Tree influence your own aesthetic? Your silver-copper platters with carved linear decoration &mdash; does any of that trace back to Glick's influence?</li>
+                    <li>Glick's Cranbrook teacher was Maija Grotell, the "Mother of American Ceramics." She didn't retire until 1966 and lived in Pontiac until 1973. Did you ever meet her? Did Glick ever take you to Cranbrook?</li>
+                    <li>There were other apprentices and assistants at Plum Tree over the decades. Did you know any of them? Did you stay in touch with Glick's later studio helpers?</li>
+                    <li>Brett Gray was John Glick's last resident (2010&ndash;2011). Did you know about that? Were you aware of how the program evolved after you?</li>
+                    <li>Glick also wrote "The Evolution of Mentorship" in 2008 and "Towards Humanism in Apprenticeship" in 1981. Were you consulted for either? Did he ever interview you about the early days?</li>
+                </ol>
+            </div>
+
+            <!-- 3. WAYNE STATE -->
+            <div class="q-section">
+                <div class="divider"></div>
+                <p class="section-label">University</p>
+                <h2 class="section-title">Wayne State</h2>
+                <ol class="question-list">
+                    <li>You and Glick both went to Wayne State &mdash; he got his BFA in 1960, you came later. Was that a coincidence or did he recommend it?</li>
+                    <li>Who were your professors at Wayne State? What years were you there?</li>
+                    <li>Were you attending Wayne State and working at Plum Tree simultaneously?</li>
+                    <li>What degree did you earn? BFA? BA in art?</li>
+                </ol>
+            </div>
+
+            <!-- 4. BBAA -->
+            <div class="q-section">
+                <div class="divider"></div>
+                <p class="section-label">The Art Center</p>
+                <h2 class="section-title">Birmingham Bloomfield Art Association</h2>
+                <ol class="question-list">
+                    <li>How did you first connect with the BBAA? Was it Glick or Landino who pointed you there, or did you find it yourself?</li>
+                    <li>The Detroit Design article says you started part-time and they "eventually made me artist in residence." Tell me about that progression. How long from part-time hire to artist in residence?</li>
+                    <li>You were head of the ceramics department for more than 20 years. How did the program change during your tenure?</li>
+                    <li>BBAA was founded in 1957. When you arrived, who was running the ceramics program before you?</li>
+                    <li>How many students came through your program? Did any become professional potters?</li>
+                    <li>What made you decide to leave?</li>
+                </ol>
+            </div>
+
+            <!-- 5. PEWABIC -->
+            <div class="q-section">
+                <div class="divider"></div>
+                <p class="section-label">Detroit History</p>
+                <h2 class="section-title">Pewabic Pottery</h2>
+                <ol class="question-list">
+                    <li>Ryan told me you helped clean out the upstairs at Pewabic Pottery. When was this &mdash; during the MSU era (1967&ndash;1981) or after the Pewabic Society took over in 1981?</li>
+                    <li>He said there were boxes of ceramics everywhere and you could buy them for $20 a box. Can you describe what was up there? How many pieces did you acquire?</li>
+                    <li>You got some 1950s-era pieces including ceramic matchbooks. Do you still have them? What else was in those boxes?</li>
+                    <li>How did you get the opportunity to be there? Who let you in? Did others know about this?</li>
+                    <li>Do you know what happened to the rest of the upstairs collection that wasn't bought?</li>
+                </ol>
+            </div>
+
+            <!-- 6. ANN ARBOR & SELLING -->
+            <div class="q-section">
+                <div class="divider"></div>
+                <p class="section-label">Art Fairs</p>
+                <h2 class="section-title">Ann Arbor Street Art Fair &amp; Selling Pottery</h2>
+                <ol class="question-list">
+                    <li>Ryan said you were part of the original Ann Arbor Street Art Fair and started exhibiting while working with Glick. The fair started in 1960 &mdash; how early were you involved?</li>
+                    <li>He said you could sell "a whole truck" of ceramics at the Art Fair. What was the peak era for sales? How much could you expect to bring in?</li>
+                    <li>The Ann Arbor fair started as Esther Rainville's idea during Bargain Days in 1960. Did you know her? Was there an old guard of potters at the fair?</li>
+                    <li>Were you part of any potters' guilds or co-ops? The Potters Guild was involved with the Ann Arbor fair from the very beginning.</li>
+                    <li>How has selling pottery at art fairs changed from the 1960s/70s to now?</li>
+                </ol>
+            </div>
+
+            <!-- 7. POTTERS MARKET & BLOSSER -->
+            <div class="q-section">
+                <div class="divider"></div>
+                <p class="section-label">The Market</p>
+                <h2 class="section-title">The Potters Market &amp; Charlie Blosser</h2>
+                <ol class="question-list">
+                    <li>You still exhibit at The Potters Market (you were there December 2025 as "SADO"). How long have you been doing it?</li>
+                    <li>Did you know Charlie Blosser personally? He started the Potters Market in 1975 in a church basement with "a couple of students" selling Christmas pottery. Were you one of those early participants?</li>
+                    <li>You also teach at OCC in Royal Oak &mdash; the program Blosser founded. What's it like to teach in the program he built?</li>
+                    <li>The market is now the largest pottery-only art fair in the US with 140+ artists and $400K+ in annual sales. What was it like in the early days?</li>
+                    <li>Do you know Bridget Blosser, who runs the market now after Charlie's death in 2014?</li>
+                </ol>
+            </div>
+
+            <!-- 8. THE CRAFT -->
+            <div class="q-section">
+                <div class="divider"></div>
+                <p class="section-label">The Work</p>
+                <h2 class="section-title">Craft &amp; Philosophy</h2>
+                <ol class="question-list">
+                    <li>"If I go to somebody's home where they use mass-produced dinnerware, it doesn't feel comfortable." Expand on that. What does handmade pottery bring to everyday life?</li>
+                    <li>You fire high &mdash; all your work is dishwasher-safe, microwave-safe, lead-free. Has your firing approach changed over the decades? Did Glick influence your decision to go high-fire?</li>
+                    <li>You have four kilns in Howell. What types? Gas? Electric? Wood?</li>
+                    <li>Your business is called "Terrestrial Forms." Where did that name come from?</li>
+                    <li>You work in hand-built and wheel-thrown pottery. What's your preference? How does the choice relate to the piece?</li>
+                </ol>
+            </div>
+
+            <!-- 9. BROADER NETWORK -->
+            <div class="q-section">
+                <div class="divider"></div>
+                <p class="section-label">The Community</p>
+                <h2 class="section-title">The Broader Network</h2>
+                <ol class="question-list">
+                    <li>Elizabeth Fields, the interior designer, was described as an avid collector of your work. Do you know her? Are there other notable collectors?</li>
+                    <li>Your work has appeared on eBay and Etsy resale markets. How do you feel about your pieces being resold?</li>
+                    <li>There's a whole generation of Michigan ceramics people &mdash; Susanne Stephenson at EMU, Tom Phardel at CCS. Do you know them? Were you part of a community?</li>
+                    <li>Michigan has this incredible ceramics lineage: Grotell at Cranbrook, Glick at Plum Tree, Pewabic's 120+ year history, the BBAA, OCC, the Potters Market. Are you aware of how unique this is nationally?</li>
+                </ol>
+            </div>
+
+            <!-- 10. LEGACY -->
+            <div class="q-section">
+                <div class="divider"></div>
+                <p class="section-label">Looking Back</p>
+                <h2 class="section-title">Oral History &amp; Legacy</h2>
+                <ol class="question-list">
+                    <li>Ryan considers capturing your oral history a priority. Much of what you know isn't documented anywhere online. Are you willing to do a formal recorded interview?</li>
+                    <li>Do you have any of Glick's work? Any Pewabic pieces from the boxes? Landino's early teaching materials? What physical artifacts survive?</li>
+                    <li>If you could tell the next generation of Michigan potters one thing about the way it used to be &mdash; what would you say?</li>
+                    <li>What's the piece you're proudest of making?</li>
+                    <li>Are you still making new work? Ryan mentioned you might not be making pots anymore, but you exhibited at Potters Market in December 2025.</li>
+                </ol>
+            </div>
+
+            <!-- DOCUMENTS -->
+            <div class="q-section">
+                <div class="divider"></div>
+                <p class="section-label">Reference</p>
+                <h2 class="section-title">Documents to Bring Up</h2>
+                <ul class="doc-list">
+                    <li><em>The Studio Potter</em>, Winter 1973&ndash;74 &mdash; Glick's "Studio Management Part 2" (mentions Jan by name)</li>
+                    <li>Detroit Design Magazine &mdash; "The Art of Baking" article (does he remember the interview?)</li>
+                    <li>Photos from Plum Tree Pottery website (plumtreepottery.com &mdash; still online as historical resource)</li>
+                    <li>The Potters Market history (church basement 1975 &rarr; largest pottery-only fair in US)</li>
+                    <li>Pewabic Pottery timeline (MSU era, the cleanup, what was upstairs)</li>
+                    <li>Maija Grotell photos from Cranbrook exhibitions &mdash; did Jan ever see her work in person?</li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- BACK -->
+    <section class="back-section">
+        <a href="index.html" class="back-link">&larr; Back to Terrestrial Forms</a>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p class="footer-brand">Terrestrial Forms</p>
+            <p>Thank you, Jan.</p>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            document.getElementById('header').classList.toggle('scrolled', window.scrollY > 10);
+        });
+        const toggle = document.getElementById('navToggle');
+        const links = document.getElementById('navLinks');
+        toggle.addEventListener('click', () => links.classList.toggle('open'));
+        links.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', () => links.classList.remove('open'));
+        });
+    </script>
+</body>
+</html>
