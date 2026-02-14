@@ -1,0 +1,3619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jan Sadowski — Ceramics Lineage</title>
+    <meta name="description" content="The connections, lineage, and oral history of Jan Sadowski — 60+ years in ceramics.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --bg: #07070c;
+            --bg-panel: #0d0d14;
+            --bg-card: #12121a;
+            --text: #e8e8f0;
+            --text-dim: #666677;
+            --text-mid: #888899;
+            --accent: #818cf8;
+            --accent-dim: #5b64c4;
+            --amber: #fbbf24;
+            --rose: #fb7185;
+            --emerald: #34d399;
+            --cyan: #22d3ee;
+            --border: #1e1e2e;
+            --border-light: #2a2a3a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* ─── GRAPH CANVAS ─── */
+        #graph-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+        }
+
+        svg { width: 100%; height: 100%; }
+
+        /* ─── HEADER ─── */
+        .header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 1.5rem 2rem;
+            background: linear-gradient(to bottom, var(--bg) 60%, transparent);
+            pointer-events: none;
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            pointer-events: auto;
+        }
+
+        .header h1 span {
+            color: var(--accent);
+        }
+
+        .header .subtitle {
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            margin-top: 0.3rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* ─── SEARCH ─── */
+        .search-container {
+            position: fixed;
+            top: 1.5rem;
+            right: 2rem;
+            z-index: 200;
+        }
+
+        #search-input {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            padding: 0.6rem 1rem 0.6rem 2.2rem;
+            width: 240px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        #search-input:focus {
+            border-color: var(--accent);
+        }
+
+        #search-input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.7rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 4px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            max-height: 300px;
+            overflow-y: auto;
+            width: 280px;
+            display: none;
+        }
+
+        .search-results.active { display: block; }
+
+        .search-result-item {
+            padding: 0.6rem 1rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+
+        .search-result-item:hover {
+            background: rgba(129, 140, 248, 0.1);
+        }
+
+        .search-result-item .type {
+            color: var(--text-dim);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        /* ─── DETAIL PANEL ─── */
+        .detail-panel {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 420px;
+            height: 100vh;
+            background: var(--bg-panel);
+            border-left: 1px solid var(--border);
+            z-index: 300;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            padding: 2rem;
+        }
+
+        .detail-panel.open {
+            right: 0;
+        }
+
+        .detail-panel .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 1.2rem;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .detail-panel .close-btn:hover {
+            color: var(--text);
+        }
+
+        .detail-panel .node-type {
+            color: var(--accent);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-panel h2 {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+        }
+
+        .detail-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-section h3 {
+            color: var(--accent);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-section ul {
+            list-style: none;
+        }
+
+        .detail-section li {
+            font-size: 0.75rem;
+            color: var(--text-mid);
+            line-height: 1.6;
+            padding: 0.2rem 0;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .detail-section li::before {
+            content: '›';
+            position: absolute;
+            left: 0;
+            color: var(--accent-dim);
+        }
+
+        .detail-section li.quote {
+            font-style: italic;
+            color: var(--amber);
+            padding-left: 1.2rem;
+            border-left: 2px solid var(--amber);
+            margin: 0.5rem 0;
+        }
+
+        .detail-section li.quote::before {
+            content: none;
+        }
+
+        .connection-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.5rem 0.7rem;
+            margin: 0.3rem 0;
+            background: var(--bg-card);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s;
+            font-size: 0.75rem;
+        }
+
+        .connection-item:hover {
+            background: rgba(129, 140, 248, 0.15);
+        }
+
+        .connection-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .connection-relation {
+            color: var(--text-dim);
+            font-size: 0.65rem;
+        }
+
+        /* ─── TIMELINE PANEL ─── */
+        .timeline-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: linear-gradient(to top, var(--bg) 70%, transparent);
+            padding: 1rem 2rem 1.5rem;
+            pointer-events: none;
+        }
+
+        .timeline-track {
+            display: flex;
+            align-items: flex-end;
+            gap: 0;
+            height: 60px;
+            pointer-events: auto;
+            position: relative;
+        }
+
+        .timeline-era {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .timeline-era .bar {
+            width: 3px;
+            background: var(--accent-dim);
+            border-radius: 2px 2px 0 0;
+            opacity: 0.5;
+            transition: all 0.2s;
+        }
+
+        .timeline-era:hover .bar {
+            opacity: 1;
+            background: var(--accent);
+        }
+
+        .timeline-era .label {
+            font-size: 0.55rem;
+            color: var(--text-dim);
+            margin-top: 0.3rem;
+            white-space: nowrap;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            max-height: 60px;
+            overflow: hidden;
+        }
+
+        .timeline-era:hover .label {
+            color: var(--text);
+        }
+
+        .timeline-title {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* ─── LEGEND ─── */
+        .legend {
+            position: fixed;
+            bottom: 6rem;
+            left: 2rem;
+            z-index: 100;
+            background: rgba(13, 13, 20, 0.9);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .legend h4 {
+            font-size: 0.6rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.6rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.65rem;
+            color: var(--text-mid);
+            margin: 0.3rem 0;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* ─── CONTROLS ─── */
+        .controls {
+            position: fixed;
+            bottom: 6rem;
+            right: 2rem;
+            z-index: 100;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .ctrl-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.5rem 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ctrl-btn:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
+        .ctrl-btn.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(129, 140, 248, 0.1);
+        }
+
+        /* ─── TOOLTIP ─── */
+        .tooltip {
+            position: fixed;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            padding: 0.5rem 0.8rem;
+            font-size: 0.7rem;
+            color: var(--text);
+            pointer-events: none;
+            z-index: 500;
+            opacity: 0;
+            transition: opacity 0.15s;
+            max-width: 250px;
+        }
+
+        .tooltip.visible { opacity: 1; }
+
+        .tooltip .tt-type {
+            color: var(--text-dim);
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        /* ─── SCROLLBAR ─── */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); }
+
+        /* ─── LINK LABELS ─── */
+        .link-label {
+            font-family: 'JetBrains Mono', monospace;
+            fill: var(--text-dim);
+            font-size: 8px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .link-label.visible { opacity: 0.7; }
+
+        /* ─── LANDING SCREEN ─── */
+        .landing-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--bg);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1.5s ease;
+            cursor: pointer;
+        }
+
+        .landing-overlay.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .landing-quote {
+            max-width: 680px;
+            text-align: center;
+            padding: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: quote-appear 1.2s ease forwards;
+            animation-delay: 0.5s;
+        }
+
+        .landing-quote blockquote {
+            font-size: 1.6rem;
+            font-weight: 300;
+            line-height: 1.6;
+            color: var(--text);
+            letter-spacing: 0.02em;
+            margin-bottom: 1.5rem;
+        }
+
+        .landing-quote .attribution {
+            font-size: 0.85rem;
+            color: var(--accent);
+            letter-spacing: 0.08em;
+        }
+
+        .landing-hint {
+            position: absolute;
+            bottom: 3rem;
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: hint-appear 0.8s ease forwards;
+            animation-delay: 2.5s;
+        }
+
+        @keyframes quote-appear {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes hint-appear {
+            to { opacity: 0.6; }
+        }
+
+        /* ─── LINK STORY TOOLTIP ─── */
+        .link-tooltip {
+            position: fixed;
+            background: var(--bg-panel);
+            border: 1px solid var(--accent-dim);
+            border-radius: 6px;
+            padding: 0.7rem 1rem;
+            font-size: 0.72rem;
+            color: var(--text);
+            line-height: 1.5;
+            pointer-events: none;
+            z-index: 500;
+            opacity: 0;
+            transition: opacity 0.2s;
+            max-width: 320px;
+            font-style: italic;
+        }
+
+        .link-tooltip.visible { opacity: 1; }
+
+        .link-tooltip .lt-relation {
+            font-style: normal;
+            font-size: 0.6rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 0.4rem;
+        }
+
+        /* ─── GEOGRAPHIC MODE ─── */
+        .geo-hint {
+            position: fixed;
+            bottom: 8rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .geo-hint.visible { opacity: 0.7; }
+
+        /* ─── TIME SCRUB ─── */
+        .time-scrub-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0; right: 0;
+            z-index: 100;
+            background: linear-gradient(to top, var(--bg) 70%, transparent);
+            padding: 0.8rem 2rem 1.2rem;
+        }
+
+        .time-scrub-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .time-scrub-label {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            min-width: 30px;
+        }
+
+        .time-scrub-year {
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-weight: 500;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        #time-scrub {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 3px;
+            background: var(--border-light);
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        #time-scrub::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 2px solid var(--bg);
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(129, 140, 248, 0.4);
+        }
+
+        #time-scrub::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 2px solid var(--bg);
+            cursor: pointer;
+        }
+
+        /* ─── LINEAGE WALK ─── */
+        .trace-btn {
+            display: inline-block;
+            background: rgba(129, 140, 248, 0.1);
+            border: 1px solid var(--accent-dim);
+            border-radius: 4px;
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+            letter-spacing: 0.05em;
+        }
+
+        .trace-btn:hover {
+            background: rgba(129, 140, 248, 0.2);
+            border-color: var(--accent);
+        }
+
+        .lineage-step {
+            position: fixed;
+            bottom: 12rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-panel);
+            border: 1px solid var(--accent-dim);
+            border-radius: 8px;
+            padding: 1.2rem 2rem;
+            text-align: center;
+            z-index: 400;
+            max-width: 500px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+
+        .lineage-step.visible { opacity: 1; }
+
+        .lineage-step .step-names {
+            font-size: 0.85rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.04em;
+        }
+
+        .lineage-step .step-arrow {
+            color: var(--accent);
+            margin: 0 0.5rem;
+        }
+
+        .lineage-step .step-story {
+            font-size: 0.75rem;
+            color: var(--text-mid);
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        /* ─── REDESIGNED DETAIL PANEL ─── */
+        .panel-hero-quote {
+            font-size: 1.3rem;
+            font-weight: 300;
+            line-height: 1.5;
+            color: var(--amber);
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-story {
+            font-size: 0.8rem;
+            color: var(--text-mid);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-vtimeline {
+            position: relative;
+            padding-left: 1.2rem;
+            border-left: 2px solid var(--border-light);
+        }
+
+        .panel-vtimeline .vt-entry {
+            position: relative;
+            padding-bottom: 0.8rem;
+            font-size: 0.72rem;
+            color: var(--text-mid);
+            line-height: 1.4;
+        }
+
+        .panel-vtimeline .vt-entry::before {
+            content: '';
+            position: absolute;
+            left: -1.45rem;
+            top: 0.3rem;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-dim);
+            border: 2px solid var(--bg-panel);
+        }
+
+        .panel-vtimeline .vt-year {
+            color: var(--accent);
+            font-weight: 500;
+            display: block;
+            margin-bottom: 0.1rem;
+        }
+
+        .panel-mini-graph {
+            width: 100%;
+            height: 180px;
+            background: var(--bg-card);
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .panel-sources h3 {
+            color: var(--text-dim) !important;
+            font-size: 0.6rem !important;
+            letter-spacing: 0.12em;
+        }
+
+        /* ─── STATURE BADGES ─── */
+        .stature-badge {
+            display: inline-block;
+            font-size: 0.55rem;
+            padding: 0.15rem 0.45rem;
+            border-radius: 3px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            vertical-align: middle;
+        }
+        .stature-5 { background: rgba(129,140,248,0.2); color: #818cf8; border: 1px solid rgba(129,140,248,0.3); }
+        .stature-4 { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.2); }
+        .stature-3 { background: rgba(52,211,153,0.15); color: #34d399; border: 1px solid rgba(52,211,153,0.2); }
+        .stature-2 { background: rgba(34,211,238,0.15); color: #22d3ee; border: 1px solid rgba(34,211,238,0.2); }
+        .stature-1 { background: rgba(136,136,153,0.15); color: #888899; border: 1px solid rgba(136,136,153,0.2); }
+        .stature-0 { background: rgba(102,102,119,0.1); color: #666677; border: 1px solid rgba(102,102,119,0.2); }
+
+        .role-tag {
+            display: inline-block;
+            font-size: 0.55rem;
+            padding: 0.12rem 0.4rem;
+            border-radius: 3px;
+            letter-spacing: 0.04em;
+            margin: 0.1rem 0.15rem 0.1rem 0;
+            background: rgba(136,136,153,0.1);
+            color: var(--text-mid);
+            border: 1px solid var(--border);
+        }
+
+        .era-tag {
+            display: inline-block;
+            font-size: 0.55rem;
+            padding: 0.12rem 0.4rem;
+            border-radius: 3px;
+            margin: 0.1rem 0.15rem 0.1rem 0;
+        }
+        .era-founding { background: rgba(34,211,238,0.1); color: #22d3ee; border: 1px solid rgba(34,211,238,0.15); }
+        .era-movement { background: rgba(251,191,36,0.1); color: #fbbf24; border: 1px solid rgba(251,191,36,0.15); }
+        .era-living   { background: rgba(52,211,153,0.1); color: #34d399; border: 1px solid rgba(52,211,153,0.15); }
+
+        .doc-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.62rem;
+            color: var(--text-dim);
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .doc-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+        }
+        .doc-filled { background: var(--accent); }
+        .doc-empty  { background: var(--border-light); }
+
+        /* ─── FILTER BAR ─── */
+        .filter-bar {
+            position: fixed;
+            top: 4.5rem;
+            left: 2rem;
+            z-index: 100;
+            display: flex;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+            max-width: 700px;
+            align-items: center;
+        }
+        .filter-pill {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.58rem;
+            padding: 0.25rem 0.55rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.04em;
+        }
+        .filter-pill:hover {
+            border-color: var(--accent-dim);
+            color: var(--text-mid);
+        }
+        .filter-pill.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(129,140,248,0.1);
+        }
+        .filter-divider {
+            width: 1px; height: 18px;
+            background: var(--border);
+            margin: 0 0.2rem;
+        }
+        .filter-label {
+            font-size: 0.5rem;
+            color: var(--text-dim);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-right: 0.15rem;
+        }
+
+        /* ─── HEAT MAP TOGGLE ─── */
+        .heat-mode-label {
+            position: fixed;
+            top: 1.6rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 150;
+            font-size: 0.6rem;
+            color: var(--accent);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .heat-mode-label.visible { opacity: 1; }
+
+        /* ─── GAPS DASHBOARD ─── */
+        .gaps-panel {
+            position: fixed;
+            top: 0;
+            left: -340px;
+            width: 340px;
+            height: 100vh;
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            z-index: 300;
+            overflow-y: auto;
+            transition: left 0.3s ease;
+            padding: 2rem 1.5rem;
+        }
+        .gaps-panel.open { left: 0; }
+        .gaps-panel h3 {
+            font-size: 0.7rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.3rem;
+        }
+        .gaps-panel .gaps-subtitle {
+            font-size: 0.62rem;
+            color: var(--text-dim);
+            margin-bottom: 1.2rem;
+            line-height: 1.5;
+        }
+        .gaps-panel .close-gaps {
+            position: absolute;
+            top: 1rem; right: 1rem;
+            background: none; border: none;
+            color: var(--text-dim);
+            font-size: 1.2rem;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .gaps-panel .close-gaps:hover { color: var(--text); }
+        .gap-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.55rem 0.6rem;
+            margin: 0.2rem 0;
+            background: var(--bg-card);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s;
+            font-size: 0.7rem;
+        }
+        .gap-item:hover { background: rgba(129,140,248,0.12); }
+        .gap-item .gap-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .gap-item .gap-name { color: var(--text); flex: 1; }
+        .gap-item .gap-meta {
+            font-size: 0.55rem;
+            color: var(--text-dim);
+            text-align: right;
+            white-space: nowrap;
+        }
+        .gap-section-label {
+            font-size: 0.55rem;
+            color: var(--text-dim);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 1rem;
+            margin-bottom: 0.4rem;
+            padding-bottom: 0.3rem;
+            border-bottom: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Landing Screen -->
+<div id="landing-overlay" class="landing-overlay">
+    <div class="landing-quote"></div>
+    <div class="landing-hint">click anywhere or press any key</div>
+</div>
+
+<!-- Header -->
+<div class="header">
+    <h1><span>Jan Sadowski</span> — Ceramics Lineage</h1>
+    <div class="subtitle">60+ years of connections · click nodes to explore · drag to rearrange</div>
+</div>
+
+<!-- Search -->
+<div class="search-container">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="search-input" placeholder="search people, places..." autocomplete="off">
+    <div class="search-results" id="search-results"></div>
+</div>
+
+<!-- Graph -->
+<div id="graph-container"></div>
+
+<!-- Detail Panel -->
+<div class="detail-panel" id="detail-panel">
+    <button class="close-btn" id="close-panel">×</button>
+    <div id="panel-content"></div>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+    <h4>Node Types</h4>
+    <div class="legend-item"><div class="legend-dot" style="background: #818cf8"></div> Person</div>
+    <div class="legend-item"><div class="legend-dot" style="background: #fbbf24"></div> Organization</div>
+    <div class="legend-item"><div class="legend-dot" style="background: #34d399"></div> Place / School</div>
+    <div class="legend-item"><div class="legend-dot" style="background: #fb7185"></div> Event / Fair</div>
+    <div class="legend-item"><div class="legend-dot" style="background: #22d3ee"></div> Historical Site</div>
+    <div class="legend-item"><div class="legend-dot" style="background: #a78bfa"></div> Studio / Location</div>
+</div>
+
+<!-- Controls -->
+<div class="controls">
+    <button class="ctrl-btn" id="btn-geo" title="Toggle geographic view">map</button>
+    <button class="ctrl-btn" id="btn-labels" title="Toggle edge labels">labels</button>
+    <button class="ctrl-btn" id="btn-center" title="Re-center on Jan">center</button>
+    <button class="ctrl-btn" id="btn-expand" title="Expand all">expand</button>
+    <button class="ctrl-btn" id="btn-heat" title="Cycle heat map: type → stature → centrality → documented">heat</button>
+    <button class="ctrl-btn" id="btn-gaps" title="Show documentation gaps">gaps</button>
+</div>
+
+<!-- Heat mode indicator -->
+<div class="heat-mode-label" id="heat-mode-label"></div>
+
+<!-- Gaps Dashboard -->
+<div class="gaps-panel" id="gaps-panel">
+    <button class="close-gaps" id="close-gaps">×</button>
+    <h3>Documentation Gaps</h3>
+    <div class="gaps-subtitle">Nodes with documented&nbsp;&lt;&nbsp;2, sorted by stature. These are the people and places we need to know more about.</div>
+    <div id="gaps-list"></div>
+</div>
+
+<!-- Filter Bar -->
+<div class="filter-bar" id="filter-bar">
+    <span class="filter-label">era</span>
+    <button class="filter-pill" data-filter="era" data-value="founding">founding</button>
+    <button class="filter-pill" data-filter="era" data-value="movement">movement</button>
+    <button class="filter-pill" data-filter="era" data-value="living">living</button>
+    <div class="filter-divider"></div>
+    <span class="filter-label">role</span>
+    <button class="filter-pill" data-filter="role" data-value="maker">maker</button>
+    <button class="filter-pill" data-filter="role" data-value="teacher">teacher</button>
+    <button class="filter-pill" data-filter="role" data-value="builder">builder</button>
+    <button class="filter-pill" data-filter="role" data-value="writer">writer</button>
+    <button class="filter-pill" data-filter="role" data-value="connector">connector</button>
+    <div class="filter-divider"></div>
+    <span class="filter-label">tier</span>
+    <button class="filter-pill" data-filter="stature" data-value="5">foundational</button>
+    <button class="filter-pill" data-filter="stature" data-value="4">major</button>
+    <button class="filter-pill" data-filter="stature" data-value="3">pillar</button>
+    <button class="filter-pill" data-filter="stature" data-value="2">builder</button>
+    <button class="filter-pill" data-filter="stature" data-value="1">community</button>
+    <button class="filter-pill" data-filter="stature" data-value="0">adjacent</button>
+</div>
+
+<!-- Time Scrub -->
+<div class="time-scrub-panel">
+    <div class="time-scrub-container">
+        <div class="time-scrub-label">Era</div>
+        <input type="range" id="time-scrub" min="1900" max="2026" value="2026" step="1">
+        <div class="time-scrub-year" id="time-scrub-year">2026</div>
+    </div>
+</div>
+
+<!-- Geo Hint -->
+<div class="geo-hint" id="geo-hint">Southeast Michigan · approximate positions</div>
+
+<!-- Lineage Step Display -->
+<div class="lineage-step" id="lineage-step"></div>
+
+<!-- Tooltip -->
+<div class="tooltip" id="tooltip"></div>
+
+<!-- Link Story Tooltip -->
+<div class="link-tooltip" id="link-tooltip"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA — All from knowledge graph, embedded for offline use
+// ═══════════════════════════════════════════════════════════
+
+const NODES = [
+    {
+        id: 'jan-sadowski',
+        name: 'Jan Sadowski',
+        type: 'person',
+        primary: true,
+        bio: 'Potter based in Howell, MI. Operates Terrestrial Forms pottery business. 60+ years in Michigan ceramics.',
+        observations: [
+            'Started ceramics in 1960s at Groves High School under George Landino',
+            'Worked alongside John Glick at Plum Tree Pottery for four years',
+            'Attended Wayne State University studying art',
+            'Head of ceramics at Birmingham Bloomfield Art Association for 20+ years',
+            'High-fired functional stoneware — chargers, trays, jars, planters, pie plates, platters, pitchers, bowls',
+            'Four kilns at his Howell home studio',
+            'All pottery is high-fired, dishwasher-safe, microwave-safe, lead-free',
+            'Exhibits at The Potters Market (artist code SADO)',
+            'Was part of the original Ann Arbor Street Art Fair while working with Glick',
+            'Helped clean out the upstairs at Pewabic Pottery during transition era — boxes for $20',
+            'Owns 1950s-era Pewabic pieces including ceramic matchbooks',
+            'No longer actively making pots as of ~2025-2026'
+        ],
+        quotes: [
+            '"He had this incredible, inspiring class. The class just clicked. Everyone went on to be a professional." — on George Landino\'s class',
+            '"I\'m still using dinner plates I made 39 years ago"',
+            '"Of course, handmade pies should be served on handmade plates"',
+            '"If I go to somebody\'s home where they use mass-produced dinnerware, it doesn\'t feel comfortable."',
+            '"You get attuned to it."'
+        ],
+        timeline: [
+            { year: '~1962', event: 'Groves HS — discovers clay under George Landino' },
+            { year: '~1964-68', event: 'Plum Tree Pottery — works alongside John Glick (4 years)' },
+            { year: '~1964+', event: 'Begins showing at Ann Arbor Street Art Fair' },
+            { year: '~1968-72', event: 'Wayne State University — BFA in art' },
+            { year: '~1972', event: 'Part-time position at BBAA, becomes artist in residence' },
+            { year: '~1972-95', event: 'Head of Ceramics at Birmingham Bloomfield Art Association (20+ years)' },
+            { year: '~1975+', event: 'Exhibits at The Potters Market (from its founding)' },
+            { year: '~1981', event: 'Helps clean out Pewabic Pottery during MSU transition' },
+            { year: '~1995+', event: 'Terrestrial Forms — full-time studio in Howell, MI' },
+            { year: '2013', event: 'Profiled in Detroit Design Magazine — "The Art of Baking"' },
+            { year: '2025', event: 'Still exhibiting at Potters Market (48th annual)' }
+        ],
+        sources: [
+            { label: 'Detroit Design Magazine — "The Art of Baking"', url: 'https://detroitdesignmag.com/accents/the-art-of-baking/' },
+            { label: 'The Potters Market 2025 Listing', url: 'https://www.thepottersmarket.com' },
+            { label: 'The Guild — Artist Page', url: 'https://theguild.org/artist/jan-sadowski/' },
+            { label: 'John Glick, "Studio Management Part 2" (The Studio Potter, Winter 1973-74) — mentions Jan by name', url: null }
+        ],
+        contact: 'terrforms@yahoo.com'
+    },
+    {
+        id: 'john-glick',
+        name: 'John Glick',
+        type: 'person',
+        bio: 'Renowned potter, founder of Plum Tree Pottery in Farmington Hills (1964-2016). One of the most important functional potters of his generation.',
+        observations: [
+            'Born July 1, 1938 Detroit, Michigan. Died April 6, 2017',
+            'BFA Wayne State University 1960',
+            'MFA Cranbrook Academy of Art 1962 — studied under Maija Grotell',
+            'US Army 1962-1964 (stationed near Höhr-Grenzhausen, Germany — observed traditional apprenticeship)',
+            'Founded Plum Tree Pottery 1964',
+            '35 artists-in-residence over 50 years — first named: Rostislav Eismont (1972-73), last: Julia Walther (2012-14)',
+            'Jan Sadowski was one of his early mentees (1960s)',
+            'Brett Gray was one of his last residents (2010-2011)',
+            'Made approximately 300,000 pieces over career',
+            'Self-described Abstract Expressionist — influenced by Helen Frankenthaler and Kanjiro Kawai',
+            'Cranbrook retrospective: "John Glick: A Legacy in Clay" (2016) — 278 pieces from private collection of 1,000',
+            'BBAC retrospective: "Looking Back/Making Now 43 Years in Clay" (2006)',
+            'Wrote about Jan Sadowski in Studio Potter (1973-74): "Jan Sadowski came as a high school student, very advanced in potting, with a lot of personal ambition."',
+            'Work in Smithsonian, DIA, LACMA, Museum of Arts and Design, Yale, and 20+ collections',
+            'Louis Comfort Tiffany Grant (1961, 1972-73), NEA grants (1974, 1977, 1988, 1990)',
+            'American Craft Council Fellow (2001), Governor\'s Michigan Artist Award (2001)',
+            'Published 16 articles (1973-2008) — Studio Potter, Ceramics Monthly, Ceramic Review',
+            'Sold Plum Tree, moved to Walnut Creek CA. Wife: Susie Symons'
+        ]
+    },
+    {
+        id: 'maija-grotell',
+        name: 'Maija Grotell',
+        type: 'person',
+        bio: 'The "Mother of American Ceramics" (1899–1973). Head of Cranbrook ceramics 1938–1966. Her students shaped three art movements.',
+        observations: [
+            'Born 1899 Helsinki, Finland. Died 1973 Pontiac, Michigan',
+            'Trained at Central School of Arts and Crafts in Helsinki under A.W. Finch',
+            'Emigrated to US 1927. Studied at Alfred University under Charles Binns (the father of American ceramics education)',
+            'Taught at Rutgers 1936–38 before Eliel Saarinen invited her to Cranbrook',
+            'Head of Cranbrook Ceramics 1938–1966 — transformed it from informal wheel-throwing to a powerhouse',
+            'The "Big Four" students: DeVore, Takaezu, Glick, Kottler. Also Littleton (glass), Jeff Schlanger, Bill Hunt',
+            'Colleagues on campus: Carl Milles (sculpture), Charles Eames (design), Bertoia (metal)',
+            'Pioneer in copper-red reduction glazes, ash glazes, "Leopard Skin" technique',
+            'Charles Fergus Binns Medal (1961) — the highest honor in American ceramics',
+            'Her teaching philosophy: push students toward individual expression, not imitation',
+            'Grotell\'s lineage: she taught Littleton, who founded studio glass; she taught Glick, who mentored Jan',
+            'Takaezu closed the vessel form because Grotell told her: "Tosh, you must find your own way"',
+            'Work in Met, Art Institute of Chicago, Smithsonian, Cleveland Museum, Yale, Cranbrook Art Museum',
+            'Every node in this graph traces back to her. She is the gravitational center of Michigan ceramics.'
+        ]
+    },
+    {
+        id: 'george-landino',
+        name: 'George Landino',
+        type: 'person',
+        bio: 'Art teacher at Groves High School in Birmingham. Jan\'s first ceramics teacher.',
+        observations: [
+            'Taught at Groves High School in Birmingham, Michigan',
+            'Grew up in a family of 18',
+            'Practicing clay artist, based in Orchard Lake MI',
+            'Did Plymouth Art in the Park for 26+ years',
+            'Ann Arbor Art Fair exhibitor - booth C268 (1998)',
+            'Introduced Jan Sadowski to John Glick — the bridge between them',
+            '1964: Birmingham Eccentric featured his ceramic chess set demonstration'
+        ]
+    },
+    {
+        id: 'brett-gray',
+        name: 'Brett Gray',
+        type: 'person',
+        bio: 'One of John Glick\'s last studio residents (2010-2011). Came from College for Creative Studies.',
+        observations: [
+            'One of Glick\'s final residents at Plum Tree Pottery',
+            'Came from College for Creative Studies (CCS) in Detroit',
+            'Focused on surface treatments and functional vessel forms',
+            'Glick praised his "amazing ability to make great decorative marks"',
+            'Bookends the Glick lineage with Sadowski — first and last'
+        ]
+    },
+    {
+        id: 'ryan',
+        name: 'Ryan',
+        type: 'person',
+        bio: 'Friend and community member. Connecting the dots in this lineage.',
+        observations: [
+            'Friends with Jan Sadowski for years',
+            'Knows Brett Gray',
+            'Connected to Henry Crissman and Detroit ceramics community',
+            'Building this documented record of Michigan ceramics oral history'
+        ]
+    },
+    {
+        id: 'dr-charlie-blosser',
+        name: 'Dr. Charlie Blosser',
+        type: 'person',
+        bio: 'PhD, OCC Royal Oak ceramics instructor. Founded The Potters Market in 1975.',
+        observations: [
+            'Founded the Potters Market in 1975 as an OCC class sale in a church basement',
+            'Taught ceramics at Oakland Community College, Royal Oak campus',
+            'Died 2014 at age 82',
+            'Wife Bridget took over Potters Market management'
+        ]
+    },
+    {
+        id: 'bridget-blosser',
+        name: 'Bridget Blosser',
+        type: 'person',
+        bio: 'Wife of Charlie Blosser. Manages The Potters Market.',
+        observations: [
+            'Took over management of the Potters Market after Charlie\'s death in 2014'
+        ]
+    },
+    // ─── Organizations ───
+    {
+        id: 'bbaa',
+        name: 'Birmingham Bloomfield Art Association',
+        type: 'organization',
+        bio: 'Non-profit arts center in Birmingham, MI. Jan was head of ceramics for 20+ years.',
+        observations: [
+            'Also known as BBAC (Birmingham Bloomfield Art Center)',
+            'Non-profit established in 1957',
+            'Located in Birmingham, Michigan',
+            'Jan started part-time, became artist in residence, then head of ceramics',
+            'bbartcenter.org'
+        ]
+    },
+    {
+        id: 'potters-market',
+        name: 'The Potters Market',
+        type: 'organization',
+        bio: 'Largest pottery-only art fair in the United States. Founded 1975.',
+        observations: [
+            'Started 1975 as OCC class sale in a church basement',
+            'Now held at Southfield Pavilion — 17,000 sq ft, 100-140+ artists',
+            'Annual sales ~$400,000-$459,000',
+            'Held weekend following Thanksgiving weekend',
+            'Now in its 48th year (2025)',
+            'Co-chaired by Carol Fitzpatrick of Farmington Hills',
+            'Jan exhibits as "SADO"'
+        ]
+    },
+    {
+        id: 'occ-royal-oak',
+        name: 'Oakland Community College — Royal Oak',
+        type: 'school',
+        bio: 'Where Charlie Blosser taught. The ceramics program that seeded The Potters Market.',
+        observations: [
+            'Royal Oak campus of Oakland Community College',
+            'Blosser taught ceramics here',
+            'Jan Sadowski also teaches pottery here'
+        ]
+    },
+    // ─── Schools ───
+    {
+        id: 'groves-hs',
+        name: 'Groves High School',
+        type: 'school',
+        bio: 'Birmingham, Michigan. Where Jan first discovered clay under George Landino.',
+        observations: [
+            'Birmingham, Michigan public high school',
+            'George Landino taught art/ceramics here in the 1960s',
+            'Jan Sadowski attended in early 1960s'
+        ]
+    },
+    {
+        id: 'wayne-state',
+        name: 'Wayne State University',
+        type: 'school',
+        bio: 'Detroit. Where both Glick (BFA 1960) and Sadowski studied art.',
+        observations: [
+            'John Glick — BFA 1960',
+            'Jan Sadowski — studied art (degree year TBD)',
+            'Major Detroit research university'
+        ]
+    },
+    {
+        id: 'cranbrook',
+        name: 'Cranbrook Academy of Art',
+        type: 'school',
+        bio: 'Bloomfield Hills, MI. Where Maija Grotell built the ceramics program (1938-1966).',
+        observations: [
+            'Founded by George Gough Booth and designed by Eliel Saarinen',
+            'Maija Grotell headed ceramics 1938-1966',
+            'John Glick earned MFA here in 1962',
+            'Other notable ceramics alumni: Takaezu (1951), DeVore (1957), Kottler (1957), Littleton',
+            'One of the most important American art schools',
+            'Bloomfield Hills campus is an architectural masterpiece — Carl Milles bronzes',
+            '"John Glick: A Legacy in Clay" retrospective held here 2016'
+        ]
+    },
+    // ─── Places / Historical ───
+    {
+        id: 'plum-tree',
+        name: 'Plum Tree Pottery',
+        type: 'place',
+        bio: 'John Glick\'s pottery studio in Farmington Hills (1964-2016). 35 residents over 50 years.',
+        observations: [
+            'Founded 1964 in Farmington Hills, Michigan',
+            '35 apprentices/assistants/residents over 50 years',
+            'First named resident: Rostislav Eismont (1972-73, Tiffany grant)',
+            'Last resident: Julia Walther (2012-14, two-year residency)',
+            'Jan Sadowski worked here ~1964-1968',
+            'Brett Gray was resident 2010-2011',
+            'Three kilns: 60cf catenary, 27cf catenary, 50cf crossdraft',
+            'Glick\'s approach: residents make their own work, share studio life',
+            'Studio closed after Glick\'s move to California ~2016',
+            'Website maintained as historical resource: plumtreepottery.com'
+        ]
+    },
+    {
+        id: 'pewabic',
+        name: 'Pewabic Pottery',
+        type: 'historical',
+        bio: 'Detroit landmark. Founded 1903 by Mary Chase Perry Stratton. National Historic Landmark.',
+        observations: [
+            'Founded 1903 by Mary Chase Perry Stratton',
+            'Michigan State University managed it 1966-1981',
+            'Became nonprofit Pewabic Society in 1981',
+            'Jan helped clean out the upstairs during the MSU transition (~1981)',
+            'He acquired 1950s-era pieces including ceramic matchbooks for $20/box',
+            'Education studio ("The Loft") opened on second floor 1983',
+            'National Historic Landmark — still operating today'
+        ]
+    },
+    {
+        id: 'terrestrial-forms',
+        name: 'Terrestrial Forms',
+        type: 'place',
+        bio: 'Jan\'s home studio and pottery business in Howell, MI.',
+        observations: [
+            'Jan\'s home studio and pottery operation',
+            'Located in Howell, Michigan',
+            'Four kilns on site',
+            'High-fired functional stoneware production',
+            'Email: terrforms@yahoo.com'
+        ]
+    },
+    // ─── Events ───
+    {
+        id: 'aa-street-art-fair',
+        name: 'Ann Arbor Street Art Fair',
+        type: 'event',
+        bio: 'Oldest juried street art fair in the nation. Founded 1960.',
+        observations: [
+            'Founded 1960 — oldest of the four Ann Arbor fairs',
+            'Esther Rainville was a founder',
+            'Potters Guild involved from the beginning',
+            'Jan was part of the original fair — started while working with Glick',
+            'Could show up with a whole truck of ceramics and sell everything',
+            'Records 1960-2005 at U-M Bentley Historical Library'
+        ]
+    },
+    // ═══════════════════════════════════════════════════════
+    // ONE MORE LAYER — Grotell's other famous students
+    // ═══════════════════════════════════════════════════════
+    {
+        id: 'toshiko-takaezu',
+        name: 'Toshiko Takaezu',
+        type: 'person',
+        bio: 'Pioneering ceramic artist (1922–2011). Transformed clay into spiritual, closed forms. One of Grotell\'s most celebrated students.',
+        observations: [
+            'Born 1922 Pepeekeo, Hawaii — daughter of Japanese immigrants on a sugar plantation',
+            'First studied under Claude Horan at University of Hawaii (1945–47)',
+            'Cranbrook MFA 1951–54 under Maija Grotell — the pivotal mentor of her career',
+            'Traveled Japan 1955: met Toyo Kaneshige, Yagi Kazuo — deepened her Japanese roots',
+            'Taught summers at Cranbrook 1954–56 while Grotell was still head of ceramics',
+            'Cleveland Institute of Art 1955–64 (teaching), then Princeton 1967–92',
+            'Revolutionary "closed forms" — sealed vessels with clay balls inside that rattle when moved',
+            'Grotell told her: "Tosh, you must find your own way." She sealed the opening and found it.',
+            'Combined Hawaiian upbringing, Japanese aesthetics, and Cranbrook\'s push-the-limits ethos',
+            'Named a Living Treasure of Hawaii (1987) — among the state\'s highest cultural honors',
+            'Work in Met, MoMA, Smithsonian, Philadelphia Museum, LACMA, Art Institute Chicago',
+            'Settled in Quakertown, New Jersey (1975) — built her own studio and wood kiln',
+            'Last major exhibition: "Toshiko Takaezu — Art That Resonates" at Noguchi Museum, NY',
+            'Fellow of the American Craft Council. NEA Visual Arts Fellowship recipient'
+        ]
+    },
+    {
+        id: 'richard-devore',
+        name: 'Richard DeVore',
+        type: 'person',
+        bio: 'Influential ceramic vessel artist. Cranbrook MFA 1957 under Grotell, later taught there.',
+        observations: [
+            'Born 1933 Toledo, Ohio. Died 2006',
+            'Studied under Maija Grotell at Cranbrook (MFA 1957)',
+            'Taught at Cranbrook 1966-1978, then Colorado State University',
+            'Known for organic, landscape-referencing vessel forms',
+            'Work in Met, Art Institute of Chicago, Smithsonian, V&A',
+            'Explored the tension between interior and exterior surfaces',
+            'Considered one of the most important American ceramic artists'
+        ]
+    },
+    {
+        id: 'howard-kottler',
+        name: 'Howard Kottler',
+        type: 'person',
+        bio: 'Experimental ceramicist and pop-art provocateur. Cranbrook MFA 1957 under Grotell.',
+        observations: [
+            'Born 1930 Cleveland, Ohio. Died 1989',
+            'Studied under Maija Grotell at Cranbrook (MFA 1957)',
+            'Taught at University of Washington 1964-1989',
+            'Known for decal-decorated plates subverting craft traditions',
+            'Pioneer in combining ceramics with pop art sensibility',
+            'Work in Smithsonian, LACMA, Everson Museum of Art'
+        ]
+    },
+    {
+        id: 'harvey-littleton',
+        name: 'Harvey Littleton',
+        type: 'person',
+        bio: '"Father of American Studio Glass" (1922–2013). Studied ceramics under Grotell at Cranbrook, then launched an entirely new art form.',
+        observations: [
+            'Born 1922 Corning, NY — son of Jesse Littleton, Corning Glass Works research director',
+            'Grew up surrounded by glass science but chose art — studied ceramics at Cranbrook under Grotell',
+            'University of Michigan BFA, then Cranbrook MFA under Grotell',
+            'Taught glass at University of Wisconsin-Madison 1951–1977',
+            'Led the pivotal March 1962 workshops at Toledo Museum of Art with Dominick Labino',
+            'Labino developed formula #475 and a small furnace — together they proved artists could blow glass independently',
+            'This single event launched the American Studio Glass movement — an entirely new art form',
+            'The chain: Grotell taught Littleton clay → Littleton pivoted to glass → spawned Chihuly et al.',
+            'Grotell\'s ceramics program produced both the greatest ceramic AND glass artists of 20th-century America',
+            'Died 2013 in Spruce Pine, NC — still making glass at 91'
+        ]
+    },
+    // ─── Cranbrook / Pewabic founders ───
+    {
+        id: 'eliel-saarinen',
+        name: 'Eliel Saarinen',
+        type: 'person',
+        bio: 'Finnish-American architect (1873–1950). Designed the Cranbrook campus. First president of Cranbrook Academy of Art.',
+        observations: [
+            'Born 1873 Rantasalmi, Finland. Died 1950 in Bloomfield Hills, MI',
+            'Famous before emigrating — designed Helsinki Railway Station (1919)',
+            'Hired by George Gough Booth in 1925 to design the entire Cranbrook campus',
+            'Created an American Arts & Crafts utopia on 319 acres in Bloomfield Hills',
+            'First president of Cranbrook Academy of Art — shaped its total-design philosophy',
+            'Invited Maija Grotell to head ceramics department in 1938 — arguably his best hire',
+            'Mentored Florence Knoll (became her guardian), Charles Eames, Eero Saarinen (his son)',
+            'Finnish connection: both he and Grotell came from Finnish design culture (Gesellius, Lindgren, Saarinen firm)',
+            'His "total design" ethos — architecture, furniture, landscape, craft as one — runs through the whole Cranbrook DNA'
+        ]
+    },
+    {
+        id: 'george-gough-booth',
+        name: 'George Gough Booth',
+        type: 'person',
+        bio: 'Newspaper publisher & philanthropist (1864–1949). Co-founded Cranbrook Educational Community with wife Ellen Scripps Booth.',
+        observations: [
+            'Born 1864 Toronto, Canada. Died 1949 Bloomfield Hills, Michigan',
+            'Publisher of the Detroit News — married Ellen Warren Scripps (Scripps media family)',
+            'Purchased 319 acres in Bloomfield Hills in 1904 — named it Cranbrook after father\'s birthplace in Kent, England',
+            'Inspired by American Arts & Crafts movement and European design schools',
+            'Hired Eliel Saarinen in 1925 — gave him freedom to create an integrated campus of schools, museums, gardens',
+            'Cranbrook Educational Community opened: Kingswood School, Cranbrook School, Academy of Art, Science Institute',
+            'Called "the Medici of the Midwest" — without the Booths, none of this ceramics lineage would exist',
+            'The thread: Booth hired Saarinen → Saarinen hired Grotell → Grotell taught Glick → Glick mentored Jan'
+        ]
+    },
+    {
+        id: 'horace-caulkins',
+        name: 'Horace Caulkins',
+        type: 'person',
+        bio: 'Dental supply manufacturer and kiln inventor. Co-founded Pewabic Pottery 1903.',
+        observations: [
+            'Born 1850. Died 1923',
+            'Developed the Revelation Kiln for dental porcelain — adapted for ceramics',
+            'Co-founded Pewabic Pottery with Mary Chase Perry Stratton in 1903',
+            'Business partner who funded and supported Pewabic\'s early years',
+            'Without Caulkins\' kiln technology, Pewabic might never have existed'
+        ]
+    },
+    {
+        id: 'mary-chase-perry-stratton',
+        name: 'Mary Chase Perry Stratton',
+        type: 'person',
+        bio: 'Founder and guiding spirit of Pewabic Pottery. Pioneer in iridescent glazes.',
+        observations: [
+            'Born 1867 Hancock, Michigan. Died 1961',
+            'Founded Pewabic Pottery with Horace Caulkins in 1903',
+            'Developed signature iridescent glazes',
+            'Pewabic tiles in Detroit Institute of Arts, Guardian Building, Cathedral of the Most Holy Trinity',
+            'Worked at Pewabic until her death at age 94',
+            'National Historic Landmark designation for Pewabic in 1971'
+        ]
+    },
+    // ─── Henry Crissman & Detroit ceramics network ───
+    {
+        id: 'henry-crissman',
+        name: 'Henry Crissman',
+        type: 'person',
+        bio: 'Builder of the Detroit Noborigama ("The Salty Dog"). Community kiln-builder and connector.',
+        observations: [
+            'Full name: Henry James Haver Crissman (henrycrissman.com)',
+            'Got old salt kiln bricks from Tom Fardell at CCS when they were tearing down their salt kiln',
+            'Built a wood-fired noborigama ("The Salty Dog") at Fortress Studios in Detroit\'s North End',
+            'John Glick donated kiln shelves and chimney bricks for the Salty Dog',
+            '40-hour firings as block party events — community gathering around fire',
+            'Fellow at Oxbow School of Art 2010, met Theaster Gates',
+            'Ryan hung out at the Salty Dog — part of this community',
+            'Connections to St. Mary\'s College in Detroit and the Russell Industrial Center (his dad had ties to the RIC)',
+            'In Jan 2018, sent Ryan and a helper to assist Paul Kotula moving out of the RIC'
+        ]
+    },
+    {
+        id: 'paul-kotula',
+        name: 'Paul Kotula',
+        type: 'person',
+        bio: 'Associate Professor of Ceramics at MSU. Former Gallery Director at Pewabic Pottery.',
+        observations: [
+            'Associate Professor of Ceramics at Michigan State University (since 2009)',
+            'BFA Wayne State University, MFA Alfred University (1989)',
+            'Gallery Director at Pewabic Pottery (1985-87)',
+            'Ran Revolution Gallery in Ferndale, MI (1993-2005)',
+            'Two NEA fellowships',
+            'Work in DIA, Cranbrook Art Museum, MSU Broad Art Museum',
+            'Known for hand-built/wheel-thrown stoneware, squared plates with double-walled rims',
+            'Had studio space at the Russell Industrial Center in Detroit',
+            'In Jan 2018, Henry Crissman sent Ryan to help Kotula move out of the RIC during post-code-violation exodus',
+            'Still at MSU as of 2026'
+        ],
+        sources: [
+            { label: 'MSU Faculty Page', url: 'https://art.msu.edu/people/paul-kotula/' }
+        ]
+    },
+    {
+        id: 'tom-fardell',
+        name: 'Tom Fardell',
+        type: 'person',
+        bio: 'At CCS. Provided the salt kiln bricks that became the Detroit Noborigama.',
+        observations: [
+            'Was at College for Creative Studies (CCS) in Detroit',
+            'Gave Henry Crissman the old salt kiln bricks when CCS was tearing down their salt kiln',
+            'Those bricks became the foundation of the Salty Dog noborigama'
+        ]
+    },
+    // ─── Places: Detroit ceramics infrastructure ───
+    {
+        id: 'fortress-studios',
+        name: 'Fortress Studios',
+        type: 'place',
+        bio: 'Detroit\'s North End. Where Henry Crissman built the Salty Dog noborigama.',
+        observations: [
+            'Located in Detroit\'s North End neighborhood',
+            'Site of the Detroit Noborigama / "The Salty Dog"',
+            'Built from recycled/donated materials — CCS salt kiln bricks, Glick\'s shelves',
+            'Community kiln — 40-hour firings as block party events'
+        ]
+    },
+    {
+        id: 'russell-industrial',
+        name: 'Russell Industrial Center',
+        type: 'place',
+        bio: 'Massive artist complex in Detroit. Major vacate order in 2017 displaced ~70% of tenants.',
+        observations: [
+            'Large multi-building artist/maker complex in Detroit',
+            'Paul Kotula had studio space here',
+            'Henry Crissman\'s dad had connections to the RIC',
+            'Feb 2017: major vacate order due to safety code violations',
+            '~70% of 150 tenants left — "kind of the end of the artist space there"',
+            'RIC survived and reopened but lost most of its original community',
+            'In Jan 2018, Henry sent Ryan to help Kotula move out'
+        ]
+    },
+    {
+        id: 'ccs',
+        name: 'College for Creative Studies',
+        type: 'school',
+        bio: 'Detroit art college. Their demolished salt kiln lives on as the Salty Dog.',
+        observations: [
+            'Detroit-based art and design college',
+            'Had a salt kiln that was demolished — bricks given to Henry Crissman via Tom Fardell',
+            'Brett Gray came from CCS before residency at Plum Tree Pottery',
+            'Those recycled bricks became the Detroit Noborigama'
+        ]
+    },
+    // ─── Glick's notable residents ───
+    {
+        id: 'rostislav-eismont',
+        name: 'Rostislav Eismont',
+        type: 'person',
+        bio: 'One of Glick\'s early apprentices at Plum Tree Pottery (1972-73).',
+        observations: [
+            'Apprentice at Plum Tree Pottery 1972-73',
+            'Supported by Louis Comfort Tiffany Grant in Apprentice Assistance Program',
+            'Later became a designer — created the Plum Tree Pottery website',
+            'eismontdesign'
+        ]
+    },
+    {
+        id: 'julia-walther',
+        name: 'Julia Walther',
+        type: 'person',
+        bio: '35th and final artist-in-residence at Plum Tree Pottery (2012-14).',
+        observations: [
+            'Two-year residency at Plum Tree Pottery 2012-2014',
+            '35th and final resident in the program',
+            'Helped Jo Lauria select works for Glick\'s retrospective',
+            '"A Legacy in Clay" — Cranbrook Art Museum 2016'
+        ]
+    },
+
+    // ═══════════════════════════════════════════════════════
+    // LAYER 3 — Cranbrook Design Legends
+    // Jan → Glick → Grotell → Cranbrook → these icons
+    // ═══════════════════════════════════════════════════════
+    {
+        id: 'charles-eames',
+        name: 'Charles Eames',
+        type: 'person',
+        bio: 'Architect & furniture designer (1907–1978). One of the most influential designers of the 20th century.',
+        observations: [
+            'Cranbrook Academy of Art, class of 1939',
+            'Studied architecture under Eliel Saarinen at Cranbrook',
+            'Met Ray Kaiser at Cranbrook — married 1941',
+            'Co-created the Eames Lounge Chair, Eames House (Case Study #8), Powers of Ten film',
+            'Walked the same Cranbrook campus as Grotell, who taught Jan\'s teacher Glick',
+            'Behind the camera in a famous 1941 photo of Saarinen with architecture students'
+        ]
+    },
+    {
+        id: 'ray-eames',
+        name: 'Ray Eames',
+        type: 'person',
+        bio: 'Abstract artist & furniture designer (1912–1988). née Kaiser. Cranbrook alumna.',
+        observations: [
+            'Studied painting at Cranbrook, married Charles Eames in 1941',
+            'Collaborated on virtually all Eames designs — furniture, architecture, films, exhibitions',
+            'Her textile and color sense was essential to the Eames aesthetic',
+            'Together with Charles, reshaped how America lived with modern design'
+        ]
+    },
+    {
+        id: 'florence-knoll',
+        name: 'Florence Knoll',
+        type: 'person',
+        bio: 'Architect & furniture designer (1917–2019). Cranbrook alumna. Founder of Knoll Inc.',
+        observations: [
+            'Orphaned young — Eliel Saarinen became her guardian and mentor',
+            'Cranbrook alumna in architecture',
+            'Founded Knoll Inc with Hans Knoll — revolutionized modern office design',
+            'Commissioned Harry Bertoia\'s Diamond Chair for Knoll',
+            'Described as the most powerful woman in 20th-century design'
+        ]
+    },
+    {
+        id: 'harry-bertoia',
+        name: 'Harry Bertoia',
+        type: 'person',
+        bio: 'Italian-born artist, sculptor & modern furniture designer (1915–1978). Cranbrook alumnus.',
+        observations: [
+            'Born in Italy, came to US at 15. Attended Cranbrook on scholarship',
+            'Created the iconic Diamond Chair for Knoll (1952)',
+            'Later became renowned for \'sonambient\' sound sculptures — tonal metal rods',
+            'Worked in the same Cranbrook metalworking shop alongside Eames',
+            'Part of the golden generation that made Cranbrook the "incubator of mid-century modernism"'
+        ]
+    },
+    {
+        id: 'eero-saarinen',
+        name: 'Eero Saarinen',
+        type: 'person',
+        bio: 'Architect & industrial designer (1910–1961). Son of Eliel. Grew up on the Cranbrook campus.',
+        observations: [
+            'Born in Finland, immigrated with family to Michigan in 1923',
+            'Literally grew up at Cranbrook — his childhood home was on campus',
+            'Designed Gateway Arch (St. Louis), TWA Terminal (JFK), Dulles Airport',
+            'Designed GM Technical Center in Warren, MI — visible Cranbrook-Michigan connection',
+            'Cranbrook alumnus and later faculty member'
+        ]
+    },
+    {
+        id: 'carl-milles',
+        name: 'Carl Milles',
+        type: 'person',
+        bio: 'Swedish sculptor (1875–1955). Head of Sculpture at Cranbrook 1931–1951.',
+        observations: [
+            'Artist-in-Residence and head of Sculpture Dept at Cranbrook 1931-1951',
+            'Faculty colleague of Maija Grotell during the golden Cranbrook years',
+            'Created the Orpheus Fountain and other monumental works at Cranbrook',
+            'Famous photo: Milles, Frank Lloyd Wright, and Eliel Saarinen together at Cranbrook',
+            'His Millesgården sculpture park in Stockholm remains a major museum'
+        ]
+    },
+
+    // ═══════════════════════════════════════════════════════
+    // LAYER 3 — Studio Glass Movement
+    // Grotell → Littleton → 1962 Toledo → Labino → Chihuly
+    // ═══════════════════════════════════════════════════════
+    {
+        id: 'dominick-labino',
+        name: 'Dominick Labino',
+        type: 'person',
+        bio: 'Glass scientist & artist (1910–1987). Co-launched the American Studio Glass movement.',
+        observations: [
+            'Vice president of Johns-Manville Fiber Glass Corporation',
+            'Developed the glass formula (#475) and small-furnace technology that made studio glass possible',
+            'Co-led the pivotal March 1962 workshops at Toledo Museum of Art with Harvey Littleton',
+            'Proved individual artists could blow glass without factory infrastructure',
+            'Without Labino\'s science, Littleton\'s vision couldn\'t have materialized',
+            'Littleton was Grotell\'s student — so this entire art form traces back to Cranbrook ceramics'
+        ]
+    },
+    {
+        id: 'dale-chihuly',
+        name: 'Dale Chihuly',
+        type: 'person',
+        bio: 'Glass artist (b. 1941). Most recognized name in contemporary glass art worldwide.',
+        observations: [
+            'Pioneered team-based glassblowing at monumental scale',
+            'Chihuly Garden and Glass in Seattle, installations worldwide',
+            'Product of the studio glass movement that Littleton (Grotell\'s student) launched',
+            'The chain: Grotell → Littleton → 1962 Toledo workshops → Chihuly',
+            'Shows how one ceramics teacher\'s influence spawned an entirely new art form'
+        ]
+    },
+    {
+        id: 'toledo-museum-of-art',
+        name: 'Toledo Museum of Art',
+        type: 'organization',
+        bio: 'Art museum in Toledo, Ohio. Birthplace of the American Studio Glass movement.',
+        observations: [
+            'Site of the pivotal March 1962 glass workshops',
+            'Harvey Littleton (Grotell\'s Cranbrook student) and Dominick Labino led the workshops',
+            'Proved artists could melt, shape, and blow glass independently — no factory needed',
+            'This moment launched an entire art form that now fills museums worldwide',
+            'Toledo\'s glass tradition connects to Michigan\'s ceramics lineage through Cranbrook'
+        ]
+    },
+
+    // ═══════════════════════════════════════════════════════
+    // LAYER 3 — Japanese / Mingei Influence
+    // Hamada + Leach + Yanagi → philosophy → Glick → Jan
+    // ═══════════════════════════════════════════════════════
+    {
+        id: 'shoji-hamada',
+        name: 'Shōji Hamada',
+        type: 'person',
+        bio: 'Japanese potter & Living National Treasure (1894–1978). Based in Mashiko, Japan.',
+        observations: [
+            'Co-founded the mingei (folk craft) movement with Yanagi Sōetsu and Bernard Leach',
+            'Traveled to England with Leach in 1920 — founded Leach Pottery in St Ives, Cornwall',
+            'Built the first Japanese climbing kiln (noborigama) in the West',
+            'Settled in Mashiko, developed local clays, glazes, and tools from bamboo and dog hair',
+            'Visited America in 1952 — workshops at Archie Bray Foundation influenced Voulkos and Autio',
+            'His philosophy: humble craft, integration of art and daily life, "beauty of the everyday"',
+            'This aesthetic chain flows directly through Glick to Jan — functional ware made with integrity',
+            'Died 1978 — Leach died 16 months later. Lifelong friendship spanning 60 years'
+        ]
+    },
+    {
+        id: 'bernard-leach',
+        name: 'Bernard Leach',
+        type: 'person',
+        bio: '"Father of British studio pottery" (1887–1979). Bridge between Eastern and Western ceramics.',
+        observations: [
+            'Born in Hong Kong, raised partly in Japan, studied at Slade School of Fine Art in London',
+            'Founded Leach Pottery in St Ives, Cornwall with Hamada in 1920',
+            'Built the first noborigama (climbing kiln) in the West using dynamite works bricks',
+            'His book "A Potter\'s Book" (1940) became the bible of studio pottery worldwide',
+            'Advocated "ethical pots" — simple, utilitarian forms over aesthetic pretension',
+            'Influenced generations of American potters including the whole functional pottery tradition',
+            'Glick\'s philosophy at Plum Tree — honest functional ware — is pure Leach lineage',
+            'That means Jan\'s 60 years of high-fired functional stoneware carries this tradition'
+        ]
+    },
+    {
+        id: 'yanagi-soetsu',
+        name: 'Yanagi Sōetsu',
+        type: 'person',
+        bio: 'Japanese philosopher & art critic (1889–1961). Founder of the mingei movement.',
+        observations: [
+            'Coined the term "mingei" (folk craft) in 1920s Japan',
+            'Wrote "The Unknown Craftsman" — foundational text on the beauty of anonymous handwork',
+            'Central tenet: beauty lives in everyday utilitarian objects made by unnamed artisans',
+            'Combined Korean aesthetics, Zen Buddhism, and William Morris/Ruskin ideas',
+            'The mingei philosophy spread worldwide, deeply shaping American studio ceramics',
+            'When Jan says "handmade pies should be served on handmade plates" — that\'s mingei'
+        ]
+    },
+
+    // ═══════════════════════════════════════════════════════
+    // LAYER 4 — The American Studio Ceramics Origin Story
+    // Binns → Alfred → Grotell. Voulkos + Archie Bray.
+    // MacKenzie → Leach → mingei → functional pottery → Jan.
+    // ═══════════════════════════════════════════════════════
+    {
+        id: 'peter-voulkos',
+        name: 'Peter Voulkos',
+        type: 'person',
+        bio: 'The most important American ceramicist of the 20th century (1924–2002). Blew apart the boundary between craft and fine art.',
+        observations: [
+            'Born 1924 Bozeman, Montana to Greek immigrant parents. Died 2002 Bowling Green, Ohio',
+            'BS Montana State 1951, MFA California College of Arts and Crafts 1952',
+            'First resident director at Archie Bray Foundation (1951–54) with Rudy Autio',
+            '1952: Hamada, Leach, and Yanagi visited Archie Bray — "Neither had seen clay treated so loosely and freely"',
+            '1953: Summer at Black Mountain College — met Rauschenberg, John Cage, Josef Albers',
+            'Met Franz Kline and de Kooning in New York — wanted clay to have the scale and power of Ab-Ex painting',
+            'Chaired new ceramics department at Otis Art Institute LA (1954) — launched the LA clay movement',
+            '1959: Professor at UC Berkeley — remained there the rest of his career',
+            'Slashed, gouged, tore, and reassembled clay on monumental scale — "the clay revolution"',
+            'Glick called himself an Abstract Expressionist — Voulkos opened that door for every potter who followed',
+            'The chain: Archie Bray → Hamada visit → Voulkos → Ab-Ex ceramics → permission for Glick → Jan'
+        ]
+    },
+    {
+        id: 'rudy-autio',
+        name: 'Rudy Autio',
+        type: 'person',
+        bio: 'Montana ceramicist & sculptor (1926–2007). Co-founding resident at Archie Bray with Voulkos.',
+        observations: [
+            'Born 1926 Butte, Montana — Finnish-American parents (miners)',
+            'Co-founding resident artist at Archie Bray Foundation with Voulkos in 1951',
+            'Resident Director of the Bray 1951–1956',
+            'The 1952 Hamada/Leach/Yanagi workshop at the Bray transformed both Autio and Voulkos',
+            'Headed ceramics department at University of Montana for 28 years',
+            'Known for figurative sculptures — floating nudes and horses on hollow ceramic forms',
+            'Tiffany Award in Crafts (1963), Fellow of American Craft Council, Governor\'s Award (1981)',
+            'NEA grant took him to Arabia Porcelain Factory in Helsinki — connected to his Finnish roots',
+            'Carl Milles and Henry Moore were among his influences — Milles was also at Cranbrook',
+            'Died 2007 — one of the great Montana artists of any medium'
+        ]
+    },
+    {
+        id: 'archie-bray-foundation',
+        name: 'Archie Bray Foundation',
+        type: 'organization',
+        bio: 'Ceramics residency in Helena, Montana. Founded 1951. The other great American ceramics incubator alongside Cranbrook.',
+        observations: [
+            'Founded 1951 by Archie Bray Sr. — entrepreneur and brickmaker — at the Western Clay Manufacturing brickyard',
+            'Mission: "make available for all who are seriously interested in the ceramic arts, a fine place to work"',
+            '26-acre campus on the foothills of the Rocky Mountains — listed on National Register of Historic Places',
+            'First residents: Voulkos, Autio, Lillian Boschen. Frances Senska was instrumental in founding',
+            'The pivotal 1952 Hamada/Leach/Yanagi workshop changed American ceramics forever',
+            '600+ ceramic artists from around the world have worked here since 1951',
+            'Notable alumni: Betty Woodman, Theaster Gates, Jun Kaneko, Patti Warashina, Chris Staley',
+            'Peter Voulkos Fellowship Fund supports annual visiting artist awards',
+            'If Cranbrook was the ceramics university, the Bray was the ceramics monastery — total immersion'
+        ]
+    },
+    {
+        id: 'warren-mackenzie',
+        name: 'Warren MacKenzie',
+        type: 'person',
+        bio: '"The dean of American functional pottery" (1924–2018). Studied under Leach at St Ives. Brought mingei to the Midwest.',
+        observations: [
+            'Born 1924 Kansas City, Missouri. Died December 31, 2018 at age 94',
+            'Studied ceramics at Art Institute of Chicago',
+            'Three-year apprenticeship at Leach Pottery, St Ives, Cornwall — learned directly from Bernard Leach',
+            'Established his own pottery in Stillwater, Minnesota — simple, functional, affordable',
+            'Professor at University of Minnesota 1966–1990 — trained two generations of functional potters',
+            'Gold Medal from American Craft Council (1998)',
+            'Work in Met, Smithsonian, V&A, Minnesota Museum of American Art',
+            'Fellow of the International Academy of Ceramics',
+            'Leach → MacKenzie → entire Midwest functional pottery tradition',
+            'Jan\'s philosophy — beautiful pots for daily use, priced for working people — is pure MacKenzie lineage',
+            'Returned to Leach Pottery in 2013 (age 89!) for a solo exhibition and to make new work'
+        ]
+    },
+    {
+        id: 'charles-binns',
+        name: 'Charles Fergus Binns',
+        type: 'person',
+        bio: '"The Father of American Ceramics" (1857–1934). English-born. Founded ceramics education in the United States.',
+        observations: [
+            'Born 1857 Worcester, England — father was co-managing director of Royal Worcester Porcelain Works',
+            'Trained at Royal Worcester for 25 years before emigrating to US in 1897',
+            'Co-founded the American Ceramic Society in 1899; president 1901',
+            'Founding director of NY State School of Clayworking & Ceramics at Alfred University (1900–1931)',
+            'First US institution to offer a degree in ceramics — invented the discipline',
+            'Students: Maija Grotell, Mary Chase Perry Stratton (Pewabic founder), Arthur Baggs, Adelaide Alsop Robineau',
+            'Wrote "The Potter\'s Craft" (1910) — pioneered matte glazes, copper-red reductions, Chinese-inspired forms',
+            'Logan Medal (Art Institute of Chicago, 1919), Medal of Boston Society of Arts and Crafts (1922)',
+            'The Binns Medal (named after him) is the highest honor in American ceramics — Grotell won it in 1961',
+            'This is the absolute root: Binns taught Grotell → Grotell taught Glick → Glick mentored Jan'
+        ]
+    },
+    {
+        id: 'alfred-university',
+        name: 'Alfred University',
+        type: 'school',
+        bio: 'New York State College of Ceramics at Alfred University. The oldest and most important ceramics program in America.',
+        observations: [
+            'Founded 1900 as NY State School of Clayworking and Ceramics — by Charles Fergus Binns',
+            'Alfred, New York — a tiny village that became the center of American ceramics education',
+            'First institution in the US to grant degrees in ceramics',
+            'Grotell trained here under Binns before moving to Rutgers, then Cranbrook',
+            'Mary Chase Perry Stratton (Pewabic founder) also studied under Binns at Alfred',
+            '125th anniversary exhibition (2025): "History: A Legacy in Motion, Alfred Ceramic Art 1900–2025"',
+            'The seed from which Cranbrook\'s ceramics program, and thus Jan\'s entire lineage, grew'
+        ]
+    },
+    {
+        id: 'frances-senska',
+        name: 'Frances Senska',
+        type: 'person',
+        bio: 'Ceramicist & educator (1914–2009). Instrumental in founding the Archie Bray Foundation.',
+        observations: [
+            'Born 1914, died 2009 — one of the unsung heroes of American ceramics',
+            'Taught at Montana State College in Bozeman — where she influenced Voulkos and Autio as students',
+            'Instrumental in the founding of the Archie Bray Foundation in 1951',
+            'Connected Archie Bray Sr. with the young artists who would bring his vision to life',
+            'Studied at Alfred University — bringing the Binns lineage directly to Montana',
+            'Part of the thread: Binns → Alfred → Senska → Voulkos/Autio → Archie Bray → the whole movement'
+        ]
+    },
+
+    // ═══════════════════════════════════════════════════════
+    // LAYER 5 — Completing the Lineage
+    // Kawai completes the mingei triangle. Soldner gives
+    // Voulkos a student lineage. Stephenson is Michigan's
+    // other ceramics giant. Arneson extends the Funk thread.
+    // Studio Potter is the primary-source anchor.
+    // ═══════════════════════════════════════════════════════
+    {
+        id: 'kawai-kanjiro',
+        name: 'Kawai Kanjirō',
+        type: 'person',
+        bio: 'Japanese potter & mingei co-founder (1890–1966). Master of glazes. Completed the mingei triangle with Hamada and Yanagi.',
+        observations: [
+            'Born 24 August 1890, Yasugi, Shimane Prefecture. Died 18 November 1966, Kyoto',
+            'Graduated Tokyo Higher Polytechnical School 1914. Built his own kiln in Kyoto in 1920',
+            'He and Hamada conducted over 10,000 glaze experiments together in Kyoto',
+            'Master of copper red (shinsha), iron brown (tetsu-yu), chrome, and cobalt (gosu) glazes',
+            'Co-founded the Japan Folk Crafts Museum (Nihon Mingei-kan) with Yanagi and Hamada in 1936',
+            'Grand Prix at Paris International Expo 1937. Grand Prix at Milan Triennale 1957',
+            'Refused the designation of Living National Treasure — like Hamada, never signed his work',
+            '"My work itself is my best signature"',
+            'His house in Gojōzaka, Kyoto is now a museum — studio, noborigama kiln, and collection',
+            'Also a poet, calligrapher, sculptor, writer, and philosopher',
+            'Published "We Do Not Work Alone" (1953)',
+            'Glick named Kawai among the mingei masters that shaped his philosophy'
+        ],
+        quotes: [
+            '"The pledge of fire: To return to all things purified."',
+            '"When you become so absorbed in your work that beauty flows naturally then your work truly becomes a work of art."',
+            '"Any work of art belongs to everyone, because it is whatever each person sees in it."'
+        ]
+    },
+    {
+        id: 'paul-soldner',
+        name: 'Paul Soldner',
+        type: 'person',
+        bio: 'Voulkos\'s first graduate student (1921–2011). Inventor of American raku. Scripps College, Claremont.',
+        observations: [
+            'Born 1921, Summerfield, Illinois. Died 2011, Claremont, California',
+            'First graduate student of Peter Voulkos at LA County Art Institute (later Otis) in 1954',
+            'Invented American raku technique circa 1960 — adapted Japanese raku for Western studio practice',
+            'Founded ceramics program at Scripps College, Claremont, CA — taught for over 40 years',
+            'Known for large-scale ceramic sculpture and low-fire salt techniques',
+            'American Craft Council Fellow 1988. ACC Gold Medal for Consummate Craftsmanship 2008',
+            'NCECA Honorary Member. Work in Smithsonian, LACMA, Everson Museum',
+            'Gives Voulkos a direct student lineage: Senska → Voulkos → Soldner'
+        ]
+    },
+    {
+        id: 'john-stephenson',
+        name: 'John Stephenson',
+        type: 'person',
+        bio: 'Michigan\'s other ceramics giant. U of Michigan professor 1959–1995, Cranbrook MFA 1958.',
+        observations: [
+            'Born 27 October 1929, Waterloo, Iowa. Died 20 October 2015',
+            'BA in Education, University of Northern Iowa 1952. MFA Cranbrook Academy of Art 1958',
+            'At Cranbrook he studied under Maija Grotell — same lineage as Glick (who arrived 1960)',
+            'Ceramics professor at University of Michigan 1959–1995 — 36 years in Ann Arbor',
+            'Interim Dean of the School of Art 1991–93',
+            'Catherine B. Heller Distinguished Professorship. NEA Visual Arts grant',
+            'Honorary doctorate, Grand Valley State University',
+            'NCECA Honorary Member. American Craft Council College of Fellows 2010',
+            'Member, International Academy of Ceramics (Geneva)',
+            'Retrospective exhibition at Birmingham Bloomfield Art Center (BBAA) 2010',
+            'Work in DIA, Cranbrook Art Museum, Alfred, Faenza, Everson, and international collections',
+            'He and Glick were the two biggest names in Michigan ceramics for decades'
+        ]
+    },
+    {
+        id: 'robert-arneson',
+        name: 'Robert Arneson',
+        type: 'person',
+        bio: '"Father of ceramic Funk art" (1930–1992). UC Davis professor. Pushed ceramics beyond function.',
+        observations: [
+            'Born 4 September 1930, Benicia, California. Died 2 November 1992 (liver cancer)',
+            'BFA California College of Arts and Crafts, Oakland. MFA Mills College 1958 under Antonio Prieto',
+            'Early inspiration from Peter Voulkos — "the clay revolution" gave Arneson permission',
+            'UC Davis art department 1962–1991 — nearly three decades. Founded ceramic sculpture program',
+            'Called "the father of the ceramic Funk movement" — abandoned functional pottery entirely',
+            'Famous Eggheads sculptures on UC Davis campus (among his last works). Controversial Moscone bust 1981',
+            'Autobiography in clay — many self-portraits. "Naughty, sharp-edged, with serious ideas behind the humor"',
+            'Work in Smithsonian, Met, Whitney, SFMOMA, Hirshhorn, Art Institute Chicago',
+            'American Craft Council College of Fellows 1992',
+            'Extends the Kottler↔Funk thread: both Arneson and Kottler were Grotell-lineage artists who exploded craft norms'
+        ]
+    },
+    {
+        id: 'studio-potter',
+        name: 'Studio Potter',
+        type: 'organization',
+        bio: 'The leading independent ceramics journal since 1972. Founded by Gerry Williams in New Hampshire.',
+        observations: [
+            'Founded 1972 by Gerry Williams and wife Julie Williams in Goffstown, New Hampshire',
+            'Grew from New Hampshire Potter\'s Guild discussions in fall 1971',
+            'Published by the Daniel Clark Foundation (nonprofit named for an obscure colonial potter)',
+            'First issue: hand silk-screened cover, 20 pages, 200 pre-subscribers',
+            'Gerry Williams (1926–2014): born Asanol, Bengal, India. ACC Fellow 1979, Gold Medal 1986',
+            'Williams was editor for 30 years — "an intrepid traveler" who amassed oral histories and interviews',
+            'Archive now at ASU Art Museum Ceramics Research Center — 700+ audio interviews with ceramic artists',
+            'Glick published an article in Studio Potter that names Jan Sadowski by name — primary source anchor',
+            'Became online-only 2019. Still the leading voice for working potters over 50 years later'
+        ]
+    },
+    {
+        id: 'university-of-michigan',
+        name: 'University of Michigan',
+        type: 'school',
+        bio: 'Ann Arbor. Where John Stephenson taught ceramics for 36 years (1959–1995).',
+        observations: [
+            'Major research university in Ann Arbor, Michigan',
+            'Stephenson headed ceramics 1959–1995 — built the program into a national force',
+            'Harvey Littleton (Grotell student) earned his BFA here before going to Cranbrook for MFA',
+            'University of Michigan Museum of Art holds Kawai Kanjirō works in its collection',
+            'Ann Arbor home base for Stephenson, the Ann Arbor Street Art Fair, and much of Michigan\'s ceramics culture'
+        ]
+    }
+];
+
+const LINKS = [
+    // Jan's direct connections
+    { source: 'jan-sadowski', target: 'george-landino', relation: 'student of', type: 'mentorship' },
+    { source: 'george-landino', target: 'jan-sadowski', relation: 'introduced to Glick', type: 'mentorship' },
+    { source: 'jan-sadowski', target: 'john-glick', relation: 'early mentee (4 years)', type: 'mentorship' },
+    { source: 'jan-sadowski', target: 'wayne-state', relation: 'studied art', type: 'education' },
+    { source: 'jan-sadowski', target: 'bbaa', relation: 'head of ceramics 20+ yrs', type: 'career' },
+    { source: 'jan-sadowski', target: 'potters-market', relation: 'long-time exhibitor', type: 'career' },
+    { source: 'jan-sadowski', target: 'aa-street-art-fair', relation: 'original exhibitor', type: 'career' },
+    { source: 'jan-sadowski', target: 'pewabic', relation: 'helped during transition', type: 'history' },
+    { source: 'jan-sadowski', target: 'groves-hs', relation: 'attended ~1962', type: 'education' },
+    { source: 'jan-sadowski', target: 'plum-tree', relation: 'worked here ~1964-68', type: 'career' },
+    { source: 'jan-sadowski', target: 'terrestrial-forms', relation: 'home studio', type: 'career' },
+    { source: 'jan-sadowski', target: 'occ-royal-oak', relation: 'teaches pottery', type: 'career' },
+
+    // Glick lineage
+    { source: 'john-glick', target: 'maija-grotell', relation: 'student (MFA 1962)', type: 'mentorship' },
+    { source: 'john-glick', target: 'wayne-state', relation: 'BFA 1960', type: 'education' },
+    { source: 'john-glick', target: 'cranbrook', relation: 'MFA 1962', type: 'education' },
+    { source: 'john-glick', target: 'plum-tree', relation: 'founded 1964', type: 'career' },
+    { source: 'brett-gray', target: 'john-glick', relation: 'last resident 2010-11', type: 'mentorship' },
+    { source: 'brett-gray', target: 'plum-tree', relation: 'resident 2010-11', type: 'career' },
+
+    // Grotell
+    { source: 'maija-grotell', target: 'cranbrook', relation: 'head of ceramics 1938-66', type: 'career' },
+
+    // Landino
+    { source: 'george-landino', target: 'groves-hs', relation: 'taught art', type: 'career' },
+    { source: 'george-landino', target: 'aa-street-art-fair', relation: 'exhibitor', type: 'career' },
+    { source: 'george-landino', target: 'john-glick', relation: 'introduced Sadowski', type: 'mentorship' },
+
+    // Blosser / Potters Market
+    { source: 'dr-charlie-blosser', target: 'potters-market', relation: 'founded 1975', type: 'career' },
+    { source: 'dr-charlie-blosser', target: 'occ-royal-oak', relation: 'taught ceramics', type: 'career' },
+    { source: 'bridget-blosser', target: 'potters-market', relation: 'manages', type: 'career' },
+    { source: 'bridget-blosser', target: 'dr-charlie-blosser', relation: 'wife of', type: 'personal' },
+
+    // Ryan
+    { source: 'ryan', target: 'jan-sadowski', relation: 'friends', type: 'personal' },
+    { source: 'ryan', target: 'brett-gray', relation: 'knows', type: 'personal' },
+
+    // Pewabic
+    { source: 'pewabic', target: 'cranbrook', relation: 'Michigan ceramics legacy', type: 'history' },
+
+    // ═══════════════════════════════════════════════════════
+    // ONE MORE LAYER — Grotell's other students
+    // ═══════════════════════════════════════════════════════
+    { source: 'toshiko-takaezu', target: 'maija-grotell', relation: 'student (MFA 1951)', type: 'mentorship' },
+    { source: 'toshiko-takaezu', target: 'cranbrook', relation: 'MFA 1951', type: 'education' },
+    { source: 'richard-devore', target: 'maija-grotell', relation: 'student (MFA 1957)', type: 'mentorship' },
+    { source: 'richard-devore', target: 'cranbrook', relation: 'MFA 1957, taught 1966-78', type: 'education' },
+    { source: 'howard-kottler', target: 'maija-grotell', relation: 'student (MFA 1957)', type: 'mentorship' },
+    { source: 'howard-kottler', target: 'cranbrook', relation: 'MFA 1957', type: 'education' },
+    { source: 'harvey-littleton', target: 'maija-grotell', relation: 'student (ceramics)', type: 'mentorship' },
+    { source: 'harvey-littleton', target: 'cranbrook', relation: 'studied ceramics', type: 'education' },
+
+    // Cranbrook founders
+    { source: 'eliel-saarinen', target: 'cranbrook', relation: 'designed campus', type: 'history' },
+    { source: 'eliel-saarinen', target: 'maija-grotell', relation: 'invited to Cranbrook 1938', type: 'mentorship' },
+    { source: 'george-gough-booth', target: 'cranbrook', relation: 'co-founded', type: 'history' },
+
+    // Pewabic founders
+    { source: 'horace-caulkins', target: 'pewabic', relation: 'co-founded 1903', type: 'history' },
+    { source: 'mary-chase-perry-stratton', target: 'pewabic', relation: 'founded 1903', type: 'history' },
+    { source: 'mary-chase-perry-stratton', target: 'horace-caulkins', relation: 'business partners', type: 'career' },
+
+    // Glick's notable residents (bookends: first named & last)
+    { source: 'rostislav-eismont', target: 'john-glick', relation: 'apprentice 1972-73', type: 'mentorship' },
+    { source: 'rostislav-eismont', target: 'plum-tree', relation: 'apprentice', type: 'career' },
+    { source: 'julia-walther', target: 'john-glick', relation: 'final resident 2012-14', type: 'mentorship' },
+    { source: 'julia-walther', target: 'plum-tree', relation: 'resident 2012-14', type: 'career' },
+
+    // Glick's BBAA connection
+    { source: 'john-glick', target: 'bbaa', relation: '2006 retrospective', type: 'career' },
+    { source: 'john-glick', target: 'pewabic', relation: 'legacy inspiration', type: 'history' },
+
+    // Henry Crissman network
+    { source: 'henry-crissman', target: 'fortress-studios', relation: 'built the Salty Dog', type: 'career' },
+    { source: 'henry-crissman', target: 'tom-fardell', relation: 'got salt kiln bricks from', type: 'history' },
+    { source: 'henry-crissman', target: 'ccs', relation: 'sourced kiln bricks', type: 'history' },
+    { source: 'henry-crissman', target: 'russell-industrial', relation: 'dad had ties to RIC', type: 'personal' },
+    { source: 'henry-crissman', target: 'paul-kotula', relation: 'sent Ryan to help move', type: 'personal' },
+    { source: 'john-glick', target: 'henry-crissman', relation: 'donated kiln shelves', type: 'mentorship' },
+    { source: 'ryan', target: 'henry-crissman', relation: 'hung out at the Salty Dog', type: 'personal' },
+
+    // Tom Fardell
+    { source: 'tom-fardell', target: 'ccs', relation: 'was at CCS', type: 'career' },
+
+    // Paul Kotula
+    { source: 'paul-kotula', target: 'wayne-state', relation: 'BFA', type: 'education' },
+    { source: 'paul-kotula', target: 'pewabic', relation: 'Gallery Director 1985-87', type: 'career' },
+    { source: 'paul-kotula', target: 'russell-industrial', relation: 'had studio space', type: 'career' },
+    { source: 'ryan', target: 'paul-kotula', relation: 'helped move out of RIC (Jan 2018)', type: 'personal' },
+
+    // Brett Gray → CCS connection
+    { source: 'brett-gray', target: 'ccs', relation: 'came from CCS', type: 'education' },
+
+    // ═══════════════════════════════════════════════════════
+    // LAYER 3 — Cranbrook Design Legends
+    // ═══════════════════════════════════════════════════════
+    { source: 'charles-eames', target: 'cranbrook', relation: 'CAA \'39, studied under Saarinen', type: 'education' },
+    { source: 'ray-eames', target: 'cranbrook', relation: 'Cranbrook alumna', type: 'education' },
+    { source: 'charles-eames', target: 'ray-eames', relation: 'married 1941 at Cranbrook', type: 'personal' },
+    { source: 'charles-eames', target: 'eliel-saarinen', relation: 'student of', type: 'mentorship' },
+    { source: 'florence-knoll', target: 'cranbrook', relation: 'Cranbrook alumna', type: 'education' },
+    { source: 'florence-knoll', target: 'eliel-saarinen', relation: 'ward & protégée', type: 'mentorship' },
+    { source: 'florence-knoll', target: 'harry-bertoia', relation: 'Knoll Inc — Diamond Chair', type: 'career' },
+    { source: 'harry-bertoia', target: 'cranbrook', relation: 'Cranbrook alumnus', type: 'education' },
+    { source: 'eero-saarinen', target: 'cranbrook', relation: 'grew up on campus', type: 'education' },
+    { source: 'eero-saarinen', target: 'eliel-saarinen', relation: 'son of', type: 'personal' },
+    { source: 'carl-milles', target: 'cranbrook', relation: 'head of Sculpture 1931–51', type: 'career' },
+    { source: 'carl-milles', target: 'maija-grotell', relation: 'faculty colleague', type: 'career' },
+    { source: 'carl-milles', target: 'eliel-saarinen', relation: 'friend & colleague', type: 'personal' },
+
+    // ═══════════════════════════════════════════════════════
+    // LAYER 3 — Studio Glass Movement
+    // ═══════════════════════════════════════════════════════
+    { source: 'harvey-littleton', target: 'dominick-labino', relation: '1962 Toledo workshops partner', type: 'career' },
+    { source: 'harvey-littleton', target: 'toledo-museum-of-art', relation: '1962 glass workshops', type: 'career' },
+    { source: 'dominick-labino', target: 'toledo-museum-of-art', relation: '1962 glass workshops', type: 'career' },
+    { source: 'dale-chihuly', target: 'harvey-littleton', relation: 'inheritor of movement', type: 'mentorship' },
+
+    // ═══════════════════════════════════════════════════════
+    // LAYER 3 — Japanese / Mingei Influence
+    // ═══════════════════════════════════════════════════════
+    { source: 'shoji-hamada', target: 'bernard-leach', relation: 'lifelong friendship (1920–1978)', type: 'personal' },
+    { source: 'shoji-hamada', target: 'yanagi-soetsu', relation: 'co-founded mingei', type: 'career' },
+    { source: 'bernard-leach', target: 'yanagi-soetsu', relation: 'philosophical mentor', type: 'mentorship' },
+    { source: 'shoji-hamada', target: 'toshiko-takaezu', relation: 'Japanese ceramics influence', type: 'mentorship' },
+    { source: 'john-glick', target: 'shoji-hamada', relation: 'influenced by mingei', type: 'mentorship' },
+    { source: 'john-glick', target: 'bernard-leach', relation: 'influenced by Leach tradition', type: 'mentorship' },
+
+    // Cranbrook founders enrichment
+    { source: 'george-gough-booth', target: 'eliel-saarinen', relation: 'hired as campus architect', type: 'history' },
+    { source: 'toshiko-takaezu', target: 'cranbrook', relation: 'taught summers 1954–56', type: 'career' },
+
+    // ═══════════════════════════════════════════════════════
+    // LAYER 4 — The Root: Binns → Alfred → Grotell
+    // ═══════════════════════════════════════════════════════
+    { source: 'charles-binns', target: 'alfred-university', relation: 'founding director 1900–31', type: 'career' },
+    { source: 'maija-grotell', target: 'charles-binns', relation: 'student at Alfred', type: 'mentorship' },
+    { source: 'maija-grotell', target: 'alfred-university', relation: 'trained here under Binns', type: 'education' },
+    { source: 'mary-chase-perry-stratton', target: 'charles-binns', relation: 'student at Alfred', type: 'mentorship' },
+    { source: 'mary-chase-perry-stratton', target: 'alfred-university', relation: 'studied under Binns', type: 'education' },
+    { source: 'frances-senska', target: 'alfred-university', relation: 'studied here', type: 'education' },
+
+    // ═══════════════════════════════════════════════════════
+    // LAYER 4 — Archie Bray & the Clay Revolution
+    // ═══════════════════════════════════════════════════════
+    { source: 'peter-voulkos', target: 'archie-bray-foundation', relation: 'resident director 1951–54', type: 'career' },
+    { source: 'rudy-autio', target: 'archie-bray-foundation', relation: 'resident director 1951–56', type: 'career' },
+    { source: 'peter-voulkos', target: 'rudy-autio', relation: 'co-residents & friends (Montana)', type: 'personal' },
+    { source: 'frances-senska', target: 'archie-bray-foundation', relation: 'instrumental in founding', type: 'history' },
+    { source: 'frances-senska', target: 'peter-voulkos', relation: 'teacher at Montana State', type: 'mentorship' },
+    { source: 'frances-senska', target: 'rudy-autio', relation: 'teacher at Montana State', type: 'mentorship' },
+    { source: 'shoji-hamada', target: 'archie-bray-foundation', relation: '1952 workshop (transformative)', type: 'history' },
+    { source: 'bernard-leach', target: 'archie-bray-foundation', relation: '1952 workshop', type: 'history' },
+    { source: 'yanagi-soetsu', target: 'archie-bray-foundation', relation: '1952 workshop', type: 'history' },
+
+    // ═══════════════════════════════════════════════════════
+    // LAYER 4 — Warren MacKenzie & the Leach → Midwest line
+    // ═══════════════════════════════════════════════════════
+    { source: 'warren-mackenzie', target: 'bernard-leach', relation: 'apprentice at St Ives (3 yrs)', type: 'mentorship' },
+    { source: 'warren-mackenzie', target: 'shoji-hamada', relation: 'influenced by mingei', type: 'mentorship' },
+
+    // Voulkos → Ab-Ex → permission for Glick's generation
+    { source: 'peter-voulkos', target: 'john-glick', relation: 'opened Ab-Ex door for ceramics', type: 'mentorship' },
+
+    // ═══════════════════════════════════════════════════════
+    // LAYER 5 — Completing the Lineage
+    // Kawai + mingei triangle. Soldner + Voulkos student line.
+    // Stephenson + Michigan ceramics. Arneson + Funk thread.
+    // Studio Potter + primary-source anchor.
+    // ═══════════════════════════════════════════════════════
+
+    // Kawai completes the mingei triangle (Hamada + Yanagi already on graph)
+    { source: 'kawai-kanjiro', target: 'shoji-hamada', relation: 'lifelong friendship, 10,000 glaze experiments', type: 'personal' },
+    { source: 'kawai-kanjiro', target: 'yanagi-soetsu', relation: 'co-founded Japan Folk Crafts Museum 1936', type: 'history' },
+    { source: 'john-glick', target: 'kawai-kanjiro', relation: 'influenced by mingei masters', type: 'mentorship' },
+
+    // Soldner — Voulkos's first student
+    { source: 'peter-voulkos', target: 'paul-soldner', relation: 'first graduate student (Otis 1954)', type: 'mentorship' },
+
+    // Arneson — extends the Funk/Pop ceramics thread
+    { source: 'robert-arneson', target: 'peter-voulkos', relation: 'early inspiration, Ab-Ex clay', type: 'mentorship' },
+    { source: 'robert-arneson', target: 'howard-kottler', relation: 'Funk ↔ Pop ceramics parallel', type: 'history' },
+
+    // Stephenson — Michigan's other ceramics giant
+    { source: 'maija-grotell', target: 'john-stephenson', relation: 'teacher at Cranbrook', type: 'mentorship' },
+    { source: 'john-stephenson', target: 'cranbrook', relation: 'MFA 1958', type: 'education' },
+    { source: 'john-stephenson', target: 'university-of-michigan', relation: 'ceramics professor 1959–1995', type: 'career' },
+    { source: 'john-stephenson', target: 'bbaa', relation: 'retrospective exhibition 2010', type: 'career' },
+    { source: 'john-stephenson', target: 'john-glick', relation: 'Michigan ceramics colleagues', type: 'personal' },
+
+    // Studio Potter — the primary-source anchor
+    { source: 'john-glick', target: 'studio-potter', relation: 'published article naming Jan', type: 'career' },
+    { source: 'jan-sadowski', target: 'studio-potter', relation: 'named as collaborator in Glick article', type: 'history' },
+];
+
+// ─── Color map ───
+const COLOR_MAP = {
+    person: '#818cf8',
+    organization: '#fbbf24',
+    school: '#34d399',
+    event: '#fb7185',
+    historical: '#22d3ee',
+    place: '#a78bfa'
+};
+
+const LINK_COLOR_MAP = {
+    mentorship: '#818cf8',
+    education: '#34d399',
+    career: '#fbbf24',
+    history: '#22d3ee',
+    personal: '#fb7185'
+};
+
+// ─── START YEARS ─── (year each node becomes "active")
+const START_YEARS = {
+    'maija-grotell': 1938, 'eliel-saarinen': 1925, 'george-gough-booth': 1920,
+    'horace-caulkins': 1903, 'mary-chase-perry-stratton': 1903,
+    'carl-milles': 1931, 'charles-eames': 1939, 'ray-eames': 1940,
+    'florence-knoll': 1935, 'harry-bertoia': 1937, 'eero-saarinen': 1930,
+    'shoji-hamada': 1920, 'bernard-leach': 1920, 'yanagi-soetsu': 1920,
+    'harvey-littleton': 1945, 'toshiko-takaezu': 1951,
+    'richard-devore': 1957, 'howard-kottler': 1957,
+    'john-glick': 1960, 'george-landino': 1960,
+    'jan-sadowski': 1962, 'dominick-labino': 1962,
+    'dale-chihuly': 1968, 'rostislav-eismont': 1972,
+    'dr-charlie-blosser': 1975, 'paul-kotula': 1985,
+    'julia-walther': 2012, 'henry-crissman': 2008,
+    'tom-fardell': 2005, 'brett-gray': 2010, 'ryan': 2010,
+    'bridget-blosser': 2014,
+    'pewabic': 1903, 'cranbrook': 1932, 'wayne-state': 1950,
+    'bbaa': 1957, 'groves-hs': 1960, 'aa-street-art-fair': 1960,
+    'plum-tree': 1964, 'occ-royal-oak': 1970, 'potters-market': 1975,
+    'terrestrial-forms': 1995, 'ccs': 1960,
+    'toledo-museum-of-art': 1962,
+    'fortress-studios': 2008, 'russell-industrial': 2000,
+    // Layer 4
+    'peter-voulkos': 1951, 'rudy-autio': 1951, 'archie-bray-foundation': 1951,
+    'warren-mackenzie': 1949, 'charles-binns': 1900, 'alfred-university': 1900,
+    'frances-senska': 1940,
+    // Layer 5
+    'kawai-kanjiro': 1920, 'paul-soldner': 1954, 'john-stephenson': 1958,
+    'robert-arneson': 1960, 'studio-potter': 1972, 'university-of-michigan': 1959
+};
+
+// ─── GEOGRAPHIC POSITIONS ─── (normalized 0-1, approximate SE Michigan)
+const GEO_POSITIONS = {
+    // Michigan Core
+    'jan-sadowski': { x: 0.2, y: 0.18 },
+    'terrestrial-forms': { x: 0.22, y: 0.2 },
+    'cranbrook': { x: 0.52, y: 0.2 },
+    'maija-grotell': { x: 0.54, y: 0.17 },
+    'john-glick': { x: 0.35, y: 0.28 },
+    'plum-tree': { x: 0.33, y: 0.3 },
+    'groves-hs': { x: 0.5, y: 0.26 },
+    'bbaa': { x: 0.48, y: 0.28 },
+    'george-landino': { x: 0.46, y: 0.24 },
+    'occ-royal-oak': { x: 0.55, y: 0.32 },
+    'dr-charlie-blosser': { x: 0.57, y: 0.34 },
+    'bridget-blosser': { x: 0.59, y: 0.33 },
+    'potters-market': { x: 0.58, y: 0.36 },
+    // Detroit
+    'wayne-state': { x: 0.6, y: 0.42 },
+    'ccs': { x: 0.58, y: 0.44 },
+    'pewabic': { x: 0.68, y: 0.5 },
+    'fortress-studios': { x: 0.62, y: 0.38 },
+    'russell-industrial': { x: 0.64, y: 0.42 },
+    'henry-crissman': { x: 0.63, y: 0.36 },
+    'paul-kotula': { x: 0.65, y: 0.44 },
+    'tom-fardell': { x: 0.57, y: 0.46 },
+    'brett-gray': { x: 0.56, y: 0.42 },
+    'ryan': { x: 0.61, y: 0.4 },
+    // Other Michigan
+    'aa-street-art-fair': { x: 0.18, y: 0.52 },
+    // Cranbrook Legends
+    'eliel-saarinen': { x: 0.48, y: 0.15 },
+    'george-gough-booth': { x: 0.46, y: 0.12 },
+    'eero-saarinen': { x: 0.5, y: 0.12 },
+    'carl-milles': { x: 0.56, y: 0.14 },
+    'charles-eames': { x: 0.42, y: 0.1 },
+    'ray-eames': { x: 0.44, y: 0.08 },
+    'florence-knoll': { x: 0.38, y: 0.1 },
+    'harry-bertoia': { x: 0.4, y: 0.06 },
+    'richard-devore': { x: 0.58, y: 0.12 },
+    'howard-kottler': { x: 0.6, y: 0.1 },
+    'toshiko-takaezu': { x: 0.62, y: 0.08 },
+    'harvey-littleton': { x: 0.66, y: 0.12 },
+    'rostislav-eismont': { x: 0.3, y: 0.32 },
+    'julia-walther': { x: 0.32, y: 0.34 },
+    // Pewabic founders
+    'horace-caulkins': { x: 0.7, y: 0.54 },
+    'mary-chase-perry-stratton': { x: 0.72, y: 0.52 },
+    // Toledo / Glass
+    'toledo-museum-of-art': { x: 0.5, y: 0.85 },
+    'dominick-labino': { x: 0.52, y: 0.82 },
+    'dale-chihuly': { x: 0.85, y: 0.8 },
+    // Japanese / Mingei
+    'shoji-hamada': { x: 0.06, y: 0.7 },
+    'bernard-leach': { x: 0.08, y: 0.62 },
+    'yanagi-soetsu': { x: 0.04, y: 0.78 },
+    // Layer 4
+    'peter-voulkos': { x: 0.12, y: 0.85 },
+    'rudy-autio': { x: 0.1, y: 0.88 },
+    'archie-bray-foundation': { x: 0.08, y: 0.86 },
+    'warren-mackenzie': { x: 0.15, y: 0.65 },
+    'charles-binns': { x: 0.82, y: 0.2 },
+    'alfred-university': { x: 0.84, y: 0.18 },
+    'frances-senska': { x: 0.14, y: 0.9 },
+    // Layer 5
+    'kawai-kanjiro': { x: 0.02, y: 0.85 },
+    'paul-soldner': { x: 0.88, y: 0.7 },
+    'john-stephenson': { x: 0.22, y: 0.48 },
+    'robert-arneson': { x: 0.9, y: 0.6 },
+    'studio-potter': { x: 0.78, y: 0.35 },
+    'university-of-michigan': { x: 0.2, y: 0.5 }
+};
+
+// ─── LINK STORIES ─── (one-sentence narratives for each connection)
+const LINK_STORIES = {
+    'jan-sadowski|george-landino': 'A high school kid walks into George Landino\'s class and picks up clay for the first time. Everything starts here.',
+    'george-landino|jan-sadowski': 'Landino sees something in Jan. Makes a phone call to John Glick.',
+    'jan-sadowski|john-glick': 'Four years side by side. Glick wrote: \"Jan Sadowski came as a high school student, very advanced in potting, with a lot of personal ambition.\"',
+    'george-landino|john-glick': 'One phone call from a high school teacher to a master potter. That call became sixty years of ceramics.',
+    'jan-sadowski|wayne-state': 'Art degree. The formal education alongside the real one happening at Plum Tree.',
+    'jan-sadowski|bbaa': 'Twenty-plus years shaping the next generation. Head of Ceramics at Birmingham Bloomfield.',
+    'jan-sadowski|potters-market': 'Exhibitor since the beginning. Artist code: SADO.',
+    'jan-sadowski|pewabic': 'Helped clean out upstairs during the MSU transition. Got 1950s-era pieces for $20 a box.',
+    'jan-sadowski|plum-tree': 'Four years at Plum Tree Pottery. The formative years.',
+    'jan-sadowski|terrestrial-forms': 'Jan\'s home studio in Howell. Four kilns. High-fired functional stoneware.',
+    'jan-sadowski|aa-street-art-fair': 'Could show up with a whole truck of ceramics and sell everything.',
+    'jan-sadowski|groves-hs': 'Where it all began. George Landino\'s classroom.',
+    'jan-sadowski|occ-royal-oak': 'Passing it forward. Teaching pottery at the college where the Potters Market began.',
+    'john-glick|maija-grotell': 'Grotell\'s program turned a Wayne State BFA into a Cranbrook MFA. The last generation she shaped.',
+    'john-glick|cranbrook': 'MFA 1962. The program Grotell built produced the potter who produced Jan.',
+    'john-glick|wayne-state': 'BFA 1960. Before Cranbrook, before Plum Tree.',
+    'john-glick|plum-tree': 'Founded 1964. Three kilns, 35 residents, 300,000 pots over fifty years.',
+    'brett-gray|john-glick': 'One of Glick\'s last residents. 2010-2011. Bookends the lineage with Jan \u2014 first and last.',
+    'brett-gray|plum-tree': 'Resident 2010-2011. Almost fifty years after Jan walked in.',
+    'brett-gray|ccs': 'Came from CCS to Plum Tree. The Detroit-Farmington connection.',
+    'maija-grotell|cranbrook': 'Head of ceramics 1938-1966. Built the program from scratch. The mother of American ceramics.',
+    'toshiko-takaezu|maija-grotell': 'Grotell\'s student, MFA 1951. Went on to revolutionize ceramic form at Princeton.',
+    'richard-devore|maija-grotell': 'MFA 1957. Later returned to teach at Cranbrook, carrying Grotell\'s legacy forward.',
+    'howard-kottler|maija-grotell': 'MFA 1957. Took ceramics into pop art territory. Grotell probably wouldn\'t have approved.',
+    'harvey-littleton|maija-grotell': 'Studied ceramics under Grotell, then launched an entirely different art form: studio glass.',
+    'harvey-littleton|dominick-labino': 'March 1962. Toledo Museum. Two men prove you can blow glass without a factory.',
+    'dale-chihuly|harvey-littleton': 'Grotell \u2192 Littleton \u2192 1962 Toledo \u2192 Chihuly. One ceramics teacher\'s influence spawned a new art form.',
+    'henry-crissman|fortress-studios': 'Built the Detroit Noborigama \u2014 \"The Salty Dog\" \u2014 from recycled bricks and donated shelves.',
+    'henry-crissman|tom-fardell': 'Tom gave Henry the old salt kiln bricks from CCS. Those bricks became the Salty Dog.',
+    'john-glick|henry-crissman': 'Glick donated kiln shelves and chimney bricks. The master potter\'s materials live on in a community kiln.',
+    'henry-crissman|paul-kotula': 'January 2018. Henry sends Ryan to help Kotula move out of the Russell Industrial Center.',
+    'ryan|henry-crissman': 'Ryan hung out at the Salty Dog. Forty-hour firings as block party events.',
+    'ryan|jan-sadowski': 'Friends for years. Ryan is building this documented record of sixty years in Michigan ceramics.',
+    'ryan|brett-gray': 'Connected through the Detroit ceramics community.',
+    'ryan|paul-kotula': 'January 2018. Henry sent Ryan to help Kotula move out of the RIC.',
+    'paul-kotula|pewabic': 'Gallery Director at Pewabic 1985-87. Before MSU, before Revolution Gallery.',
+    'paul-kotula|wayne-state': 'BFA. Same school as Glick and Jan.',
+    'paul-kotula|russell-industrial': 'Had studio space here until the 2017 code violations displaced seventy percent of tenants.',
+    'dr-charlie-blosser|potters-market': 'Started it in 1975 as an OCC class sale in a church basement. Now the largest pottery-only fair in America.',
+    'dr-charlie-blosser|occ-royal-oak': 'Taught ceramics here. His students became the first Potters Market exhibitors.',
+    'bridget-blosser|potters-market': 'Took over after Charlie\'s death in 2014. The sale continues.',
+    'bridget-blosser|dr-charlie-blosser': 'Partners in clay and in life.',
+    'eliel-saarinen|cranbrook': 'Designed the entire campus. Architecture as education.',
+    'eliel-saarinen|maija-grotell': 'Invited her from Finland in 1938. One Finn to another: \"Come build something.\"',
+    'george-gough-booth|cranbrook': 'Newspaper publisher turned patron. Co-founded Cranbrook with his wife Ellen Scripps Booth.',
+    'george-gough-booth|eliel-saarinen': 'Hired Saarinen in 1925 to design the campus. The vision that made everything else possible.',
+    'charles-eames|cranbrook': 'Class of 1939. Met Ray Kaiser here. Changed how America sits, works, and thinks about design.',
+    'charles-eames|ray-eames': 'Met at Cranbrook. Married 1941. Created everything together.',
+    'florence-knoll|eliel-saarinen': 'Orphaned young. Saarinen became her guardian. She became the most powerful woman in 20th-century design.',
+    'shoji-hamada|bernard-leach': 'Traveled to England together in 1920. Built the first Japanese climbing kiln in the West.',
+    'shoji-hamada|yanagi-soetsu': 'Co-founded the mingei movement. Beauty lives in everyday objects.',
+    'john-glick|shoji-hamada': 'The mingei philosophy flows through Glick to every pot Jan ever made.',
+    'john-glick|bernard-leach': 'Leach wrote the bible. Glick lived it. Jan inherited it.',
+    'tom-fardell|ccs': 'Was at CCS when they tore down the salt kiln. Gave the bricks to Henry.',
+    'henry-crissman|ccs': 'The bricks from CCS\'s demolished salt kiln became the foundation of the Detroit Noborigama.',
+    'pewabic|cranbrook': 'Two pillars of Michigan ceramics, seven miles apart.',
+    'horace-caulkins|pewabic': 'His Revelation Kiln for dental porcelain became a ceramics kiln. Without it, Pewabic might never have existed.',
+    'mary-chase-perry-stratton|pewabic': 'Founded 1903. Worked here until her death at 94.',
+    'mary-chase-perry-stratton|horace-caulkins': 'She had the art. He had the kiln. Together they made Pewabic.',
+    'john-glick|bbaa': '\"Looking Back/Making Now \u2014 43 Years in Clay.\" The 2006 retrospective.',
+    'john-glick|pewabic': 'Legacy inspiration. The Pewabic tradition Glick carried forward.',
+    'rostislav-eismont|john-glick': 'First named apprentice at Plum Tree, 1972-73. Supported by a Tiffany Grant.',
+    'julia-walther|john-glick': 'The 35th and final resident. 2012-2014. She helped select works for the Cranbrook retrospective.',
+    'carl-milles|maija-grotell': 'Faculty colleagues during Cranbrook\'s golden years. Sculpture and ceramics, side by side.',
+    'carl-milles|cranbrook': 'Head of Sculpture 1931-1951. His Orpheus Fountain still watches over the campus.',
+    'carl-milles|eliel-saarinen': 'Friends and colleagues. That famous photo: Milles, Frank Lloyd Wright, and Saarinen together.',
+    'eero-saarinen|eliel-saarinen': 'Son of. Grew up on the Cranbrook campus. Designed the Gateway Arch.',
+    'eero-saarinen|cranbrook': 'Literally grew up here. His childhood home was on campus.',
+    'florence-knoll|harry-bertoia': 'She commissioned his Diamond Chair for Knoll Inc.',
+    'harry-bertoia|cranbrook': 'Came from Italy at 15, won a Cranbrook scholarship. Diamond Chair. Sonambient sculptures.',
+    'toshiko-takaezu|cranbrook': 'MFA 1951 under Grotell. Returned to teach summers 1954-56.',
+    'bernard-leach|yanagi-soetsu': 'Yanagi was Leach\'s philosophical mentor. \"The Unknown Craftsman\" shaped everything.',
+    'dominick-labino|toledo-museum-of-art': 'His glass formula #475 and small-furnace technology made the 1962 workshops possible.',
+    'harvey-littleton|toledo-museum-of-art': 'Led the 1962 workshops. Proved artists could melt and blow glass independently.',
+    'shoji-hamada|toshiko-takaezu': 'The Japanese ceramics influence that crossed the Pacific.',
+    // Layer 4
+    'charles-binns|alfred-university': 'Founded America\'s first ceramics program in 1900. Invented the discipline.',
+    'maija-grotell|charles-binns': 'She studied under the father of American ceramics. Then became its mother.',
+    'frances-senska|peter-voulkos': 'His teacher at Montana State. Connected him to Archie Bray.',
+    'frances-senska|rudy-autio': 'His teacher at Montana State. Connected him to Archie Bray.',
+    'peter-voulkos|archie-bray-foundation': 'First resident director. Where he saw Hamada, Leach, and Yanagi work.',
+    'warren-mackenzie|bernard-leach': 'Three years at St Ives. Learned the Leach tradition firsthand.',
+    'peter-voulkos|john-glick': 'Voulkos opened the Ab-Ex door. Glick walked through it his own way.',
+    // Layer 5
+    'kawai-kanjiro|shoji-hamada': 'Lifelong friends. Ten thousand glaze experiments in Kyoto.',
+    'kawai-kanjiro|yanagi-soetsu': 'Co-founded the Japan Folk Crafts Museum in 1936.',
+    'john-glick|kawai-kanjiro': 'The mingei masters who shaped Glick\'s philosophy of honest functional ware.',
+    'peter-voulkos|paul-soldner': 'His first graduate student at Otis, 1954. Soldner went on to invent American raku.',
+    'robert-arneson|peter-voulkos': 'Voulkos\'s clay revolution gave Arneson permission to blow apart every rule.',
+    'robert-arneson|howard-kottler': 'Funk and Pop ceramics — parallel explosions of irreverence from the Grotell lineage.',
+    'maija-grotell|john-stephenson': 'Cranbrook MFA 1958. She shaped Michigan\'s other ceramics giant.',
+    'john-stephenson|university-of-michigan': 'Thirty-six years building U of M ceramics into a national force.',
+    'john-stephenson|john-glick': 'Michigan\'s two biggest names in ceramics for decades. Both Grotell lineage.',
+    'john-glick|studio-potter': 'Winter 1973–74 article: "Jan Sadowski came as a high school student, very advanced in potting."',
+    'jan-sadowski|studio-potter': 'Named by Glick as a collaborator. The primary-source anchor for this whole project.'
+};
+
+// ═══════════════════════════════════════════════════════════
+// STATURE — Ceramics Community Weight
+// 0=Adjacent, 1=Community, 2=Builder, 3=Pillar, 4=Major, 5=Foundational
+// ═══════════════════════════════════════════════════════════
+
+const STATURE_LABELS = { 0:'Adjacent', 1:'Community', 2:'Builder', 3:'Pillar', 4:'Major', 5:'Foundational' };
+const DOC_LABELS = { 0:'Stub', 1:'Oral only', 2:'Partial', 3:'Well documented' };
+
+const STATURE_DATA = {
+    // ─── Foundational (5) — changed what ceramics IS ───
+    'maija-grotell':            { stature: 5, roles: ['teacher','maker'],            eras: ['founding'],             documented: 3 },
+    'charles-binns':            { stature: 5, roles: ['teacher','builder','writer'], eras: ['founding'],             documented: 3 },
+    'shoji-hamada':             { stature: 5, roles: ['maker','teacher'],            eras: ['founding'],             documented: 3 },
+    'bernard-leach':            { stature: 5, roles: ['maker','teacher','writer'],   eras: ['founding'],             documented: 3 },
+    'yanagi-soetsu':            { stature: 5, roles: ['writer'],                     eras: ['founding'],             documented: 3 },
+    'peter-voulkos':            { stature: 5, roles: ['maker','teacher'],            eras: ['movement'],             documented: 3 },
+    'kawai-kanjiro':            { stature: 5, roles: ['maker','writer'],             eras: ['founding'],             documented: 3 },
+    'harvey-littleton':         { stature: 5, roles: ['maker','teacher','builder'],  eras: ['founding','movement'],  documented: 3 },
+    // ─── Major (4) — national/international influence ───
+    'toshiko-takaezu':          { stature: 4, roles: ['maker','teacher'],            eras: ['movement'],             documented: 3 },
+    'richard-devore':           { stature: 4, roles: ['maker','teacher'],            eras: ['movement'],             documented: 3 },
+    'mary-chase-perry-stratton':{ stature: 4, roles: ['maker','builder'],            eras: ['founding'],             documented: 3 },
+    'warren-mackenzie':         { stature: 4, roles: ['maker','teacher'],            eras: ['movement'],             documented: 3 },
+    'paul-soldner':             { stature: 4, roles: ['maker','teacher'],            eras: ['movement'],             documented: 3 },
+    'robert-arneson':           { stature: 4, roles: ['maker','teacher'],            eras: ['movement'],             documented: 3 },
+    // ─── Pillar (3) — regional-national, master practitioner ───
+    'john-glick':               { stature: 3, roles: ['maker','teacher'],            eras: ['movement','living'],    documented: 3 },
+    'howard-kottler':           { stature: 3, roles: ['maker','teacher'],            eras: ['movement'],             documented: 3 },
+    'rudy-autio':               { stature: 3, roles: ['maker','teacher'],            eras: ['movement'],             documented: 3 },
+    'frances-senska':           { stature: 3, roles: ['teacher','builder'],          eras: ['founding','movement'],  documented: 2 },
+    'john-stephenson':          { stature: 3, roles: ['maker','teacher'],            eras: ['movement'],             documented: 3 },
+    // ─── Builder (2) — community infrastructure ───
+    'dr-charlie-blosser':       { stature: 2, roles: ['teacher','builder'],          eras: ['movement'],             documented: 2 },
+    'paul-kotula':              { stature: 2, roles: ['maker','teacher','builder'],  eras: ['movement','living'],    documented: 2 },
+    'horace-caulkins':          { stature: 2, roles: ['builder'],                    eras: ['founding'],             documented: 2 },
+    // ─── Community (1) — working artist, living fabric ───
+    'jan-sadowski':             { stature: 1, roles: ['maker','connector','teacher'],eras: ['movement','living'],    documented: 1 },
+    'george-landino':           { stature: 1, roles: ['teacher','maker'],            eras: ['movement','living'],    documented: 1 },
+    'brett-gray':               { stature: 1, roles: ['maker'],                      eras: ['living'],               documented: 1 },
+    'ryan':                     { stature: 1, roles: ['connector'],                  eras: ['living'],               documented: 1 },
+    'bridget-blosser':          { stature: 1, roles: ['builder'],                    eras: ['living'],               documented: 1 },
+    'henry-crissman':           { stature: 1, roles: ['maker','builder','connector'],eras: ['living'],               documented: 1 },
+    'tom-fardell':              { stature: 1, roles: ['connector'],                  eras: ['living'],               documented: 0 },
+    'rostislav-eismont':        { stature: 1, roles: ['maker'],                      eras: ['movement'],             documented: 1 },
+    'julia-walther':            { stature: 1, roles: ['maker'],                      eras: ['living'],               documented: 1 },
+    // ─── Adjacent (0) — primary field outside ceramics ───
+    'eliel-saarinen':           { stature: 0, roles: ['builder'],                    eras: ['founding'],             documented: 3 },
+    'george-gough-booth':       { stature: 0, roles: ['builder'],                    eras: ['founding'],             documented: 3 },
+    'charles-eames':            { stature: 0, roles: ['maker'],                      eras: ['founding','movement'],  documented: 3 },
+    'ray-eames':                { stature: 0, roles: ['maker'],                      eras: ['founding','movement'],  documented: 3 },
+    'florence-knoll':           { stature: 0, roles: ['builder'],                    eras: ['founding','movement'],  documented: 3 },
+    'harry-bertoia':            { stature: 0, roles: ['maker'],                      eras: ['founding','movement'],  documented: 3 },
+    'eero-saarinen':            { stature: 0, roles: ['maker'],                      eras: ['founding','movement'],  documented: 3 },
+    'carl-milles':              { stature: 0, roles: ['maker','teacher'],            eras: ['founding'],             documented: 3 },
+    'dominick-labino':          { stature: 0, roles: ['maker','builder'],            eras: ['movement'],             documented: 3 },
+    'dale-chihuly':             { stature: 0, roles: ['maker'],                      eras: ['movement','living'],    documented: 3 },
+    // ─── Institutions ───
+    'cranbrook':                { stature: 5, roles: ['builder','teacher'],          eras: ['founding','movement'],  documented: 3 },
+    'archie-bray-foundation':   { stature: 5, roles: ['builder','teacher'],          eras: ['founding','movement','living'], documented: 3 },
+    'alfred-university':        { stature: 5, roles: ['builder','teacher'],          eras: ['founding','movement'],  documented: 3 },
+    'pewabic':                  { stature: 4, roles: ['builder','maker'],            eras: ['founding','movement','living'], documented: 3 },
+    'plum-tree':                { stature: 3, roles: ['builder','teacher'],          eras: ['movement','living'],    documented: 3 },
+    'studio-potter':            { stature: 3, roles: ['builder','writer'],           eras: ['movement','living'],    documented: 2 },
+    'toledo-museum-of-art':     { stature: 3, roles: ['builder'],                    eras: ['movement'],             documented: 3 },
+    'university-of-michigan':   { stature: 3, roles: ['builder','teacher'],          eras: ['movement'],             documented: 2 },
+    'wayne-state':              { stature: 2, roles: ['builder'],                    eras: ['movement'],             documented: 2 },
+    'ccs':                      { stature: 2, roles: ['builder','teacher'],          eras: ['movement','living'],    documented: 2 },
+    'bbaa':                     { stature: 2, roles: ['builder'],                    eras: ['movement','living'],    documented: 2 },
+    'potters-market':           { stature: 2, roles: ['builder'],                    eras: ['movement','living'],    documented: 2 },
+    'aa-street-art-fair':       { stature: 2, roles: ['builder'],                    eras: ['movement','living'],    documented: 2 },
+    'occ-royal-oak':            { stature: 1, roles: ['builder'],                    eras: ['movement'],             documented: 1 },
+    'groves-hs':                { stature: 1, roles: ['builder'],                    eras: ['movement'],             documented: 1 },
+    'terrestrial-forms':        { stature: 1, roles: ['maker'],                      eras: ['living'],               documented: 1 },
+    'fortress-studios':         { stature: 1, roles: ['builder'],                    eras: ['living'],               documented: 1 },
+    'russell-industrial':       { stature: 1, roles: ['builder'],                    eras: ['living'],               documented: 1 }
+};
+
+// Merge stature data into NODES
+NODES.forEach(n => {
+    const sd = STATURE_DATA[n.id];
+    if (sd) { n.stature = sd.stature; n.roles = sd.roles; n.eras = sd.eras; n.documented = sd.documented; }
+    else    { n.stature = 1; n.roles = ['maker']; n.eras = ['living']; n.documented = 0; }
+});
+
+// ─── Radius + Opacity helpers ───
+function nodeRadius(d) {
+    if (d.primary) return 22;
+    return [8, 10, 13, 16, 20, 25][d.stature] || 10;
+}
+function docOpacity(d) {
+    if (d.primary) return 0.9;
+    return [0.3, 0.5, 0.7, 0.9][d.documented] || 0.5;
+}
+
+// ─── CENTRALITY (betweenness) ───
+(function computeCentrality() {
+    const ids = NODES.map(n => n.id);
+    const adj = {};
+    ids.forEach(id => adj[id] = []);
+    LINKS.forEach(l => {
+        const s = typeof l.source === 'object' ? l.source.id : l.source;
+        const t = typeof l.target === 'object' ? l.target.id : l.target;
+        if (!adj[s].includes(t)) adj[s].push(t);
+        if (!adj[t].includes(s)) adj[t].push(s);
+    });
+    const cent = {};
+    ids.forEach(id => cent[id] = 0);
+    ids.forEach(s => {
+        const dist = {}, sigma = {}, pred = {};
+        ids.forEach(id => { dist[id] = -1; sigma[id] = 0; pred[id] = []; });
+        dist[s] = 0; sigma[s] = 1;
+        const queue = [s], stack = [];
+        while (queue.length) {
+            const v = queue.shift(); stack.push(v);
+            adj[v].forEach(w => {
+                if (dist[w] < 0) { dist[w] = dist[v] + 1; queue.push(w); }
+                if (dist[w] === dist[v] + 1) { sigma[w] += sigma[v]; pred[w].push(v); }
+            });
+        }
+        const delta = {}; ids.forEach(id => delta[id] = 0);
+        while (stack.length) {
+            const w = stack.pop();
+            pred[w].forEach(v => delta[v] += (sigma[v] / sigma[w]) * (1 + delta[w]));
+            if (w !== s) cent[w] += delta[w];
+        }
+    });
+    const maxC = Math.max(...Object.values(cent), 1);
+    NODES.forEach(n => n.centrality = (cent[n.id] || 0) / maxC);
+})();
+
+// ═══════════════════════════════════════════════════════════
+// D3 FORCE GRAPH
+// ═══════════════════════════════════════════════════════════
+
+const width = window.innerWidth;
+const height = window.innerHeight;
+
+const svg = d3.select('#graph-container')
+    .append('svg')
+    .attr('width', width)
+    .attr('height', height);
+
+// Defs for arrow markers
+const defs = svg.append('defs');
+Object.entries(LINK_COLOR_MAP).forEach(([type, color]) => {
+    defs.append('marker')
+        .attr('id', `arrow-${type}`)
+        .attr('viewBox', '0 -5 10 10')
+        .attr('refX', 28)
+        .attr('refY', 0)
+        .attr('markerWidth', 6)
+        .attr('markerHeight', 6)
+        .attr('orient', 'auto')
+        .append('path')
+        .attr('d', 'M0,-4L10,0L0,4')
+        .attr('fill', color)
+        .attr('opacity', 0.4);
+});
+
+// Glow filter for primary node
+defs.append('filter')
+    .attr('id', 'glow')
+    .append('feGaussianBlur')
+    .attr('stdDeviation', '4')
+    .attr('result', 'coloredBlur');
+defs.select('#glow')
+    .append('feMerge')
+    .selectAll('feMergeNode')
+    .data(['coloredBlur', 'SourceGraphic'])
+    .enter()
+    .append('feMergeNode')
+    .attr('in', d => d);
+
+const g = svg.append('g');
+
+// Zoom
+const zoom = d3.zoom()
+    .scaleExtent([0.3, 4])
+    .on('zoom', (event) => g.attr('transform', event.transform));
+svg.call(zoom);
+
+// Simulation
+const simulation = d3.forceSimulation(NODES)
+    .force('link', d3.forceLink(LINKS).id(d => d.id).distance(d => {
+        if (d.source.id === 'jan-sadowski' || d.target.id === 'jan-sadowski') return 160;
+        return 120;
+    }))
+    .force('charge', d3.forceManyBody().strength(d => d.primary ? -600 : -300))
+    .force('center', d3.forceCenter(width / 2, height / 2))
+    .force('collision', d3.forceCollide().radius(d => nodeRadius(d) + 16))
+    .force('x', d3.forceX(width / 2).strength(0.03))
+    .force('y', d3.forceY(height / 2).strength(0.03));
+
+// Links
+const link = g.append('g')
+    .selectAll('line')
+    .data(LINKS)
+    .enter()
+    .append('line')
+    .attr('stroke', d => LINK_COLOR_MAP[d.type] || '#333')
+    .attr('stroke-opacity', 0.25)
+    .attr('stroke-width', 1.5)
+    .attr('marker-end', d => `url(#arrow-${d.type})`);
+
+// Link labels
+const linkLabel = g.append('g')
+    .selectAll('text')
+    .data(LINKS)
+    .enter()
+    .append('text')
+    .attr('class', 'link-label')
+    .text(d => d.relation)
+    .attr('text-anchor', 'middle')
+    .attr('dy', -4);
+
+// Link hit areas (invisible wider lines for story hover)
+const linkHitArea = g.append('g')
+    .selectAll('line')
+    .data(LINKS)
+    .enter()
+    .append('line')
+    .attr('stroke', 'transparent')
+    .attr('stroke-width', 14)
+    .attr('cursor', 'pointer');
+
+const linkTooltipEl = document.getElementById('link-tooltip');
+
+linkHitArea.on('mouseover', function(event, d) {
+    const sid = typeof d.source === 'object' ? d.source.id : d.source;
+    const tid = typeof d.target === 'object' ? d.target.id : d.target;
+    const story = LINK_STORIES[`${sid}|${tid}`] || LINK_STORIES[`${tid}|${sid}`];
+    if (story) {
+        linkTooltipEl.innerHTML = `${story}<div class="lt-relation">${d.relation}</div>`;
+    } else {
+        linkTooltipEl.innerHTML = `<div class="lt-relation">${d.relation} \u00b7 ${d.type}</div>`;
+    }
+    linkTooltipEl.style.left = (event.pageX + 15) + 'px';
+    linkTooltipEl.style.top = (event.pageY - 10) + 'px';
+    linkTooltipEl.classList.add('visible');
+    link.filter(l => l === d).attr('stroke-opacity', 0.8).attr('stroke-width', 3);
+}).on('mousemove', function(event) {
+    linkTooltipEl.style.left = (event.pageX + 15) + 'px';
+    linkTooltipEl.style.top = (event.pageY - 10) + 'px';
+}).on('mouseout', function(event, d) {
+    linkTooltipEl.classList.remove('visible');
+    link.filter(l => l === d).attr('stroke-opacity', 0.25).attr('stroke-width', 1.5);
+});
+
+// Nodes
+const node = g.append('g')
+    .selectAll('g')
+    .data(NODES)
+    .enter()
+    .append('g')
+    .attr('cursor', 'pointer')
+    .call(d3.drag()
+        .on('start', dragstarted)
+        .on('drag', dragged)
+        .on('end', dragended));
+
+// Node circles — radius from stature, opacity from documentation level
+node.append('circle')
+    .attr('r', d => nodeRadius(d))
+    .attr('fill', d => COLOR_MAP[d.type] || '#666')
+    .attr('fill-opacity', d => docOpacity(d))
+    .attr('stroke', d => COLOR_MAP[d.type] || '#666')
+    .attr('stroke-width', d => d.primary ? 3 : 1.5)
+    .attr('stroke-opacity', 0.4)
+    .attr('filter', d => d.primary ? 'url(#glow)' : null);
+
+// Centrality ring — glow halo, brighter for structurally central nodes
+node.append('circle')
+    .attr('class', 'centrality-ring')
+    .attr('r', d => nodeRadius(d) + 3)
+    .attr('fill', 'none')
+    .attr('stroke', d => COLOR_MAP[d.type] || '#666')
+    .attr('stroke-width', d => d.centrality > 0.05 ? d.centrality * 5 : 0)
+    .attr('stroke-opacity', d => d.centrality > 0.05 ? d.centrality * 0.6 : 0)
+    .attr('filter', 'url(#glow)');
+
+// Node labels
+node.append('text')
+    .text(d => d.name)
+    .attr('dy', d => d.primary ? 36 : 24)
+    .attr('text-anchor', 'middle')
+    .attr('fill', d => d.primary ? '#e8e8f0' : '#888899')
+    .attr('font-size', d => d.primary ? '11px' : '9px')
+    .attr('font-family', 'JetBrains Mono')
+    .attr('font-weight', d => d.primary ? '500' : '300');
+
+// Hover effects
+node.on('mouseover', function(event, d) {
+    // Highlight connected links
+    link.attr('stroke-opacity', l =>
+        (l.source.id === d.id || l.target.id === d.id) ? 0.7 : 0.08
+    ).attr('stroke-width', l =>
+        (l.source.id === d.id || l.target.id === d.id) ? 2.5 : 1
+    );
+
+    // Dim unconnected nodes
+    const connected = new Set();
+    connected.add(d.id);
+    LINKS.forEach(l => {
+        const sid = typeof l.source === 'object' ? l.source.id : l.source;
+        const tid = typeof l.target === 'object' ? l.target.id : l.target;
+        if (sid === d.id) connected.add(tid);
+        if (tid === d.id) connected.add(sid);
+    });
+
+    node.select('circle').attr('fill-opacity', n => connected.has(n.id) ? 0.9 : 0.15);
+    node.select('text').attr('fill-opacity', n => connected.has(n.id) ? 1 : 0.2);
+
+    // Show tooltip
+    const tooltip = document.getElementById('tooltip');
+    tooltip.innerHTML = `<div class="tt-type">${d.type}</div><strong>${d.name}</strong>`;
+    tooltip.style.left = (event.pageX + 15) + 'px';
+    tooltip.style.top = (event.pageY - 10) + 'px';
+    tooltip.classList.add('visible');
+
+}).on('mouseout', function() {
+    link.attr('stroke-opacity', 0.25).attr('stroke-width', 1.5);
+    node.select('circle').attr('fill-opacity', d => docOpacity(d));
+    node.select('text').attr('fill-opacity', 1);
+    document.getElementById('tooltip').classList.remove('visible');
+
+}).on('click', function(event, d) {
+    event.stopPropagation();
+    openDetailPanel(d);
+});
+
+// Tick
+simulation.on('tick', () => {
+    link
+        .attr('x1', d => d.source.x)
+        .attr('y1', d => d.source.y)
+        .attr('x2', d => d.target.x)
+        .attr('y2', d => d.target.y);
+
+    linkHitArea
+        .attr('x1', d => d.source.x)
+        .attr('y1', d => d.source.y)
+        .attr('x2', d => d.target.x)
+        .attr('y2', d => d.target.y);
+
+    linkLabel
+        .attr('x', d => (d.source.x + d.target.x) / 2)
+        .attr('y', d => (d.source.y + d.target.y) / 2);
+
+    node.attr('transform', d => `translate(${d.x},${d.y})`);
+});
+
+// Drag
+function dragstarted(event) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    event.subject.fx = event.subject.x;
+    event.subject.fy = event.subject.y;
+}
+
+function dragged(event) {
+    event.subject.fx = event.x;
+    event.subject.fy = event.y;
+}
+
+function dragended(event) {
+    if (!event.active) simulation.alphaTarget(0);
+    event.subject.fx = null;
+    event.subject.fy = null;
+}
+
+// ═══════════════════════════════════════════════════════════
+// DETAIL PANEL (Redesigned)
+// ═══════════════════════════════════════════════════════════
+
+function openDetailPanel(d) {
+    const panel = document.getElementById('detail-panel');
+    const content = document.getElementById('panel-content');
+
+    // Find connections
+    const connections = [];
+    LINKS.forEach(l => {
+        const sid = typeof l.source === 'object' ? l.source.id : l.source;
+        const tid = typeof l.target === 'object' ? l.target.id : l.target;
+        if (sid === d.id) {
+            const target = NODES.find(n => n.id === tid);
+            if (target) connections.push({ node: target, relation: l.relation, direction: 'outgoing' });
+        }
+        if (tid === d.id) {
+            const source = NODES.find(n => n.id === sid);
+            if (source) connections.push({ node: source, relation: l.relation, direction: 'incoming' });
+        }
+    });
+
+    // Check if node has mentorship lineage
+    const hasLineage = LINKS.some(l => {
+        const sid = typeof l.source === 'object' ? l.source.id : l.source;
+        const tid = typeof l.target === 'object' ? l.target.id : l.target;
+        return l.type === 'mentorship' && (sid === d.id || tid === d.id);
+    });
+
+    let html = `<div class="node-type">${d.type} · <span class="stature-badge stature-${d.stature !== undefined ? d.stature : 1}">${STATURE_LABELS[d.stature !== undefined ? d.stature : 1]}</span></div>`;
+    html += `<h2>${d.name}</h2>`;
+
+    // Roles + Eras
+    html += `<div style="margin-bottom:0.5rem">`;
+    if (d.roles) d.roles.forEach(r => { html += `<span class="role-tag">${r}</span>`; });
+    if (d.eras) d.eras.forEach(e => { html += `<span class="era-tag era-${e}">${e}</span>`; });
+    html += `</div>`;
+
+    // Documentation level + Centrality
+    const docLvl = d.documented !== undefined ? d.documented : 0;
+    html += `<div class="doc-indicator">`;
+    for (let i = 0; i < 3; i++) html += `<div class="doc-dot ${i < docLvl ? 'doc-filled' : 'doc-empty'}"></div>`;
+    html += ` <span>${DOC_LABELS[docLvl]}</span>`;
+    if (d.centrality > 0.1) html += ` · <span style="color:var(--accent)">${(d.centrality * 100).toFixed(0)}% centrality</span>`;
+    html += `</div>`;
+
+    // Hero quote — largest text, the panel's centerpiece
+    if (d.quotes && d.quotes.length > 0) {
+        html += `<div class="panel-hero-quote">${d.quotes[0]}</div>`;
+    }
+
+    // Story paragraph
+    if (d.bio) {
+        html += `<div class="panel-story">${d.bio}</div>`;
+    }
+
+    // Trace the Line button
+    if (hasLineage && d.type === 'person') {
+        html += `<button class="trace-btn" onclick="traceLineage('${d.id}')">⟡ Trace the Line</button>`;
+    }
+
+    // Observations
+    if (d.observations && d.observations.length > 0) {
+        html += `<div class="detail-section"><h3>Details</h3><ul>`;
+        d.observations.forEach(o => {
+            html += `<li>${o}</li>`;
+        });
+        html += `</ul></div>`;
+    }
+
+    // Additional quotes (if more than 1)
+    if (d.quotes && d.quotes.length > 1) {
+        html += `<div class="detail-section"><h3>In Their Words</h3><ul>`;
+        d.quotes.slice(1).forEach(q => {
+            html += `<li class="quote">${q}</li>`;
+        });
+        html += `</ul></div>`;
+    }
+
+    // Vertical Timeline
+    if (d.timeline && d.timeline.length > 0) {
+        html += `<div class="detail-section"><h3>Timeline</h3><div class="panel-vtimeline">`;
+        d.timeline.forEach(t => {
+            html += `<div class="vt-entry"><span class="vt-year">${t.year}</span>${t.event}</div>`;
+        });
+        html += `</div></div>`;
+    }
+
+    // Mini connection graph + connection list
+    if (connections.length > 0) {
+        html += `<div class="detail-section"><h3>Network (${connections.length})</h3>`;
+        html += `<div class="panel-mini-graph" id="mini-graph-${d.id}"></div>`;
+        connections.forEach(c => {
+            html += `<div class="connection-item" onclick="focusNode('${c.node.id}')">
+                <div class="connection-dot" style="background: ${COLOR_MAP[c.node.type]}"></div>
+                <div>
+                    <div>${c.node.name}</div>
+                    <div class="connection-relation">${c.relation}</div>
+                </div>
+            </div>`;
+        });
+        html += `</div>`;
+    }
+
+    // Sources — "How We Know This"
+    if (d.sources && d.sources.length > 0) {
+        html += `<div class="detail-section panel-sources"><h3>How We Know This</h3><ul>`;
+        d.sources.forEach(s => {
+            if (s.url) {
+                html += `<li><a href="${s.url}" target="_blank" style="color:var(--accent);text-decoration:none;">${s.label}</a></li>`;
+            } else {
+                html += `<li>${s.label}</li>`;
+            }
+        });
+        html += `</ul></div>`;
+    }
+
+    // Contact
+    if (d.contact) {
+        html += `<div class="detail-section"><h3>Contact</h3>
+            <p style="font-size:0.78rem;color:var(--text-mid)">${d.contact}</p>
+        </div>`;
+    }
+
+    content.innerHTML = html;
+    panel.classList.add('open');
+
+    // Render mini graph
+    if (connections.length > 0) {
+        setTimeout(() => renderMiniGraph(d, connections), 100);
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+// MINI GRAPH (inside detail panel)
+// ═══════════════════════════════════════════════════════════
+
+function renderMiniGraph(centerNode, connections) {
+    const container = document.getElementById(`mini-graph-${centerNode.id}`);
+    if (!container) return;
+
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+
+    const miniNodes = [{ id: centerNode.id, name: centerNode.name, type: centerNode.type, fx: w/2, fy: h/2 }];
+    const miniLinks = [];
+
+    connections.forEach(c => {
+        if (!miniNodes.find(n => n.id === c.node.id)) {
+            miniNodes.push({ id: c.node.id, name: c.node.name, type: c.node.type });
+        }
+        miniLinks.push({ source: centerNode.id, target: c.node.id });
+    });
+
+    const miniSvg = d3.select(container).append('svg').attr('width', w).attr('height', h);
+
+    const miniSim = d3.forceSimulation(miniNodes)
+        .force('link', d3.forceLink(miniLinks).id(d => d.id).distance(55))
+        .force('charge', d3.forceManyBody().strength(-60))
+        .force('center', d3.forceCenter(w/2, h/2));
+
+    const miniLink = miniSvg.append('g').selectAll('line').data(miniLinks).enter().append('line')
+        .attr('stroke', '#333').attr('stroke-opacity', 0.4).attr('stroke-width', 1);
+
+    const miniNode = miniSvg.append('g').selectAll('circle').data(miniNodes).enter().append('circle')
+        .attr('r', d => d.id === centerNode.id ? 10 : 6)
+        .attr('fill', d => COLOR_MAP[d.type] || '#666')
+        .attr('fill-opacity', 0.8)
+        .attr('cursor', 'pointer')
+        .on('click', (e, d) => { if (d.id !== centerNode.id) focusNode(d.id); });
+
+    const miniLabel = miniSvg.append('g').selectAll('text').data(miniNodes).enter().append('text')
+        .text(d => d.name.split(' ').pop())
+        .attr('font-size', '7px')
+        .attr('fill', '#888')
+        .attr('text-anchor', 'middle')
+        .attr('dy', d => d.id === centerNode.id ? 18 : 14)
+        .attr('font-family', 'JetBrains Mono');
+
+    miniSim.on('tick', () => {
+        miniLink.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+            .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+        miniNode.attr('cx', d => d.x).attr('cy', d => d.y);
+        miniLabel.attr('x', d => d.x).attr('y', d => d.y);
+    });
+}
+
+function focusNode(id) {
+    const d = NODES.find(n => n.id === id);
+    if (!d) return;
+
+    // Zoom to node
+    const transform = d3.zoomIdentity
+        .translate(width / 2, height / 2)
+        .scale(1.5)
+        .translate(-d.x, -d.y);
+    svg.transition().duration(750).call(zoom.transform, transform);
+
+    // Open detail panel
+    setTimeout(() => openDetailPanel(d), 400);
+}
+
+// Close panel
+document.getElementById('close-panel').addEventListener('click', () => {
+    document.getElementById('detail-panel').classList.remove('open');
+});
+
+// Click background to close
+svg.on('click', () => {
+    document.getElementById('detail-panel').classList.remove('open');
+});
+
+// ═══════════════════════════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════════════════════════
+
+const searchInput = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+
+searchInput.addEventListener('input', () => {
+    const q = searchInput.value.toLowerCase().trim();
+    if (!q) {
+        searchResults.classList.remove('active');
+        return;
+    }
+
+    const matches = NODES.filter(n =>
+        n.name.toLowerCase().includes(q) ||
+        (n.bio && n.bio.toLowerCase().includes(q)) ||
+        (n.observations && n.observations.some(o => o.toLowerCase().includes(q)))
+    );
+
+    if (matches.length === 0) {
+        searchResults.classList.remove('active');
+        return;
+    }
+
+    searchResults.innerHTML = matches.map(n =>
+        `<div class="search-result-item" onclick="focusNode('${n.id}')">
+            <div><span style="color:${COLOR_MAP[n.type]}">●</span> ${n.name}</div>
+            <div class="type">${n.type}</div>
+        </div>`
+    ).join('');
+    searchResults.classList.add('active');
+});
+
+searchInput.addEventListener('blur', () => {
+    setTimeout(() => searchResults.classList.remove('active'), 200);
+});
+
+searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        searchInput.value = '';
+        searchResults.classList.remove('active');
+        searchInput.blur();
+    }
+});
+
+// ═══════════════════════════════════════════════════════════
+// CONTROLS
+// ═══════════════════════════════════════════════════════════
+
+// Toggle edge labels
+let labelsVisible = false;
+document.getElementById('btn-labels').addEventListener('click', function() {
+    labelsVisible = !labelsVisible;
+    this.classList.toggle('active');
+    linkLabel.classed('visible', labelsVisible);
+});
+
+// Center on Jan
+document.getElementById('btn-center').addEventListener('click', () => {
+    const jan = NODES.find(n => n.id === 'jan-sadowski');
+    if (jan) {
+        const transform = d3.zoomIdentity
+            .translate(width / 2, height / 2)
+            .scale(1.2)
+            .translate(-jan.x, -jan.y);
+        svg.transition().duration(750).call(zoom.transform, transform);
+    }
+});
+
+// Expand — increase forces temporarily
+let expanded = false;
+document.getElementById('btn-expand').addEventListener('click', function() {
+    expanded = !expanded;
+    this.classList.toggle('active');
+    simulation.force('charge').strength(expanded ? -600 : -300);
+    simulation.force('link').distance(expanded ? 200 : 120);
+    simulation.alpha(0.5).restart();
+});
+
+// Geographic mode toggle
+let geoMode = false;
+document.getElementById('btn-geo').addEventListener('click', function() {
+    geoMode = !geoMode;
+    this.classList.toggle('active');
+    const geoHint = document.getElementById('geo-hint');
+
+    if (geoMode) {
+        simulation.stop();
+        geoHint.classList.add('visible');
+        setTimeout(() => geoHint.classList.remove('visible'), 3000);
+
+        const t = d3.transition().duration(1200).ease(d3.easeCubicInOut);
+
+        node.transition(t).attr('transform', d => {
+            const pos = GEO_POSITIONS[d.id] || { x: 0.5, y: 0.5 };
+            d.x = pos.x * width;
+            d.y = pos.y * height;
+            return `translate(${d.x},${d.y})`;
+        });
+
+        link.transition(t)
+            .attr('x1', d => (GEO_POSITIONS[d.source.id] || {x:0.5,y:0.5}).x * width)
+            .attr('y1', d => (GEO_POSITIONS[d.source.id] || {x:0.5,y:0.5}).y * height)
+            .attr('x2', d => (GEO_POSITIONS[d.target.id] || {x:0.5,y:0.5}).x * width)
+            .attr('y2', d => (GEO_POSITIONS[d.target.id] || {x:0.5,y:0.5}).y * height);
+
+        linkHitArea.transition(t)
+            .attr('x1', d => (GEO_POSITIONS[d.source.id] || {x:0.5,y:0.5}).x * width)
+            .attr('y1', d => (GEO_POSITIONS[d.source.id] || {x:0.5,y:0.5}).y * height)
+            .attr('x2', d => (GEO_POSITIONS[d.target.id] || {x:0.5,y:0.5}).x * width)
+            .attr('y2', d => (GEO_POSITIONS[d.target.id] || {x:0.5,y:0.5}).y * height);
+
+        linkLabel.transition(t)
+            .attr('x', d => {
+                const sp = GEO_POSITIONS[d.source.id] || {x:0.5,y:0.5};
+                const tp = GEO_POSITIONS[d.target.id] || {x:0.5,y:0.5};
+                return (sp.x + tp.x) / 2 * width;
+            })
+            .attr('y', d => {
+                const sp = GEO_POSITIONS[d.source.id] || {x:0.5,y:0.5};
+                const tp = GEO_POSITIONS[d.target.id] || {x:0.5,y:0.5};
+                return (sp.y + tp.y) / 2 * height;
+            });
+    } else {
+        simulation.alpha(0.5).restart();
+    }
+});
+
+// ═══════════════════════════════════════════════════════════
+// HEAT MAP — Recolor nodes by stature, centrality, or doc level
+// ═══════════════════════════════════════════════════════════
+
+const HEAT_MODES = ['type', 'stature', 'centrality', 'documented'];
+let heatIndex = 0;
+
+// Color scales for each heat mode
+const STATURE_COLORS = { 0:'#444455', 1:'#888899', 2:'#22d3ee', 3:'#34d399', 4:'#fbbf24', 5:'#818cf8' };
+const DOC_COLORS = { 0:'#ff4444', 1:'#ff8844', 2:'#fbbf24', 3:'#34d399' };
+
+function heatColor(d, mode) {
+    if (mode === 'type') return COLOR_MAP[d.type] || '#666';
+    if (mode === 'stature') return STATURE_COLORS[d.stature] || '#666';
+    if (mode === 'documented') return DOC_COLORS[d.documented !== undefined ? d.documented : 0] || '#ff4444';
+    if (mode === 'centrality') {
+        const c = d.centrality || 0;
+        // lerp from dim gray to bright accent
+        const r = Math.round(68 + c * (129 - 68));
+        const g = Math.round(68 + c * (140 - 68));
+        const b = Math.round(85 + c * (248 - 85));
+        return `rgb(${r},${g},${b})`;
+    }
+    return '#666';
+}
+
+function applyHeatMap() {
+    const mode = HEAT_MODES[heatIndex];
+    const labelEl = document.getElementById('heat-mode-label');
+    const btn = document.getElementById('btn-heat');
+
+    if (mode === 'type') {
+        labelEl.classList.remove('visible');
+        btn.classList.remove('active');
+    } else {
+        const modeLabels = { stature: 'color by stature', centrality: 'color by centrality', documented: 'color by documentation' };
+        labelEl.textContent = modeLabels[mode];
+        labelEl.classList.add('visible');
+        btn.classList.add('active');
+    }
+
+    node.select('circle').transition().duration(400)
+        .attr('fill', d => heatColor(d, mode))
+        .attr('stroke', d => heatColor(d, mode));
+
+    // Centrality ring color follows
+    node.select('.centrality-ring').transition().duration(400)
+        .attr('stroke', d => heatColor(d, mode));
+}
+
+document.getElementById('btn-heat').addEventListener('click', () => {
+    heatIndex = (heatIndex + 1) % HEAT_MODES.length;
+    applyHeatMap();
+});
+
+// ═══════════════════════════════════════════════════════════
+// GAPS DASHBOARD — Under-documented nodes sorted by importance
+// ═══════════════════════════════════════════════════════════
+
+(function buildGapsList() {
+    const gaps = NODES
+        .filter(n => (n.documented !== undefined ? n.documented : 0) < 2)
+        .sort((a, b) => {
+            if (b.stature !== a.stature) return b.stature - a.stature;
+            return (b.centrality || 0) - (a.centrality || 0);
+        });
+
+    const container = document.getElementById('gaps-list');
+    if (gaps.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-dim);font-size:0.7rem;margin-top:1rem">No under-documented nodes. Nice work.</div>';
+        return;
+    }
+
+    // Group by stature
+    let currentStature = -1;
+    gaps.forEach(n => {
+        if (n.stature !== currentStature) {
+            currentStature = n.stature;
+            const label = document.createElement('div');
+            label.className = 'gap-section-label';
+            label.textContent = STATURE_LABELS[currentStature] + ' (tier ' + currentStature + ')';
+            container.appendChild(label);
+        }
+        const item = document.createElement('div');
+        item.className = 'gap-item';
+        const docLvl = n.documented !== undefined ? n.documented : 0;
+        const docText = DOC_LABELS[docLvl];
+        item.innerHTML = `<div class="gap-dot" style="background:${DOC_COLORS[docLvl]}"></div>`
+            + `<span class="gap-name">${n.name}</span>`
+            + `<span class="gap-meta">${docText}</span>`;
+        item.addEventListener('click', () => {
+            // Close gaps panel and open detail panel for this node
+            document.getElementById('gaps-panel').classList.remove('open');
+            document.getElementById('btn-gaps').classList.remove('active');
+            openDetailPanel(n);
+            // Center on node
+            const transform = d3.zoomTransform(svg.node());
+            const scale = transform.k || 1;
+            svg.transition().duration(600).call(
+                zoom.transform,
+                d3.zoomIdentity.translate(width / 2 - n.x * scale, height / 2 - n.y * scale).scale(scale)
+            );
+        });
+        container.appendChild(item);
+    });
+})();
+
+document.getElementById('btn-gaps').addEventListener('click', () => {
+    const panel = document.getElementById('gaps-panel');
+    const btn = document.getElementById('btn-gaps');
+    panel.classList.toggle('open');
+    btn.classList.toggle('active');
+});
+
+document.getElementById('close-gaps').addEventListener('click', () => {
+    document.getElementById('gaps-panel').classList.remove('open');
+    document.getElementById('btn-gaps').classList.remove('active');
+});
+
+// ═══════════════════════════════════════════════════════════
+// FILTERS — Era, Role, Stature toggles
+// ═══════════════════════════════════════════════════════════
+
+const activeFilters = { era: new Set(), role: new Set(), stature: new Set() };
+
+document.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.addEventListener('click', function() {
+        const type = this.dataset.filter;
+        const val = this.dataset.value;
+        if (activeFilters[type].has(val)) {
+            activeFilters[type].delete(val);
+            this.classList.remove('active');
+        } else {
+            activeFilters[type].add(val);
+            this.classList.add('active');
+        }
+        applyFilters();
+    });
+});
+
+function applyFilters() {
+    const hasEra = activeFilters.era.size > 0;
+    const hasRole = activeFilters.role.size > 0;
+    const hasStat = activeFilters.stature.size > 0;
+
+    if (!hasEra && !hasRole && !hasStat) {
+        // No filters — restore
+        node.select('circle').transition().duration(300).attr('fill-opacity', d => docOpacity(d));
+        node.select('text').transition().duration(300).attr('fill-opacity', 1);
+        link.transition().duration(300).attr('stroke-opacity', 0.25);
+        return;
+    }
+
+    const matchingIds = new Set();
+    NODES.forEach(n => {
+        let match = true;
+        if (hasEra && !(n.eras && n.eras.some(e => activeFilters.era.has(e)))) match = false;
+        if (hasRole && !(n.roles && n.roles.some(r => activeFilters.role.has(r)))) match = false;
+        if (hasStat && !activeFilters.stature.has(String(n.stature))) match = false;
+        if (match) matchingIds.add(n.id);
+    });
+
+    node.select('circle').transition().duration(300)
+        .attr('fill-opacity', d => matchingIds.has(d.id) ? docOpacity(d) : 0.04);
+    node.select('text').transition().duration(300)
+        .attr('fill-opacity', d => matchingIds.has(d.id) ? 1 : 0.05);
+    link.transition().duration(300)
+        .attr('stroke-opacity', l => {
+            const sid = typeof l.source === 'object' ? l.source.id : l.source;
+            const tid = typeof l.target === 'object' ? l.target.id : l.target;
+            return (matchingIds.has(sid) && matchingIds.has(tid)) ? 0.25 : 0.02;
+        });
+}
+
+// ═══════════════════════════════════════════════════════════
+// TIME SCRUB
+// ═══════════════════════════════════════════════════════════
+
+const timeScrub = document.getElementById('time-scrub');
+const timeScrubYear = document.getElementById('time-scrub-year');
+
+timeScrub.addEventListener('input', () => {
+    const year = parseInt(timeScrub.value);
+    timeScrubYear.textContent = year;
+
+    node.select('circle').transition().duration(200)
+        .attr('fill-opacity', d => {
+            const sy = START_YEARS[d.id] || 2000;
+            return sy <= year ? docOpacity(d) : 0.04;
+        });
+
+    node.select('text').transition().duration(200)
+        .attr('fill-opacity', d => {
+            const sy = START_YEARS[d.id] || 2000;
+            return sy <= year ? 1 : 0.04;
+        });
+
+    link.transition().duration(200)
+        .attr('stroke-opacity', l => {
+            const sid = typeof l.source === 'object' ? l.source.id : l.source;
+            const tid = typeof l.target === 'object' ? l.target.id : l.target;
+            const sy1 = START_YEARS[sid] || 2000;
+            const sy2 = START_YEARS[tid] || 2000;
+            return (sy1 <= year && sy2 <= year) ? 0.25 : 0.02;
+        });
+});
+
+timeScrub.addEventListener('dblclick', () => {
+    timeScrub.value = 2026;
+    timeScrubYear.textContent = '2026';
+    node.select('circle').transition().duration(400).attr('fill-opacity', d => docOpacity(d));
+    node.select('text').transition().duration(400).attr('fill-opacity', 1);
+    link.transition().duration(400).attr('stroke-opacity', 0.25);
+});
+
+// ═══════════════════════════════════════════════════════════
+// LINEAGE WALK — "Trace the Line"
+// ═══════════════════════════════════════════════════════════
+
+let lineageActive = false;
+
+function findLineagePath(targetId) {
+    // BFS from target back through mentorship links to find the oldest ancestor
+    const visited = new Set();
+    const queue = [targetId];
+    visited.add(targetId);
+
+    while (queue.length > 0) {
+        const current = queue.shift();
+        LINKS.forEach(l => {
+            const sid = typeof l.source === 'object' ? l.source.id : l.source;
+            const tid = typeof l.target === 'object' ? l.target.id : l.target;
+            if (l.type === 'mentorship') {
+                if (sid === current && !visited.has(tid)) { visited.add(tid); queue.push(tid); }
+                if (tid === current && !visited.has(sid)) { visited.add(sid); queue.push(sid); }
+            }
+        });
+    }
+
+    // Find oldest ancestor in the visited set
+    let oldest = targetId;
+    let oldestYear = Infinity;
+    visited.forEach(vid => {
+        const year = START_YEARS[vid] || 2020;
+        if (year < oldestYear) { oldestYear = year; oldest = vid; }
+    });
+
+    if (oldest === targetId) return [targetId];
+
+    // BFS from oldest to targetId
+    const visited2 = new Set([oldest]);
+    const parent2 = {};
+    const queue2 = [oldest];
+
+    while (queue2.length > 0) {
+        const current = queue2.shift();
+        if (current === targetId) break;
+        LINKS.forEach(l => {
+            const sid = typeof l.source === 'object' ? l.source.id : l.source;
+            const tid = typeof l.target === 'object' ? l.target.id : l.target;
+            if (l.type === 'mentorship') {
+                if (sid === current && !visited2.has(tid)) {
+                    visited2.add(tid); parent2[tid] = current; queue2.push(tid);
+                }
+                if (tid === current && !visited2.has(sid)) {
+                    visited2.add(sid); parent2[sid] = current; queue2.push(sid);
+                }
+            }
+        });
+    }
+
+    const path = [];
+    let curr = targetId;
+    while (curr) { path.unshift(curr); curr = parent2[curr]; }
+    return path.length > 1 ? path : [targetId];
+}
+
+async function traceLineage(nodeId) {
+    if (lineageActive) return;
+    lineageActive = true;
+
+    document.getElementById('detail-panel').classList.remove('open');
+    const path = findLineagePath(nodeId);
+    if (path.length <= 1) { lineageActive = false; return; }
+
+    // Dim everything
+    node.select('circle').transition().duration(500).attr('fill-opacity', 0.04);
+    node.select('text').transition().duration(500).attr('fill-opacity', 0.04);
+    link.transition().duration(500).attr('stroke-opacity', 0.02);
+    await new Promise(r => setTimeout(r, 600));
+
+    const stepDisplay = document.getElementById('lineage-step');
+
+    for (let i = 0; i < path.length; i++) {
+        const nid = path[i];
+        const nodeData = NODES.find(n => n.id === nid);
+
+        // Light up node
+        node.filter(d => d.id === nid).select('circle')
+            .transition().duration(600)
+            .attr('fill-opacity', 1).attr('stroke-opacity', 1).attr('stroke-width', 3);
+        node.filter(d => d.id === nid).select('text')
+            .transition().duration(600)
+            .attr('fill-opacity', 1).attr('fill', '#e8e8f0');
+
+        // Light up link to next node
+        if (i < path.length - 1) {
+            const next = path[i + 1];
+            const story = LINK_STORIES[`${nid}|${next}`] || LINK_STORIES[`${next}|${nid}`] || '';
+
+            link.filter(l => {
+                const sid = typeof l.source === 'object' ? l.source.id : l.source;
+                const tid = typeof l.target === 'object' ? l.target.id : l.target;
+                return (sid === nid && tid === next) || (tid === nid && sid === next);
+            }).transition().duration(600)
+                .attr('stroke-opacity', 0.9).attr('stroke-width', 3).attr('stroke', '#818cf8');
+
+            if (story) {
+                const fromName = nodeData ? nodeData.name : nid;
+                const toData = NODES.find(n => n.id === next);
+                const toName = toData ? toData.name : next;
+                stepDisplay.innerHTML = `
+                    <div class="step-names">${fromName} <span class="step-arrow">→</span> ${toName}</div>
+                    <div class="step-story">${story}</div>
+                `;
+                stepDisplay.classList.add('visible');
+            }
+        }
+
+        // Zoom to node
+        if (nodeData) {
+            const transform = d3.zoomIdentity
+                .translate(width / 2, height / 2)
+                .scale(1.4)
+                .translate(-nodeData.x, -nodeData.y);
+            svg.transition().duration(800).call(zoom.transform, transform);
+        }
+
+        await new Promise(r => setTimeout(r, 2800));
+    }
+
+    // Fade step display
+    stepDisplay.classList.remove('visible');
+    await new Promise(r => setTimeout(r, 600));
+
+    // Restore everything
+    node.select('circle').transition().duration(800)
+        .attr('fill-opacity', d => docOpacity(d))
+        .attr('stroke-width', d => d.primary ? 3 : 1.5)
+        .attr('stroke-opacity', 0.4)
+        .attr('stroke', d => COLOR_MAP[d.type] || '#666')
+        .attr('fill', d => COLOR_MAP[d.type] || '#666');
+    node.select('text').transition().duration(800)
+        .attr('fill-opacity', 1)
+        .attr('fill', d => d.primary ? '#e8e8f0' : '#888899');
+    link.transition().duration(800)
+        .attr('stroke-opacity', 0.25).attr('stroke-width', 1.5)
+        .attr('stroke', d => LINK_COLOR_MAP[d.type] || '#333');
+
+    const targetNode = NODES.find(n => n.id === nodeId);
+    if (targetNode) {
+        setTimeout(() => openDetailPanel(targetNode), 1000);
+    }
+
+    lineageActive = false;
+}
+
+// ═══════════════════════════════════════════════════════════
+// KEYBOARD
+// ═══════════════════════════════════════════════════════════
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement !== searchInput) {
+        e.preventDefault();
+        searchInput.focus();
+    }
+    if (e.key === 'Escape') {
+        document.getElementById('detail-panel').classList.remove('open');
+        searchInput.blur();
+    }
+});
+
+// ═══════════════════════════════════════════════════════════
+// LANDING SCREEN — Quote Engine
+// ═══════════════════════════════════════════════════════════
+
+const LANDING_QUOTES = [];
+NODES.forEach(n => {
+    if (n.quotes) {
+        n.quotes.forEach(q => {
+            LANDING_QUOTES.push({ text: q, name: n.name });
+        });
+    }
+});
+
+function initLanding() {
+    const overlay = document.getElementById('landing-overlay');
+    if (!overlay || LANDING_QUOTES.length === 0) {
+        startGraph();
+        return;
+    }
+
+    const quote = LANDING_QUOTES[Math.floor(Math.random() * LANDING_QUOTES.length)];
+    overlay.querySelector('.landing-quote').innerHTML = `
+        <blockquote>${quote.text}</blockquote>
+        <div class="attribution">— ${quote.name}</div>
+    `;
+
+    let dismissed = false;
+    const dismiss = () => {
+        if (dismissed) return;
+        dismissed = true;
+        overlay.classList.add('fade-out');
+        setTimeout(() => {
+            overlay.remove();
+            startGraph();
+        }, 1500);
+    };
+
+    overlay.addEventListener('click', dismiss);
+    document.addEventListener('keydown', function handler(e) {
+        dismiss();
+        document.removeEventListener('keydown', handler);
+    });
+
+    setTimeout(dismiss, 6000);
+}
+
+function startGraph() {
+    setTimeout(() => {
+        const jan = NODES.find(n => n.id === 'jan-sadowski');
+        if (jan) openDetailPanel(jan);
+    }, 1000);
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+
+initLanding();
+
+// Handle resize
+window.addEventListener('resize', () => {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    svg.attr('width', w).attr('height', h);
+    simulation.force('center', d3.forceCenter(w / 2, h / 2));
+    if (!geoMode) simulation.alpha(0.3).restart();
+});
+</script>
+
+</body>
+</html>
