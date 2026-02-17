@@ -1018,58 +1018,7 @@ turns this panel into a full-screen instrument.
   matters here; glowing red if near a cliff edge. Sliders themselves teach
   you which oxides matter WHERE.
 
-### v3.16.5 — Perturbation Cloud
-*How fragile is this recipe?*
-
-- [ ] "Show uncertainty" toggle: Monte Carlo 200 samples at ±2% per oxide
-- [ ] Translucent cloud on Stull chart — tight cluster = robust, spread = fragile
-- [ ] Color-coded: green points stay in same surface zone, red points cross boundary
-- [ ] Cloud shape reveals phase boundary proximity: elongated toward a cliff = danger
-- [ ] Numeric summary: "±2% error → ±4.2 COE units, surface stays matte (98% confidence)"
-
-### v3.16.6 — Inverse Mode
-*"I want THIS — show me WHERE to go."*
-
-- [ ] Flip the interface: set property TARGETS instead of dragging oxides:
-  "COE < 65, surface = matte, cone 6, no crazing on porcelain"
-- [ ] Genetic optimizer highlights valid region on Stull chart as glowing overlay
-- [ ] Slider auto-snap: "closest UMF to your current recipe that satisfies all constraints"
-- [ ] Multiple valid regions possible: "there are two zones that satisfy your constraints"
-- [ ] Constraint relaxation: "No solution exists. Relaxing COE to < 70 opens this region."
-
-### v3.16.7 — Sonification
-*Chemistry you can hear.*
-
-- [ ] Subtle tone shift when crossing matte/gloss boundary (pitch change)
-- [ ] Low hum intensifies approaching danger zones (COE, crawling)
-- [ ] Chime when entering a named constellation territory
-- [ ] Tone mapped to overall "health": harmonious = safe everywhere,
-  dissonant = conflicting properties (good COE but high crawl risk)
-- [ ] Audio off by default; toggle in settings; respect system accessibility
-
-### v3.16.8 — Undo & Snapshots
-*Structured exploration, not random wandering.*
-
-- [ ] **Per-oxide revert:** tiny revert button on each slider → snap one oxide back;
-  show what JUST that oxide was responsible for in the property changes
-- [ ] **Snapshot stack:** save named snapshots: "matte version," "glossy version"
-  — vertical card stack on sidebar, click to jump between states
-- [ ] **Side-by-side comparison:** pick any two snapshots, see all property deltas
-- [ ] **"What's different?"** — highlight only the properties that diverged between snapshots
-
-### v3.16.9 — Exploration Journal
-*Your personal chemistry notebook.*
-
-- [ ] One-click save: entire state (oxides, properties, forecast, Stull position,
-  narration) becomes a journal entry with timestamp + optional note
-- [ ] Timeline view: scroll through weeks of explorations chronologically
-- [ ] Search journal: "show me all entries where surface was matte and COE < 60"
-- [ ] Journal entries link to test tiles (v3.12.2) and recipes
-- [ ] **"What's my blindspot?"** — after 20+ sessions, the machine identifies
-  exploration patterns: "You always adjust fluxes but never touch Al₂O₃"
-  + unexplored regions matching your aesthetic
-
-### v3.16.10 — The Living Recipe Card
+### v3.16.5 — The Living Recipe Card
 *The physical artifact that lives in the studio.*
 
 - [ ] Everything converges into one beautiful printable card:
@@ -1085,6 +1034,57 @@ turns this panel into a full-screen instrument.
 - [ ] The card is designed to get glaze dripped on it — durable layout,
   high contrast, readable at arm's length in a studio
 
+### v3.16.6 — Perturbation Cloud
+*How fragile is this recipe?*
+
+- [ ] "Show uncertainty" toggle: Monte Carlo 200 samples at ±2% per oxide
+- [ ] Translucent cloud on Stull chart — tight cluster = robust, spread = fragile
+- [ ] Color-coded: green points stay in same surface zone, red points cross boundary
+- [ ] Cloud shape reveals phase boundary proximity: elongated toward a cliff = danger
+- [ ] Numeric summary: "±2% error → ±4.2 COE units, surface stays matte (98% confidence)"
+
+### v3.16.7 — Inverse Mode
+*"I want THIS — show me WHERE to go."*
+
+- [ ] Flip the interface: set property TARGETS instead of dragging oxides:
+  "COE < 65, surface = matte, cone 6, no crazing on porcelain"
+- [ ] Genetic optimizer highlights valid region on Stull chart as glowing overlay
+- [ ] Slider auto-snap: "closest UMF to your current recipe that satisfies all constraints"
+- [ ] Multiple valid regions possible: "there are two zones that satisfy your constraints"
+- [ ] Constraint relaxation: "No solution exists. Relaxing COE to < 70 opens this region."
+
+### v3.16.8 — Sonification
+*Chemistry you can hear.*
+
+- [ ] Subtle tone shift when crossing matte/gloss boundary (pitch change)
+- [ ] Low hum intensifies approaching danger zones (COE, crawling)
+- [ ] Chime when entering a named constellation territory
+- [ ] Tone mapped to overall "health": harmonious = safe everywhere,
+  dissonant = conflicting properties (good COE but high crawl risk)
+- [ ] Audio off by default; toggle in settings; respect system accessibility
+
+### v3.16.9 — Undo & Snapshots
+*Structured exploration, not random wandering.*
+
+- [ ] **Per-oxide revert:** tiny revert button on each slider → snap one oxide back;
+  show what JUST that oxide was responsible for in the property changes
+- [ ] **Snapshot stack:** save named snapshots: "matte version," "glossy version"
+  — vertical card stack on sidebar, click to jump between states
+- [ ] **Side-by-side comparison:** pick any two snapshots, see all property deltas
+- [ ] **"What's different?"** — highlight only the properties that diverged between snapshots
+
+### v3.16.10 — Exploration Journal
+*Your personal chemistry notebook.*
+
+- [ ] One-click save: entire state (oxides, properties, forecast, Stull position,
+  narration) becomes a journal entry with timestamp + optional note
+- [ ] Timeline view: scroll through weeks of explorations chronologically
+- [ ] Search journal: "show me all entries where surface was matte and COE < 60"
+- [ ] Journal entries link to test tiles (v3.12.2) and recipes
+- [ ] **"What's my blindspot?"** — after 20+ sessions, the machine identifies
+  exploration patterns: "You always adjust fluxes but never touch Al₂O₃"
+  + unexplored regions matching your aesthetic
+
 **Build order & NCECA readiness:**
 
 | Phase | Sub-version | Effort | NCECA-ready? |
@@ -1094,12 +1094,12 @@ turns this panel into a full-screen instrument.
 | 3 | v3.16.2 Visual Overlays | 3–4 hrs | ✅ Yes |
 | 4 | v3.16.3 Smart Feedback | 3–4 hrs | ✅ Yes |
 | 5 | v3.16.4 Glaze Twin & Context | 2–3 hrs | ✅ Yes |
-| 6 | v3.16.5 Perturbation Cloud | 4–6 hrs | Stretch |
-| 7 | v3.16.6 Inverse Mode | 6–8 hrs | Stretch |
-| 8 | v3.16.7 Sonification | 3–4 hrs | Post-NCECA |
-| 9 | v3.16.8 Undo & Snapshots | 3–4 hrs | Post-NCECA |
-| 10 | v3.16.9 Exploration Journal | 4–6 hrs | Post-NCECA |
-| 11 | v3.16.10 Living Recipe Card | 4–6 hrs | Post-NCECA |
+| 6 | v3.16.5 Living Recipe Card | 4–6 hrs | ✅ Yes — NCECA handout |
+| 7 | v3.16.6 Perturbation Cloud | 4–6 hrs | Stretch |
+| 8 | v3.16.7 Inverse Mode | 6–8 hrs | Stretch |
+| 9 | v3.16.8 Sonification | 3–4 hrs | Post-NCECA |
+| 10 | v3.16.9 Undo & Snapshots | 3–4 hrs | Post-NCECA |
+| 11 | v3.16.10 Exploration Journal | 4–6 hrs | Post-NCECA |
 
 **Architecture:**
 ```
@@ -1126,8 +1126,8 @@ turns this panel into a full-screen instrument.
 │        Stull Chart (3D)                 │
 │  ○ original  ● adjusted  ← → animated  │
 │  ··· breadcrumb trail                   │
-│  ░░ perturbation cloud (v3.16.5)        │
-│  ▓▓ valid region (v3.16.6)              │
+│  ░░ perturbation cloud (v3.16.6)        │
+│  ▓▓ valid region (v3.16.7)              │
 │  🏷️ gravity wells + territory labels    │
 └─────────────────────────────────────────┘
 ```
