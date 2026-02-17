@@ -347,12 +347,27 @@ export function StullAtlas() {
     { value: 'CoO', label: 'CoO (Cobalt)', group: 'Colorants' },
     { value: 'Cr2O3', label: 'Cr₂O₃ (Chromium)', group: 'Colorants' },
     { value: 'P2O5', label: 'P₂O₅ (Phosphorus)', group: 'Colorants' },
-    // ── Computed ──
-    { value: 'cone', label: 'Cone (Temperature)', group: 'Computed' },
-    { value: 'flux_ratio', label: 'R₂O:RO Ratio', group: 'Computed' },
-    { value: 'SiO2_Al2O3_ratio', label: 'SiO₂:Al₂O₃ Ratio', group: 'Computed' },
-    { value: 'total_flux_moles', label: 'Total Flux Moles', group: 'Computed' },
-    { value: 'thermal_expansion', label: 'Thermal Exp. (COE)', group: 'Computed' },
+    // ── Ratios & Sums ──
+    { value: 'cone', label: 'Cone (Temperature)', group: 'Ratios & Sums' },
+    { value: 'flux_ratio', label: 'R₂O:RO Ratio', group: 'Ratios & Sums' },
+    { value: 'SiO2_Al2O3_ratio', label: 'SiO₂:Al₂O₃ Ratio', group: 'Ratios & Sums' },
+    { value: 'total_flux_moles', label: 'Total Flux Moles', group: 'Ratios & Sums' },
+    { value: 'thermal_expansion', label: 'Thermal Exp. (COE)', group: 'Ratios & Sums' },
+    // ── Glass Structure ──
+    { value: 'nbo_t', label: 'NBO/T (Network Breakup)', group: 'Glass Structure' },
+    { value: 'optical_basicity', label: 'Optical Basicity (Λ)', group: 'Glass Structure' },
+    // ── Flux Analysis ──
+    { value: 'flux_entropy', label: 'Flux Diversity (Entropy)', group: 'Flux Analysis' },
+    { value: 'cao_mgo_ratio', label: 'CaO:MgO (Texture Dial)', group: 'Flux Analysis' },
+    { value: 'combined_alkali', label: 'Combined Alkali (KNaO)', group: 'Flux Analysis' },
+    { value: 'na2o_k2o_ratio', label: 'Na₂O:K₂O Ratio', group: 'Flux Analysis' },
+    // ── Physical Properties ──
+    { value: 'viscosity_index', label: 'Viscosity Index', group: 'Physical' },
+    { value: 'surface_tension', label: 'Surface Tension (Dietzel)', group: 'Physical' },
+    { value: 'durability', label: 'Chemical Durability', group: 'Physical' },
+    // ── Colorant ──
+    { value: 'total_colorant', label: 'Total Colorant Load', group: 'Colorant' },
+    { value: 'fe_ti_ratio', label: 'Fe:Ti Ratio', group: 'Colorant' },
   ]
   
   return (

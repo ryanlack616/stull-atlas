@@ -21,7 +21,7 @@
 import React, { useMemo, useCallback, useEffect, useState, useRef } from 'react'
 import createPlotlyComponent from 'react-plotly.js/factory'
 import { useGlazeStore, useSelectionStore, useRecipeStore, useThemeStore, useMolarWeightStore } from '@/stores'
-import { OxideSymbol, GlazePlotPoint, SurfaceType, EpistemicState } from '@/types'
+import { OxideSymbol, GlazePlotPoint, SurfaceType, EpistemicState, UMF } from '@/types'
 import { getOxideValue } from '@/calculator/umf'
 import { fitSurface, type SurfaceGrid } from '@/analysis/surfaceFit'
 import { classifySurface, SURFACE_TYPE_COLORS_RGBA, type SurfaceClassifyGrid } from '@/analysis/surfaceClassify'
@@ -40,10 +40,153 @@ export type ZAxisOption =
   | 'TiO2' | 'ZrO2' | 'SnO2'
   // Colorants / misc
   | 'MnO' | 'MnO2' | 'NiO' | 'CuO' | 'Cu2O' | 'CoO' | 'Cr2O3' | 'P2O5'
-  // Computed
+  // Computed — ratios & sums
   | 'cone' | 'flux_ratio' | 'SiO2_Al2O3_ratio' | 'total_flux_moles' | 'thermal_expansion'
+  // Computed — glass structure
+  | 'nbo_t' | 'optical_basicity'
+  // Computed — flux analysis
+  | 'flux_entropy' | 'cao_mgo_ratio' | 'combined_alkali' | 'na2o_k2o_ratio'
+  // Computed — physical properties
+  | 'viscosity_index' | 'surface_tension' | 'durability'
+  // Computed — colorant analysis
+  | 'total_colorant' | 'fe_ti_ratio'
 
 export type CameraPreset = 'default' | 'top' | 'side-x' | 'side-y'
+
+// ─── Z-axis computation helper ─────────────────────────────────
+// Centralised so scatter, blend overlay, and any future traces
+// all use the same formulas.
+
+/** Optical basicity values (Duffy & Ingram): [n_oxygens_per_formula, Λ] */
+const OB_TABLE: [OxideSymbol, number, number][] = [
+  ['SiO2',2,0.48],['Al2O3',3,0.60],['B2O3',3,0.42],
+  ['Na2O',1,1.15],['K2O',1,1.40],['Li2O',1,1.00],
+  ['CaO',1,1.00],['MgO',1,0.78],['BaO',1,1.15],
+  ['SrO',1,1.10],['ZnO',1,0.92],['PbO',1,1.15],
+  ['Fe2O3',3,0.75],['TiO2',2,0.61],['ZrO2',2,0.55],
+  ['MnO',1,0.95],['NiO',1,0.90],['CuO',1,0.90],
+  ['CoO',1,0.90],['Cr2O3',3,0.65],['P2O5',5,0.40],
+]
+
+/** Dietzel field strengths Z/(r_c+r_o)²: [n_cations_per_formula, field_strength] */
+const FS_TABLE: [OxideSymbol, number, number][] = [
+  ['SiO2',1,1.57],['Al2O3',2,0.84],['B2O3',2,1.34],
+  ['Na2O',2,0.19],['K2O',2,0.13],['Li2O',2,0.23],
+  ['CaO',1,0.33],['MgO',1,0.45],['BaO',1,0.24],
+  ['SrO',1,0.28],['ZnO',1,0.40],['PbO',1,0.27],
+  ['Fe2O3',2,0.73],['TiO2',1,1.19],
+]
+
+/**
+ * Compute Z-axis value from a UMF.
+ * For 'cone', pass the value separately (can't be derived from chemistry).
+ */
+export function computeZFromUMF(
+  umf: UMF | null | undefined,
+  axis: ZAxisOption,
+  cone?: number | null,
+): number {
+  if (axis === 'cone') return cone ?? 6
+  if (!umf) return 0
+
+  // Shorthand oxide getter
+  const v = (ox: OxideSymbol): number => (umf as any)?.[ox]?.value ?? 0
+
+  const si = v('SiO2'), al = v('Al2O3'), b = v('B2O3')
+  const na = v('Na2O'), k = v('K2O'), li = v('Li2O')
+  const ca = v('CaO'), mg = v('MgO'), zn = v('ZnO')
+  const ba = v('BaO'), sr = v('SrO'), pb = v('PbO')
+  const fe = v('Fe2O3'), ti = v('TiO2')
+  const mn = v('MnO'), ni = v('NiO'), cu = v('CuO')
+  const co = v('CoO'), cr = v('Cr2O3'), p2 = v('P2O5')
+
+  const r2o = na + k + li
+  const ro  = ca + mg + zn + ba + sr + pb
+  const fluxTotal = r2o + ro
+
+  switch (axis) {
+    // ── Direct ratios / sums ────────────────────────────────────
+    case 'flux_ratio':
+      return fluxTotal > 0 ? r2o / fluxTotal : 0
+    case 'SiO2_Al2O3_ratio':
+      return al > 0 ? si / al : 0
+    case 'total_flux_moles':
+      return umf._meta?.totalFluxMoles ?? 0
+    case 'thermal_expansion':
+      // Appen COE approximation (×10⁻⁷/°C)
+      return na*33.3 + k*28.3 + li*27.0 + ca*16.3 + mg*4.5
+        + zn*7.0 + ba*14.0 + sr*12.0 + b*(-5.0) + al*5.0 + si*3.8
+
+    // ── Glass structure ─────────────────────────────────────────
+    case 'nbo_t': {
+      // Non-Bridging Oxygens per Tetrahedron (Mysen & Richet)
+      // Each flux oxide mole provides +2 charge (R₂O: 2×+1, RO: 1×+2)
+      // Each Al₂O₃ mole needs 2 charge units for tetrahedral coordination
+      // T = SiO₂ + 2×Al₂O₃ (tetrahedral cation count)
+      const T = si + 2 * al
+      return T > 0 ? Math.max(0, 2 * (fluxTotal - al)) / T : 0
+    }
+    case 'optical_basicity': {
+      // Weighted average Λ (Duffy & Ingram 1971)
+      let num = 0, den = 0
+      for (const [ox, nO, lambda] of OB_TABLE) {
+        const m = v(ox)
+        num += m * nO * lambda
+        den += m * nO
+      }
+      return den > 0 ? num / den : 0
+    }
+
+    // ── Flux analysis ───────────────────────────────────────────
+    case 'flux_entropy': {
+      // Shannon entropy H = −Σ pᵢ ln(pᵢ) over non-zero flux fractions
+      const fluxes = [na, k, li, ca, mg, zn, ba, sr, pb].filter(f => f > 0)
+      const total = fluxes.reduce((s, x) => s + x, 0)
+      if (total <= 0) return 0
+      let H = 0
+      for (const f of fluxes) { const p = f / total; H -= p * Math.log(p) }
+      return H  // max theoretical ≈ 2.2 for 9 equal fluxes
+    }
+    case 'cao_mgo_ratio':
+      // 1 = all CaO (gloss), 0 = all MgO (matte)
+      return (ca + mg) > 0 ? ca / (ca + mg) : 0.5
+    case 'combined_alkali':
+      return r2o  // Li₂O + Na₂O + K₂O
+    case 'na2o_k2o_ratio':
+      // 1 = all Na₂O, 0 = all K₂O
+      return (na + k) > 0 ? na / (na + k) : 0.5
+
+    // ── Physical properties ─────────────────────────────────────
+    case 'viscosity_index':
+      // (SiO₂ + Al₂O₃) / flux — higher = stiffer melt
+      return fluxTotal > 0 ? (si + al) / fluxTotal : 0
+    case 'surface_tension': {
+      // Average Dietzel field strength (correlates with surface tension)
+      // Higher = stronger bonding = more surface tension = crawl risk
+      let num = 0, den = 0
+      for (const [ox, nC, fs] of FS_TABLE) {
+        const m = v(ox)
+        num += m * nC * fs
+        den += m * nC
+      }
+      return den > 0 ? num / den : 0
+    }
+    case 'durability':
+      // SiO₂ / (alkali) — higher = more chemically durable / food-safe
+      return r2o > 0.001 ? si / r2o : si * 100
+
+    // ── Colorant analysis ───────────────────────────────────────
+    case 'total_colorant':
+      return fe + cu + co + mn + ni + cr + ti
+    case 'fe_ti_ratio':
+      // 1 = all iron, 0 = all titanium
+      return (fe + ti) > 0 ? fe / (fe + ti) : 0.5
+
+    // ── Direct oxide lookup (fallback) ──────────────────────────
+    default:
+      return v(axis as OxideSymbol)
+  }
+}
 
 type ColorByOption = 'cone' | 'surface' | 'source' | 'flux_ratio' | 'confidence' | 'boron' | 'z_axis' | 'glaze_type'
 
@@ -562,38 +705,7 @@ export function StullPlot3D({
       const glaze = glazes.get(p.id)
       const umfData = glaze?.umf
 
-      let z = 0
-      switch (zAxis) {
-        case 'cone':
-          z = p.cone ?? 6; break
-        case 'flux_ratio':
-          z = p.fluxRatio; break
-        case 'SiO2_Al2O3_ratio':
-          z = (p.x > 0 && p.y > 0) ? p.x / p.y : 0; break
-        case 'B2O3':
-          z = umfData?.B2O3?.value ?? p.boron ?? 0; break
-        case 'total_flux_moles':
-          z = umfData?._meta?.totalFluxMoles ?? 0; break
-        case 'thermal_expansion': {
-          // Appen COE approximation (×10⁻⁷/°C): weighted sum of flux contributions
-          const u = umfData
-          if (!u) { z = 0; break }
-          z = (u.Na2O?.value ?? 0) * 33.3
-            + (u.K2O?.value ?? 0) * 28.3
-            + (u.Li2O?.value ?? 0) * 27.0
-            + (u.CaO?.value ?? 0) * 16.3
-            + (u.MgO?.value ?? 0) * 4.5
-            + (u.ZnO?.value ?? 0) * 7.0
-            + (u.BaO?.value ?? 0) * 14.0
-            + (u.SrO?.value ?? 0) * 12.0
-            + (u.B2O3?.value ?? 0) * (-5.0)
-            + (u.Al2O3?.value ?? 0) * 5.0
-            + (u.SiO2?.value ?? 0) * 3.8
-          break
-        }
-        default:
-          z = (umfData as any)?.[zAxis]?.value ?? 0; break
-      }
+      const z = computeZFromUMF(umfData, zAxis, p.cone)
 
       return { ...p, z }
     }).filter(p => isFinite(p.z))
@@ -1032,40 +1144,7 @@ export function StullPlot3D({
 
     const xs = blendResults.map(p => getOxideValue(p.umf, 'SiO2'))
     const ys = blendResults.map(p => getOxideValue(p.umf, 'Al2O3'))
-    const zs = blendResults.map(p => {
-      switch (zAxis) {
-        case 'cone': return 6
-        case 'flux_ratio': {
-          const r2o = (p.umf.Na2O?.value ?? 0) + (p.umf.K2O?.value ?? 0) + (p.umf.Li2O?.value ?? 0)
-          const ro = (p.umf.CaO?.value ?? 0) + (p.umf.MgO?.value ?? 0) + (p.umf.ZnO?.value ?? 0) +
-                     (p.umf.BaO?.value ?? 0) + (p.umf.SrO?.value ?? 0)
-          return (r2o + ro) > 0 ? r2o / (r2o + ro) : 0
-        }
-        case 'SiO2_Al2O3_ratio': {
-          const si = getOxideValue(p.umf, 'SiO2')
-          const al = getOxideValue(p.umf, 'Al2O3')
-          return al > 0 ? si / al : 0
-        }
-        case 'total_flux_moles':
-          return p.umf._meta?.totalFluxMoles ?? 0
-        case 'thermal_expansion': {
-          const u = p.umf
-          return (u.Na2O?.value ?? 0) * 33.3
-            + (u.K2O?.value ?? 0) * 28.3
-            + (u.Li2O?.value ?? 0) * 27.0
-            + (u.CaO?.value ?? 0) * 16.3
-            + (u.MgO?.value ?? 0) * 4.5
-            + (u.ZnO?.value ?? 0) * 7.0
-            + (u.BaO?.value ?? 0) * 14.0
-            + (u.SrO?.value ?? 0) * 12.0
-            + (u.B2O3?.value ?? 0) * (-5.0)
-            + (u.Al2O3?.value ?? 0) * 5.0
-            + (u.SiO2?.value ?? 0) * 3.8
-        }
-        default:
-          return getOxideValue(p.umf, zAxis as OxideSymbol)
-      }
-    })
+    const zs = blendResults.map(p => computeZFromUMF(p.umf, zAxis))
     const labels = blendResults.map((p, i) => p.recipe?.name || `Blend ${i + 1}`)
 
     return {
@@ -1610,12 +1689,27 @@ export function zAxisLabel(z: ZAxisOption): string {
     CoO: 'CoO',
     Cr2O3: 'Cr\u2082O\u2083',
     P2O5: 'P\u2082O\u2085',
-    // Computed
+    // Computed — ratios & sums
     cone: 'Cone',
     flux_ratio: 'R\u2082O:RO',
     SiO2_Al2O3_ratio: 'SiO\u2082:Al\u2082O\u2083',
     total_flux_moles: 'Total Flux Moles',
     thermal_expansion: 'Thermal Exp. (COE)',
+    // Computed — glass structure
+    nbo_t: 'NBO/T',
+    optical_basicity: 'Optical Basicity (\u039b)',
+    // Computed — flux analysis
+    flux_entropy: 'Flux Diversity',
+    cao_mgo_ratio: 'CaO:MgO',
+    combined_alkali: 'Combined Alkali',
+    na2o_k2o_ratio: 'Na\u2082O:K\u2082O',
+    // Computed — physical properties
+    viscosity_index: 'Viscosity Index',
+    surface_tension: 'Surface Tension',
+    durability: 'Chem. Durability',
+    // Computed — colorant
+    total_colorant: 'Total Colorant',
+    fe_ti_ratio: 'Fe:Ti',
   }
   return labels[z] || z
 }
