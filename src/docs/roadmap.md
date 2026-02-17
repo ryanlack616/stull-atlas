@@ -906,6 +906,234 @@ connects chemistry to what a potter will see and feel.
 
 ---
 
+## v3.16 — The What-If Machine
+*"One slider, everything moves."*
+
+The centerpiece interactive experience. A dual-mode cockpit where potters and
+chemists explore the same chemistry through different lenses. One engine
+computes everything; two presentation modes speak to two audiences. The tool
+that teaches ceramics by letting you feel the physics.
+
+**Existing foundation:** `WhatIfPanel` (445 lines) already has 11 oxide sliders,
+surface prediction, limit validation, Stull position tracking. The upgrade
+turns this panel into a full-screen instrument.
+
+### v3.16.0 — Property Dashboard (the cockpit gauges)
+*Every slider drag updates every property simultaneously.*
+
+- [ ] **Extract `computeZFromUMF()`** from StullPlot3D.tsx into shared `calculator/properties.ts`
+  — pure function, no chart dependency, reusable everywhere
+- [ ] **`PropertyGauge` component** — horizontal bar gauge with:
+  - Min/max/value with colored fill (green/yellow/red zones from ceramic literature)
+  - Before/after overlay: faded bar = original, solid bar = adjusted
+  - Delta annotation on right edge: `+2.3` or `−0.8`
+  - Expand arrow → reveals formula, oxide contributions, sensitivity
+- [ ] **Property grid** — 11+ gauges updating live on every slider drag:
+  - Surface prediction (matte/satin/gloss) — already exists, upgrade to gauge
+  - COE (Appen thermal expansion) — crazing risk
+  - Melt temperature estimate — will it melt at your cone?
+  - Viscosity index — stiff or runny?
+  - NBO/T — network polymerization
+  - Surface tension — crawl risk driver
+  - Durability — chemical resistance
+  - Flux ratio (R₂O:RO) — flux balance
+  - Optical basicity — glass character
+  - Flux entropy — flux diversity
+  - Combined alkali — total alkali load
+- [ ] Wire `estimateMeltTemp()`, `computeFluxRatio()` into live update loop
+- [ ] Wire existing `OxideRadar` component — overlay original vs adjusted profiles
+- [ ] Wire existing `FluxDonut` component — live flux partition visualization
+
+### v3.16.1 — Studio / Science Mode Toggle
+*One engine, two faces.*
+
+- [ ] **Mode toggle:** `[🏺 Studio]  [🔬 Science]` switch in header
+- [ ] **Studio Mode:**
+  - Intent sliders: "Glossier ↔ Matter," "Safer ↔ Riskier," "Stiffer ↔ More Fluid,"
+    "Warmer ↔ Cooler Color," "Smoother ↔ More Texture"
+  - Each intent slider maps to coordinated multi-oxide adjustments
+  - 5–6 key gauges only (surface, fit, melt, flow, color, risk)
+  - Notebook narration instead of numbers
+  - Material translation: "Add 4% whiting, drop 2% soda spar"
+  - Numbers only on hover
+- [ ] **Science Mode:**
+  - Raw oxide sliders with 0.001 precision
+  - ALL 15+ computed properties with numeric readouts
+  - Sensitivity bars: which oxide is the biggest lever right now
+  - Formulas visible: hover any gauge → see equation and constants
+  - Export: JSON/CSV of all computed values at current state
+- [ ] **Gradual reveal:** In Studio mode, each gauge has expand arrow → shows
+  oxide contributions, formula, sensitivity (potter graduates to chemist naturally)
+
+### v3.16.2 — Visual Overlays (spatial feedback)
+*See WHERE you're moving on the chart.*
+
+- [ ] **Animated ghost dot** on Stull chart: faded dot at original position,
+  solid dot at adjusted position, smooth animated drift as you drag
+- [ ] **Danger contours:** approach a boundary (matte→gloss, safe→crazed) →
+  chart shading intensifies, contour lines appear
+- [ ] **Breadcrumb trail:** every adjustment leaves a dot on the chart —
+  your exploration path through chemistry space, visible as a connected trail
+- [ ] **Gravity wells:** subtle shading for popular zones (celadon, tenmoku, shino)
+  — labeled as your dot approaches; sparse zones labeled "uncharted"
+- [ ] **Temperature slider:** cone 04 → cone 12 alongside oxide sliders;
+  same chemistry, different fire → watch all properties cascade
+
+### v3.16.3 — Smart Feedback (the adviser)
+*The machine talks back — in the potter's language.*
+
+- [ ] **Glaze Weather Forecast card:** surface, color, fit, risk, melt, feel —
+  presented like a weather app, not a data table
+  ```
+  🌡️ Cone 6 Oxidation Forecast
+  Surface: Satin  |  Color: Warm ivory
+  Fit: ✅ Good on porcelain
+  Risk: ⚠️ Slight crawl on textured surfaces
+  "A reliable satin that performs well on smooth forms."
+  ```
+- [ ] **Change narration:** template-generated plain English that updates on
+  every slider drag: "Increasing CaO pushed you from satin toward matte.
+  COE dropped 12% — less crazing risk on cone 6 stoneware."
+- [ ] **Cliff warnings:** "You're 0.02 SiO₂ from the matte/gloss boundary.
+  Small batch variations could land on either side."
+- [ ] **Trade-off highlights:** "COE improved but viscosity increased —
+  your glaze resists crazing but may not heal application marks."
+- [ ] **Failure stories:** when a property enters danger zone, show a micro-story
+  with real timelines and consequences, not just "COE: HIGH"
+- [ ] **"What changed the most?"** summary after multi-slider adjustments:
+  "Your biggest shift was COE (−18%). Surface barely moved."
+
+### v3.16.4 — Glaze Twin & Context
+*Anchor the abstract in the familiar.*
+
+- [ ] **Nearest known glaze** — continuous database search as you drag;
+  show name + test tile photo: "You're 0.02 from Leach Celadon"
+- [ ] **Named territory labels** — "Entering Tenmoku Territory" / "Leaving
+  Celadon Region" as your dot crosses constellation boundaries (v3.7)
+- [ ] **"Teach Me" popups** — for any gauge, 3-sentence contextual explanation:
+  1. What it is: "NBO/T measures glass network breakup"
+  2. Why it matters: "Higher = softer, more fluid glass"
+  3. What you just did: "Your MgO increase raised NBO/T from 0.8 to 1.1"
+- [ ] **Sensitivity highlighting on slider tracks** — dim gray if oxide barely
+  matters here; glowing red if near a cliff edge. Sliders themselves teach
+  you which oxides matter WHERE.
+
+### v3.16.5 — Perturbation Cloud
+*How fragile is this recipe?*
+
+- [ ] "Show uncertainty" toggle: Monte Carlo 200 samples at ±2% per oxide
+- [ ] Translucent cloud on Stull chart — tight cluster = robust, spread = fragile
+- [ ] Color-coded: green points stay in same surface zone, red points cross boundary
+- [ ] Cloud shape reveals phase boundary proximity: elongated toward a cliff = danger
+- [ ] Numeric summary: "±2% error → ±4.2 COE units, surface stays matte (98% confidence)"
+
+### v3.16.6 — Inverse Mode
+*"I want THIS — show me WHERE to go."*
+
+- [ ] Flip the interface: set property TARGETS instead of dragging oxides:
+  "COE < 65, surface = matte, cone 6, no crazing on porcelain"
+- [ ] Genetic optimizer highlights valid region on Stull chart as glowing overlay
+- [ ] Slider auto-snap: "closest UMF to your current recipe that satisfies all constraints"
+- [ ] Multiple valid regions possible: "there are two zones that satisfy your constraints"
+- [ ] Constraint relaxation: "No solution exists. Relaxing COE to < 70 opens this region."
+
+### v3.16.7 — Sonification
+*Chemistry you can hear.*
+
+- [ ] Subtle tone shift when crossing matte/gloss boundary (pitch change)
+- [ ] Low hum intensifies approaching danger zones (COE, crawling)
+- [ ] Chime when entering a named constellation territory
+- [ ] Tone mapped to overall "health": harmonious = safe everywhere,
+  dissonant = conflicting properties (good COE but high crawl risk)
+- [ ] Audio off by default; toggle in settings; respect system accessibility
+
+### v3.16.8 — Undo & Snapshots
+*Structured exploration, not random wandering.*
+
+- [ ] **Per-oxide revert:** tiny revert button on each slider → snap one oxide back;
+  show what JUST that oxide was responsible for in the property changes
+- [ ] **Snapshot stack:** save named snapshots: "matte version," "glossy version"
+  — vertical card stack on sidebar, click to jump between states
+- [ ] **Side-by-side comparison:** pick any two snapshots, see all property deltas
+- [ ] **"What's different?"** — highlight only the properties that diverged between snapshots
+
+### v3.16.9 — Exploration Journal
+*Your personal chemistry notebook.*
+
+- [ ] One-click save: entire state (oxides, properties, forecast, Stull position,
+  narration) becomes a journal entry with timestamp + optional note
+- [ ] Timeline view: scroll through weeks of explorations chronologically
+- [ ] Search journal: "show me all entries where surface was matte and COE < 60"
+- [ ] Journal entries link to test tiles (v3.12.2) and recipes
+- [ ] **"What's my blindspot?"** — after 20+ sessions, the machine identifies
+  exploration patterns: "You always adjust fluxes but never touch Al₂O₃"
+  + unexplored regions matching your aesthetic
+
+### v3.16.10 — The Living Recipe Card
+*The physical artifact that lives in the studio.*
+
+- [ ] Everything converges into one beautiful printable card:
+  - Photo of nearest known glaze (or user's own test tile photo)
+  - Recipe in percentages
+  - UMF fingerprint (mini radar chart)
+  - Forecast card: surface, color, fit, risks
+  - Notebook narration: one paragraph
+  - Stull position: tiny chart with the dot
+  - "Mixed on: [date]. Tested on: [date]. Result: [their notes]."
+- [ ] Export: PDF, PNG, print-optimized CSS
+- [ ] Batch print: all snapshots as a card deck
+- [ ] The card is designed to get glaze dripped on it — durable layout,
+  high contrast, readable at arm's length in a studio
+
+**Build order & NCECA readiness:**
+
+| Phase | Sub-version | Effort | NCECA-ready? |
+|-------|-------------|--------|--------------|
+| 1 | v3.16.0 Property Dashboard | 4–6 hrs | ✅ Yes — the core demo |
+| 2 | v3.16.1 Studio/Science Toggle | 3–4 hrs | ✅ Yes |
+| 3 | v3.16.2 Visual Overlays | 3–4 hrs | ✅ Yes |
+| 4 | v3.16.3 Smart Feedback | 3–4 hrs | ✅ Yes |
+| 5 | v3.16.4 Glaze Twin & Context | 2–3 hrs | ✅ Yes |
+| 6 | v3.16.5 Perturbation Cloud | 4–6 hrs | Stretch |
+| 7 | v3.16.6 Inverse Mode | 6–8 hrs | Stretch |
+| 8 | v3.16.7 Sonification | 3–4 hrs | Post-NCECA |
+| 9 | v3.16.8 Undo & Snapshots | 3–4 hrs | Post-NCECA |
+| 10 | v3.16.9 Exploration Journal | 4–6 hrs | Post-NCECA |
+| 11 | v3.16.10 Living Recipe Card | 4–6 hrs | Post-NCECA |
+
+**Architecture:**
+```
+┌─────────────────────────────────────────┐
+│         The What-If Machine             │
+│     [🏺 Studio]  [🔬 Science]           │
+├──────────────┬──────────────────────────┤
+│ Intent       │ Property Dashboard       │
+│ Sliders      │  ┌─ COE gauge ─────────┐ │
+│ (Studio) OR  │  ├─ Melt temp ─────────┤ │
+│ Oxide        │  ├─ Viscosity ─────────┤ │
+│ Sliders      │  ├─ NBO/T ────────────┤ │
+│ (Science)    │  ├─ Surface tension ───┤ │
+│              │  └─ ... (expand any) ──┘ │
+├──────────────┼──────────────────────────┤
+│ OxideRadar   │ Forecast Card / Narration│
+│ FluxDonut    │ or Full Property Table   │
+├──────────────┴──────────────────────────┤
+│ Snapshot Stack │ Cone Slider │ Warnings │
+└─────────────────────────────────────────┘
+         │ onPositionChange
+         ▼
+┌─────────────────────────────────────────┐
+│        Stull Chart (3D)                 │
+│  ○ original  ● adjusted  ← → animated  │
+│  ··· breadcrumb trail                   │
+│  ░░ perturbation cloud (v3.16.5)        │
+│  ▓▓ valid region (v3.16.6)              │
+│  🏷️ gravity wells + territory labels    │
+└─────────────────────────────────────────┘
+```
+
+---
+
 ## Maintenance & Agent Actions
 
 *Standing tasks the agent should evaluate and act on when triggers are met.
@@ -964,6 +1192,7 @@ when the trigger condition is true.*
 | **3.13** | The Bench | Application physics, clay body calc, recipe sheets | 📋 Planned |
 | **3.14** | The Map | Phase diagrams, glaze layering, historical library | 📋 Planned |
 | **3.15** | The Voice | Plain-English glaze narrative generator | 📋 Planned |
+| **3.16** | The What-If Machine | Dual-mode cockpit: every slider moves everything | 🌟 Flagship |
 | **4.1** | The Community | Personal profiles, shared knowledge, free tier | 🔮 Future |
 | **4.2** | The Classroom | Workshop exercises, teaching tools | 🔮 Future |
 | **4.3** | The Bridge | Universal import from every glaze tool | 🔮 Future |
@@ -985,6 +1214,7 @@ v3.12 Kiln       → capture every firing, track every tile
 v3.13 Bench      → application physics, clay bodies, recipe sheets
 v3.14 Map        → phase diagrams, layering, historical glazes
 v3.15 Voice      → plain English for every point on the chart
+v3.16 What-If    → one slider, everything moves — the instrument that teaches ceramics
 v4.1 Community   → every potter gets their own page + shared knowledge
 v4.2 Classroom   → teach ceramics through exploration
 v4.3 Bridge      → bring your data from anywhere
@@ -1019,6 +1249,12 @@ Each layer is independently valuable. Ship each one, prove it works, then build 
 | Historical glaze atlas | - | partial | - | **v3.14** |
 | Phase diagram overlays | - | static | - | **v3.14** (interactive) |
 | AI glaze narrative | - | - | - | **v3.15** |
+| What-If Machine (dual mode) | - | - | - | **v3.16** |
+| Intent sliders (outcome-based) | - | - | - | **v3.16** |
+| Perturbation clouds | - | - | - | **v3.16** |
+| Inverse design (constraint solver) | - | - | - | **v3.16** |
+| Chemistry sonification | - | - | - | **v3.16** |
+| Exploration journal | - | - | - | **v3.16** |
 | Workshop / classroom mode | - | - | - | **v4.2** |
 | Universal import | partial | - | partial | **v4.3** |
 | Shared exploration | - | - | - | **v4.1** |
