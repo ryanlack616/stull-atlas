@@ -3,7 +3,25 @@
  */
 
 export { supabase, isSupabaseConfigured } from './client'
-export type { Database, Profile, TrialCode, SavedRecipeRow, Tier, TrialStatus, CodeStatus } from './types'
+export type {
+  Database,
+  Profile,
+  TrialCode,
+  SavedRecipeRow,
+  CollectionRow,
+  SnapshotRow,
+  JournalEntryRow,
+  RecipeCardRow,
+  FiringScheduleRow,
+  TestTileRow,
+  AnnotationRow,
+  UserPrefsRow,
+  ExplorationStatsRow,
+  BlendResultRow,
+  Tier,
+  TrialStatus,
+  CodeStatus,
+} from './types'
 export {
   fetchCloudRecipes,
   upsertCloudRecipe,

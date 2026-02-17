@@ -114,6 +114,10 @@ export interface GlazeRecipe {
   description?: string             // Separate from notes — longer explanation
   specificGravity?: number         // measured SG for mixing
 
+  // Organization
+  tags?: string[]                  // user-defined labels for filtering/grouping
+  isFavorite?: boolean             // quick-access star
+
   // Images if available
   images?: string[]
   
@@ -153,12 +157,34 @@ export interface GlazePlotPoint {
 }
 
 /**
- * Glaze collection/group
+ * Collection of items (recipes, snapshots, journal entries).
+ * Manual collections are user-curated; smart collections auto-populate from a saved query.
  */
 export interface GlazeCollection {
   id: string
   name: string
   description?: string
-  glazeIds: string[]
+  color?: string                   // hex color for UI pill/badge
+  icon?: string                    // emoji or icon name
+  itemType: 'recipe' | 'snapshot' | 'journal' | 'mixed'
+  itemIds: string[]                // ordered list of item IDs
+  isSmart?: boolean
+  smartQuery?: SmartCollectionQuery
+  sortOrder?: number
   createdAt: string
+  updatedAt?: string
+}
+
+/**
+ * Saved filter query for smart collections — auto-populated by matching criteria.
+ */
+export interface SmartCollectionQuery {
+  coneRange?: [number, number]
+  atmosphere?: string[]
+  surfaceTypes?: string[]
+  tags?: string[]
+  status?: string[]
+  source?: string[]
+  textSearch?: string
+  propertyFilters?: Array<{ property: string; operator: '<' | '>' | '=' | '<=/' | '>='; value: number }>
 }
