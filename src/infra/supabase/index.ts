@@ -49,6 +49,7 @@ export type {
   // Phase 3 — Infrastructure
   NotificationRow,
   ImportJobRow,
+  ExplorationPathRow,
   ActivityLogRow,
   Tier,
   TrialStatus,

@@ -1500,6 +1500,58 @@ CREATE POLICY "Users can delete own imports"
 
 CREATE INDEX idx_imports_user ON public.import_jobs(user_id);
 
+-- ── Exploration Paths table ─────────────────────────────────────────
+-- Persisted walk-through-glaze-space trails (v3.6, v3.8.3, v3.16.2, v3.16.9).
+-- An ordered sequence of connected snapshots the user walked through.
+-- The fundamental unit of "I went from celadon territory toward tenmoku."
+CREATE TABLE public.exploration_paths (
+  id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id         uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  name            text,                      -- "Celadon → Tenmoku walk", "Tuesday night exploration"
+  description     text,
+  snapshot_ids    uuid[] NOT NULL DEFAULT '{}',  -- ordered list of snapshot IDs visited
+  edges           jsonb DEFAULT '[]'::jsonb,  -- [{ from_idx, to_idx, delta_umf, distance, note }]
+  camera_states   jsonb DEFAULT '[]'::jsonb,  -- [{ position, rotation, zoom }] per step
+  axis_config     jsonb,                      -- { x, y, z, colorBy } — chart configuration during walk
+  session_id      text,                       -- groups paths from a single What-If session
+  total_distance  numeric,                    -- cumulative UMF-space distance walked
+  step_count      integer NOT NULL DEFAULT 0,
+  tags            text[] DEFAULT '{}',
+  is_favorite     boolean NOT NULL DEFAULT false,
+  is_public       boolean NOT NULL DEFAULT false,  -- shareable exploration paths
+  share_token     text,                       -- for link-only sharing
+  detail          jsonb DEFAULT '{}'::jsonb,  -- extensible: { playback_speed, annotations, ... }
+  started_at      timestamptz,                -- when the walk began
+  finished_at     timestamptz,                -- when the walk ended
+  created_at      timestamptz NOT NULL DEFAULT now(),
+  updated_at      timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TRIGGER exploration_paths_updated_at
+  BEFORE UPDATE ON public.exploration_paths
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_updated_at();
+
+ALTER TABLE public.exploration_paths ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own paths"
+  ON public.exploration_paths FOR SELECT
+  USING (auth.uid() = user_id OR is_public = true);
+CREATE POLICY "Users can insert own paths"
+  ON public.exploration_paths FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can update own paths"
+  ON public.exploration_paths FOR UPDATE
+  USING (auth.uid() = user_id);
+CREATE POLICY "Users can delete own paths"
+  ON public.exploration_paths FOR DELETE
+  USING (auth.uid() = user_id);
+
+CREATE INDEX idx_paths_user ON public.exploration_paths(user_id);
+CREATE INDEX idx_paths_session ON public.exploration_paths(session_id) WHERE session_id IS NOT NULL;
+CREATE INDEX idx_paths_public ON public.exploration_paths(created_at DESC) WHERE is_public = true;
+CREATE INDEX idx_paths_share ON public.exploration_paths(share_token) WHERE share_token IS NOT NULL;
+
 -- ── Activity Log table ─────────────────────────────────────────────
 -- Append-only user activity timeline — "what did I do this month?"
 -- Never updated, never deleted by user (admin purge only).

@@ -698,6 +698,30 @@ export interface ImportJobRow {
   created_at: string
 }
 
+/** Exploration path — persisted walk-through-glaze-space trail */
+export interface ExplorationPathRow {
+  id: string
+  user_id: string
+  name: string | null
+  description: string | null
+  snapshot_ids: string[]            // ordered list of snapshot UUIDs visited
+  edges: Record<string, unknown>[]  // [{ from_idx, to_idx, delta_umf, distance, note }]
+  camera_states: Record<string, unknown>[]  // [{ position, rotation, zoom }] per step
+  axis_config: Record<string, unknown> | null  // { x, y, z, colorBy }
+  session_id: string | null
+  total_distance: number | null
+  step_count: number
+  tags: string[]
+  is_favorite: boolean
+  is_public: boolean
+  share_token: string | null
+  detail: Record<string, unknown>
+  started_at: string | null
+  finished_at: string | null
+  created_at: string
+  updated_at: string
+}
+
 /** Activity log — append-only user activity timeline */
 export interface ActivityLogRow {
   id: string
@@ -947,6 +971,12 @@ export interface Database {
         Row: ImportJobRow
         Insert: Omit<ImportJobRow, 'id' | 'created_at'>
         Update: Partial<Omit<ImportJobRow, 'id' | 'user_id' | 'created_at'>>
+        Relationships: []
+      }
+      exploration_paths: {
+        Row: ExplorationPathRow
+        Insert: Omit<ExplorationPathRow, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<ExplorationPathRow, 'id' | 'user_id' | 'created_at'>>
         Relationships: []
       }
       activity_log: {
