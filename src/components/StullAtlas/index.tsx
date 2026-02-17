@@ -319,18 +319,40 @@ export function StullAtlas() {
     { value: 'confidence', label: 'Confidence' }
   ]
   
-  const zAxisOptions: { value: ZAxisOption; label: string }[] = [
-    { value: 'B2O3', label: 'B₂O₃ (Boron)' },
-    { value: 'CaO', label: 'CaO (Calcium)' },
-    { value: 'MgO', label: 'MgO (Magnesium)' },
-    { value: 'Na2O', label: 'Na₂O (Sodium)' },
-    { value: 'K2O', label: 'K₂O (Potassium)' },
-    { value: 'ZnO', label: 'ZnO (Zinc)' },
-    { value: 'BaO', label: 'BaO (Barium)' },
-    { value: 'Fe2O3', label: 'Fe₂O₃ (Iron)' },
-    { value: 'cone', label: 'Cone (Temperature)' },
-    { value: 'flux_ratio', label: 'R₂O:RO Ratio' },
-    { value: 'SiO2_Al2O3_ratio', label: 'SiO₂:Al₂O₃ Ratio' }
+  const zAxisOptions: { value: ZAxisOption; label: string; group: string }[] = [
+    // ── Fluxes – R₂O (Alkalis) ──
+    { value: 'Li2O', label: 'Li₂O (Lithium)', group: 'Fluxes – R₂O' },
+    { value: 'Na2O', label: 'Na₂O (Sodium)', group: 'Fluxes – R₂O' },
+    { value: 'K2O', label: 'K₂O (Potassium)', group: 'Fluxes – R₂O' },
+    // ── Fluxes – RO (Alkaline Earths) ──
+    { value: 'CaO', label: 'CaO (Calcium)', group: 'Fluxes – RO' },
+    { value: 'MgO', label: 'MgO (Magnesium)', group: 'Fluxes – RO' },
+    { value: 'SrO', label: 'SrO (Strontium)', group: 'Fluxes – RO' },
+    { value: 'BaO', label: 'BaO (Barium)', group: 'Fluxes – RO' },
+    { value: 'ZnO', label: 'ZnO (Zinc)', group: 'Fluxes – RO' },
+    { value: 'PbO', label: 'PbO (Lead)', group: 'Fluxes – RO' },
+    // ── Stabilizers ──
+    { value: 'B2O3', label: 'B₂O₃ (Boron)', group: 'Stabilizers' },
+    { value: 'Fe2O3', label: 'Fe₂O₃ (Iron)', group: 'Stabilizers' },
+    // ── Glass Formers ──
+    { value: 'TiO2', label: 'TiO₂ (Titanium)', group: 'Glass Formers' },
+    { value: 'ZrO2', label: 'ZrO₂ (Zirconium)', group: 'Glass Formers' },
+    { value: 'SnO2', label: 'SnO₂ (Tin)', group: 'Glass Formers' },
+    // ── Colorants / Misc ──
+    { value: 'MnO', label: 'MnO (Manganese)', group: 'Colorants' },
+    { value: 'MnO2', label: 'MnO₂ (Manganese IV)', group: 'Colorants' },
+    { value: 'NiO', label: 'NiO (Nickel)', group: 'Colorants' },
+    { value: 'CuO', label: 'CuO (Copper)', group: 'Colorants' },
+    { value: 'Cu2O', label: 'Cu₂O (Cuprous)', group: 'Colorants' },
+    { value: 'CoO', label: 'CoO (Cobalt)', group: 'Colorants' },
+    { value: 'Cr2O3', label: 'Cr₂O₃ (Chromium)', group: 'Colorants' },
+    { value: 'P2O5', label: 'P₂O₅ (Phosphorus)', group: 'Colorants' },
+    // ── Computed ──
+    { value: 'cone', label: 'Cone (Temperature)', group: 'Computed' },
+    { value: 'flux_ratio', label: 'R₂O:RO Ratio', group: 'Computed' },
+    { value: 'SiO2_Al2O3_ratio', label: 'SiO₂:Al₂O₃ Ratio', group: 'Computed' },
+    { value: 'total_flux_moles', label: 'Total Flux Moles', group: 'Computed' },
+    { value: 'thermal_expansion', label: 'Thermal Exp. (COE)', group: 'Computed' },
   ]
   
   return (
@@ -398,8 +420,12 @@ export function StullAtlas() {
                       value={zAxis}
                       onChange={(e) => setZAxis(e.target.value as ZAxisOption)}
                     >
-                      {zAxisOptions.map(opt => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      {Array.from(new Set(zAxisOptions.map(o => o.group))).map(group => (
+                        <optgroup key={group} label={group}>
+                          {zAxisOptions.filter(o => o.group === group).map(o => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </optgroup>
                       ))}
                     </select>
                   </label>

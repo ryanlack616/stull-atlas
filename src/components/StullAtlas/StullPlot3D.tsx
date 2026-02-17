@@ -31,8 +31,17 @@ import { useFilteredPoints } from '@/hooks'
 // ─── Public types ──────────────────────────────────────────────
 
 export type ZAxisOption =
-  | 'B2O3' | 'CaO' | 'MgO' | 'Na2O' | 'K2O' | 'ZnO' | 'BaO' | 'Fe2O3'
-  | 'cone' | 'flux_ratio' | 'SiO2_Al2O3_ratio'
+  // Fluxes
+  | 'Li2O' | 'Na2O' | 'K2O'
+  | 'MgO' | 'CaO' | 'SrO' | 'BaO' | 'ZnO' | 'PbO'
+  // Stabilizers
+  | 'B2O3' | 'Fe2O3'
+  // Glass formers
+  | 'TiO2' | 'ZrO2' | 'SnO2'
+  // Colorants / misc
+  | 'MnO' | 'MnO2' | 'NiO' | 'CuO' | 'Cu2O' | 'CoO' | 'Cr2O3' | 'P2O5'
+  // Computed
+  | 'cone' | 'flux_ratio' | 'SiO2_Al2O3_ratio' | 'total_flux_moles' | 'thermal_expansion'
 
 export type CameraPreset = 'default' | 'top' | 'side-x' | 'side-y'
 
@@ -563,6 +572,25 @@ export function StullPlot3D({
           z = (p.x > 0 && p.y > 0) ? p.x / p.y : 0; break
         case 'B2O3':
           z = umfData?.B2O3?.value ?? p.boron ?? 0; break
+        case 'total_flux_moles':
+          z = umfData?._meta?.totalFluxMoles ?? 0; break
+        case 'thermal_expansion': {
+          // Appen COE approximation (×10⁻⁷/°C): weighted sum of flux contributions
+          const u = umfData
+          if (!u) { z = 0; break }
+          z = (u.Na2O?.value ?? 0) * 33.3
+            + (u.K2O?.value ?? 0) * 28.3
+            + (u.Li2O?.value ?? 0) * 27.0
+            + (u.CaO?.value ?? 0) * 16.3
+            + (u.MgO?.value ?? 0) * 4.5
+            + (u.ZnO?.value ?? 0) * 7.0
+            + (u.BaO?.value ?? 0) * 14.0
+            + (u.SrO?.value ?? 0) * 12.0
+            + (u.B2O3?.value ?? 0) * (-5.0)
+            + (u.Al2O3?.value ?? 0) * 5.0
+            + (u.SiO2?.value ?? 0) * 3.8
+          break
+        }
         default:
           z = (umfData as any)?.[zAxis]?.value ?? 0; break
       }
@@ -1017,6 +1045,22 @@ export function StullPlot3D({
           const si = getOxideValue(p.umf, 'SiO2')
           const al = getOxideValue(p.umf, 'Al2O3')
           return al > 0 ? si / al : 0
+        }
+        case 'total_flux_moles':
+          return p.umf._meta?.totalFluxMoles ?? 0
+        case 'thermal_expansion': {
+          const u = p.umf
+          return (u.Na2O?.value ?? 0) * 33.3
+            + (u.K2O?.value ?? 0) * 28.3
+            + (u.Li2O?.value ?? 0) * 27.0
+            + (u.CaO?.value ?? 0) * 16.3
+            + (u.MgO?.value ?? 0) * 4.5
+            + (u.ZnO?.value ?? 0) * 7.0
+            + (u.BaO?.value ?? 0) * 14.0
+            + (u.SrO?.value ?? 0) * 12.0
+            + (u.B2O3?.value ?? 0) * (-5.0)
+            + (u.Al2O3?.value ?? 0) * 5.0
+            + (u.SiO2?.value ?? 0) * 3.8
         }
         default:
           return getOxideValue(p.umf, zAxis as OxideSymbol)
@@ -1539,17 +1583,39 @@ function getColorBarTitle(c: string): string {
 }
 export function zAxisLabel(z: ZAxisOption): string {
   const labels: Record<ZAxisOption, string> = {
-    B2O3: 'B\u2082O\u2083',
-    CaO: 'CaO',
-    MgO: 'MgO',
+    // Fluxes – R₂O
+    Li2O: 'Li\u2082O',
     Na2O: 'Na\u2082O',
     K2O: 'K\u2082O',
-    ZnO: 'ZnO',
+    // Fluxes – RO
+    MgO: 'MgO',
+    CaO: 'CaO',
+    SrO: 'SrO',
     BaO: 'BaO',
+    ZnO: 'ZnO',
+    PbO: 'PbO',
+    // Stabilizers
+    B2O3: 'B\u2082O\u2083',
     Fe2O3: 'Fe\u2082O\u2083',
+    // Glass formers
+    TiO2: 'TiO\u2082',
+    ZrO2: 'ZrO\u2082',
+    SnO2: 'SnO\u2082',
+    // Colorants / misc
+    MnO: 'MnO',
+    MnO2: 'MnO\u2082',
+    NiO: 'NiO',
+    CuO: 'CuO',
+    Cu2O: 'Cu\u2082O',
+    CoO: 'CoO',
+    Cr2O3: 'Cr\u2082O\u2083',
+    P2O5: 'P\u2082O\u2085',
+    // Computed
     cone: 'Cone',
     flux_ratio: 'R\u2082O:RO',
     SiO2_Al2O3_ratio: 'SiO\u2082:Al\u2082O\u2083',
+    total_flux_moles: 'Total Flux Moles',
+    thermal_expansion: 'Thermal Exp. (COE)',
   }
   return labels[z] || z
 }
