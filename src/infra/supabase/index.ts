@@ -18,6 +18,38 @@ export type {
   UserPrefsRow,
   ExplorationStatsRow,
   BlendResultRow,
+  // Phase 2 — Studio, Lab, Kiln, Bench, Map
+  MaterialRow,
+  ClayBodyRow,
+  KilnProfileRow,
+  FiringLogRow,
+  MaterialInventoryRow,
+  BatchLogRow,
+  RecipeVersionRow,
+  LimitPresetRow,
+  LayerExperimentRow,
+  // Extensibility layer
+  UserEntityRow,
+  ReferenceDataRow,
+  ComputedCacheRow,
+  // Phase 3 — Community
+  FollowRow,
+  SharedItemRow,
+  CommentRow,
+  ReactionRow,
+  CommunityFeedRow,
+  // Phase 3 — Physical world
+  PieceRow,
+  GlazeBodyPairingRow,
+  // Phase 3 — Classroom v4.2
+  CourseRow,
+  EnrollmentRow,
+  ExerciseRow,
+  SubmissionRow,
+  // Phase 3 — Infrastructure
+  NotificationRow,
+  ImportJobRow,
+  ActivityLogRow,
   Tier,
   TrialStatus,
   CodeStatus,
