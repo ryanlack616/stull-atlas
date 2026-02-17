@@ -79,6 +79,222 @@ npm run deploy               # → stullatlas.app/         (production, go-live)
 
 ---
 
+## v3.5.1 — The Instruments
+*"67 ways to look at a glaze — then 120."*
+
+The Z-axis of the 3D Stull chart is a microscope with interchangeable lenses.
+Each computed axis reveals a different truth about a glaze's chemistry, physics,
+or practical fitness. This plan expands from 40 options (23 oxides + 17 computed)
+to ~120 options across 14 categories, in 7 implementation phases.
+
+**Architecture:** All axes compute through the single `computeZFromUMF()` helper
+in `StullPlot3D.tsx`. Each phase adds new `ZAxisOption` union members, switch cases,
+constant tables, labels, and UI `<optgroup>` entries.
+
+### Phase A — High-Impact Structural Metrics (6 axes)
+*Additive models, published lookup tables, straightforward arithmetic.*
+
+- [ ] `asi` — **Alumina Saturation Index**: Al₂O₃ / (Na₂O + K₂O + Li₂O + CaO)
+  - ASI < 1 = peralkaline (glossy, fluid); ASI > 1 = peraluminous (matte, crystallization)
+  - Maps directly to the gloss/matte boundary on the Stull chart
+- [ ] `refractive_index` — **Refractive Index** (Appen): Σ xᵢ·nᵢ over mol% fractions
+  - Factors: SiO₂=1.458, Al₂O₃=1.52, Na₂O=1.59, CaO=1.73, BaO=1.93, TiO₂=2.08, PbO=1.96
+  - Observable optical property — brilliance, luster
+- [ ] `density` — **Glass Density** (Appen molar volume): Σ(xᵢ·Mᵢ) / Σ(xᵢ·Vᵢ)
+  - Molar volumes: SiO₂=25.7, Al₂O₃=34.1, Na₂O=19.5, CaO=13.0, MgO=12.8, BaO=22.9, ZnO=11.5, PbO=23.0 cm³/mol
+  - Measurable physical check, affects application thickness, glaze-body fit
+- [ ] `crawl_risk` — **Crawl Risk**: surface_tension × fluxTotal / (SiO₂ + Al₂O₃)
+  - High surface tension + low viscosity = bead-up; ZnO-heavy glazes flag high
+- [ ] `craze_risk` — **Crazing Risk** (vs body): COE_glaze − COE_body(cone)
+  - Body COE by cone range: earthenware ~70, stoneware ~55, porcelain ~45 (×10⁻⁷/°C)
+  - Positive = crazing, negative = compression (shivering if extreme)
+- [ ] `fluidity` — **Melt Fluidity Index**: flux-effectiveness-weighted sum / (SiO₂ + Al₂O₃)
+  - Weights: Li₂O×3.0, B₂O₃×2.5, Na₂O×2.0, K₂O×1.5, ZnO×1.2, CaO×1.0, BaO×0.8, MgO×0.6
+  - More nuanced than viscosity_index — accounts for differential flux power
+
+### Phase B — Classification & Prediction (6 axes)
+*Semi-empirical composites, still arithmetic on UMF.*
+
+- [ ] `matteness` — **Matteness Predictor**: ASI + 0.5(MgO + ZnO + BaO) − 0.3(alkali)
+  - Combines alumina saturation with mattifying oxides; high = likely matte
+- [ ] `boron_ratio` — **Boron Glass-Former Ratio**: B₂O₃ / (B₂O₃ + SiO₂)
+  - Explains why two Stull-identical glazes look different: boron substitution for silica
+- [ ] `comp_entropy` — **Compositional Entropy**: Shannon H over ALL oxides (not just fluxes)
+  - Whole-formula complexity; simple 3-oxide vs complex 10-oxide glazes separate clearly
+- [ ] `excess_alkali` — **Excess Alkali** (Free Modifier): (Na₂O + K₂O + Li₂O) − Al₂O₃
+  - Positive = free alkali (glossy, fluid, less durable); negative = peraluminous; predicts stability
+- [ ] `knao_equivalent` — **KNaO Equivalent**: Li₂O×1.87 + Na₂O + K₂O×0.66
+  - Unified alkali "dose" normalized to Na₂O-equivalent based on ionic radius / field strength
+- [ ] `leach_risk` — **Leaching Risk** (Food Safety): (PbO + BaO + CuO) / (SiO₂ / R₂O)
+  - Toxic oxide concentration ÷ glass stability; flags food-safety hazards
+
+### Phase C — Glass Physics (5 axes)
+*Published additive models with full coefficient tables.*
+
+- [ ] `youngs_modulus` — **Young's Modulus** (Makishima-Mackenzie 1973): E = 2·Vₜ·Gₜ
+  - Vₜ = packing density from ionic radii; Gₜ = dissociation energy density from bond energies
+  - Published Vᵢ and Gᵢ for all common oxides; stiffness / scratch resistance
+- [ ] `hardness` — **Vickers Hardness** (Yamane-Mackenzie): Hᵥ = (1−2ν)E / 6(1+ν)
+  - Derived from Young's modulus and Poisson's ratio; practical abrasion resistance
+- [ ] `poisson_ratio` — **Poisson's Ratio**: ν ≈ 0.5 − 1/(7.2·Vₜ)
+  - Lateral vs axial strain; low = brittle, high = ductile
+- [ ] `tg_estimate` — **Est. Glass Transition** (Priven): Σ xᵢ·Tg,ᵢ  (°C)
+  - Factors: SiO₂≈1480K, Al₂O₃≈1170K, Na₂O≈550K, CaO≈1040K, MgO≈760K, B₂O₃≈530K, BaO≈900K, ZnO≈730K
+  - Where the glaze freezes on cooling; annealing, thermal shock relevance
+- [ ] `thermal_shock` — **Thermal Shock Resistance**: R = σ(1−ν)/(E·α)
+  - Assumed fracture strength + computed E, ν, α; ovenware metric
+
+### Phase D — Advanced Glass Science (5 axes)
+*Topological constraint theory, Q-speciation, thermodynamics.*
+
+- [ ] `mean_coordination` — **Mean Coordination ⟨r⟩**: weighted average of cation coordination numbers
+  - Si=4, Al=4(if charge-balanced), B=3or4, Na=6, Ca=6, etc.
+  - Fundamental structural parameter; 4 = tetrahedral network, 6 = depolymerized
+- [ ] `constraints_per_atom` — **Constraints/Atom** (Phillips-Thorpe-Mauro): nₛ = r/2 + (2r−3) per cation
+  - nₛ = 3 → isostatic "perfect glass" (Corning's Gorilla Glass design principle)
+  - < 3 = floppy (soft, flows easily), > 3 = stressed-rigid (brittle, crystallization-prone)
+- [ ] `q4_fraction` — **Q⁴ Fraction** (full polymerization): from NBO/T + disproportionation K≈0.01
+  - How much glass is fully cross-linked silica; correlates with durability, stiffness
+- [ ] `q2_fraction` — **Q² Fraction** (chain structures): from NBO/T + disproportionation K
+  - Chain-like = metasilicates = tendency to devitrify as wollastonite/enstatite
+- [ ] `liquidus_estimate` — **Est. Liquidus Temperature** (Kalmanovitch-Frank polynomial, °C)
+  - Temperature where last crystal dissolves; originally for coal ash (= crude glaze)
+  - Above this = homogeneous melt; below = crystals nucleate
+
+### Phase E — Exploratory Physical (5 axes)
+*Semi-quantitative, interesting visualizations.*
+
+- [ ] `devit_index` — **Devitrification Index**: ASI × (CaO + 1.5MgO + 2ZnO) / (flux_entropy + 0.1)
+  - Predicts crystal mattes, aventurine, willemite; high = slow-cool crystallization likely
+- [ ] `hydration_energy` — **Free Energy of Hydration**: Σ xᵢ·ΔGᵢ (kJ/mol)
+  - More rigorous durability than SiO₂/alkali; accounts for each oxide's water reactivity
+- [ ] `modifier_fraction` — **Network Modifier Fraction**: modifier moles / total moles
+  - Above ~0.16–0.20 = Greaves percolation threshold → connected modifier channels → leaching jump
+- [ ] `fragility_index` — **Angell Fragility** (est.): from VFT parameters
+  - Strong m≈20 (gradual viscosity change) vs fragile m≈60+ (sudden freeze); predicts crystal formation on slow cooling
+- [ ] `fe_redox_estimate` — **Fe³⁺/Fe²⁺ Estimate**: f(optical basicity, T)
+  - Duffy (1993): log(Fe³⁺/Fe²⁺) = a·Λ + b + c/T; predicts iron color (amber→blue-green)
+  - Requires cone→temperature conversion
+
+### Phase F — Temperature-Dependent & Atmosphere-Aware (8 axes)
+*Unlocked by converting cone → Kelvin via Orton lookup table.*
+
+- [ ] `firing_temp_c` — **Firing Temperature** (°C): Orton cone chart standard conversion
+  - Foundation for all temperature-dependent calculations below
+- [ ] `grd_viscosity` — **GRD Viscosity at Firing T** (Giordano-Russell-Dingwell 2008): log₁₀(η) = A + B/(T−C)
+  - A, B(x), C(x) are multicomponent polynomial functions of mol%; actual Pa·s
+  - Published for SiO₂, TiO₂, Al₂O₃, FeO(T), MnO, MgO, CaO, Na₂O, K₂O, P₂O₅, H₂O, F
+- [ ] `liquidus_overshoot` — **Liquidus Overshoot**: T_firing − T_liquidus (°C)
+  - Positive = fully melted; negative = crystals survive; single most predictive melt indicator
+- [ ] `working_range` — **Working Range**: T(10⁴ Pa·s) − T(10⁷·⁶ Pa·s) (°C)
+  - Wide = forgiving kiln schedule; narrow = must hit temperature exactly
+- [ ] `heatwork_excess` — **Heatwork Excess**: cone_fired − cone_implied_by_chemistry
+  - Over-fired for chemistry = running, boiling; under-fired = incomplete melt
+- [ ] `volatilization_index` — **Volatilization Index**: Σ(volatile_oxide × T_firing / T_critical)
+  - Per-oxide thresholds: Na₂O/K₂O >1200°C, B₂O₃ >1100°C, PbO >800°C, ZnO >1250°C, F >900°C
+  - High = significant mass loss; the out-of-kiln glaze ≠ the batched glaze
+- [ ] `fe_color_ox` — **Predicted Iron Color (Oxidation)**: f(Fe₂O₃, base chemistry, T)
+  - Fe³⁺-dominant in oxidation → amber/brown/honey spectrum; encoded as hue angle
+- [ ] `fe_color_red` — **Predicted Iron Color (Reduction)**: f(Fe₂O₃, basicity, T, atmosphere)
+  - Fe²⁺-dominant in reduction → celadon green/blue; encoded as hue angle
+
+### Phase G — Multi-Modal Data Axes (27 axes)
+*Exploiting data fields beyond UMF chemistry — recipe, surface labels,
+taxonomy, geography, time, statistics, economics.*
+
+**Recipe / Ingredient-Derived:**
+- [ ] `ingredient_count` — Number of materials in the recipe
+- [ ] `frit_percentage` — Pre-melted glass fraction (frit materials / total)
+- [ ] `free_silica_fraction` — Silica added as quartz vs from feldspar
+- [ ] `clay_content` — Clay materials as % of recipe (EPK, ball clay, kaolin)
+- [ ] `loi_estimate` — Loss on Ignition estimated from carbonates, clays, organics
+- [ ] `material_diversity` — Shannon entropy of recipe ingredient weights
+
+**Surface / Label-Derived:**
+- [ ] `surface_mismatch` — Chemistry-predicted surface vs labeled surface (0 = match, 1 = contradiction)
+- [ ] `surface_probability` — P(matte) from logistic boundary trained on labeled dataset
+- [ ] `opacity_predictor` — f(Al₂O₃, ZrO₂, SnO₂, TiO₂, P₂O₅); compare vs labeled transparency
+
+**Statistical / Dataset-Derived:**
+- [ ] `anomaly_score` — Mahalanobis distance from centroid of same-cone glazes
+- [ ] `feature_density` — k-nearest-neighbor density; dense = explored, sparse = novel
+- [ ] `percentile_rank` — Position of current Z-value among all glazes at same cone
+- [ ] `nearest_surface_boundary` — Distance to nearest glaze with different surface type
+
+**Limit Formula-Derived:**
+- [ ] `limit_distance` — Distance from recommended UMF envelope (negative = inside, positive = outside)
+- [ ] `safety_score` — Composite of all limit checks: 1.0 = within all limits, 0.0 = violating everything
+
+**Taxonomy-Derived:**
+- [ ] `type_centroid_distance` — Distance from mean UMF of same glazeTypeId
+- [ ] `nearest_type_boundary` — Distance to nearest different glaze type
+- [ ] `type_confidence` — Classification confidence from simple majority-vote of k-nearest
+
+**Temporal-Derived:**
+- [ ] `recipe_age_years` — Years since createdAt
+- [ ] `innovation_score` — Distance from all previously-dated recipes at time of creation
+
+**Geographic-Derived:**
+- [ ] `regional_distance` — Distance from compositional centroid of same-country glazes
+
+**Color / Appearance-Derived:**
+- [ ] `colorant_per_flux` — total_colorant / fluxTotal; effective colorant concentration in the melt
+
+**Interaction Effects:**
+- [ ] `mixed_alkali_effect` — 4 × x_Na × x_K (parabolic); max at 50:50 Na:K = property anomaly
+- [ ] `boron_n4_fraction` — N4 = R/(R + S); fraction of B in tetrahedral coordination
+  - Below ~16 mol% alkali boron is trigonal; above it becomes tetrahedral → different behavior
+
+**Functional Fitness Composites:**
+- [ ] `food_safety_score` — Composite: durability > threshold, PbO=0, BaO<limit, colorants<limit
+- [ ] `microwave_score` — Low Fe₂O₃ + low transition metals (absorb microwave radiation → hot spots)
+
+### Phase H — Sensitivity & Robustness (3 axes)
+*The math of "fussy" vs "forgiving."*
+
+- [ ] `robustness_score` — Maximum property swing from ±0.01 change in any single oxide
+  - Numerical Jacobian of (COE, viscosity_index, NBO/T) w.r.t. all oxides; low = forgiving
+- [ ] `critical_oxide` — Which single oxide causes largest property swing if mis-measured ±5%
+  - Encoded numerically as index into oxide list; or as magnitude of max sensitivity
+- [ ] `error_width` — Given ±2% weighing error propagated through all ingredients → ±range on COE
+  - Monte Carlo (100 samples) or analytic first-order propagation; wide = unpredictable
+
+### Dependencies & Constant Tables Needed
+
+| Phase | New constants | Source |
+|-------|--------------|--------|
+| A | Appen refractive index factors (12 oxides), Appen molar volumes (12 oxides), body COE by cone, flux effectiveness weights | Appen (1961), Volf (1984) |
+| B | None (uses computed values from existing models) | — |
+| C | Makishima-Mackenzie Vᵢ/Gᵢ for 12 oxides, Priven Tg factors for 10 oxides | M&M (1973), Priven (2004) |
+| D | Q-speciation disproportionation K values, coordination number assignments, Kalmanovitch polynomial (6 terms) | Maekawa (1991), Kalmanovitch & Frank (1988) |
+| E | ΔG_hyd published values (12 oxides), Duffy Fe redox coefficients | Appen, Duffy (1993) |
+| F | Orton cone→°C lookup (30 entries), GRD VFT A/B/C polynomial coefficients (~30 terms), volatilization threshold temperatures | Orton, Giordano et al. (2008) |
+| G | Body COE table, material LOI values, glaze limit formulas by cone | Hamer & Hamer, Digitalfire |
+| H | None (numerical differentiation of existing models) | — |
+
+### UI Organization: Optgroup Categories (14 groups)
+
+| Group | Options |
+|-------|---------|
+| Fluxes – R₂O | Li₂O, Na₂O, K₂O |
+| Fluxes – RO | CaO, MgO, SrO, BaO, ZnO, PbO |
+| Stabilizers | B₂O₃, Fe₂O₃ |
+| Glass Formers | TiO₂, ZrO₂, SnO₂ |
+| Colorants | MnO, MnO₂, NiO, CuO, Cu₂O, CoO, Cr₂O₃, P₂O₅ |
+| Ratios & Sums | Cone, flux ratio, SiO₂:Al₂O₃, total flux, COE |
+| Glass Structure | NBO/T, optical basicity, ASI, excess alkali, boron ratio, boron N₄, mean ⟨r⟩, constraints/atom, Q⁴, Q², comp. entropy |
+| Flux Analysis | Flux entropy, CaO:MgO, combined alkali, Na₂O:K₂O, KNaO eq., mixed alkali |
+| Physical Properties | Viscosity index, surface tension, durability, fluidity, density, refractive index |
+| Mechanical | Young's modulus, Vickers hardness, Poisson's ratio, thermal shock |
+| Thermal | Tg estimate, liquidus, liquidus overshoot, firing temp, working range, heatwork excess |
+| Risk Assessment | Crawl risk, craze risk, leach risk, food safety, microwave, volatilization |
+| Prediction | Matteness, surface probability, opacity, devitrification, fragility, Fe color (ox/red) |
+| Advanced | Anomaly, density (kNN), percentile, limit distance, safety score, type distance, robustness, error width, colorant/flux, innovation |
+
+**Total: 23 direct oxides + 44 existing computed + ~57 new = ~124 Z-axis options**
+
+---
+
 ## v3.6 — The Walk
 *"How do I get from my glaze to that one?"*
 
@@ -737,6 +953,7 @@ when the trigger condition is true.*
 |---------|----------|-----------|--------|
 | **3.4** | The Compass | Weighted search + surface prediction | ✅ Shipped |
 | **3.5** | The Gallery | Photos in exploration, visual browsing | ✅ Shipped |
+| **3.5.1** | The Instruments | 120 Z-axis options: glass physics, predictions, multi-modal | 📋 Planned |
 | **3.6** | The Walk | Recipe interpolation, wet blending, flux ratios | 📋 Planned |
 | **3.7** | The Constellations | Auto-named glaze families, fuzzy grouping | 📋 Planned |
 | **3.8** | The Knowledge Graph | Visual graph navigation with photos | 🌟 Vision |
@@ -757,6 +974,7 @@ Each version builds on the last:
 ```
 v3.4 Compass    → defines "similar" (distance function)
 v3.5 Gallery    → shows what "similar" looks like (photos)
+v3.5.1 Instruments → 120 lenses on every glaze (physics, predictions, risk)
 v3.6 Walk       → shows how to get there (recipe delta, wet blending, flux lenses)
 v3.7 Families   → groups of "similar" become named places (fuzzy boundaries)
 v3.8 Graph      → the places become a navigable world
@@ -781,6 +999,7 @@ Each layer is independently valuable. Ship each one, prove it works, then build 
 | Recipe calculator | ✓ | ✓ | ✓ | ✓ |
 | UMF display | ✓ | ✓ | ✓ | ✓ |
 | Stull chart | - | static | - | **interactive 3D** |
+| 120 computed Z-axes | - | - | - | **v3.5.1** |
 | Weighted similarity | - | - | - | **v3.4 ✅** |
 | Surface prediction | - | - | - | **v3.4 ✅** |
 | Photo exploration | list | - | - | **v3.5** |
