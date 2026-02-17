@@ -315,6 +315,166 @@ desktop) gets the full set; web edition gets ~70% (browser reserves some keys).
 
 ---
 
+## v3.11 — The Laboratory
+*"Predict what happens before you fire."*
+
+Physics-based and empirical calculation engines that turn UMF numbers
+into actionable predictions. Every tool answers a question a potter asks
+before loading the kiln.
+
+### v3.11.0 — Glaze-Body Fit Calculator
+*Item a potter asks most: "will this craze on my clay?"*
+
+- [ ] Input: glaze UMF (from recipe or explorer) + clay body COE (or body recipe)
+- [ ] Appen-factor COE for glaze, tabulated or calculated COE for body
+- [ ] Numeric mismatch score: COE_glaze − COE_body → crazing risk (positive) or shivering risk (negative)
+- [ ] Visual gauge: green/yellow/red zones with threshold annotations
+- [ ] Common body presets: cone 6 porcelain, cone 10 stoneware, cone 06 earthenware, etc.
+- [ ] "Safe zone" overlay on the Stull chart: shaded region where COE is compatible with selected body
+- [ ] Reverse mode: given a body, show which glazes in the database are compatible
+
+### v3.11.1 — Thermal Property Curves
+*Full COE, Tg, and liquidus — not single numbers, but curves.*
+
+- [ ] **Thermal Expansion Curve** — COE vs temperature (25–600°C) using Winkelmann-Schott or Priven model
+  - Each oxide contributes differently at different temperature ranges
+  - Interactive: hover the curve to see COE at any temperature
+  - Overlay: plot multiple glazes' expansion curves for comparison
+- [ ] **Liquidus Temperature** — Phase diagram lookup (SiO₂-Al₂O₃-flux ternary)
+  - Gan-Shafer or Bottinga-Weill empirical model for multicomponent silicates
+  - More accurate than the linear melt estimate in `meltEstimate.ts`
+  - Show the liquidus surface as a contour overlay on the Stull chart
+- [ ] **Glass Transition Temperature (Tg)** — Priven's model
+  - When the glaze actually freezes → impacts annealing, thermal shock resistance
+  - Input: UMF → output: estimated Tg in °C
+  - Compare Tg across a blend series ("these 21 triaxial points have Tg from 580–650°C")
+
+### v3.11.2 — Viscosity & Flow Model
+*Not just "will it run" — the full flow curve.*
+
+- [ ] Temperature-dependent viscosity using Giordano-Russell (2008) or Fluegel (2007) models
+- [ ] Plot: log₁₀(viscosity) vs temperature for a given UMF
+- [ ] Key thresholds annotated: softening point, flow point, working range, seal point
+- [ ] Crawling risk: viscosity too high at maturation → glaze beads up instead of smoothing
+- [ ] Running risk: viscosity too low at maturation → glaze flows off vertical surfaces
+- [ ] Overlay multiple glazes for comparison ("the celadon is 10× stiffer than the tenmoku at 1260°C")
+- [ ] Blend explorer integration: show viscosity gradient across a triaxial blend
+
+### v3.11.3 — Surface Energy & Crawl Prediction
+*Why does this glaze crawl on this clay?*
+
+- [ ] Dietzel field-strength model → surface tension estimate (dyn/cm)
+- [ ] Wetting angle approximation from surface tension vs substrate energy
+- [ ] Crawl risk score: 0 (no risk) → 10 (certain crawl)
+- [ ] Factors displayed: high Al₂O₃ + low flux → stiff melt → crawl-prone
+- [ ] MgO contribution highlighted (MgO raises surface tension more than CaO)
+- [ ] Recommendations: "Reduce Al₂O₃ by 0.05 or add 0.1 more CaO to reduce crawl risk"
+
+### v3.11.4 — Defect Prediction Suite
+*Three firing defects predicted from chemistry.*
+
+- [ ] **Crystallization Probability**
+  - Zinc-silicate crystallization: f(ZnO, SiO₂, cooling rate)
+  - Calcium-borate devitrification: f(CaO, B₂O₃, Al₂O₃)
+  - Titanium crystallization (rutile/anatase): f(TiO₂, flux ratio)
+  - Score: 0–1 probability, with "intentional crystal" vs "defect crystal" framing
+  - Cooling rate input: fast cool (suppress) vs slow cool (encourage)
+- [ ] **Volatilization Risk**
+  - Per-oxide volatilization threshold temperatures
+  - Na₂O, K₂O above cone 8; B₂O₃ above cone 6; PbO above cone 02; ZnO above cone 9
+  - Flag: "Your 0.45 B₂O₃ at cone 10 will lose ~30% of its boron to the kiln atmosphere"
+  - Impact on final UMF: show pre-fire vs estimated post-fire chemistry
+- [ ] **Carbon Trap Score**
+  - Likelihood based on early melt temperature vs body organics burnout
+  - High-boron low-fire glazes that seal early → trap carbon → gray spots
+  - Score + mitigation: "Longer bisque or slower ramp through 800–1000°C"
+
+### v3.11.5 — Color & Atmosphere Prediction
+*"Will this be green or brown?"*
+
+- [ ] **Atmosphere Prediction**
+  - Iron (Fe₂O₃): oxidation → amber/brown; reduction → celadon green/blue
+  - Copper (CuO): oxidation → green/turquoise; reduction → red/ox-blood
+  - Manganese: oxidation → purple/brown; reduction → brown/metallic
+  - Cobalt: relatively atmosphere-stable → blue in both
+  - Output: expected color description + hex swatch for ox and reduction
+- [ ] **Color Prediction Model**
+  - Inputs: colorant oxide concentrations + base chemistry (CaO, MgO, ZnO affect color)
+  - Base chemistry influence: CaO mutes iron color, MgO yields olive tones, ZnO brightens
+  - Cone influence: underfired colorants look different than fully developed ones
+  - Confidence level: "high" for simple systems (1 colorant), "rough estimate" for complex
+  - Visual: predicted color swatch beside each blend point in triaxial results
+
+### v3.11.6 — Oxide Contribution Breakdown
+*"Why is my COE so high?" — a waterfall chart that shows you.*
+
+- [ ] For any calculated property (COE, viscosity, NBO/T, optical basicity, durability, etc.):
+  - Waterfall chart: starting value → each oxide's contribution → final value
+  - Bar color = oxide color from the standard palette
+  - Hover: "Na₂O contributes +13.3 to your thermal expansion (33.3 × 0.40 = 13.3)"
+- [ ] Material-level breakdown: which raw material is responsible?
+  - "Nepheline syenite accounts for 62% of your combined alkali"
+- [ ] Sensitivity bars: "Removing 5% feldspar drops COE by 4.2 units"
+- [ ] Integrates with Response Surface analysis (already in `responseSurface.ts`)
+
+### v3.11.7 — Limit Formula Generator
+*Interactive visual tool for "what range should I aim for?"*
+
+- [ ] Select target cone + desired surface type → generate UMF envelope
+- [ ] Visual: limit rectangles on the Stull chart (already rendered in StullPlot.tsx)
+  - But now interactive: adjust cone, surface, and watch limits reshape
+- [ ] Per-oxide range sliders: narrow the envelope to your preferences
+- [ ] "X% of glazes in the database fall within your limits" — validation score
+- [ ] Export limits as JSON or print as reference card
+- [ ] Reverse validation: paste a UMF → instantly see which cone/surface limits it satisfies
+- [ ] Data source: existing `CONE_LIMITS` in validation.ts + computed from database statistics
+
+### v3.11.8 — Batch Calculator
+*Recipe → actual weights for a batch size.*
+
+- [ ] Input: recipe (% by weight) + target batch size (grams, kg, or lb)
+- [ ] Output: per-material weight in selected units
+- [ ] Water addition calculator: target specific gravity → water volume
+- [ ] Deflocculated vs raw: calculate Darvan/sodium silicate additions
+- [ ] Sieve waste factor: add 5–10% for sieve losses
+- [ ] Multi-batch: "I need 3 batches of 5000g" → total material shopping list
+- [ ] Material inventory tracking: "You need 2.4 kg of EPK — do you have enough?"
+- [ ] Print-friendly batch sheet with recipe name, date, notes field
+
+### v3.11.9 — LOI Calculator
+*Loss on Ignition from material composition.*
+
+- [ ] Per-material LOI from database (theoretical from formula or measured)
+- [ ] Recipe total LOI: weighted sum of material LOIs
+- [ ] Dry weight → fired weight estimate for batch planning
+- [ ] LOI breakdown: which materials contribute most gas/shrinkage?
+- [ ] Bubble risk: high LOI materials + early melt → pinholing/crawling path
+- [ ] Temperature profile: when does each material release its volatiles?
+
+### v3.11.10 — Recipe Comparison
+*Side-by-side delta between any two glazes.*
+
+- [ ] Select two glazes (from explorer, recipe database, or manual entry)
+- [ ] Table: oxide-by-oxide ΔUMF with colored bars (+ green / − red)
+- [ ] Radar chart: overlay two UMF fingerprints for visual comparison
+- [ ] Derived deltas: ΔCOE, Δflux ratio, Δviscosity index, ΔSi:Al ratio
+- [ ] "How far apart?" — Euclidean distance in UMF space + Aesthetic Compass distance
+- [ ] Material-level diff: if both are recipes, show ingredient-by-ingredient differences
+- [ ] "What would it take?" — link to v3.6 Walk for interpolation path between them
+
+### v3.11.11 — Substitution Finder
+*"I can't get Custer Feldspar — what do I use instead?"*
+
+- [ ] Select a material in a recipe → see chemically similar alternatives from database
+- [ ] UMF delta for each substitute: "Minspar has 0.02 more Na₂O, 0.01 less K₂O"
+- [ ] Auto-adjust: optimizer suggests compensating changes to other ingredients
+- [ ] One-click swap: replace material and recalculate entire UMF
+- [ ] Show Stull chart shift: arrow from old position to new position
+- [ ] Availability filter: mark which materials you have in your studio
+- [ ] Cross-references v3.10.0 Material Substitution for chart visualization
+
+---
+
 ## v4.1 — The Community
 *"A living document of collective ceramic knowledge."*
 
@@ -399,6 +559,7 @@ when the trigger condition is true.*
 | **3.8** | The Knowledge Graph | Visual graph navigation with photos | 🌟 Vision |
 | **3.9** | The Controls | Keyboard/mouse navigation instrument | 📋 Planned |
 | **3.10** | The Studio | Material substitution, bidirectional recipe | 📋 Planned |
+| **3.11** | The Laboratory | Physics-based prediction engines, batch tools | 📋 Planned |
 | **4.1** | The Community | Personal profiles, shared knowledge, free tier | 🔮 Future |
 
 ## Architecture Principle
@@ -412,6 +573,7 @@ v3.7 Families   → groups of "similar" become named places (fuzzy boundaries)
 v3.8 Graph      → the places become a navigable world
 v3.9 Controls   → the world responds to your hands
 v3.10 Studio    → the world connects back to the bench
+v3.11 Laboratory → predict what happens before you fire
 v4.1 Community  → every potter gets their own page + shared knowledge
 ```
 
@@ -430,8 +592,13 @@ Each layer is independently valuable. Ship each one, prove it works, then build 
 | Recipe interpolation | - | - | - | **v3.6** |
 | Glaze families | tags | - | - | **v3.7** |
 | Knowledge graph | - | - | - | **v3.8** |
-| Material substitution | - | manual | - | **v3.9** |
-| Shared exploration | - | - | - | **v4.0** |
+| Material substitution | - | manual | - | **v3.10** |
+| Crazing/fit prediction | - | basic | basic | **v3.11** |
+| Viscosity modeling | - | - | - | **v3.11** |
+| Color prediction | - | - | - | **v3.11** |
+| Batch calculator | ✓ | ✓ | ✓ | **v3.11** (richer) |
+| Defect prediction | - | - | - | **v3.11** |
+| Shared exploration | - | - | - | **v4.1** |
 
 **No one is building this.** Not Glazy (social-first, no spatial understanding),
 not Digitalfire (reference-first, no interactivity), not Insight (desktop-only calculator).
