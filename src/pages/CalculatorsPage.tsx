@@ -53,6 +53,13 @@ const calculators = [
     meta: 'center + additions → spokes',
   },
   {
+    path: '/calc/flux-triaxial',
+    icon: '⚗',
+    name: 'Flux Triaxial',
+    description: 'Triaxial blend plotted by flux ratio vs estimated melting temperature, colored by boron. Interactive flux shift.',
+    meta: '3 corners → flux ratio × temp × B₂O₃',
+  },
+  {
     path: '/calc/space-filling',
     icon: '⊞',
     name: 'Space-Filling Sampler',

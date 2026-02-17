@@ -41,6 +41,7 @@ const TriaxialBlendPage = lazyRetry(() => import('./pages/TriaxialBlendPage').th
 const QuadaxialBlendPage = lazyRetry(() => import('./pages/QuadaxialBlendPage').then(m => ({ default: m.QuadaxialBlendPage })))
 const BiaxialBlendPage = lazyRetry(() => import('./pages/BiaxialBlendPage').then(m => ({ default: m.BiaxialBlendPage })))
 const RadialBlendPage = lazyRetry(() => import('./pages/RadialBlendPage').then(m => ({ default: m.RadialBlendPage })))
+const FluxTriaxialPage = lazyRetry(() => import('./pages/FluxTriaxialPage').then(m => ({ default: m.FluxTriaxialPage })))
 const SpaceFillingPage = lazyRetry(() => import('./pages/SpaceFillingPage').then(m => ({ default: m.SpaceFillingPage })))
 const MaterialsPage = lazyRetry(() => import('./pages/MaterialsPage').then(m => ({ default: m.MaterialsPage })))
 const ImportExportPage = lazyRetry(() => import('./pages/ImportExportPage').then(m => ({ default: m.ImportExportPage })))
@@ -141,6 +142,7 @@ function App() {
         <Route path="calc/quadaxial" element={<LazyPage><QuadaxialBlendPage /></LazyPage>} />
         <Route path="calc/biaxial" element={<LazyPage><BiaxialBlendPage /></LazyPage>} />
         <Route path="calc/radial" element={<LazyPage><RadialBlendPage /></LazyPage>} />
+        <Route path="calc/flux-triaxial" element={<LazyPage><FluxTriaxialPage /></LazyPage>} />
         <Route path="calc/space-filling" element={<LazyPage><SpaceFillingPage /></LazyPage>} />
         <Route path="calc/optimizer" element={<LazyPage><OptimizerPage /></LazyPage>} />
         <Route path="materials" element={<LazyPage><MaterialsPage /></LazyPage>} />
