@@ -1053,17 +1053,7 @@ turns this panel into a full-screen instrument.
 - [ ] Multiple valid regions possible: "there are two zones that satisfy your constraints"
 - [ ] Constraint relaxation: "No solution exists. Relaxing COE to < 70 opens this region."
 
-### v3.16.8 — Sonification
-*Chemistry you can hear.*
-
-- [ ] Subtle tone shift when crossing matte/gloss boundary (pitch change)
-- [ ] Low hum intensifies approaching danger zones (COE, crawling)
-- [ ] Chime when entering a named constellation territory
-- [ ] Tone mapped to overall "health": harmonious = safe everywhere,
-  dissonant = conflicting properties (good COE but high crawl risk)
-- [ ] Audio off by default; toggle in settings; respect system accessibility
-
-### v3.16.9 — Undo & Snapshots
+### v3.16.8 — Undo & Snapshots
 *Structured exploration, not random wandering.*
 
 - [ ] **Per-oxide revert:** tiny revert button on each slider → snap one oxide back;
@@ -1073,7 +1063,7 @@ turns this panel into a full-screen instrument.
 - [ ] **Side-by-side comparison:** pick any two snapshots, see all property deltas
 - [ ] **"What's different?"** — highlight only the properties that diverged between snapshots
 
-### v3.16.10 — Exploration Journal
+### v3.16.9 — Exploration Journal
 *Your personal chemistry notebook.*
 
 - [ ] One-click save: entire state (oxides, properties, forecast, Stull position,
@@ -1097,9 +1087,8 @@ turns this panel into a full-screen instrument.
 | 6 | v3.16.5 Living Recipe Card | 4–6 hrs | ✅ Yes — NCECA handout |
 | 7 | v3.16.6 Perturbation Cloud | 4–6 hrs | Stretch |
 | 8 | v3.16.7 Inverse Mode | 6–8 hrs | Stretch |
-| 9 | v3.16.8 Sonification | 3–4 hrs | Post-NCECA |
-| 10 | v3.16.9 Undo & Snapshots | 3–4 hrs | Post-NCECA |
-| 11 | v3.16.10 Exploration Journal | 4–6 hrs | Post-NCECA |
+| 9 | v3.16.8 Undo & Snapshots | 3–4 hrs | Post-NCECA |
+| 10 | v3.16.9 Exploration Journal | 4–6 hrs | Post-NCECA |
 
 **Architecture:**
 ```
@@ -1253,7 +1242,6 @@ Each layer is independently valuable. Ship each one, prove it works, then build 
 | Intent sliders (outcome-based) | - | - | - | **v3.16** |
 | Perturbation clouds | - | - | - | **v3.16** |
 | Inverse design (constraint solver) | - | - | - | **v3.16** |
-| Chemistry sonification | - | - | - | **v3.16** |
 | Exploration journal | - | - | - | **v3.16** |
 | Workshop / classroom mode | - | - | - | **v4.2** |
 | Universal import | partial | - | partial | **v4.3** |
