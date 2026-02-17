@@ -108,6 +108,45 @@ The bridge between *seeing* a glaze you want and *making* it at your bench.
 - Material database already in `data/materials/`
 - Surface prediction from v3.4 feeds into "what surface will this be at step X?"
 
+### v3.6.3 — Wet Blending Calculator
+*Henry Crissman feedback (Jan 2025): "potters blend at the bucket, not the spreadsheet"*
+
+- [ ] Mix finished glazes by weight/volume ratio (e.g., 60% celadon + 40% tenmoku)
+- [ ] Compute resulting UMF as weighted average of input glazes' UMFs
+- [ ] Multi-glaze blend support: 2, 3, or n-way wet blends
+- [ ] Show blended point on Stull chart with interpolation line/region
+- [ ] Side-by-side: source glazes + blended result with UMF fingerprints
+- [ ] Surface prediction for the blended result
+- [ ] Blend series: sweep a ratio range (10/90, 20/80, ... 90/10) and show trajectory
+- [ ] "What ratio gives me matte?" — search along the blend line for surface transitions
+
+**Technical notes:**
+- Different from dry blending (simplex.ts) which interpolates material recipes
+- Wet blending operates on finished UMFs: `resultUMF[oxide] = Σ(weight_i × UMF_i[oxide])`
+- Existing `interpolateRecipes()` in simplex.ts does ingredient-level interpolation — wet blending needs a UMF-level equivalent
+- Consider weight vs. volume corrections (specific gravity differences between glazes)
+- Both wet AND dry blending needed (Henry was explicit: "We need to do both.")
+
+### v3.6.4 — Flux Ratio Controls
+*Henry Crissman feedback: "the flux axes should adjust to each other — and you need per-element ratios"*
+
+- [ ] Flux ratio as first-class plottable axis (not just a color-by option)
+- [ ] Interactive flux ratio control: adjusting one flux axis updates the others proportionally
+- [ ] Per-element flux breakdown: individual oxide ratios (Na₂O:K₂O, CaO:MgO, BaO:SrO)
+  instead of only lumped R2O:RO
+- [ ] Flux triangle visualization: R2O / RO / B2O3 as ternary axes
+- [ ] Click any flux ratio axis → chart re-orients with that ratio as primary dimension
+- [ ] Ratio presets: "Alkali balance" (Na₂O:K₂O), "Alkaline earth" (CaO:MgO), "Total flux" (R2O:RO)
+
+**Technical notes:**
+- R2O:RO already computed in `glazeStore.ts` line 197-210 (`Li2O+Na2O+K2O / RO`)
+- Currently `fluxRatio` is a single number → need to decompose into individual ratios
+- Per-element ratios are more powerful: two glazes with same R2O:RO can behave very differently
+  if one is Na₂O-dominant vs K₂O-dominant
+- Ternary plot could use Plotly's `scatterternary` trace type
+- This is what Henry means by "5 dimensions" — multiple lenses into the same data, each
+  revealing different structure
+
 ---
 
 ## v3.7 — The Constellations
@@ -120,6 +159,11 @@ Auto-discover and name the glaze families that already exist in the data.
 - [ ] Auto-name clusters from Glazy `glazeTypeId` labels: "Celadon Territory," "Tenmoku Belt"
 - [ ] Unlabeled clusters described by chemistry: "High-Calcium Mattes," "Boron Glosses"
 - [ ] Constellation stats: typical cones, surface types, oxide ranges, point count
+- [ ] **Fuzzy grouping** — soft cluster boundaries with probabilistic membership
+  (Henry Crissman: glazes at boundaries belong to multiple families simultaneously)
+- [ ] Gradient boundaries instead of hard edges: 80% celadon / 20% tenmoku territory
+- [ ] Overlap regions highlighted as "transition zones" — these are the interesting spots
+- [ ] Membership confidence score per glaze per constellation
 
 ### v3.7.1 — Visual Overlays
 - [ ] Translucent boundary polygons on the Stull chart (2D convex hull or contour)
@@ -274,13 +318,28 @@ desktop) gets the full set; web edition gets ~70% (browser reserves some keys).
 ## v4.1 — The Community
 *"A living document of collective ceramic knowledge."*
 
-### v4.1.0 — User Profiles & Saved Explorations
-- [ ] Auth integration (Supabase already wired)
-- [ ] Save and name exploration paths
-- [ ] Personal glaze library with notes
-- [ ] Upload your own test tile photos
+### v4.1.0 — User Profiles & Personal Database
+*Henry Crissman feedback: "everyone should have their own page and database of stuff"*
 
-### v4.1.1 — Social Exploration
+- [ ] Auth integration (Supabase already wired)
+- [ ] **Personal potter profile page** — each user gets their own space
+- [ ] Personal recipe database — save all your glazes, recipes, notes in one place
+- [ ] Save and name exploration paths
+- [ ] Upload your own test tile photos
+- [ ] Personal glaze library with tagging and search
+- [ ] Import/export recipes (CSV, JSON, Glazy format)
+- [ ] Private by default, share selectively
+
+### v4.1.1 — Free Tier & Onboarding
+*Strategy: free for everyone initially to build traction (Henry: "make it useful first")*
+
+- [ ] No paywall at launch — full access for early adopters
+- [ ] Usage analytics to understand what features potters actually use
+- [ ] Feedback mechanism built in ("What's missing? What's confusing?")
+- [ ] Generous free tier retained permanently (core exploration always free)
+- [ ] Premium features (TBD): bulk export, advanced blend calculator, priority data sync
+
+### v4.1.2 — Social Exploration
 - [ ] Share exploration paths as URLs
 - [ ] "X potters explored this region this week"
 - [ ] Community annotations on the Stull chart
@@ -335,11 +394,12 @@ when the trigger condition is true.*
 |---------|----------|-----------|--------|
 | **3.4** | The Compass | Weighted search + surface prediction | ✅ Shipped |
 | **3.5** | The Gallery | Photos in exploration, visual browsing | ✅ Shipped |
-| **3.6** | The Walk | Recipe interpolation, "how do I get there?" | 📋 Planned |
-| **3.7** | The Constellations | Auto-named glaze families | 📋 Planned |
+| **3.6** | The Walk | Recipe interpolation, wet blending, flux ratios | 📋 Planned |
+| **3.7** | The Constellations | Auto-named glaze families, fuzzy grouping | 📋 Planned |
 | **3.8** | The Knowledge Graph | Visual graph navigation with photos | 🌟 Vision |
-| **3.9** | The Studio | Material substitution, bidirectional recipe | 📋 Planned |
-| **4.0** | The Community | Shared knowledge, social features | 🔮 Future |
+| **3.9** | The Controls | Keyboard/mouse navigation instrument | 📋 Planned |
+| **3.10** | The Studio | Material substitution, bidirectional recipe | 📋 Planned |
+| **4.1** | The Community | Personal profiles, shared knowledge, free tier | 🔮 Future |
 
 ## Architecture Principle
 
@@ -347,11 +407,12 @@ Each version builds on the last:
 ```
 v3.4 Compass    → defines "similar" (distance function)
 v3.5 Gallery    → shows what "similar" looks like (photos)
-v3.6 Walk       → shows how to get there (recipe delta)
-v3.7 Families   → groups of "similar" become named places
+v3.6 Walk       → shows how to get there (recipe delta, wet blending, flux lenses)
+v3.7 Families   → groups of "similar" become named places (fuzzy boundaries)
 v3.8 Graph      → the places become a navigable world
-v3.9 Studio     → the world connects back to the bench
-v4.0 Community  → the world becomes shared
+v3.9 Controls   → the world responds to your hands
+v3.10 Studio    → the world connects back to the bench
+v4.1 Community  → every potter gets their own page + shared knowledge
 ```
 
 Each layer is independently valuable. Ship each one, prove it works, then build the next.
