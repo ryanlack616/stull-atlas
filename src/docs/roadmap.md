@@ -475,6 +475,155 @@ before loading the kiln.
 
 ---
 
+## v3.12 — The Kiln
+*"Every firing tells a story — capture it."*
+
+Tools for the firing side of the studio: schedules, heat work, and the
+test tile system that connects experiments to the Stull chart.
+
+### v3.12.0 — Firing Schedule Builder
+*Program your kiln in chemistry terms, not just degrees.*
+
+- [ ] Ramp/hold/cool segment editor with visual timeline
+- [ ] Cone-equivalence math: "your slow bisque is actually cone 05.5" (Orton heat-work integration)
+- [ ] Predefined templates: cone 06 bisque, cone 6 oxidation, cone 10 reduction, raku, wood
+- [ ] Atmosphere timeline: oxidation → reduction → cooling annotations per segment
+- [ ] Link schedule to glaze predictions: "at this schedule your viscosity curve says it will run"
+- [ ] Firing cost estimator: electricity or gas per firing from schedule + kiln specs (kW, BTU)
+- [ ] Export as printable kiln log sheet
+
+### v3.12.1 — Heat Work Calculator
+*Not all cone 6 firings are the same.*
+
+- [ ] Orton time-temperature integration: actual heat work from a recorded firing profile
+- [ ] Input: manual entry or thermocouple CSV import
+- [ ] Output: precise cone equivalent (e.g., "cone 5.7")
+- [ ] Compare intended vs actual heat work across multiple firings
+- [ ] Overlay heat work on glaze predictions: "your glaze was designed for cone 6 but this firing only reached cone 5.4 of heat work"
+
+### v3.12.2 — Test Tile Lab Notebook
+*The systematic experiment tracker potters don't have.*
+
+- [ ] Digital test tile record: recipe + clay body + firing schedule + photo + notes
+- [ ] Link each tile to its position on the Stull chart
+- [ ] Systematic grid planner: "vary silica in 5 steps × alumina in 5 steps = 25 tiles"
+- [ ] Timeline view: see how a recipe evolved over 12 firings
+- [ ] Tag tiles: successful, failed, interesting, needs repeat
+- [ ] Side-by-side comparison: pick any two tiles, see chemistry + photo + notes diff
+- [ ] Search and filter by oxide range, surface result, cone, date
+
+### v3.12.3 — QR Code Tile Tracker
+*Scan a tile, see its data.*
+
+- [ ] Generate QR code stickers for each test tile
+- [ ] Print sheet of QR codes with tile ID and mini recipe summary
+- [ ] Scan QR → opens test tile record on phone
+- [ ] Batch print: generate labels for an entire blend series at once
+- [ ] Kiln map: drag tiles onto a kiln cross-section to record placement
+
+---
+
+## v3.13 — The Bench
+*"Where chemistry meets the mixing bucket."*
+
+Practical tools for the studio: application physics, clay bodies,
+and print-ready recipe documentation.
+
+### v3.13.0 — Glaze Application Physics
+*Control your surface before it hits the kiln.*
+
+- [ ] Specific gravity calculator: target SG → water addition from dry batch weight
+- [ ] Dip time → layer thickness estimator (Landau-Levich model for ceramic slurries)
+- [ ] Multi-layer / overlay simulation: glaze A over glaze B → estimated combined UMF at interface
+- [ ] "Will this run if I go thicker?" — viscosity × thickness risk scoring
+- [ ] Spraying parameters: recommended SG, nozzle pressure, coat count
+- [ ] Brushing coverage: estimated coats for target thickness at given SG
+
+### v3.13.1 — Clay Body Calculator
+*The other half of the equation.*
+
+- [ ] Body recipe → UMF (same math as glaze, different oxide focus)
+- [ ] Absorption estimate from body fluxes + firing temperature
+- [ ] Shrinkage prediction: wet → dry → bisque → fired
+- [ ] Thermal shock resistance score from body mineralogy
+- [ ] Engobe / slip calculator: the midpoint between clay and glaze
+- [ ] Body COE ties into v3.11.0 Glaze-Body Fit: auto-check compatibility
+- [ ] Plasticity estimation from particle size + clay mineral ratios
+
+### v3.13.2 — Glaze Card & Recipe Sheet Generator
+*Beautiful documentation for every glaze.*
+
+- [ ] Printable recipe card: photo, UMF bar chart, recipe %, cone, surface, notes
+- [ ] Batch sheet: weights for a specific batch size, pre-formatted for the bench
+- [ ] Exhibition labels: title, materials, firing, artist — gallery-ready PDF
+- [ ] Blend series summary sheet: all 21 triaxial points on one page with thumbnails
+- [ ] Material safety data: flag any materials requiring special handling
+- [ ] Custom templates: potter can design their own card layout
+- [ ] Export: PDF, PNG, print-optimized CSS
+
+---
+
+## v3.14 — The Map
+*"Place your glaze on the map of all glazes ever made."*
+
+Overlay real phase diagrams, historical reference glazes, and layering
+predictions onto the Stull chart. The chart becomes a true ceramic atlas.
+
+### v3.14.0 — Phase Diagram Overlays
+*Textbook theory meets interactive exploration.*
+
+- [ ] Real ternary phase diagrams overlaid on the Stull chart:
+  SiO₂–Al₂O₃–CaO, SiO₂–Al₂O₃–Na₂O, SiO₂–Al₂O₃–K₂O, etc.
+- [ ] Eutectic points marked and annotated: "lowest melting point in this system"
+- [ ] Liquidus contour lines from published ceramic data (Levin, Robbins, McMurdie)
+- [ ] "Your glaze sits HERE on the phase diagram" — connects textbook to practice
+- [ ] Toggle overlay on/off per system; opacity slider
+- [ ] Phase boundary intersections: "you're near an invariant point — small changes have big effects"
+
+### v3.14.1 — Glaze Layering / Combination Predictor
+*What happens when two glazes meet?*
+
+- [ ] Select two glazes applied in layers → estimate combined chemistry at interface
+- [ ] Partial mixing model: inner layer contributes X%, outer layer contributes Y% at contact zone
+- [ ] Known interaction catalog: chrome-tin pink, copper-barium crystallization, iron-cobalt effects
+- [ ] Risk flags: "These two glazes have incompatible COEs — expect crawling at overlap"
+- [ ] Visual: show both source points + predicted interaction zone on Stull chart
+- [ ] Community-contributed results: "I layered A over B and got this" (links to v4.1)
+
+### v3.14.2 — Historical Glaze Library
+*Named reference glazes from the canon, plotted in your space.*
+
+- [ ] Published reference glazes: Cardew, Rhodes, Hamer & Hamer, Leach, Britt, Hesselberth & Roy
+- [ ] Each plotted on the Stull chart with source citation
+- [ ] "Your glaze is 0.04 SiO₂ from Leach's classic celadon"
+- [ ] Named historical territories: Song dynasty celadon region, Oribe envelope, Shino zone, Jun territory
+- [ ] Toggle historical overlays on/off
+- [ ] Tap any reference glaze → full recipe, UMF, source book, historical context
+- [ ] "Find glazes near [historical reference]" — proximity search anchored to the canon
+
+---
+
+## v3.15 — The Voice
+*"Plain English for every point on the chart."*
+
+The chart talks back. Every glaze gets a narrative explanation that
+connects chemistry to what a potter will see and feel.
+
+### v3.15.0 — "Explain This Glaze" Narrative Generator
+*Chemistry translated to studio language.*
+
+- [ ] AI-generated or template-driven plain-English description for any UMF on the chart
+- [ ] Example output: "This is a high-calcium matte with moderate alumina. The surface will be
+  smooth but not glossy, with a buttery feel. The 0.3 MgO pushes the surface toward a slight
+  satin break on edges. Expect warm ivory tones from the iron in oxidation."
+- [ ] Sections: surface prediction, color expectation, application notes, risk flags
+- [ ] Sensory vocabulary: buttery, silky, dry, waxy, glassy, stony — mapped from chemistry
+- [ ] Compare mode: "Glaze A will feel drier, with more visual depth due to lower flux"
+- [ ] Confidence indicator: "high confidence" for well-characterized regions, "speculative" for sparse areas
+- [ ] Feeds into v3.13.2 recipe cards: narrative description auto-included on printed cards
+
+---
+
 ## v4.1 — The Community
 *"A living document of collective ceramic knowledge."*
 
@@ -504,6 +653,40 @@ before loading the kiln.
 - [ ] "X potters explored this region this week"
 - [ ] Community annotations on the Stull chart
 - [ ] Federated glaze database — your private glazes on the public chart
+
+---
+
+## v4.2 — The Classroom
+*"Teach ceramics through exploration."*
+
+### v4.2.0 — Workshop & Exercise Mode
+*Structured learning in the Stull Atlas.*
+
+- [ ] Teacher creates exercise templates: "Find 3 glazes in the tenmoku region, explain their similarity"
+- [ ] Student workspace: restricted view with assignment instructions and submission area
+- [ ] Quiz mode: "Which oxide needs to increase to make this glaze matte?" with interactive answers
+- [ ] Workshop template builder for NCECA demos and studio classes
+- [ ] Progress tracking: which students completed which exercises
+- [ ] Shared class view: teacher sees all student explorations overlaid on one chart
+- [ ] Exercise library: pre-built curriculum modules for common ceramics courses
+- [ ] Certificate generation: "Completed Stull Atlas Glaze Chemistry Fundamentals"
+
+---
+
+## v4.3 — The Bridge
+*"Bring your data from anywhere."*
+
+### v4.3.0 — Universal Import
+*Every potter's data, no matter where it lives.*
+
+- [ ] **Format importers:** GlazeMaster, Matrix, HyperGlaze, Insight recipe formats
+- [ ] **Spreadsheet wizard:** Excel/CSV column-mapping ("which column is SiO₂?")
+- [ ] **Glazy sync:** Bidirectional API integration — pull your Glazy recipes, push results back
+- [ ] **Camera / OCR capture:** Photograph a recipe from a book or notebook → extract and parse
+- [ ] **Clipboard paste:** Paste a recipe from any source → auto-detect format and parse
+- [ ] **Batch import:** Drag a folder of recipe files → import all at once
+- [ ] **Conflict resolution:** Duplicate detection + merge wizard for overlapping recipes
+- [ ] **Export complement:** Every import format also exports (round-trip fidelity)
 
 ---
 
@@ -560,7 +743,13 @@ when the trigger condition is true.*
 | **3.9** | The Controls | Keyboard/mouse navigation instrument | 📋 Planned |
 | **3.10** | The Studio | Material substitution, bidirectional recipe | 📋 Planned |
 | **3.11** | The Laboratory | Physics-based prediction engines, batch tools | 📋 Planned |
+| **3.12** | The Kiln | Firing schedules, heat work, test tile notebook | 📋 Planned |
+| **3.13** | The Bench | Application physics, clay body calc, recipe sheets | 📋 Planned |
+| **3.14** | The Map | Phase diagrams, glaze layering, historical library | 📋 Planned |
+| **3.15** | The Voice | Plain-English glaze narrative generator | 📋 Planned |
 | **4.1** | The Community | Personal profiles, shared knowledge, free tier | 🔮 Future |
+| **4.2** | The Classroom | Workshop exercises, teaching tools | 🔮 Future |
+| **4.3** | The Bridge | Universal import from every glaze tool | 🔮 Future |
 
 ## Architecture Principle
 
@@ -574,7 +763,13 @@ v3.8 Graph      → the places become a navigable world
 v3.9 Controls   → the world responds to your hands
 v3.10 Studio    → the world connects back to the bench
 v3.11 Laboratory → predict what happens before you fire
-v4.1 Community  → every potter gets their own page + shared knowledge
+v3.12 Kiln       → capture every firing, track every tile
+v3.13 Bench      → application physics, clay bodies, recipe sheets
+v3.14 Map        → phase diagrams, layering, historical glazes
+v3.15 Voice      → plain English for every point on the chart
+v4.1 Community   → every potter gets their own page + shared knowledge
+v4.2 Classroom   → teach ceramics through exploration
+v4.3 Bridge      → bring your data from anywhere
 ```
 
 Each layer is independently valuable. Ship each one, prove it works, then build the next.
@@ -598,6 +793,15 @@ Each layer is independently valuable. Ship each one, prove it works, then build 
 | Color prediction | - | - | - | **v3.11** |
 | Batch calculator | ✓ | ✓ | ✓ | **v3.11** (richer) |
 | Defect prediction | - | - | - | **v3.11** |
+| Firing schedule builder | - | ✓ | - | **v3.12** |
+| Test tile notebook | - | - | - | **v3.12** |
+| Clay body calculator | - | ✓ | ✓ | **v3.13** (richer) |
+| Glaze layering prediction | - | - | - | **v3.14** |
+| Historical glaze atlas | - | partial | - | **v3.14** |
+| Phase diagram overlays | - | static | - | **v3.14** (interactive) |
+| AI glaze narrative | - | - | - | **v3.15** |
+| Workshop / classroom mode | - | - | - | **v4.2** |
+| Universal import | partial | - | partial | **v4.3** |
 | Shared exploration | - | - | - | **v4.1** |
 
 **No one is building this.** Not Glazy (social-first, no spatial understanding),
