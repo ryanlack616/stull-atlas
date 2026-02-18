@@ -320,7 +320,7 @@ const app = {
     if (info && info.description) {
       html += `<div class="detail-section">
         <h3>Description</h3>
-        <div class="body-text">${this.esc(info.description)}</div>
+        <div class="body-text">${this.renderContent(info.description)}</div>
       </div>`;
     }
 
@@ -401,7 +401,7 @@ const app = {
     if (notes.length) {
       html += `<div class="detail-section"><h3>Notes</h3>`;
       for (const n of notes) {
-        html += `<div class="body-text" style="margin-bottom:0.5rem">${this.esc(n.notes_text)}</div>`;
+        html += `<div class="body-text" style="margin-bottom:0.5rem">${this.renderContent(n.notes_text)}</div>`;
       }
       html += `</div>`;
     }
@@ -411,7 +411,7 @@ const app = {
     if (content && content.body_text) {
       html += `<div class="detail-section">
         <h3>Full Article</h3>
-        <div class="body-text" id="mat-body">${this.esc(content.body_text)}</div>
+        <div class="body-text" id="mat-body">${this.renderContent(content.body_text)}</div>
         <button class="expand-btn" onclick="document.getElementById('mat-body').classList.toggle('expanded');this.textContent=this.textContent==='Show more'?'Show less':'Show more'">Show more</button>
       </div>`;
     }
@@ -426,7 +426,7 @@ const app = {
     if (def && def.definition) {
       html += `<div class="detail-section">
         <h3>Definition</h3>
-        <div class="body-text">${this.esc(def.definition)}</div>
+        <div class="body-text">${this.renderContent(def.definition)}</div>
       </div>`;
     }
 
@@ -434,7 +434,7 @@ const app = {
     if (content && content.body_text) {
       html += `<div class="detail-section">
         <h3>Full Article</h3>
-        <div class="body-text" id="glo-body">${this.esc(content.body_text)}</div>
+        <div class="body-text" id="glo-body">${this.renderContent(content.body_text)}</div>
         <button class="expand-btn" onclick="document.getElementById('glo-body').classList.toggle('expanded');this.textContent=this.textContent==='Show more'?'Show less':'Show more'">Show more</button>
       </div>`;
     }
@@ -488,7 +488,7 @@ const app = {
     if (content && content.body_text) {
       html += `<div class="detail-section">
         <h3>Full Article</h3>
-        <div class="body-text" id="rec-body">${this.esc(content.body_text)}</div>
+        <div class="body-text" id="rec-body">${this.renderContent(content.body_text)}</div>
         <button class="expand-btn" onclick="document.getElementById('rec-body').classList.toggle('expanded');this.textContent=this.textContent==='Show more'?'Show less':'Show more'">Show more</button>
       </div>`;
     }
@@ -524,13 +524,13 @@ const app = {
         if (content.caption) {
           html += `<div class="detail-section">
             <h3>Caption</h3>
-            <div class="body-text">${this.esc(content.caption)}</div>
+            <div class="body-text">${this.renderContent(content.caption)}</div>
           </div>`;
         }
         if (content.body) {
           html += `<div class="detail-section">
             <h3>Content</h3>
-            <div class="body-text" id="gen-body">${this.esc(content.body)}</div>
+            <div class="body-text" id="gen-body">${this.renderContent(content.body)}</div>
             <button class="expand-btn" onclick="document.getElementById('gen-body').classList.toggle('expanded');this.textContent=this.textContent==='Show more'?'Show less':'Show more'">Show more</button>
           </div>`;
         }
@@ -740,6 +740,106 @@ const app = {
   escAttr(str) {
     if (!str) return '';
     return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+  },
+
+  // URL-to-page_id cache (built on first use)
+  _urlMap: null,
+  _buildUrlMap() {
+    if (this._urlMap) return;
+    this._urlMap = {};
+    const rows = this.query("SELECT id, url, category, title FROM pages");
+    for (const r of rows) {
+      if (r.url) this._urlMap[r.url] = { id: r.id, cat: r.category, title: r.title };
+    }
+  },
+
+  // Resolve a digitalfire.com URL to an internal page
+  _resolveUrl(url) {
+    this._buildUrlMap();
+    // Try exact match first
+    if (this._urlMap[url]) return this._urlMap[url];
+    // Try decoding
+    try {
+      const decoded = decodeURIComponent(url);
+      if (this._urlMap[decoded]) return this._urlMap[decoded];
+    } catch(e) {}
+    return null;
+  },
+
+  // Render body text with markdown-ish formatting and internal link resolution
+  renderContent(str) {
+    if (!str) return '';
+    let text = String(str);
+
+    // Escape HTML first
+    text = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
+    // Convert digitalfire.com URLs to internal links
+    text = text.replace(/https?:\/\/digitalfire\.com\/[^\s<&"\)\]]+/g, (url) => {
+      // Decode the escaped URL back for lookup
+      const rawUrl = url.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+      const page = this._resolveUrl(rawUrl);
+      if (page) {
+        return `<a href="#" class="internal-link" onclick="event.preventDefault();app.openDetail(${page.id},'${page.cat}')" title="${this.esc(page.title)}">${this.esc(page.title)}</a>`;
+      }
+      // External link (not in our archive) — skip dead linkmaker CTAs
+      if (rawUrl.includes('/home/linkmaker')) return '';
+      // Just show the path portion as a label
+      const path = rawUrl.replace(/https?:\/\/digitalfire\.com\/?/, '');
+      return `<span class="dead-link" title="Not in archive">${this.esc(decodeURIComponent(path) || 'digitalfire.com')}</span>`;
+    });
+
+    // Convert other http(s) URLs to external links
+    text = text.replace(/(https?:\/\/(?!digitalfire\.com)[^\s<&"\)\]]+)/g, 
+      '<a href="$1" target="_blank" rel="noopener" class="ext-link">$1</a>');
+
+    // Markdown headings
+    text = text.replace(/^#### (.+)$/gm, '<h5>$1</h5>');
+    text = text.replace(/^### (.+)$/gm, '<h4>$1</h4>');
+    text = text.replace(/^## (.+)$/gm, '<h3 class="content-h3">$1</h3>');
+    text = text.replace(/^# (.+)$/gm, '<h2 class="content-h2">$1</h2>');
+
+    // Horizontal rules
+    text = text.replace(/^---+$/gm, '<hr>');
+
+    // Pipe-delimited tables
+    text = text.replace(/((?:^[^\n]*\|[^\n]*$\n?)+)/gm, (block) => {
+      const rows = block.trim().split('\n').filter(r => r.includes('|'));
+      if (rows.length < 2) return block;
+      let tbl = '<table class="content-table">';
+      rows.forEach((row, i) => {
+        const cells = row.split('|').map(c => c.trim()).filter(c => c);
+        const tag = i === 0 ? 'th' : 'td';
+        tbl += '<tr>' + cells.map(c => `<${tag}>${c}</${tag}>`).join('') + '</tr>';
+      });
+      tbl += '</table>';
+      return tbl;
+    });
+
+    // Strip "Learn more" and "-Learn more" remnants from linkmaker removals
+    text = text.replace(/-?Learn more\s*/g, '');
+    // Strip orphaned "Key phrases linking here:" lines
+    text = text.replace(/Key phrases linking here:[^\n]*/g, '');
+
+    // Paragraphs: double newlines
+    text = text.replace(/\n\n+/g, '</p><p>');
+    text = '<p>' + text + '</p>';
+    // Single newlines to <br> (within paragraphs)
+    text = text.replace(/\n/g, '<br>');
+    // Clean up empty paragraphs
+    text = text.replace(/<p>\s*<\/p>/g, '');
+    // Don't wrap block elements in <p>
+    text = text.replace(/<p>(<h[2-5])/g, '$1');
+    text = text.replace(/(<\/h[2-5]>)<\/p>/g, '$1');
+    text = text.replace(/<p>(<hr>)<\/p>/g, '$1');
+    text = text.replace(/<p>(<table)/g, '$1');
+    text = text.replace(/(<\/table>)<\/p>/g, '$1');
+
+    return text;
   }
 };
 

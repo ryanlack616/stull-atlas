@@ -368,10 +368,76 @@ main {
   font-size: 0.9rem;
   line-height: 1.7;
   color: var(--text-dim);
-  white-space: pre-wrap;
   word-wrap: break-word;
   max-height: 400px;
   overflow-y: auto;
+}
+.detail-section .body-text p {
+  margin: 0 0 0.6em 0;
+}
+.detail-section .body-text .content-h2 {
+  font-size: 1.1rem;
+  color: var(--text);
+  margin: 1.2em 0 0.4em 0;
+  font-weight: 600;
+}
+.detail-section .body-text .content-h3 {
+  font-size: 1rem;
+  color: var(--text);
+  margin: 1em 0 0.3em 0;
+  font-weight: 600;
+}
+.detail-section .body-text h4, .detail-section .body-text h5 {
+  font-size: 0.95rem;
+  color: var(--text);
+  margin: 0.8em 0 0.3em 0;
+  font-weight: 600;
+}
+.detail-section .body-text hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1em 0;
+}
+.detail-section .body-text .content-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5em 0;
+  font-size: 0.85rem;
+}
+.detail-section .body-text .content-table th,
+.detail-section .body-text .content-table td {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+.detail-section .body-text .content-table th {
+  background: var(--bg-hover);
+  color: var(--text);
+  font-weight: 600;
+}
+.internal-link {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--accent);
+  cursor: pointer;
+}
+.internal-link:hover {
+  color: var(--accent-hover);
+  border-bottom-style: solid;
+}
+.ext-link {
+  color: var(--text-dim);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--text-muted);
+  word-break: break-all;
+}
+.ext-link:hover {
+  color: var(--accent);
+}
+.dead-link {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.85em;
 }
 .detail-section .body-text.expanded {
   max-height: none;
