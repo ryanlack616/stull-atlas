@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digitalfire Archive — The Hansen Reference</title>
+  <link rel="stylesheet" href="css/app.css">
+  <meta name="description" content="Tony Hansen's 40-year ceramics knowledge base — 4,380 materials, 404 glossary terms, 2,794 annotated pictures, fully searchable offline.">
+</head>
+<body>
+
+<!-- Loading Screen -->
+<div id="loading-screen">
+  <div class="loading-title">Digitalfire Archive</div>
+  <div class="loading-sub">Loading the Hansen Reference</div>
+  <div class="loading-bar">
+    <div class="loading-bar-fill" id="load-progress"></div>
+  </div>
+  <div class="loading-status" id="load-status">Initializing...</div>
+</div>
+
+<!-- Header -->
+<header>
+  <div class="logo"><span>DF</span> Archive</div>
+  <div class="search-wrap">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" id="search-input" placeholder="Search materials, glazes, problems, chemistry..." autocomplete="off" spellcheck="false">
+  </div>
+  <div class="header-stats" id="header-stats"></div>
+</header>
+
+<!-- Main Content -->
+<main>
+  <!-- Home view (shown when no search) -->
+  <div id="home-view" class="visible"></div>
+
+  <!-- Search results view -->
+  <div id="search-view" style="display:none">
+    <!-- Category tabs -->
+    <div class="category-tabs" id="category-tabs"></div>
+
+    <!-- Oxide filter panel -->
+    <div class="filter-panel" id="filter-panel">
+      <h3>Chemistry Filter</h3>
+      <div id="filter-rows"></div>
+      <div style="display:flex;gap:0.4rem;margin-top:0.5rem">
+        <button class="filter-btn" onclick="app.addFilterRow()">+ Add Filter</button>
+        <button class="filter-btn" onclick="app.applyFilters()">Apply</button>
+        <button class="filter-btn" onclick="app.clearFilters()" style="border-color:var(--border);color:var(--text-dim)">Clear</button>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="results-header">
+      <span class="results-count" id="results-count"></span>
+      <span class="results-time" id="results-time"></span>
+    </div>
+    <div id="results-list"></div>
+  </div>
+</main>
+
+<!-- Detail Panel -->
+<div class="detail-overlay" id="detail-overlay"></div>
+<div class="detail-panel" id="detail-panel">
+  <div class="detail-header">
+    <button class="detail-close" id="detail-close">&times;</button>
+    <div class="detail-title" id="detail-title"></div>
+    <span class="rc-cat" id="detail-cat"></span>
+  </div>
+  <div class="detail-body" id="detail-body"></div>
+</div>
+
+<!-- Attribution -->
+<footer style="text-align:center;padding:2rem;color:var(--text-muted);font-size:0.75rem;border-top:1px solid var(--border);margin-top:2rem">
+  Data from <a href="https://digitalfire.com" style="color:var(--accent)" target="_blank">digitalfire.com</a> by Tony Hansen.
+  40 years of ceramics knowledge, preserved and searchable.
+</footer>
+
+<script src="js/sql-wasm.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
