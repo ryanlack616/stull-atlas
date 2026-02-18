@@ -39,7 +39,7 @@ const app = {
     this.setProgress(5);
 
     const SQL = await initSqlJs({
-      locateFile: file => `js/${file}`
+      locateFile: file => `js/${file}?v=3`
     });
 
     this.setLoadStatus('Downloading database...');
