@@ -32,8 +32,7 @@ const app = {
     property:    { icon: '📊', label: 'Properties' },
   },
 
-  DB_CHUNKS: 8,
-  DB_TOTAL_SIZE: 128110592,
+  DB_GZ_SIZE: 26910515,  // gzipped size in bytes
 
   async init() {
     this.setLoadStatus('Loading SQL engine...');
@@ -43,53 +42,32 @@ const app = {
       locateFile: file => `js/${file}`
     });
 
-    this.setLoadStatus('Downloading database (8 parts)...');
+    this.setLoadStatus('Downloading database...');
     this.setProgress(10);
 
-    // Download 8 chunks in parallel with per-chunk progress
-    const chunkSize = Math.ceil(this.DB_TOTAL_SIZE / this.DB_CHUNKS);
-    const chunkProgress = new Array(this.DB_CHUNKS).fill(0);
-
-    const updateProgress = () => {
-      const totalReceived = chunkProgress.reduce((a, b) => a + b, 0);
-      const pct = Math.min(85, 10 + (totalReceived / this.DB_TOTAL_SIZE) * 75);
+    // Fetch gzipped DB with progress tracking
+    const response = await fetch('digitalfire_reference.db.gz');
+    const reader = response.body.getReader();
+    const compressed = [];
+    let received = 0;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      compressed.push(value);
+      received += value.length;
+      const pct = Math.min(75, 10 + (received / this.DB_GZ_SIZE) * 65);
       this.setProgress(pct);
-      const mb = (totalReceived / 1048576).toFixed(0);
-      const done = chunkProgress.filter(p => p >= chunkSize - 1).length;
-      this.setLoadStatus(`Downloading... ${mb} / 122 MB (${done}/${this.DB_CHUNKS} parts)`);
-    };
+      const mb = (received / 1048576).toFixed(1);
+      this.setLoadStatus(`Downloading... ${mb} / ${(this.DB_GZ_SIZE / 1048576).toFixed(0)} MB`);
+    }
 
-    const fetchChunk = async (index) => {
-      const url = `digitalfire_reference.db.${String(index).padStart(3, '0')}`;
-      const response = await fetch(url);
-      const reader = response.body.getReader();
-      const pieces = [];
-      let received = 0;
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        pieces.push(value);
-        received += value.length;
-        chunkProgress[index] = received;
-        updateProgress();
-      }
-      const buf = new Uint8Array(received);
-      let pos = 0;
-      for (const piece of pieces) { buf.set(piece, pos); pos += piece.length; }
-      return buf;
-    };
-
-    const chunkBuffers = await Promise.all(
-      Array.from({ length: this.DB_CHUNKS }, (_, i) => fetchChunk(i))
-    );
-
-    // Reassemble into single buffer
-    this.setLoadStatus('Assembling database...');
-    this.setProgress(88);
-    const totalLen = chunkBuffers.reduce((s, b) => s + b.length, 0);
-    const buf = new Uint8Array(totalLen);
-    let pos = 0;
-    for (const cb of chunkBuffers) { buf.set(cb, pos); pos += cb.length; }
+    // Decompress gzip using native DecompressionStream
+    this.setLoadStatus('Decompressing database...');
+    this.setProgress(78);
+    const gzBlob = new Blob(compressed);
+    const ds = new DecompressionStream('gzip');
+    const decompressed = gzBlob.stream().pipeThrough(ds);
+    const buf = new Uint8Array(await new Response(decompressed).arrayBuffer());
 
     this.setLoadStatus('Opening database...');
     this.setProgress(92);
