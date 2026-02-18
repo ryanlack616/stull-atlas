@@ -32,43 +32,67 @@ const app = {
     property:    { icon: '📊', label: 'Properties' },
   },
 
+  DB_CHUNKS: 8,
+  DB_TOTAL_SIZE: 128110592,
+
   async init() {
     this.setLoadStatus('Loading SQL engine...');
-    this.setProgress(10);
+    this.setProgress(5);
 
     const SQL = await initSqlJs({
       locateFile: file => `js/${file}`
     });
 
-    this.setLoadStatus('Downloading database (122 MB)...');
-    this.setProgress(20);
+    this.setLoadStatus('Downloading database (8 parts)...');
+    this.setProgress(10);
 
-    const response = await fetch('digitalfire_reference.db');
-    const reader = response.body.getReader();
-    const contentLength = +response.headers.get('Content-Length') || 128000000;
-    
-    let received = 0;
-    const chunks = [];
-    
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      chunks.push(value);
-      received += value.length;
-      const pct = Math.min(85, 20 + (received / contentLength) * 65);
+    // Download 8 chunks in parallel with per-chunk progress
+    const chunkSize = Math.ceil(this.DB_TOTAL_SIZE / this.DB_CHUNKS);
+    const chunkProgress = new Array(this.DB_CHUNKS).fill(0);
+
+    const updateProgress = () => {
+      const totalReceived = chunkProgress.reduce((a, b) => a + b, 0);
+      const pct = Math.min(85, 10 + (totalReceived / this.DB_TOTAL_SIZE) * 75);
       this.setProgress(pct);
-      this.setLoadStatus(`Downloading... ${(received / 1048576).toFixed(0)} MB`);
-    }
+      const mb = (totalReceived / 1048576).toFixed(0);
+      const done = chunkProgress.filter(p => p >= chunkSize - 1).length;
+      this.setLoadStatus(`Downloading... ${mb} / 122 MB (${done}/${this.DB_CHUNKS} parts)`);
+    };
 
-    const buf = new Uint8Array(received);
+    const fetchChunk = async (index) => {
+      const url = `digitalfire_reference.db.${String(index).padStart(3, '0')}`;
+      const response = await fetch(url);
+      const reader = response.body.getReader();
+      const pieces = [];
+      let received = 0;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        pieces.push(value);
+        received += value.length;
+        chunkProgress[index] = received;
+        updateProgress();
+      }
+      const buf = new Uint8Array(received);
+      let pos = 0;
+      for (const piece of pieces) { buf.set(piece, pos); pos += piece.length; }
+      return buf;
+    };
+
+    const chunkBuffers = await Promise.all(
+      Array.from({ length: this.DB_CHUNKS }, (_, i) => fetchChunk(i))
+    );
+
+    // Reassemble into single buffer
+    this.setLoadStatus('Assembling database...');
+    this.setProgress(88);
+    const totalLen = chunkBuffers.reduce((s, b) => s + b.length, 0);
+    const buf = new Uint8Array(totalLen);
     let pos = 0;
-    for (const chunk of chunks) {
-      buf.set(chunk, pos);
-      pos += chunk.length;
-    }
+    for (const cb of chunkBuffers) { buf.set(cb, pos); pos += cb.length; }
 
     this.setLoadStatus('Opening database...');
-    this.setProgress(90);
+    this.setProgress(92);
     this.db = new SQL.Database(buf);
 
     this.setLoadStatus('Ready.');
