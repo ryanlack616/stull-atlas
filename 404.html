@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stull Atlas — Ceramic Glaze Explorer</title>
+    <meta name="description" content="Interactive Stull chart explorer for ceramic artists and glaze chemists. Map thousands of real-world glaze recipes by Unity Molecular Formula (UMF), run blend calculators, and compare oxide chemistry." />
+    <meta name="theme-color" content="#121212" />
+    <meta name="color-scheme" content="dark light" />
+    <link rel="canonical" href="https://stullatlas.app/" />
+
+    <!-- Typography (self-hosted for offline resilience) -->
+    <link rel="preload" href="/fonts/source-serif-4-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- Preload critical data -->
+    <link rel="preload" href="/glazy-processed.json" as="fetch" crossorigin />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Stull Atlas — Ceramic Glaze Explorer" />
+    <meta property="og:description" content="Explore thousands of ceramic glazes on an interactive Stull chart. UMF calculator, blend tools, similarity search, and side-by-side comparison." />
+    <meta property="og:url" content="https://stullatlas.app/" />
+    <meta property="og:site_name" content="Stull Atlas" />
+    <meta property="og:image" content="https://stullatlas.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Stull Atlas — Ceramic Glaze Explorer" />
+    <meta name="twitter:description" content="Interactive Stull chart for ceramic glaze chemistry. 9,000+ recipes mapped by UMF." />
+    <meta name="twitter:image" content="https://stullatlas.app/og-image.png" />
+
+    <!-- Analytics — Plausible (privacy-focused, no cookies, GDPR-compliant) -->
+    <script defer data-domain="stullatlas.app" src="https://plausible.io/js/script.hash.js"></script>
+    <script type="module" crossorigin src="/assets/index-CShX2zP3.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/vendor-react-D380Hx73.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-state-CUnBHQ16.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-router-1trnvaIQ.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-JM3wRy89.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js', { scope: '/' })
+        })
+      }
+    </script>
+  </body>
+</html>
