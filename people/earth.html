@@ -3,312 +3,153 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Map — Ceramics Community Graph</title>
-<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<title>Ceramics Community — Globe</title>
 <style>
+/* ═══════════════════════════════════════════════════════════
+   Design tokens — matches index.html & map.html
+   ═══════════════════════════════════════════════════════════ */
 :root {
-  --bg: #07070c; --bg-card: #0f0f18; --bg-card2: #16162a;
-  --border: #1e1e3a; --border-light: #2a2a4a;
-  --text: #c8c8d8; --text-bright: #e8e8f0; --text-dim: #6b6b8a;
-  --accent: #818cf8; --accent-dim: #4f46e5;
-  --rose: #fb7185; --teal: #2dd4bf; --amber: #fbbf24; --emerald: #34d399;
-  --sky: #38bdf8; --violet: #a78bfa; --orange: #fb923c;
-  --mono: 'SF Mono','Cascadia Code','JetBrains Mono','Fira Code',monospace;
-  --sans: 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --bg: #07070c; --surface: #111118; --surface2: #1a1a24;
+  --border: #2a2a3a; --text: #e2e2e8; --text2: #9898a8;
+  --accent: #818cf8; --accent2: #34d399;
+  --mono: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', 'Fira Code', monospace;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { background: var(--bg); color: var(--text); font-family: var(--sans); }
-body { margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--mono); }
 
+/* ── Header bar ── */
 .header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0.6rem 1.2rem; border-bottom: 1px solid var(--border);
-  background: var(--bg-card); z-index: 10; flex-shrink: 0;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px; background: var(--surface); border-bottom: 1px solid var(--border);
 }
-.header h1 { font-family: var(--mono); font-size: 1rem; color: var(--text-bright); }
-.header h1 .sigil { color: var(--accent); }
-.header nav { display: flex; gap: 1rem; font-family: var(--mono); font-size: 0.75rem; }
-.header nav a { color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
-.header nav a:hover, .header nav a.active { color: var(--accent); }
+.header h1 { font-size: 14px; font-weight: 600; letter-spacing: 0.5px; }
+.header .sep { color: var(--text2); }
+.header .subtitle { font-size: 12px; color: var(--text2); }
+.nav-links { margin-left: auto; display: flex; gap: 12px; }
+.nav-links a {
+  font-size: 11px; color: var(--text2); text-decoration: none;
+  padding: 4px 10px; border-radius: 4px; transition: all .15s;
+}
+.nav-links a:hover { color: var(--text); background: var(--surface2); }
+.nav-links a.active { color: var(--accent); background: rgba(129,140,248,.1); }
 
-.map-wrap { flex: 1; position: relative; overflow: hidden; }
-#map-svg { width: 100%; height: 100%; }
-.land { fill: var(--bg-card); stroke: var(--border-light); stroke-width: 0.3px; }
-.country-border { fill: none; stroke: var(--border); stroke-width: 0.5px; stroke-linejoin: round; stroke-linecap: round; pointer-events: none; }
-.us-state-border { fill: none; stroke: var(--border-light); stroke-width: 0.35px; stroke-linejoin: round; stroke-linecap: round; pointer-events: none; opacity: 0.7; }
-.graticule { fill: none; stroke: rgba(40,40,70,0.2); stroke-width: 0.3px; pointer-events: none; }
-.sphere { fill: none; stroke: var(--border-light); stroke-width: 0.8px; }
+/* ── Globe container ── */
+#globe-container { width: 100vw; height: 100vh; padding-top: 40px; }
 
-.map-node { cursor: pointer; }
-.map-node.dimmed { fill-opacity: 0.08 !important; }
-.map-node.selected { stroke: #fff; stroke-width: 2px; }
-
-.map-link { fill: none; stroke-opacity: 0; stroke-width: 0.8px; transition: stroke-opacity 0.3s; pointer-events: none; }
-.map-link.visible { stroke-opacity: 0.45; }
-
-.node-label {
-  font-family: var(--mono); fill: var(--text);
-  pointer-events: none; text-anchor: middle; dominant-baseline: hanging;
-  opacity: 0; transition: opacity 0.15s;
-  paint-order: stroke; stroke: var(--bg); stroke-linejoin: round;
-}
-.node-label.show { opacity: 0.88; }
-
-.info-panel {
-  position: absolute; right: 1rem; top: 1rem; bottom: 1rem;
-  width: 320px; background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 12px; padding: 1.2rem; overflow-y: auto;
-  transform: translateX(340px); transition: transform 0.3s ease;
-  z-index: 20; font-size: 0.85rem;
-}
-.info-panel.open { transform: translateX(0); }
-.close-btn {
-  position: absolute; top: 0.5rem; right: 0.8rem;
-  background: none; border: none; color: var(--text-dim); font-size: 1.2rem;
-  cursor: pointer; font-family: var(--mono);
-}
-.close-btn:hover { color: var(--text-bright); }
-.info-panel h2 { font-family: var(--mono); font-size: 1rem; color: var(--text-bright); margin-bottom: 0.3rem; padding-right: 2rem; }
-.node-type-badge {
-  font-family: var(--mono); font-size: 0.68rem; text-transform: uppercase;
-  letter-spacing: 0.08em; display: inline-block;
-  padding: 0.15rem 0.5rem; border-radius: 4px; margin-bottom: 0.8rem;
-}
-.info-panel .notes { color: var(--text-dim); margin-bottom: 1rem; line-height: 1.6; font-size: 0.82rem; }
-.info-panel h3 {
-  font-family: var(--mono); font-size: 0.72rem; color: var(--accent);
-  margin: 1rem 0 0.4rem; text-transform: uppercase; letter-spacing: 0.08em;
-}
-.conn-list { list-style: none; padding: 0; }
-.conn-list li {
-  padding: 0.35rem 0; border-bottom: 1px solid var(--border);
-  font-size: 0.8rem; cursor: pointer; transition: color 0.15s;
-}
-.conn-list li:hover { color: var(--accent); }
-.conn-list .rel { color: var(--text-dim); font-family: var(--mono); font-size: 0.65rem; margin-left: 0.3rem; }
-.conn-list .on-map { color: var(--emerald); font-size: 0.6rem; margin-left: 0.3rem; }
-
-.legend {
-  position: absolute; left: 1rem; bottom: 1rem;
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 10px; padding: 0.8rem 1rem; z-index: 15;
-  font-family: var(--mono); font-size: 0.68rem;
-}
-.legend-title { color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; font-size: 0.6rem; }
-.legend-item { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; color: var(--text-dim); }
-.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-
-.map-stats {
-  position: absolute; left: 50%; bottom: 1rem; transform: translateX(-50%);
-  display: flex; gap: 0.5rem; z-index: 15;
-  font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim);
-}
-.map-stats .stat {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 6px; padding: 0.3rem 0.6rem;
-}
-.map-stats .stat .num { color: var(--text-bright); font-weight: 700; }
-
-.filter-bar {
-  position: absolute; left: 1rem; top: 1rem;
-  display: flex; flex-wrap: wrap; gap: 0.35rem; z-index: 15;
-}
-.filter-chip {
-  font-family: var(--mono); font-size: 0.62rem;
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 6px; padding: 0.2rem 0.55rem;
-  cursor: pointer; color: var(--text-dim); transition: all 0.15s;
-  user-select: none;
-}
-.filter-chip:hover { border-color: var(--accent); color: var(--text); }
-.filter-chip.active { border-color: var(--accent); color: var(--accent); background: rgba(129,140,248,0.08); }
-
-.map-tooltip {
-  position: absolute; pointer-events: none; z-index: 25;
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 6px; padding: 0.3rem 0.6rem;
-  font-family: var(--mono); font-size: 0.7rem; color: var(--text-bright);
-  white-space: nowrap; opacity: 0; transition: opacity 0.15s;
-}
-
-/* ── Search box ── */
+/* ── Search bar ── */
 .search-wrap {
-  position: absolute; right: 1rem; top: 1rem; z-index: 16;
-  display: flex; align-items: center; gap: 0;
+  position: fixed; top: 52px; left: 16px; z-index: 90;
+  display: flex; align-items: center; gap: 6px;
 }
-.search-input {
-  font-family: var(--mono); font-size: 0.72rem;
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 6px; padding: 0.35rem 0.6rem 0.35rem 1.6rem;
-  color: var(--text-bright); width: 200px;
-  outline: none; transition: border-color 0.15s;
+.search-wrap input {
+  width: 260px; padding: 6px 12px;
+  font-family: var(--mono); font-size: 12px;
+  background: var(--surface); color: var(--text); border: 1px solid var(--border);
+  border-radius: 6px; outline: none; transition: border-color .15s;
 }
-.search-input::placeholder { color: var(--text-dim); }
-.search-input:focus { border-color: var(--accent); }
-.search-icon {
-  position: absolute; left: 0.55rem; top: 50%; transform: translateY(-50%);
-  color: var(--text-dim); font-size: 0.7rem; pointer-events: none;
-}
+.search-wrap input:focus { border-color: var(--accent); }
 .search-results {
-  position: absolute; top: 100%; left: 0; right: 0; margin-top: 0.25rem;
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 6px; max-height: 240px; overflow-y: auto;
-  display: none; z-index: 26;
+  position: absolute; top: 34px; left: 0; width: 300px;
+  max-height: 320px; overflow-y: auto;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 6px; display: none;
 }
 .search-results.open { display: block; }
-.search-result {
-  padding: 0.35rem 0.6rem; font-family: var(--mono); font-size: 0.68rem;
-  color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 0.4rem;
+.search-results .sr-item {
+  padding: 6px 12px; cursor: pointer; font-size: 12px;
+  border-bottom: 1px solid var(--border); transition: background .1s;
 }
-.search-result:hover { background: var(--bg-card2); color: var(--accent); }
-.search-result .sr-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.search-result .sr-deg { color: var(--text-dim); font-size: 0.58rem; margin-left: auto; }
-.search-result .sr-nomap { color: var(--text-dim); font-size: 0.55rem; }
+.search-results .sr-item:hover { background: var(--surface2); }
+.search-results .sr-item .sr-type {
+  font-size: 10px; padding: 1px 6px; border-radius: 3px;
+  margin-left: 8px; vertical-align: middle;
+}
 
-/* ── Region quick-nav ── */
+/* ── Filter chips ── */
+.filter-bar {
+  position: fixed; top: 52px; right: 340px; z-index: 90;
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.filter-chip {
+  font-family: var(--mono); font-size: 10px; padding: 3px 10px;
+  border-radius: 12px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text2);
+  cursor: pointer; transition: all .15s; user-select: none;
+}
+.filter-chip.active { color: #fff; border-color: transparent; }
+.filter-chip .chip-count { opacity: .6; margin-left: 4px; }
+
+/* ── Stats bar ── */
+.stats-bar {
+  position: fixed; bottom: 16px; left: 16px; z-index: 90;
+  display: flex; gap: 16px; font-size: 11px; color: var(--text2);
+}
+.stats-bar .stat-val { color: var(--accent); font-weight: 600; }
+
+/* ── Info panel ── */
+.info-panel {
+  position: fixed; top: 40px; right: 0; bottom: 0; width: 320px;
+  background: var(--surface); border-left: 1px solid var(--border);
+  z-index: 80; transform: translateX(100%); transition: transform .25s ease;
+  overflow-y: auto; padding: 20px;
+}
+.info-panel.open { transform: translateX(0); }
+.panel-close {
+  position: absolute; top: 12px; right: 12px;
+  background: none; border: none; color: var(--text2);
+  font-size: 18px; cursor: pointer; font-family: var(--mono);
+}
+.panel-close:hover { color: var(--text); }
+.panel-name { font-size: 16px; font-weight: 600; margin-bottom: 6px; padding-right: 30px; }
+.panel-type {
+  display: inline-block; font-size: 10px; padding: 2px 8px;
+  border-radius: 4px; margin-bottom: 12px; text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.panel-notes { font-size: 12px; color: var(--text2); line-height: 1.5; margin-bottom: 16px; }
+.conn-heading { font-size: 12px; color: var(--text2); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.conn-list { list-style: none; }
+.conn-list li {
+  padding: 5px 0; font-size: 12px; border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: color .1s;
+}
+.conn-list li:hover { color: var(--accent); }
+.conn-list li strong { font-weight: 500; }
+.conn-list .rel {
+  font-size: 10px; color: var(--text2); margin-left: 8px;
+  background: var(--surface2); padding: 1px 6px; border-radius: 3px;
+}
+.conn-list .fly-btn {
+  font-size: 10px; color: var(--accent2); margin-left: 6px;
+  cursor: pointer; text-decoration: underline;
+}
+
+/* ── Region nav ── */
 .region-nav {
-  position: absolute; left: 50%; top: 1rem; transform: translateX(-50%);
-  display: flex; gap: 0.3rem; z-index: 15;
+  position: fixed; bottom: 16px; right: 16px; z-index: 90;
+  display: flex; gap: 6px; flex-wrap: wrap; max-width: 300px; justify-content: flex-end;
 }
 .region-btn {
-  font-family: var(--mono); font-size: 0.58rem;
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 6px; padding: 0.2rem 0.5rem;
-  cursor: pointer; color: var(--text-dim); transition: all 0.15s;
+  font-family: var(--mono); font-size: 10px; padding: 4px 10px;
+  border-radius: 4px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text2);
+  cursor: pointer; transition: all .15s;
 }
-.region-btn:hover { border-color: var(--accent); color: var(--text-bright); }
+.region-btn:hover { color: var(--text); border-color: var(--accent); }
 
-/* ── Unlocated drawer ── */
-.unlocated-drawer {
-  position: absolute; left: 50%; bottom: 2.8rem; transform: translateX(-50%);
-  z-index: 16; display: flex; flex-direction: column; align-items: center;
+/* ── Legend (bottom-left, above stats) ── */
+.legend {
+  position: fixed; bottom: 40px; left: 16px; z-index: 90;
+  display: flex; gap: 12px; flex-wrap: wrap;
 }
-.unlocated-toggle {
-  font-family: var(--mono); font-size: 0.6rem;
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 6px 6px 0 0; padding: 0.2rem 0.7rem;
-  cursor: pointer; color: var(--text-dim); transition: all 0.15s;
-}
-.unlocated-toggle:hover { border-color: var(--accent); color: var(--text-bright); }
-.unlocated-panel {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 8px; padding: 0.6rem 0.8rem;
-  max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s;
-  width: 500px; max-width: 90vw;
-}
-.unlocated-panel.open {
-  max-height: 260px; overflow-y: auto; padding: 0.6rem 0.8rem;
-}
-.unlocated-grid {
-  display: flex; flex-wrap: wrap; gap: 0.3rem;
-}
-.unlocated-chip {
-  font-family: var(--mono); font-size: 0.58rem;
-  padding: 0.15rem 0.4rem; border-radius: 4px;
-  cursor: pointer; transition: all 0.15s;
-  white-space: nowrap;
-}
-.unlocated-chip:hover { opacity: 1 !important; }
+.legend-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--text2); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-/* ── Connection arcs ── */
-.connection-arc {
-  fill: none; stroke-width: 1.2px; stroke-linecap: round;
-  pointer-events: none; opacity: 0;
-  transition: opacity 0.3s;
-}
-.connection-arc.visible {
-  opacity: 0.55;
-  stroke-dasharray: 2000;
-  animation: arc-draw 0.8s ease forwards;
-}
-@keyframes arc-draw {
-  from { stroke-dashoffset: 2000; }
-  to { stroke-dashoffset: 0; }
-}
-
-/* ── Hover preview ── */
-.map-node.hover-neighbor {
-  filter: brightness(1.4);
-  stroke: rgba(255,255,255,0.3); stroke-width: 1.5px;
-}
-.map-link.hover-visible { stroke-opacity: 0.2 !important; }
-
-/* ── Back button ── */
-.back-btn {
-  position: absolute; left: 1rem; top: 5.2rem; z-index: 16;
-  font-family: var(--mono); font-size: 0.62rem;
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 6px; padding: 0.25rem 0.5rem;
-  cursor: pointer; color: var(--text-dim); transition: all 0.15s;
-  display: none;
-}
-.back-btn:hover { border-color: var(--accent); color: var(--text-bright); }
-.back-btn.has-history { display: inline-flex; align-items: center; gap: 0.3rem; }
-
-/* ── Link-type filter ── */
-.link-type-bar {
-  position: absolute; left: 1rem; top: 3.2rem; z-index: 15;
-  display: none; flex-wrap: wrap; gap: 0.25rem; max-width: 55vw;
-}
-.link-type-bar.visible { display: flex; }
-.lt-chip {
-  font-family: var(--mono); font-size: 0.55rem;
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 4px; padding: 0.15rem 0.4rem;
-  cursor: pointer; color: var(--text-dim); transition: all 0.15s;
-  user-select: none; white-space: nowrap;
-}
-.lt-chip:hover { border-color: var(--accent); color: var(--text); }
-.lt-chip.active { border-color: var(--violet); color: var(--violet); background: rgba(167,139,250,0.1); }
-.lt-chip .lt-count { font-size: 0.48rem; opacity: 0.6; margin-left: 0.2rem; }
-
-/* ── Keyboard hints ── */
-.kbd-hint {
-  position: absolute; left: 50%; bottom: 5rem; transform: translateX(-50%);
-  z-index: 20; background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 8px; padding: 0.5rem 0.8rem;
-  font-family: var(--mono); font-size: 0.6rem; color: var(--text-dim);
-  display: none; gap: 0.8rem; white-space: nowrap;
-  opacity: 0; transition: opacity 0.3s;
-}
-.kbd-hint.open { display: flex; flex-wrap: wrap; opacity: 1; }
-.kbd-hint kbd {
-  background: var(--bg-card2); border: 1px solid var(--border-light);
-  border-radius: 3px; padding: 0.1rem 0.35rem;
-  font-family: var(--mono); font-size: 0.6rem; color: var(--accent);
-}
-
-/* ── Search highlight pulse ── */
-@keyframes map-pulse {
-  0%,100% { stroke-opacity: 0; }
-  50% { stroke-opacity: 1; }
-}
-.map-node.search-highlight {
-  stroke: #fff; stroke-width: 3px;
-  animation: map-pulse 0.6s ease 3;
-}
-
-/* ── On-map link in sidebar ── */
-.on-map-link {
-  color: var(--emerald); font-size: 0.6rem; margin-left: 0.3rem;
-  cursor: pointer; text-decoration: none;
-}
-.on-map-link:hover { text-decoration: underline; color: var(--teal); }
-
-.info-panel::-webkit-scrollbar { width: 4px; }
-.info-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-.search-results::-webkit-scrollbar { width: 3px; }
-.search-results::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-.unlocated-panel::-webkit-scrollbar { width: 3px; }
-.unlocated-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-@media (max-width: 768px) {
-  .info-panel { width: 85vw; right: 0.5rem; }
-  .filter-bar { max-width: 45vw; }
-  .search-input { width: 140px; }
-  .unlocated-panel { width: 90vw; }
-}
+/* scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
 .static-banner { 
   background: linear-gradient(135deg, var(--accent-dim), #2d1b69); 
@@ -325,71 +166,54 @@ body { margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction
 <body>
 <div class="static-banner">Ceramics Community Explorer · <a href="https://stullatlas.app">Stull Atlas</a> · NCECA 2026 Detroit</div>
 
+<!-- Header -->
 <div class="header">
-  <h1><span class="sigil">&#9670;</span> Ceramics Community — Geographic View</h1>
-  <nav>
+  <h1>CERAMICS COMMUNITY</h1>
+  <span class="sep">|</span>
+  <span class="subtitle">Globe View</span>
+  <div class="nav-links">
     <a href="/people/">Graph</a>
-    <a href="/people/map.html" class="active">Map</a>
-    <a href="about.html">About</a>
-  </nav>
-</div>
-
-<div class="map-wrap" id="map-wrap">
-  <svg id="map-svg"></svg>
-
-  <div class="filter-bar" id="filter-bar"></div>
-  <div class="link-type-bar" id="link-type-bar"></div>
-  <div class="back-btn" id="back-btn">&#8592; Back</div>
-
-  <div class="search-wrap" id="search-wrap">
-    <span class="search-icon">&#9906;</span>
-    <input class="search-input" id="search-input" type="text" placeholder="Search nodes…" autocomplete="off" spellcheck="false">
-    <div class="search-results" id="search-results"></div>
-  </div>
-
-  <div class="region-nav" id="region-nav"></div>
-
-  <div class="legend">
-    <div class="legend-title">Node Types</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div> Person</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--emerald)"></div> Institution</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> Place / Venue</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--rose)"></div> Organization</div>
-  </div>
-
-  <div class="map-stats" id="map-stats"></div>
-
-  <div class="unlocated-drawer" id="unlocated-drawer">
-    <div class="unlocated-toggle" id="unlocated-toggle"></div>
-    <div class="unlocated-panel" id="unlocated-panel">
-      <div class="unlocated-grid" id="unlocated-grid"></div>
-    </div>
-  </div>
-
-  <div class="info-panel" id="info-panel">
-    <button class="close-btn" id="close-panel">&times;</button>
-    <h2 id="panel-name"></h2>
-    <span class="node-type-badge" id="panel-type"></span>
-    <p class="notes" id="panel-notes"></p>
-    <h3 id="conn-heading">Connections</h3>
-    <ul class="conn-list" id="panel-connections"></ul>
-  </div>
-
-  <div class="map-tooltip" id="tooltip"></div>
-  <div class="kbd-hint" id="kbd-hint">
-    <span><kbd>/</kbd> Search</span>
-    <span><kbd>Esc</kbd> Close</span>
-    <span><kbd>B</kbd> Back</span>
-    <span><kbd>1-7</kbd> Regions</span>
-    <span><kbd>[</kbd><kbd>]</kbd> Cycle</span>
-    <span><kbd>?</kbd> Keys</span>
+    <a href="/people/map.html">Map</a>
+    <a href="/people/earth.html" class="active">Globe</a>
   </div>
 </div>
 
+<!-- Globe renders here -->
+<div id="globe-container"></div>
+
+<!-- Search -->
+<div class="search-wrap">
+  <input id="search-input" type="text" placeholder="Search nodes… (Ctrl+K)" autocomplete="off" />
+  <div id="search-results" class="search-results"></div>
+</div>
+
+<!-- Filter chips -->
+<div class="filter-bar" id="filter-bar"></div>
+
+<!-- Info panel -->
+<div class="info-panel" id="info-panel">
+  <button class="panel-close" id="panel-close">&times;</button>
+  <div class="panel-name" id="panel-name"></div>
+  <div class="panel-type" id="panel-type"></div>
+  <div class="panel-notes" id="panel-notes"></div>
+  <div class="conn-heading" id="conn-heading"></div>
+  <ul class="conn-list" id="conn-list"></ul>
+</div>
+
+<!-- Legend -->
+<div class="legend" id="legend"></div>
+
+<!-- Stats -->
+<div class="stats-bar" id="stats-bar"></div>
+
+<!-- Region nav -->
+<div class="region-nav" id="region-nav"></div>
+
+<script src="//cdn.jsdelivr.net/npm/globe.gl"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════
-   Ceramics Community — Geographic Map View
-   Uses D3 + TopoJSON — World map with NaturalEarth1 projection
+   Ceramics Community — Globe Visualization
+   Uses globe.gl (ThreeJS/WebGL) — 3D interactive globe
    ═══════════════════════════════════════════════════════════ */
 
 const TYPE_COLORS = {
@@ -403,31 +227,49 @@ const TYPE_COLORS = {
    Extraction script: extract_locations.py
    ═══════════════════════════════════════════════════════════ */
 
+/* ═══════════════════════════════════════════════════════════
+   State
+   ═══════════════════════════════════════════════════════════ */
 let graphData = { nodes: [], links: [] };
 let nodeMap = {};
-let nodeCoords = {};
-let nodeDegree = {};   // id → connection count
+let nodeCoords = {};   // id → [lon, lat]
+let nodeDegree = {};
 let activeFilters = new Set(['person','institution','place','venue','organization']);
 let selectedNodeId = null;
-let currentZoom = 1;
-let projection, mapG;
+let globe = null;
+let maxDegree = 1;
 
-/* ── Load data ── */
+/* ── Regions for quick navigation ── */
+const REGIONS = {
+  'Michigan':  { lat: 43.3, lng: -84.5, alt: 0.4 },
+  'Northeast': { lat: 41.5, lng: -74.0, alt: 0.6 },
+  'Southeast': { lat: 34.0, lng: -82.0, alt: 0.7 },
+  'Midwest':   { lat: 40.0, lng: -89.0, alt: 0.8 },
+  'West Coast': { lat: 38.0, lng: -120.0, alt: 0.7 },
+  'Japan':     { lat: 36.0, lng: 138.0, alt: 0.5 },
+  'Europe':    { lat: 50.0, lng: 10.0, alt: 0.8 },
+  'World':     { lat: 20.0, lng: 0.0, alt: 2.5 },
+};
+
+/* ═══════════════════════════════════════════════════════════
+   Data loading
+   ═══════════════════════════════════════════════════════════ */
 async function loadData() {
   let loaded = false;
   if (typeof EMBEDDED_DATA !== 'undefined') { graphData = EMBEDDED_DATA; loaded = true; }
   if (!loaded) try { const r = await fetch('data/graph.json'); if (r.ok) { graphData = await r.json(); loaded = true; } } catch {}
   if (!loaded) try { const r = await fetch('/api/graph'); if (r.ok) { graphData = await r.json(); loaded = true; } } catch {}
-  if (!loaded) { document.getElementById('map-stats').innerHTML = '<div class="stat">No data source found</div>'; return; }
+  if (!loaded) { document.getElementById('stats-bar').innerHTML = '<span>No data source found</span>'; return; }
 
   nodeMap = {};
   nodeDegree = {};
   graphData.nodes.forEach(n => { nodeMap[n.id] = n; nodeDegree[n.id] = 0; });
   graphData.links.forEach(l => {
-    const s = l.source_id||l.source, t = l.target_id||l.target;
+    const s = l.source_id || l.source, t = l.target_id || l.target;
     if (nodeDegree[s] !== undefined) nodeDegree[s]++;
     if (nodeDegree[t] !== undefined) nodeDegree[t]++;
   });
+  maxDegree = Math.max(1, ...Object.values(nodeDegree));
 
   let placed = 0, total = 0;
   graphData.nodes.forEach(n => {
@@ -439,300 +281,184 @@ async function loadData() {
     }
   });
 
-  /* ── Sunflower spiral jitter: spread stacked nodes into clusters ── */
+  // Sunflower spiral jitter (same as map.html)
   const coordGroups = {};
   for (const [id, coords] of Object.entries(nodeCoords)) {
-    // Round to 3 decimals (~110m) to catch same-city nodes
     const key = coords[0].toFixed(3) + ',' + coords[1].toFixed(3);
     if (!coordGroups[key]) coordGroups[key] = [];
     coordGroups[key].push(id);
   }
-  const GOLDEN_ANGLE = 2.39996323; // π(3−√5) radians
+  const GOLDEN_ANGLE = 2.39996323;
   for (const [key, ids] of Object.entries(coordGroups)) {
     if (ids.length < 2) continue;
-    // Sort by degree descending: most-connected at center
     ids.sort((a,b) => (nodeDegree[b]||0) - (nodeDegree[a]||0));
     const [baseLon, baseLat] = nodeCoords[ids[0]];
-    // Jitter radius in degrees: ~0.15° base, grows with sqrt(count)
-    // 0.15° ≈ 17km at equator, visible at zoom 5+
     const spreadR = 0.12 * Math.sqrt(ids.length);
     ids.forEach((id, i) => {
-      if (i === 0) return; // most-connected stays at center
+      if (i === 0) return;
       const r = spreadR * Math.sqrt(i / ids.length);
       const theta = i * GOLDEN_ANGLE;
-      nodeCoords[id] = [
-        baseLon + r * Math.cos(theta),
-        baseLat + r * Math.sin(theta)
-      ];
+      nodeCoords[id] = [baseLon + r * Math.cos(theta), baseLat + r * Math.sin(theta)];
     });
   }
 
-  console.log(`Map: ${placed}/${total} nodes placed`);
-  buildMap(placed, total - placed);
+  console.log(`Globe: ${placed}/${total} nodes placed`);
+  buildGlobe(placed, total - placed);
 }
 
-/* ── Build map ── */
-async function buildMap(placed, unplaced) {
-  const wrap = document.getElementById('map-wrap');
-  const W = wrap.clientWidth, H = wrap.clientHeight;
-  const svg = d3.select('#map-svg').attr('width', W).attr('height', H);
+/* ═══════════════════════════════════════════════════════════
+   Build Globe
+   ═══════════════════════════════════════════════════════════ */
+function buildGlobe(placed, unplaced) {
+  const container = document.getElementById('globe-container');
 
-  projection = d3.geoNaturalEarth1()
-    .scale(W / 5.5)
-    .translate([W/2, H/2])
-    .clipExtent([[0, 0], [W, H]]);
-  const geoPath = d3.geoPath().projection(projection).pointRadius(1.5);
+  // Prepare points data
+  const points = getFilteredPoints();
 
-  const zoom = d3.zoom().scaleExtent([1,20]).on('zoom', e => {
-    currentZoom = e.transform.k;
-    mapG.attr('transform', e.transform);
-    applyZoomScaling();
+  globe = new Globe(container, { animateIn: true })
+    .backgroundColor('#07070c')
+    .globeImageUrl('//cdn.jsdelivr.net/npm/three-globe/example/img/earth-night.jpg')
+    .bumpImageUrl('//cdn.jsdelivr.net/npm/three-globe/example/img/earth-topology.png')
+    .showAtmosphere(true)
+    .atmosphereColor('#ff6b3520')
+    .atmosphereAltitude(0.15)
+    .showGraticules(false)
+    // Points — tall spikes, warm gradient
+    .pointsData(points)
+    .pointLat(d => d.lat)
+    .pointLng(d => d.lng)
+    .pointAltitude(d => 0.01 + Math.pow(d.deg + 1, 0.5) * 0.15)
+    .pointRadius(0.14)
+    .pointColor(d => {
+      if (selectedNodeId && d.id === selectedNodeId) return '#ffffff';
+      if (selectedNodeId && !d._connected) return '#333340';
+      // Warm gradient: yellow → orange → red
+      const t = Math.min(d.deg / 40, 1);
+      const hue = 55 - t * 55;  // 55 (yellow) → 0 (red)
+      return `hsl(${hue}, ${88 + t * 12}%, ${58 - t * 14}%)`;
+    })
+    .pointLabel(d => `
+      <div style="font-family:monospace;font-size:12px;background:#111118ee;padding:6px 10px;border-radius:4px;border:1px solid #2a2a3a;color:#e2e2e8">
+        <strong>${d.name}</strong><br/>
+        <span style="color:${TYPE_COLORS[d.type]||'#818cf8'}">${d.type}</span>
+        &middot; ${d.deg} connections
+      </div>
+    `)
+    .onPointClick(handlePointClick)
+    .onPointHover(handlePointHover)
+    // Arcs (warm-toned)
+    .arcsData([])
+    .arcStartLat(d => d.startLat)
+    .arcStartLng(d => d.startLng)
+    .arcEndLat(d => d.endLat)
+    .arcEndLng(d => d.endLng)
+    .arcColor(() => ['#ff634755', '#ef444499'])
+    .arcAltitudeAutoScale(0.4)
+    .arcStroke(0.4)
+    .arcDashLength(0.5)
+    .arcDashGap(0.15)
+    .arcDashAnimateTime(1200)
+    .onGlobeClick(() => clearSelection())
+    // Initial camera: aim at US Midwest
+    .pointOfView({ lat: 39.8, lng: -98.6, altitude: 2.0 }, 0);
+
+  // Resize handler
+  window.addEventListener('resize', () => {
+    globe.width(container.clientWidth).height(container.clientHeight);
   });
-  zoomBehavior = zoom;
-  svg.call(zoom);
-  mapG = svg.append('g');
 
-  // World map layers
-  try {
-    const [world, us] = await Promise.all([
-      d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json'),
-      d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').catch(() => null)
-    ]);
-
-    // 1. Graticule (behind everything)
-    const graticule = d3.geoGraticule()();
-    mapG.append('path').datum(graticule)
-      .attr('class','graticule').attr('d', geoPath);
-
-    // 2. Sphere outline
-    mapG.append('path').datum({type:'Sphere'})
-      .attr('class','sphere').attr('d', geoPath);
-
-    // 3. Land mass
-    const land = topojson.feature(world, world.objects.land);
-    mapG.append('path').datum(land)
-      .attr('class','land').attr('d', geoPath);
-
-    // 4. Country borders
-    const countryBorders = topojson.mesh(world, world.objects.countries, (a,b) => a !== b);
-    mapG.append('path').datum(countryBorders)
-      .attr('class','country-border').attr('d', geoPath);
-
-    // 5. US state borders
-    if (us) {
-      const stateBorders = topojson.mesh(us, us.objects.states, (a,b) => a !== b);
-      mapG.append('path').datum(stateBorders)
-        .attr('class','us-state-border').attr('d', geoPath);
-    }
-  } catch (e) {
-    console.warn('Failed to load world map:', e);
-    mapG.append('rect').attr('x',50).attr('y',30)
-      .attr('width',W-100).attr('height',H-80)
-      .attr('rx',8).attr('class','land');
-  }
-
-  // Layers
-  mapG.append('g').attr('class','links-layer');
-  mapG.append('g').attr('class','arcs-layer');
-  mapG.append('g').attr('class','nodes-layer');
-
-  drawLinks();
-  drawNodes();
+  // Build UI
   buildFilters();
-  renderStats(placed, unplaced);
+  buildLegend();
+  buildStats(placed, unplaced);
   buildSearch();
   buildRegionNav();
-  buildUnlocatedDrawer();
-  setupHoverPreview();
-  setupKeyboardShortcuts();
-  document.getElementById('back-btn').onclick = popZoomState;
-
-  // Handle deep link from URL hash
   handleHashNavigation();
-
-  svg.on('click', e => { if (!e.target.classList.contains('map-node')) clearSelection(); });
 }
 
-function drawLinks() {
-  const g = mapG.select('.links-layer');
-  g.selectAll('*').remove();
+/* ═══════════════════════════════════════════════════════════
+   Point data helpers
+   ═══════════════════════════════════════════════════════════ */
+function getFilteredPoints() {
+  const connectedIds = new Set();
+  if (selectedNodeId) {
+    connectedIds.add(selectedNodeId);
+    graphData.links.forEach(l => {
+      const s = l.source_id || l.source, t = l.target_id || l.target;
+      if (s === selectedNodeId) connectedIds.add(t);
+      if (t === selectedNodeId) connectedIds.add(s);
+    });
+  }
 
-  graphData.links.forEach(link => {
-    const sid = link.source_id || link.source;
-    const tid = link.target_id || link.target;
-    const sc = nodeCoords[sid], tc = nodeCoords[tid];
-    if (!sc || !tc) return;
-    const sp = projection(sc), tp = projection(tc);
-    if (!sp || !tp) return;
-
-    g.append('line')
-      .attr('class','map-link')
-      .attr('x1',sp[0]).attr('y1',sp[1])
-      .attr('x2',tp[0]).attr('y2',tp[1])
-      .attr('stroke','#818cf8')
-      .attr('data-source', sid).attr('data-target', tid);
-  });
+  return Object.entries(nodeCoords)
+    .filter(([id]) => {
+      const n = nodeMap[id];
+      return n && activeFilters.has(n.type);
+    })
+    .map(([id, coords]) => {
+      const n = nodeMap[id];
+      return {
+        id,
+        name: n.name,
+        type: n.type,
+        notes: n.notes || '',
+        lat: coords[1],
+        lng: coords[0],
+        deg: nodeDegree[id] || 0,
+        _connected: connectedIds.has(id),
+      };
+    });
 }
 
-/* ── Degree-based radius: min 2, max 10, scaled by sqrt(connections) ── */
-function degreeRadius(id) {
-  const deg = nodeDegree[id] || 0;
-  // sqrt scale: 0 links → 2px, 1 → 2.8, 5 → 4.5, 15 → 7.5, 30+ → 10
-  return Math.min(10, 2 + Math.sqrt(deg) * 1.4);
+function getArcsForNode(id) {
+  if (!nodeCoords[id]) return [];
+  const [sLng, sLat] = nodeCoords[id];
+  return graphData.links
+    .filter(l => {
+      const s = l.source_id || l.source, t = l.target_id || l.target;
+      return s === id || t === id;
+    })
+    .map(l => {
+      const s = l.source_id || l.source, t = l.target_id || l.target;
+      const oid = s === id ? t : s;
+      if (!nodeCoords[oid]) return null;
+      const [eLng, eLat] = nodeCoords[oid];
+      return { startLat: sLat, startLng: sLng, endLat: eLat, endLng: eLng, type: l.type || 'connected_to' };
+    })
+    .filter(Boolean);
 }
 
-function drawNodes() {
-  const g = mapG.select('.nodes-layer');
-  g.selectAll('*').remove();
-
-  const entries = Object.entries(nodeCoords)
-    .map(([id,c]) => ({id, c, n: nodeMap[id], deg: nodeDegree[id]||0}))
-    .filter(d => d.n && activeFilters.has(d.n.type));
-
-  // Sort: smaller nodes first so bigger ones draw on top
-  entries.sort((a,b) => a.deg - b.deg);
-
-  // Pre-compute projected positions for density calc
-  const projected = entries.map(e => {
-    const pt = projection(e.c);
-    return { ...e, pt };
-  }).filter(d => d.pt);
-
-  projected.forEach(({id, c, n, deg, pt}) => {
-    const baseR = degreeRadius(id);
-    const gg = g.append('g')
-      .attr('class','node-group')
-      .attr('transform', `translate(${pt[0]},${pt[1]})`)
-      .attr('data-id', id)
-      .attr('data-deg', deg)
-      .attr('data-base-r', baseR.toFixed(2));
-
-    gg.append('circle')
-      .attr('r', baseR)
-      .attr('fill', TYPE_COLORS[n.type] || '#818cf8')
-      .attr('fill-opacity', deg > 8 ? 0.85 : 0.6)
-      .attr('class','map-node')
-      .attr('data-id', id)
-      .on('click', e => { e.stopPropagation(); selectNode(id); })
-      .on('mouseenter', e => showTip(e, `${n.name} (${deg} connections)`))
-      .on('mouseleave', hideTip);
-
-    // Label: initially hidden, shown progressively on zoom
-    gg.append('text')
-      .attr('class','node-label')
-      .attr('dy', baseR + 3)
-      .attr('data-deg', deg)
-      .text(n.name.length > 24 ? n.name.slice(0,22)+'…' : n.name);
-  });
-
-  applyZoomScaling();
-  // Re-attach hover preview events (nodes were recreated)
-  if (typeof setupHoverPreview === 'function') setupHoverPreview();
-}
-
-/* ── Zoom-adaptive scaling with occlusion culling ── */
-function applyZoomScaling() {
-  // Scale circles inversely with zoom so they stay near-constant screen size
-  const scaleFactor = 1 / Math.pow(currentZoom, 0.9);
-
-  mapG.selectAll('.node-group').each(function() {
-    const g = d3.select(this);
-    const baseR = parseFloat(g.attr('data-base-r'));
-    const circle = g.select('.map-node');
-    const label = g.select('.node-label');
-
-    const r = Math.max(1.2, baseR * scaleFactor);
-    circle.attr('r', r);
-    label.attr('dy', r + 2.5 * scaleFactor);
-    const fontSize = Math.max(1.5, 7 * scaleFactor);
-    label.style('font-size', fontSize + 'px');
-    label.style('stroke-width', Math.max(0.3, fontSize * 0.35) + 'px');
-  });
-
-  // Progressive label reveal with occlusion culling
-  // Degree threshold controls candidacy; occlusion prevents overlap
-  const degThreshold = currentZoom >= 10 ? 0 :
-                       currentZoom >= 6 ? 2 :
-                       currentZoom >= 3 ? 5 :
-                       currentZoom >= 1.5 ? 12 : 20;
-
-  if (selectedNodeId) return; // selection controls labels
-
-  // Gather label candidates, sorted by degree desc (most connected first)
-  const candidates = [];
-  mapG.selectAll('.node-group').each(function() {
-    const g = d3.select(this);
-    const deg = parseInt(g.attr('data-deg'));
-    const label = g.select('.node-label');
-    if (deg >= degThreshold) {
-      // Get screen-space position from transform
-      const t = g.attr('transform');
-      const m = t.match(/translate\(([\d.e+-]+),([\d.e+-]+)\)/);
-      if (m) {
-        const x = parseFloat(m[1]), y = parseFloat(m[2]);
-        const fontSize = Math.max(1.5, 7 * scaleFactor);
-        const text = label.text();
-        // Approximate label bbox: char width ~0.62em for monospace, centered
-        const w = text.length * fontSize * 0.62;
-        const h = fontSize * 1.3;
-        const baseR = parseFloat(g.attr('data-base-r'));
-        const r = Math.max(1.2, baseR * scaleFactor);
-        const ly = y + r + 2.5 * scaleFactor;
-        candidates.push({
-          el: label, deg, x, y: ly,
-          bbox: { x1: x - w/2, y1: ly, x2: x + w/2, y2: ly + h }
-        });
-      }
-    } else {
-      label.classed('show', false);
-    }
-  });
-
-  // Sort by degree descending — most connected nodes get label priority
-  candidates.sort((a,b) => b.deg - a.deg);
-
-  // Occlusion: greedy placement — only show if no overlap with already-placed labels
-  const placed = [];
-  const PAD = 4; // SVG-space px padding between labels
-  for (const c of candidates) {
-    const b = c.bbox;
-    let overlap = false;
-    for (const p of placed) {
-      if (b.x1 - PAD < p.x2 + PAD && b.x2 + PAD > p.x1 - PAD &&
-          b.y1 - PAD < p.y2 + PAD && b.y2 + PAD > p.y1 - PAD) {
-        overlap = true;
-        break;
-      }
-    }
-    if (!overlap) {
-      c.el.classed('show', true);
-      placed.push(b);
-    } else {
-      c.el.classed('show', false);
-    }
+function refreshGlobe() {
+  if (!globe) return;
+  const points = getFilteredPoints();
+  globe.pointsData(points);
+  if (selectedNodeId) {
+    globe.arcsData(getArcsForNode(selectedNodeId));
+  } else {
+    globe.arcsData([]);
   }
 }
 
-/* ── Tooltip ── */
-function showTip(e, text) {
-  const t = document.getElementById('tooltip');
-  t.textContent = text; t.style.opacity = '1';
-  const r = document.getElementById('map-wrap').getBoundingClientRect();
-  t.style.left = (e.clientX - r.left + 14) + 'px';
-  t.style.top = (e.clientY - r.top - 10) + 'px';
+/* ═══════════════════════════════════════════════════════════
+   Interaction
+   ═══════════════════════════════════════════════════════════ */
+function handlePointClick(point) {
+  if (!point) return;
+  selectNode(point.id);
 }
-function hideTip() { document.getElementById('tooltip').style.opacity = '0'; }
 
-/* ── Selection ── */
-let connectionList = []; // for [ ] cycling
+function handlePointHover(point, prevPoint) {
+  document.body.style.cursor = point ? 'pointer' : 'default';
+}
+
 function selectNode(id) {
   selectedNodeId = id;
   const node = nodeMap[id];
   if (!node) return;
 
-  // Update URL hash (without triggering hashchange)
   history.replaceState(null, '', '#' + id);
 
+  // Info panel
   document.getElementById('panel-name').textContent = node.name;
   const badge = document.getElementById('panel-type');
   badge.textContent = node.type;
@@ -745,40 +471,24 @@ function selectNode(id) {
     return s === id || t === id;
   });
 
-  const connList = document.getElementById('panel-connections');
+  const connList = document.getElementById('conn-list');
   connList.innerHTML = '';
-  const connIds = new Set([id]);
-  connectionList = [];
-
-  // Count link types for this node
-  const linkTypeCounts = {};
-  conns.forEach(l => {
-    const t = l.type || 'connected_to';
-    linkTypeCounts[t] = (linkTypeCounts[t]||0) + 1;
-  });
 
   conns.forEach(l => {
     const s = l.source_id||l.source, t = l.target_id||l.target;
     const oid = s === id ? t : s;
-    connIds.add(oid);
-    connectionList.push(oid);
     const o = nodeMap[oid];
     if (!o) return;
     const dir = s === id ? '→' : '←';
-    const onMap = !!nodeCoords[oid];
+    const onGlobe = !!nodeCoords[oid];
     const li = document.createElement('li');
-    li.setAttribute('data-conn-id', oid);
-
-    let mapLink = '';
-    if (onMap) {
-      mapLink = `<a class="on-map-link" data-fly="${oid}">● on map</a>`;
-    }
-    li.innerHTML = `${dir} <strong>${o.name}</strong><span class="rel">${l.type||'knows'}</span>${mapLink}`;
+    let flyHtml = onGlobe ? `<span class="fly-btn" data-fly="${oid}">fly</span>` : '';
+    li.innerHTML = `${dir} <strong>${o.name}</strong><span class="rel">${l.type||'knows'}</span>${flyHtml}`;
     li.onclick = (e) => {
       if (e.target.dataset.fly) {
         e.stopPropagation();
         flyToNode(e.target.dataset.fly);
-        setTimeout(() => selectNode(e.target.dataset.fly), 100);
+        setTimeout(() => selectNode(e.target.dataset.fly), 300);
         return;
       }
       selectNode(oid);
@@ -789,511 +499,144 @@ function selectNode(id) {
   document.getElementById('conn-heading').textContent = `Connections (${conns.length})`;
   document.getElementById('info-panel').classList.add('open');
 
-  // Build link-type filter
-  buildLinkTypeFilter(linkTypeCounts, id);
+  // Fly to selected node
+  if (nodeCoords[id]) {
+    const [lng, lat] = nodeCoords[id];
+    globe.pointOfView({ lat, lng, altitude: 0.6 }, 800);
+  }
 
-  // Visual highlights
-  const scaleFactor = 1 / Math.pow(currentZoom, 0.9);
-  document.querySelectorAll('.map-node').forEach(el => {
-    const nid = el.getAttribute('data-id');
-    el.classList.toggle('dimmed', !connIds.has(nid));
-    el.classList.toggle('selected', nid === id);
-    if (nid === id) el.setAttribute('r', Math.max(3, 8 * scaleFactor));
-    else if (connIds.has(nid)) el.setAttribute('r', Math.max(2, 5 * scaleFactor));
-  });
-
-  document.querySelectorAll('.node-label').forEach(el => {
-    const pid = el.parentElement?.querySelector('.map-node')?.getAttribute('data-id');
-    el.classList.toggle('show', connIds.has(pid));
-  });
-
-  document.querySelectorAll('.map-link').forEach(el => {
-    el.classList.toggle('visible',
-      el.getAttribute('data-source') === id || el.getAttribute('data-target') === id);
-  });
-
-  // Draw connection arcs
-  drawConnectionArcs(id, conns);
+  refreshGlobe();
 }
 
 function clearSelection() {
   selectedNodeId = null;
-  connectionList = [];
-  history.replaceState(null, '', window.location.pathname);
   document.getElementById('info-panel').classList.remove('open');
-  document.getElementById('link-type-bar').classList.remove('visible');
-  document.querySelectorAll('.map-node').forEach(el => {
-    el.classList.remove('dimmed','selected');
-  });
-  document.querySelectorAll('.map-link').forEach(el => el.classList.remove('visible'));
-  document.querySelectorAll('.node-label').forEach(el => el.classList.remove('show'));
-  // Clear arcs
-  mapG.select('.arcs-layer').selectAll('*').remove();
-  // Clear hover previews
-  clearHoverPreview();
-  applyZoomScaling(); // reset radii + labels based on current zoom
+  history.replaceState(null, '', location.pathname);
+  refreshGlobe();
 }
 
-/* ── Filters ── */
+function flyToNode(id) {
+  if (!nodeCoords[id]) return;
+  const [lng, lat] = nodeCoords[id];
+  globe.pointOfView({ lat, lng, altitude: 0.4 }, 1000);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   UI Builders
+   ═══════════════════════════════════════════════════════════ */
 function buildFilters() {
   const bar = document.getElementById('filter-bar');
-  ['person','institution','place','venue','organization'].forEach(t => {
+  bar.innerHTML = '';
+  const types = ['person','institution','place','organization','venue'];
+  const counts = {};
+  graphData.nodes.forEach(n => {
+    if (nodeCoords[n.id]) counts[n.type] = (counts[n.type]||0) + 1;
+  });
+
+  types.forEach(t => {
     const chip = document.createElement('div');
-    chip.className = 'filter-chip active';
-    chip.textContent = t;
-    chip.style.color = TYPE_COLORS[t];
+    chip.className = 'filter-chip' + (activeFilters.has(t) ? ' active' : '');
+    chip.innerHTML = `${t}<span class="chip-count">${counts[t]||0}</span>`;
+    if (activeFilters.has(t)) chip.style.background = TYPE_COLORS[t] + '33';
     chip.onclick = () => {
-      if (activeFilters.has(t)) { activeFilters.delete(t); chip.classList.remove('active'); chip.style.color = ''; }
-      else { activeFilters.add(t); chip.classList.add('active'); chip.style.color = TYPE_COLORS[t]; }
-      drawNodes();
+      if (activeFilters.has(t)) activeFilters.delete(t); else activeFilters.add(t);
+      chip.classList.toggle('active');
+      chip.style.background = activeFilters.has(t) ? TYPE_COLORS[t] + '33' : '';
+      refreshGlobe();
     };
     bar.appendChild(chip);
   });
 }
 
-function renderStats(placed, unplaced) {
-  document.getElementById('map-stats').innerHTML = `
-    <div class="stat"><span class="num">${graphData.nodes.length}</span> nodes</div>
-    <div class="stat"><span class="num">${placed}</span> on map</div>
-    <div class="stat"><span class="num">${unplaced}</span> unlocated</div>
+function buildLegend() {
+  const legend = document.getElementById('legend');
+  const types = [
+    ['person','#818cf8'],['institution','#34d399'],['place','#fbbf24'],
+    ['organization','#fb7185'],['venue','#fbbf24']
+  ];
+  legend.innerHTML = types.map(([t,c]) =>
+    `<div class="legend-item"><div class="legend-dot" style="background:${c}"></div>${t}</div>`
+  ).join('');
+}
+
+function buildStats(placed, unplaced) {
+  const bar = document.getElementById('stats-bar');
+  bar.innerHTML = `
+    <div><span class="stat-val">${graphData.nodes.length}</span> nodes</div>
+    <div><span class="stat-val">${graphData.links.length}</span> links</div>
+    <div><span class="stat-val">${placed}</span> on globe</div>
+    <div><span class="stat-val">${unplaced}</span> unlocated</div>
   `;
 }
 
-/* ── Search ── */
 function buildSearch() {
   const input = document.getElementById('search-input');
   const results = document.getElementById('search-results');
-  let debounce = null;
 
   input.addEventListener('input', () => {
-    clearTimeout(debounce);
-    debounce = setTimeout(() => {
-      const q = input.value.trim().toLowerCase();
-      results.innerHTML = '';
-      if (q.length < 2) { results.classList.remove('open'); return; }
+    const q = input.value.trim().toLowerCase();
+    if (q.length < 2) { results.classList.remove('open'); return; }
 
-      const matches = graphData.nodes
-        .filter(n => n.type !== 'technique' && n.type !== 'event')
-        .filter(n => n.name.toLowerCase().includes(q))
-        .sort((a,b) => (nodeDegree[b.id]||0) - (nodeDegree[a.id]||0))
-        .slice(0, 12);
+    const matches = graphData.nodes
+      .filter(n => n.name.toLowerCase().includes(q))
+      .slice(0, 20);
 
-      if (!matches.length) { results.classList.remove('open'); return; }
+    if (!matches.length) { results.classList.remove('open'); return; }
 
-      matches.forEach(n => {
-        const div = document.createElement('div');
-        div.className = 'search-result';
-        const onMap = !!nodeCoords[n.id];
-        div.innerHTML = `<span class="sr-dot" style="background:${TYPE_COLORS[n.type]||'#818cf8'}"></span>` +
-          `<span>${n.name}</span>` +
-          `<span class="sr-deg">${nodeDegree[n.id]||0} links</span>` +
-          (!onMap ? '<span class="sr-nomap">no loc</span>' : '');
-        div.onclick = () => {
-          input.value = '';
-          results.classList.remove('open');
-          if (onMap) flyToNode(n.id);
-          selectNode(n.id);
-        };
-        results.appendChild(div);
-      });
-      results.classList.add('open');
-    }, 150);
+    results.innerHTML = matches.map(n => {
+      const c = TYPE_COLORS[n.type] || '#818cf8';
+      const onGlobe = nodeCoords[n.id] ? ' ●' : '';
+      return `<div class="sr-item" data-id="${n.id}">
+        ${n.name}<span class="sr-type" style="background:${c}22;color:${c}">${n.type}${onGlobe}</span>
+      </div>`;
+    }).join('');
+    results.classList.add('open');
+
+    results.querySelectorAll('.sr-item').forEach(el => {
+      el.onclick = () => {
+        const id = el.dataset.id;
+        input.value = '';
+        results.classList.remove('open');
+        if (nodeCoords[id]) flyToNode(id);
+        selectNode(id);
+      };
+    });
   });
 
-  input.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { input.value = ''; results.classList.remove('open'); input.blur(); }
-  });
-
-  document.addEventListener('click', e => {
-    if (!e.target.closest('.search-wrap')) results.classList.remove('open');
+  input.addEventListener('blur', () => setTimeout(() => results.classList.remove('open'), 200));
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); input.focus(); }
+    if (e.key === 'Escape') { input.blur(); clearSelection(); }
   });
 }
 
-/* ── Fly camera to a node ── */
-let zoomBehavior;
-function flyToNode(id) {
-  const coords = nodeCoords[id];
-  if (!coords) return;
-  const pt = projection(coords);
-  if (!pt) return;
-  pushZoomState();
-  const svg = d3.select('#map-svg');
-  const W = parseInt(svg.attr('width')), H = parseInt(svg.attr('height'));
-  const k = Math.max(currentZoom, 8); // zoom in to at least 8x
-  const tx = W/2 - pt[0]*k, ty = H/2 - pt[1]*k;
-  svg.transition().duration(800).call(
-    zoomBehavior.transform,
-    d3.zoomIdentity.translate(tx, ty).scale(k)
-  );
-  // Pulse highlight
-  setTimeout(() => {
-    document.querySelectorAll('.map-node').forEach(el => el.classList.remove('search-highlight'));
-    const el = document.querySelector(`.map-node[data-id="${id}"]`);
-    if (el) { el.classList.add('search-highlight'); setTimeout(() => el.classList.remove('search-highlight'), 2000); }
-  }, 850);
-}
-
-/* ── Region quick-nav ── */
 function buildRegionNav() {
   const nav = document.getElementById('region-nav');
-  const regions = [
-    { label:'World', lon:0, lat:0, k:1 },
-    { label:'US', lon:-96, lat:39, k:4.5 },
-    { label:'Michigan', lon:-84.5, lat:43.3, k:12 },
-    { label:'NC', lon:-80.5, lat:35.6, k:14 },
-    { label:'NY', lon:-75, lat:42.5, k:12 },
-    { label:'Europe', lon:10, lat:50, k:4.5 },
-    { label:'Japan', lon:136, lat:36, k:8 },
-  ];
-  regions.forEach(r => {
-    const btn = document.createElement('div');
-    btn.className = 'region-btn';
-    btn.textContent = r.label;
+  nav.innerHTML = Object.entries(REGIONS).map(([name]) =>
+    `<button class="region-btn" data-region="${name}">${name}</button>`
+  ).join('');
+
+  nav.querySelectorAll('.region-btn').forEach(btn => {
     btn.onclick = () => {
-      pushZoomState();
-      const svg = d3.select('#map-svg');
-      const W = parseInt(svg.attr('width')), H = parseInt(svg.attr('height'));
-      if (r.k === 1) {
-        svg.transition().duration(600).call(zoomBehavior.transform, d3.zoomIdentity);
-      } else {
-        const pt = projection([r.lon, r.lat]);
-        if (!pt) return;
-        const tx = W/2 - pt[0]*r.k, ty = H/2 - pt[1]*r.k;
-        svg.transition().duration(600).call(
-          zoomBehavior.transform,
-          d3.zoomIdentity.translate(tx, ty).scale(r.k)
-        );
-      }
+      const r = REGIONS[btn.dataset.region];
+      globe.pointOfView(r, 1000);
     };
-    nav.appendChild(btn);
   });
 }
 
-/* ── Unlocated nodes drawer ── */
-function buildUnlocatedDrawer() {
-  const unlocated = graphData.nodes
-    .filter(n => n.type !== 'technique' && n.type !== 'event' && !nodeCoords[n.id])
-    .sort((a,b) => (nodeDegree[b.id]||0) - (nodeDegree[a.id]||0));
-
-  if (!unlocated.length) {
-    document.getElementById('unlocated-drawer').style.display = 'none';
-    return;
-  }
-
-  const toggle = document.getElementById('unlocated-toggle');
-  const panel = document.getElementById('unlocated-panel');
-  const grid = document.getElementById('unlocated-grid');
-
-  toggle.textContent = `▲ ${unlocated.length} unlocated nodes`;
-  toggle.onclick = () => {
-    panel.classList.toggle('open');
-    toggle.textContent = panel.classList.contains('open')
-      ? `▼ ${unlocated.length} unlocated nodes`
-      : `▲ ${unlocated.length} unlocated nodes`;
-  };
-
-  unlocated.forEach(n => {
-    const chip = document.createElement('span');
-    chip.className = 'unlocated-chip';
-    const deg = nodeDegree[n.id] || 0;
-    const color = TYPE_COLORS[n.type] || '#818cf8';
-    chip.style.background = color + '18';
-    chip.style.color = color;
-    chip.style.opacity = Math.max(0.5, Math.min(1, 0.4 + deg * 0.025));
-    chip.textContent = n.name;
-    chip.title = `${n.name} — ${deg} connections (no location found)`;
-    chip.onclick = () => selectNode(n.id);
-    grid.appendChild(chip);
-  });
-}
-
-/* ── Connection Arcs ── */
-function drawConnectionArcs(id, conns) {
-  const arcsG = mapG.select('.arcs-layer');
-  arcsG.selectAll('*').remove();
-  const srcCoords = nodeCoords[id];
-  if (!srcCoords) return;
-  const sp = projection(srcCoords);
-  if (!sp) return;
-
-  conns.forEach(l => {
-    const s = l.source_id||l.source, t = l.target_id||l.target;
-    const oid = s === id ? t : s;
-    const tc = nodeCoords[oid];
-    if (!tc) return;
-    const tp = projection(tc);
-    if (!tp) return;
-
-    // Curved arc — quadratic bezier with midpoint offset
-    const mx = (sp[0] + tp[0]) / 2;
-    const my = (sp[1] + tp[1]) / 2;
-    const dx = tp[0] - sp[0], dy = tp[1] - sp[1];
-    const dist = Math.sqrt(dx*dx + dy*dy);
-    // Arc curvature proportional to distance
-    const offset = Math.min(dist * 0.25, 40);
-    const cx = mx - dy / dist * offset;
-    const cy = my + dx / dist * offset;
-
-    const color = TYPE_COLORS[nodeMap[oid]?.type] || '#818cf8';
-    arcsG.append('path')
-      .attr('class', 'connection-arc')
-      .attr('d', `M${sp[0]},${sp[1]} Q${cx},${cy} ${tp[0]},${tp[1]}`)
-      .attr('stroke', color)
-      .attr('data-link-type', l.type || 'connected_to')
-      .classed('visible', true);
-  });
-}
-
-/* ── Hover Connection Preview ── */
-function setupHoverPreview() {
-  mapG.selectAll('.map-node')
-    .on('mouseenter.preview', function(e) {
-      if (selectedNodeId) return; // don't preview while selected
-      const id = this.getAttribute('data-id');
-      const conns = graphData.links.filter(l => {
-        const s = l.source_id||l.source, t = l.target_id||l.target;
-        return s === id || t === id;
-      });
-      const connIds = new Set([id]);
-      conns.forEach(l => {
-        const s = l.source_id||l.source, t = l.target_id||l.target;
-        connIds.add(s === id ? t : s);
-      });
-      document.querySelectorAll('.map-node').forEach(el => {
-        if (connIds.has(el.getAttribute('data-id'))) {
-          el.classList.add('hover-neighbor');
-        }
-      });
-      document.querySelectorAll('.map-link').forEach(el => {
-        if (el.getAttribute('data-source') === id || el.getAttribute('data-target') === id) {
-          el.classList.add('hover-visible');
-        }
-      });
-    })
-    .on('mouseleave.preview', function() {
-      clearHoverPreview();
-    });
-}
-
-function clearHoverPreview() {
-  document.querySelectorAll('.map-node.hover-neighbor').forEach(el => el.classList.remove('hover-neighbor'));
-  document.querySelectorAll('.map-link.hover-visible').forEach(el => el.classList.remove('hover-visible'));
-}
-
-/* ── Link-Type Filter ── */
-let activeLinkTypes = null; // null = all shown
-function buildLinkTypeFilter(linkTypeCounts, nodeId) {
-  const bar = document.getElementById('link-type-bar');
-  bar.innerHTML = '';
-  activeLinkTypes = null;
-
-  const types = Object.entries(linkTypeCounts)
-    .sort((a,b) => b[1] - a[1])
-    .filter(([,c]) => c > 0);
-
-  if (types.length <= 1) { bar.classList.remove('visible'); return; }
-  bar.classList.add('visible');
-
-  // All button
-  const allChip = document.createElement('div');
-  allChip.className = 'lt-chip active';
-  allChip.innerHTML = `all<span class="lt-count">${Object.values(linkTypeCounts).reduce((a,b)=>a+b,0)}</span>`;
-  allChip.onclick = () => {
-    activeLinkTypes = null;
-    bar.querySelectorAll('.lt-chip').forEach(c => c.classList.remove('active'));
-    allChip.classList.add('active');
-    applyLinkTypeFilter(nodeId);
-  };
-  bar.appendChild(allChip);
-
-  types.forEach(([type, count]) => {
-    const chip = document.createElement('div');
-    chip.className = 'lt-chip';
-    const label = type.replace(/_/g,' ').replace(/-/g,' ');
-    chip.innerHTML = `${label}<span class="lt-count">${count}</span>`;
-    chip.onclick = () => {
-      activeLinkTypes = type;
-      bar.querySelectorAll('.lt-chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      applyLinkTypeFilter(nodeId);
-    };
-    bar.appendChild(chip);
-  });
-}
-
-function applyLinkTypeFilter(nodeId) {
-  if (!selectedNodeId) return;
-  const conns = graphData.links.filter(l => {
-    const s = l.source_id||l.source, t = l.target_id||l.target;
-    return s === nodeId || t === nodeId;
-  });
-  const filteredConns = activeLinkTypes
-    ? conns.filter(l => (l.type || 'connected_to') === activeLinkTypes)
-    : conns;
-
-  const connIds = new Set([nodeId]);
-  filteredConns.forEach(l => {
-    const s = l.source_id||l.source, t = l.target_id||l.target;
-    connIds.add(s === nodeId ? t : s);
-  });
-
-  // Update visual highlights
-  const scaleFactor = 1 / Math.pow(currentZoom, 0.9);
-  document.querySelectorAll('.map-node').forEach(el => {
-    const nid = el.getAttribute('data-id');
-    el.classList.toggle('dimmed', !connIds.has(nid));
-  });
-  document.querySelectorAll('.node-label').forEach(el => {
-    const pid = el.parentElement?.querySelector('.map-node')?.getAttribute('data-id');
-    el.classList.toggle('show', connIds.has(pid));
-  });
-
-  // Update arcs
-  mapG.selectAll('.connection-arc').each(function() {
-    const arcType = this.getAttribute('data-link-type');
-    const show = !activeLinkTypes || arcType === activeLinkTypes;
-    d3.select(this).classed('visible', show).style('opacity', show ? 0.55 : 0);
-  });
-
-  // Update sidebar highlight
-  document.querySelectorAll('#panel-connections li').forEach(li => {
-    const cid = li.getAttribute('data-conn-id');
-    li.style.opacity = connIds.has(cid) ? '1' : '0.25';
-  });
-}
-
-/* ── Zoom History ── */
-const zoomHistory = [];
-const MAX_ZOOM_HISTORY = 12;
-
-function pushZoomState() {
-  const svg = d3.select('#map-svg');
-  const t = d3.zoomTransform(svg.node());
-  // Avoid duplicates at same position
-  const last = zoomHistory[zoomHistory.length - 1];
-  if (last && Math.abs(last.k - t.k) < 0.01 && Math.abs(last.x - t.x) < 1 && Math.abs(last.y - t.y) < 1) return;
-  zoomHistory.push({ k: t.k, x: t.x, y: t.y });
-  if (zoomHistory.length > MAX_ZOOM_HISTORY) zoomHistory.shift();
-  updateBackButton();
-}
-
-function popZoomState() {
-  if (!zoomHistory.length) return;
-  const prev = zoomHistory.pop();
-  const svg = d3.select('#map-svg');
-  svg.transition().duration(400).call(
-    zoomBehavior.transform,
-    d3.zoomIdentity.translate(prev.x, prev.y).scale(prev.k)
-  );
-  updateBackButton();
-}
-
-function updateBackButton() {
-  const btn = document.getElementById('back-btn');
-  btn.classList.toggle('has-history', zoomHistory.length > 0);
-}
-
-/* ── Keyboard Shortcuts ── */
-function setupKeyboardShortcuts() {
-  document.addEventListener('keydown', e => {
-    // Ignore if typing in input
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-      if (e.key === 'Escape') {
-        e.target.blur();
-        document.getElementById('search-results').classList.remove('open');
-      }
-      return;
-    }
-
-    switch(e.key) {
-      case '/':
-        e.preventDefault();
-        document.getElementById('search-input').focus();
-        break;
-      case 'Escape':
-        clearSelection();
-        document.getElementById('kbd-hint').classList.remove('open');
-        break;
-      case 'b': case 'B':
-        popZoomState();
-        break;
-      case '?':
-        document.getElementById('kbd-hint').classList.toggle('open');
-        break;
-      case '[':
-        cycleConnection(-1);
-        break;
-      case ']':
-        cycleConnection(1);
-        break;
-      case '1': case '2': case '3': case '4': case '5': case '6': case '7':
-        const idx = parseInt(e.key) - 1;
-        const btns = document.querySelectorAll('.region-btn');
-        if (btns[idx]) btns[idx].click();
-        break;
-    }
-  });
-}
-
-let cycleIndex = -1;
-function cycleConnection(dir) {
-  if (!selectedNodeId || !connectionList.length) return;
-  cycleIndex = (cycleIndex + dir + connectionList.length) % connectionList.length;
-  const nextId = connectionList[cycleIndex];
-  // Highlight in sidebar
-  document.querySelectorAll('#panel-connections li').forEach(li => {
-    li.style.background = li.getAttribute('data-conn-id') === nextId ? 'rgba(129,140,248,0.1)' : '';
-  });
-  // If on map, fly to it
-  if (nodeCoords[nextId]) flyToNode(nextId);
-}
-
-/* ── URL Hash Deep Linking ── */
 function handleHashNavigation() {
-  const hash = window.location.hash.slice(1);
-  if (!hash) return;
-
-  // Check if it's a region name
-  const regionMap = { world: 0, us: 1, michigan: 2, nc: 3, ny: 4, europe: 5, japan: 6 };
-  const regionIdx = regionMap[hash.toLowerCase()];
-  if (regionIdx !== undefined) {
-    if (selectedNodeId) clearSelection();
-    setTimeout(() => {
-      const btns = document.querySelectorAll('.region-btn');
-      if (btns[regionIdx]) btns[regionIdx].click();
-    }, 500);
-    return;
-  }
-
-  // Check if it's a node ID
-  const node = nodeMap[hash];
-  if (node) {
-    setTimeout(() => {
-      if (nodeCoords[hash]) flyToNode(hash);
-      selectNode(hash);
-    }, 500);
-    return;
-  }
-
-  // Fuzzy match by name (URL-encoded name)
-  const decodedHash = decodeURIComponent(hash).toLowerCase();
-  const match = graphData.nodes.find(n => n.id === hash || n.name.toLowerCase().replace(/\s+/g, '-') === decodedHash);
-  if (match) {
-    setTimeout(() => {
-      if (nodeCoords[match.id]) flyToNode(match.id);
-      selectNode(match.id);
-    }, 500);
+  const hash = location.hash.slice(1);
+  if (hash && nodeMap[hash]) {
+    setTimeout(() => selectNode(hash), 500);
   }
 }
 
-window.addEventListener('hashchange', () => {
-  handleHashNavigation();
-});
+/* ── Panel close ── */
+document.getElementById('panel-close').onclick = clearSelection;
 
-/* ── Events ── */
-document.getElementById('close-panel').onclick = clearSelection;
-
-/* ── Start ── */
+/* ═══════════════════════════════════════════════════════════
+   Boot
+   ═══════════════════════════════════════════════════════════ */
 loadData();
 </script>
 </body>
