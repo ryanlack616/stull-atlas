@@ -11,6 +11,7 @@
 
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import { useGlazeStore } from '@/stores'
+import { formatCone } from '@/calculator/parseCone'
 import type { GlazeRecipe } from '@/types'
 
 // Lazy-loaded to keep ~700 KB of digitalfire JSON out of the initial bundle.
@@ -81,7 +82,7 @@ function searchGlazes(query: string, glazes: GlazeRecipe[], limit = 8): OmniResu
     }
 
     if (score > 0) {
-      const coneStr = g.coneRange?.[0] !== undefined ? `Cone ${g.coneRange[0]}` : ''
+      const coneStr = g.coneRange?.[0] !== undefined ? `Cone ${formatCone(Number(g.coneRange[0]))}` : ''
       const atmo = g.atmosphere !== 'unknown' ? g.atmosphere : ''
       const surface = g.surfaceType !== 'unknown' ? g.surfaceType : ''
       const parts = [coneStr, atmo, surface].filter(Boolean)

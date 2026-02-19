@@ -10,6 +10,7 @@ import React, { useState, useMemo, useRef, useCallback } from 'react'
 import type { ProximityNeighbor, ProximityStats } from './StullPlot3D'
 import { zAxisLabel } from './StullPlot3D'
 import type { GlazeRecipe } from '@/types'
+import { formatCone } from '@/calculator/parseCone'
 import { UMFFingerprint, FluxDonut } from '@/components/UMFVisuals'
 import type { ZAxisOption } from './StullPlot3D'
 
@@ -342,7 +343,7 @@ export function NearbyList({
                 <div className="gallery-info">
                   <span className="gallery-name">{n.name}</span>
                   <div className="gallery-meta">
-                    {n.cone != null && <span className="proximity-nearby-cone">{'\u25B3'}{n.cone}</span>}
+                    {n.cone != null && <span className="proximity-nearby-cone">{'\u25B3'}{formatCone(n.cone)}</span>}
                     <span className={`proximity-nearby-surface st-${n.surfaceType}`}>{surfaceLabel(n.surfaceType)}</span>
                   </div>
                 </div>
@@ -380,7 +381,7 @@ export function NearbyList({
                 )}
                 <span className="proximity-nearby-rank">{i + 1}</span>
                 <span className="proximity-nearby-name">{n.name}</span>
-                {n.cone != null && <span className="proximity-nearby-cone">{'\u25B3'}{typeof n.cone === 'number' && n.cone === Math.floor(n.cone) ? n.cone : n.cone}</span>}
+                {n.cone != null && <span className="proximity-nearby-cone">{'\u25B3'}{formatCone(n.cone)}</span>}
                 <span className={`proximity-nearby-surface st-${n.surfaceType}`} title={n.surfaceType}>{surfaceLabel(n.surfaceType)}</span>
                 {/* Per-axis similarity bars */}
                 <span className="proximity-nearby-bars" title={`SiO\u2082: ${(Math.max(0, 1 - n.dx) * 100).toFixed(0)}% | Al\u2082O\u2083: ${(Math.max(0, 1 - n.dy) * 100).toFixed(0)}% | ${zAxisLabel(zAxis)}: ${(Math.max(0, 1 - n.dz) * 100).toFixed(0)}%`}>
@@ -407,7 +408,7 @@ export function NearbyList({
             <div style={{ flex: 1, minWidth: 0 }}>
               <div className="proximity-preview-name">{hoveredGlaze.name}</div>
               <div className="proximity-preview-meta">
-                {hoveredGlaze.coneRange?.[0] != null && <span>{'\u25B3'}{hoveredGlaze.coneRange[0]}{hoveredGlaze.coneRange[1] !== hoveredGlaze.coneRange[0] ? `\u2013${hoveredGlaze.coneRange[1]}` : ''}</span>}
+                {hoveredGlaze.coneRange?.[0] != null && <span>{'\u25B3'}{formatCone(Number(hoveredGlaze.coneRange[0]))}{hoveredGlaze.coneRange[1] !== hoveredGlaze.coneRange[0] ? `\u2013${formatCone(Number(hoveredGlaze.coneRange[1]))}` : ''}</span>}
                 <span>{hoveredGlaze.surfaceType}</span>
                 <span>{hoveredGlaze.atmosphere}</span>
                 <span>d={hoveredNeighbor.distance.toFixed(3)}</span>

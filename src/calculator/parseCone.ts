@@ -35,9 +35,29 @@ export function parseConeOrZero(cone: string | number): number {
 }
 
 /**
+ * Format a numeric cone value to ceramic notation.
+ * Negative → leading zero: -6 → "06", -4 → "04", -1 → "01"
+ * Zero/positive → plain string: 0 → "0", 6 → "6", 10 → "10"
+ */
+export function formatCone(cone: number | null | undefined): string {
+  if (cone == null) return '?'
+  if (cone < 0) return '0' + Math.abs(cone)
+  return String(cone)
+}
+
+/**
  * Full cone range for selectors
  */
 export const ALL_CONES = [
   '06', '05', '04', '03', '02', '01', '0',
   '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'
 ]
+
+/**
+ * Standard colorbar tick values and labels for the full cone range.
+ * Shows every cone from 06 through 13 in ceramic notation.
+ */
+export const CONE_TICK_VALS = [
+  -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
+]
+export const CONE_TICK_TEXT = CONE_TICK_VALS.map(v => formatCone(v))

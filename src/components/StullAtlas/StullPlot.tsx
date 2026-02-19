@@ -11,6 +11,7 @@ import { OxideSymbol, GlazePlotPoint, SurfaceType, EpistemicState } from '@/type
 import { getOxideValue } from '@/calculator/umf'
 import { roundTo } from '@/calculator'
 import { CONE_LIMITS, interpolateLimits, ConeLimits } from '@/calculator/validation'
+import { formatCone, CONE_TICK_VALS, CONE_TICK_TEXT } from '@/calculator/parseCone'
 import { glazeTypeColor, glazeTypeName } from '@/domain/glaze'
 import { useFilteredPoints } from '@/hooks'
 import { features } from '@/featureFlags'
@@ -43,27 +44,28 @@ const COLOR_SCALES: Record<string, string> = {
 }
 
 // Discrete cone colorscale — one distinct color per cone value
-// Range: -4 (cone 04) to 14, total span = 18, boundaries at half-integers
+// Range: -6 (cone 06) to 13, total span = 19, boundaries at half-integers
 const CONE_COLORSCALE: [number, string][] = [
-  [0,        '#6366f1'], [0.5 / 18, '#6366f1'],   // Cone 04 — indigo
-  [0.5 / 18, '#3b82f6'], [1.5 / 18, '#3b82f6'],   // Cone 03 — blue
-  [1.5 / 18, '#06b6d4'], [2.5 / 18, '#06b6d4'],   // Cone 02 — cyan
-  [2.5 / 18, '#14b8a6'], [3.5 / 18, '#14b8a6'],   // Cone 01 — teal
-  [3.5 / 18, '#10b981'], [4.5 / 18, '#10b981'],   // Cone 0  — emerald
-  [4.5 / 18, '#22c55e'], [5.5 / 18, '#22c55e'],   // Cone 1  — green
-  [5.5 / 18, '#84cc16'], [6.5 / 18, '#84cc16'],   // Cone 2  — lime
-  [6.5 / 18, '#a3e635'], [7.5 / 18, '#a3e635'],   // Cone 3  — chartreuse
-  [7.5 / 18, '#facc15'], [8.5 / 18, '#facc15'],   // Cone 4  — yellow
-  [8.5 / 18, '#f59e0b'], [9.5 / 18, '#f59e0b'],   // Cone 5  — amber
-  [9.5 / 18, '#f97316'], [10.5 / 18, '#f97316'],  // Cone 6  — orange
-  [10.5 / 18, '#ef4444'], [11.5 / 18, '#ef4444'],  // Cone 7  — red
-  [11.5 / 18, '#dc2626'], [12.5 / 18, '#dc2626'],  // Cone 8  — crimson
-  [12.5 / 18, '#e11d48'], [13.5 / 18, '#e11d48'],  // Cone 9  — rose
-  [13.5 / 18, '#a855f7'], [14.5 / 18, '#a855f7'],  // Cone 10 — purple
-  [14.5 / 18, '#7c3aed'], [15.5 / 18, '#7c3aed'],  // Cone 11 — violet
-  [15.5 / 18, '#6d28d9'], [16.5 / 18, '#6d28d9'],  // Cone 12 — deep violet
-  [16.5 / 18, '#581c87'], [17.5 / 18, '#581c87'],  // Cone 13 — dark purple
-  [17.5 / 18, '#3b0764'], [1,        '#3b0764'],   // Cone 14 — blackberry
+  [0,        '#818cf8'], [0.5 / 19, '#818cf8'],   // Cone 06 — light indigo
+  [0.5 / 19, '#6366f1'], [1.5 / 19, '#6366f1'],   // Cone 05 — indigo
+  [1.5 / 19, '#3b82f6'], [2.5 / 19, '#3b82f6'],   // Cone 04 — blue
+  [2.5 / 19, '#06b6d4'], [3.5 / 19, '#06b6d4'],   // Cone 03 — cyan
+  [3.5 / 19, '#14b8a6'], [4.5 / 19, '#14b8a6'],   // Cone 02 — teal
+  [4.5 / 19, '#10b981'], [5.5 / 19, '#10b981'],   // Cone 01 — emerald
+  [5.5 / 19, '#22c55e'], [6.5 / 19, '#22c55e'],   // Cone 0  — green
+  [6.5 / 19, '#84cc16'], [7.5 / 19, '#84cc16'],   // Cone 1  — lime-green
+  [7.5 / 19, '#a3e635'], [8.5 / 19, '#a3e635'],   // Cone 2  — lime
+  [8.5 / 19, '#d9f99d'], [9.5 / 19, '#d9f99d'],   // Cone 3  — pale lime
+  [9.5 / 19, '#facc15'], [10.5 / 19, '#facc15'],  // Cone 4  — yellow
+  [10.5 / 19, '#f59e0b'], [11.5 / 19, '#f59e0b'],  // Cone 5  — amber
+  [11.5 / 19, '#f97316'], [12.5 / 19, '#f97316'],  // Cone 6  — orange
+  [12.5 / 19, '#ef4444'], [13.5 / 19, '#ef4444'],  // Cone 7  — red
+  [13.5 / 19, '#dc2626'], [14.5 / 19, '#dc2626'],  // Cone 8  — crimson
+  [14.5 / 19, '#e11d48'], [15.5 / 19, '#e11d48'],  // Cone 9  — rose
+  [15.5 / 19, '#a855f7'], [16.5 / 19, '#a855f7'],  // Cone 10 — purple
+  [16.5 / 19, '#7c3aed'], [17.5 / 19, '#7c3aed'],  // Cone 11 — violet
+  [17.5 / 19, '#6d28d9'], [18.5 / 19, '#6d28d9'],  // Cone 12 — deep violet
+  [18.5 / 19, '#581c87'], [1,        '#581c87'],   // Cone 13 — dark purple
 ]
 
 // Stull chart regions — empirical boundaries from Ray Stull (1912)
@@ -326,13 +328,13 @@ export function StullPlot({
     }
   }, [highlightCircle])
 
-  // Filter out invalid points — allow full cone range [-4, 14] and null-cone glazes
+  // Filter out invalid points — allow full cone range [-6, 13] and null-cone glazes
   const validPoints = useMemo(() => {
     return plotPoints.filter(p => 
       p.x != null && p.y != null && 
       !isNaN(p.x) && !isNaN(p.y) &&
       p.x > 0 && p.y > 0 &&
-      (p.cone == null || (p.cone >= -4 && p.cone <= 14))
+      (p.cone == null || (p.cone >= -6 && p.cone <= 13))
     )
   }, [plotPoints])
 
@@ -430,14 +432,14 @@ export function StullPlot({
       ...(colorBy === 'glaze_type' ? {} : {
         colorscale: colorBy === 'cone' ? CONE_COLORSCALE : (COLOR_SCALES[colorBy] || 'Viridis'),
         reversescale: false,
-        cmin: colorBy === 'cone' ? -4 : undefined,
-        cmax: colorBy === 'cone' ? 14 : undefined,
+        cmin: colorBy === 'cone' ? -6 : undefined,
+        cmax: colorBy === 'cone' ? 13 : undefined,
         colorbar: {
           title: getColorBarTitle(colorBy),
           thickness: 15,
           len: 0.7,
-          tickvals: colorBy === 'cone' ? [-4, -2, 0, 2, 4, 6, 8, 10, 12, 14] : undefined,
-          ticktext: colorBy === 'cone' ? ['04', '02', '0', '2', '4', '6', '8', '10', '12', '14'] : undefined,
+          tickvals: colorBy === 'cone' ? CONE_TICK_VALS : undefined,
+          ticktext: colorBy === 'cone' ? CONE_TICK_TEXT : undefined,
         },
       }),
       line: {
@@ -459,7 +461,7 @@ export function StullPlot({
         `<b>${p.name}</b>`,
         `${xAxis}: ${p.x.toFixed(2)}`,
         `${yAxis}: ${p.y.toFixed(2)}`,
-        `Cone: ${p.cone != null ? p.cone : 'unknown'}`,
+        `Cone: ${p.cone != null ? formatCone(p.cone) : 'unknown'}`,
       ]
       if (colorBy === 'glaze_type') parts.push(glazeTypeName(p.glazeTypeId))
       return parts.join('<br>') + '<extra></extra>'

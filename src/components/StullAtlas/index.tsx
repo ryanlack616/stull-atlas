@@ -12,6 +12,7 @@ import { AnalysisSetPicker } from './AnalysisSetPicker'
 import { useSelectionStore, useGlazeStore, useFilterStore } from '@/stores'
 import { useSimilarity, useKioskMode } from '@/hooks'
 import { OxideSymbol, GlazeRecipe } from '@/types'
+import { formatCone } from '@/calculator/parseCone'
 import type { DensityMap } from '@/analysis/density'
 import type { ZAxisOption, CameraPreset, LightPosition, ProximityStats, ProximityWeights } from './StullPlot3D'
 import { zAxisLabel, DEFAULT_PROXIMITY_WEIGHTS } from './StullPlot3D'
@@ -110,8 +111,8 @@ function FilterPanel() {
                   const v = e.target.value === '' ? null : Number(e.target.value)
                   setConeRange(v, coneMax)
                 }}
-                min={-4}
-                max={14}
+                min={-6}
+                max={13}
               />
               <span style={{ color: 'var(--text-secondary)', fontSize: 12 }}>to</span>
               <input
@@ -123,8 +124,8 @@ function FilterPanel() {
                   const v = e.target.value === '' ? null : Number(e.target.value)
                   setConeRange(coneMin, v)
                 }}
-                min={-4}
-                max={14}
+                min={-6}
+                max={13}
               />
             </div>
           </div>
@@ -703,11 +704,24 @@ export function StullAtlas() {
                     style={{ marginLeft: 6, fontSize: 12 }}
                   >
                     <option value="06">Cone 06</option>
+                    <option value="05">Cone 05</option>
                     <option value="04">Cone 04</option>
+                    <option value="03">Cone 03</option>
+                    <option value="02">Cone 02</option>
+                    <option value="01">Cone 01</option>
+                    <option value="1">Cone 1</option>
+                    <option value="2">Cone 2</option>
+                    <option value="3">Cone 3</option>
+                    <option value="4">Cone 4</option>
+                    <option value="5">Cone 5</option>
                     <option value="6">Cone 6</option>
+                    <option value="7">Cone 7</option>
+                    <option value="8">Cone 8</option>
                     <option value="9">Cone 9</option>
                     <option value="10">Cone 10</option>
                     <option value="11">Cone 11</option>
+                    <option value="12">Cone 12</option>
+                    <option value="13">Cone 13</option>
                   </select>
                 </label>
                 <p style={{ fontSize: 10, color: 'var(--text-tertiary)', margin: '4px 0 0', lineHeight: 1.3 }}>
@@ -1043,7 +1057,7 @@ export function StullAtlas() {
                 {selectedGlaze ? (
               <div className="glaze-detail" role="tabpanel" aria-label="Selected glaze details">
                 <div className="sr-only" aria-live="polite">
-                  Selected: {selectedGlaze.name}, Cone {selectedGlaze.coneRange[0]} to {selectedGlaze.coneRange[1]}, {selectedGlaze.surfaceType} surface
+                  Selected: {selectedGlaze.name}, Cone {formatCone(Number(selectedGlaze.coneRange[0]))} to {formatCone(Number(selectedGlaze.coneRange[1]))}, {selectedGlaze.surfaceType} surface
                 </div>
                 <h2>{selectedGlaze.name}</h2>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>

@@ -8,6 +8,7 @@
 
 import React, { useState, useMemo } from 'react'
 import { GlazeRecipe, Ingredient } from '@/types'
+import { formatCone } from '@/calculator/parseCone'
 import { UMFFingerprint, FluxDonut, OxideRadar, GlazeTypeBadge, ConeRangeBar, OxideTd } from '@/components/UMFVisuals'
 
 /** Subscript helper for oxide formulas (kept for backward compat, prefer OxideTd) */
@@ -75,7 +76,7 @@ export function ComparePanel({ glazes, onRemove, onClear, onSelect }: ComparePan
   const buildTextTable = () => {
     const cols = ['', ...glazes.map(g => g.name)]
     const rows: string[][] = []
-    rows.push(['Cone', ...glazes.map(g => `${g.coneRange[0]}–${g.coneRange[1]}`)])
+    rows.push(['Cone', ...glazes.map(g => `${formatCone(Number(g.coneRange[0]))}–${formatCone(Number(g.coneRange[1]))}`)])
     rows.push(['Surface', ...glazes.map(g => g.surfaceType)])
     rows.push(['Atmosphere', ...glazes.map(g => g.atmosphere)])
     oxideGroups.forEach(group => {
@@ -112,7 +113,7 @@ export function ComparePanel({ glazes, onRemove, onClear, onSelect }: ComparePan
     const esc = (s: string) => `"${s.replace(/"/g, '""')}"`
     const cols = ['', ...glazes.map(g => esc(g.name))]
     const rows: string[][] = []
-    rows.push(['Cone', ...glazes.map(g => `${g.coneRange[0]}-${g.coneRange[1]}`)])
+    rows.push(['Cone', ...glazes.map(g => `${formatCone(Number(g.coneRange[0]))}-${formatCone(Number(g.coneRange[1]))}`)])
     rows.push(['Surface', ...glazes.map(g => esc(g.surfaceType))])
     rows.push(['Atmosphere', ...glazes.map(g => esc(g.atmosphere))])
     oxideGroups.forEach(group => {

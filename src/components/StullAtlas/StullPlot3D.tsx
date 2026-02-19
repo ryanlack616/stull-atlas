@@ -23,6 +23,7 @@ import createPlotlyComponent from 'react-plotly.js/factory'
 import { useGlazeStore, useSelectionStore, useRecipeStore, useThemeStore, useMolarWeightStore } from '@/stores'
 import { OxideSymbol, GlazePlotPoint, SurfaceType, EpistemicState, UMF } from '@/types'
 import { getOxideValue } from '@/calculator/umf'
+import { formatCone, CONE_TICK_VALS, CONE_TICK_TEXT } from '@/calculator/parseCone'
 import { fitSurface, type SurfaceGrid } from '@/analysis/surfaceFit'
 import { classifySurface, SURFACE_TYPE_COLORS_RGBA, type SurfaceClassifyGrid } from '@/analysis/surfaceClassify'
 import { glazeTypeColor, glazeTypeName } from '@/domain/glaze'
@@ -291,25 +292,26 @@ type PlotComponentType = React.ComponentType<any>
 // ─── Discrete cone colorscale (matches 2D) ─────────────────────
 
 const CONE_COLORSCALE: [number, string][] = [
-  [0,        '#6366f1'], [0.5 / 18, '#6366f1'],   // Cone 04 — indigo
-  [0.5 / 18, '#3b82f6'], [1.5 / 18, '#3b82f6'],   // Cone 03 — blue
-  [1.5 / 18, '#06b6d4'], [2.5 / 18, '#06b6d4'],   // Cone 02 — cyan
-  [2.5 / 18, '#14b8a6'], [3.5 / 18, '#14b8a6'],   // Cone 01 — teal
-  [3.5 / 18, '#10b981'], [4.5 / 18, '#10b981'],   // Cone 0  — emerald
-  [4.5 / 18, '#22c55e'], [5.5 / 18, '#22c55e'],   // Cone 1  — green
-  [5.5 / 18, '#84cc16'], [6.5 / 18, '#84cc16'],   // Cone 2  — lime
-  [6.5 / 18, '#a3e635'], [7.5 / 18, '#a3e635'],   // Cone 3  — chartreuse
-  [7.5 / 18, '#facc15'], [8.5 / 18, '#facc15'],   // Cone 4  — yellow
-  [8.5 / 18, '#f59e0b'], [9.5 / 18, '#f59e0b'],   // Cone 5  — amber
-  [9.5 / 18, '#f97316'], [10.5 / 18, '#f97316'],  // Cone 6  — orange
-  [10.5 / 18, '#ef4444'], [11.5 / 18, '#ef4444'],  // Cone 7  — red
-  [11.5 / 18, '#dc2626'], [12.5 / 18, '#dc2626'],  // Cone 8  — crimson
-  [12.5 / 18, '#e11d48'], [13.5 / 18, '#e11d48'],  // Cone 9  — rose
-  [13.5 / 18, '#a855f7'], [14.5 / 18, '#a855f7'],  // Cone 10 — purple
-  [14.5 / 18, '#7c3aed'], [15.5 / 18, '#7c3aed'],  // Cone 11 — violet
-  [15.5 / 18, '#6d28d9'], [16.5 / 18, '#6d28d9'],  // Cone 12 — deep violet
-  [16.5 / 18, '#581c87'], [17.5 / 18, '#581c87'],  // Cone 13 — dark purple
-  [17.5 / 18, '#3b0764'], [1,        '#3b0764'],   // Cone 14 — blackberry
+  [0,        '#818cf8'], [0.5 / 19, '#818cf8'],   // Cone 06 — light indigo
+  [0.5 / 19, '#6366f1'], [1.5 / 19, '#6366f1'],   // Cone 05 — indigo
+  [1.5 / 19, '#3b82f6'], [2.5 / 19, '#3b82f6'],   // Cone 04 — blue
+  [2.5 / 19, '#06b6d4'], [3.5 / 19, '#06b6d4'],   // Cone 03 — cyan
+  [3.5 / 19, '#14b8a6'], [4.5 / 19, '#14b8a6'],   // Cone 02 — teal
+  [4.5 / 19, '#10b981'], [5.5 / 19, '#10b981'],   // Cone 01 — emerald
+  [5.5 / 19, '#22c55e'], [6.5 / 19, '#22c55e'],   // Cone 0  — green
+  [6.5 / 19, '#84cc16'], [7.5 / 19, '#84cc16'],   // Cone 1  — lime-green
+  [7.5 / 19, '#a3e635'], [8.5 / 19, '#a3e635'],   // Cone 2  — lime
+  [8.5 / 19, '#d9f99d'], [9.5 / 19, '#d9f99d'],   // Cone 3  — pale lime
+  [9.5 / 19, '#facc15'], [10.5 / 19, '#facc15'],  // Cone 4  — yellow
+  [10.5 / 19, '#f59e0b'], [11.5 / 19, '#f59e0b'],  // Cone 5  — amber
+  [11.5 / 19, '#f97316'], [12.5 / 19, '#f97316'],  // Cone 6  — orange
+  [12.5 / 19, '#ef4444'], [13.5 / 19, '#ef4444'],  // Cone 7  — red
+  [13.5 / 19, '#dc2626'], [14.5 / 19, '#dc2626'],  // Cone 8  — crimson
+  [14.5 / 19, '#e11d48'], [15.5 / 19, '#e11d48'],  // Cone 9  — rose
+  [15.5 / 19, '#a855f7'], [16.5 / 19, '#a855f7'],  // Cone 10 — purple
+  [16.5 / 19, '#7c3aed'], [17.5 / 19, '#7c3aed'],  // Cone 11 — violet
+  [17.5 / 19, '#6d28d9'], [18.5 / 19, '#6d28d9'],  // Cone 12 — deep violet
+  [18.5 / 19, '#581c87'], [1,        '#581c87'],   // Cone 13 — dark purple
 ]
 
 const COLOR_SCALES: Record<string, string | [number, string][]> = {
@@ -716,7 +718,7 @@ export function StullPlot3D({
       p.y >= STULL_BOUNDS.y[0] && p.y <= STULL_BOUNDS.y[1] &&
       // Allow null-cone glazes — they're valid for all non-cone z-axes
       // (computeZFromUMF defaults cone to 6 when null)
-      (p.cone == null || (p.cone >= -4 && p.cone <= 14))
+      (p.cone == null || (p.cone >= -6 && p.cone <= 13))
     ).map(p => {
       const glaze = glazes.get(p.id)
       const umfData = glaze?.umf
@@ -1081,14 +1083,14 @@ export function StullPlot3D({
         ...(colorBy === 'glaze_type' ? {} : {
           colorscale: isCone ? CONE_COLORSCALE : (COLOR_SCALES[colorBy] || 'Viridis'),
           reversescale: false,
-          cmin: isCone ? -4 : colorRange?.min,
-          cmax: isCone ? 14 : colorRange?.max,
+          cmin: isCone ? -6 : colorRange?.min,
+          cmax: isCone ? 13 : colorRange?.max,
           colorbar: {
             title: colorBy === 'z_axis' ? zAxisLabel(zAxis) : getColorBarTitle(colorBy),
             thickness: 15,
             len: 0.5,
-            tickvals: isCone ? [-4, -2, 0, 2, 4, 6, 8, 10, 12, 14] : undefined,
-            ticktext: isCone ? ['04', '02', '0', '2', '4', '6', '8', '10', '12', '14'] : undefined,
+            tickvals: isCone ? CONE_TICK_VALS : undefined,
+            ticktext: isCone ? CONE_TICK_TEXT : undefined,
           },
         }),
         line: { width: 0 },
@@ -1096,7 +1098,7 @@ export function StullPlot3D({
       hoverinfo: 'text' as const,
       hovertemplate: visibleData.map(p => {
         const zDisplay = zAxis === 'cone'
-          ? (p.cone != null ? String(p.cone) : 'unknown')
+          ? (p.cone != null ? formatCone(p.cone) : 'unknown')
           : p.z.toFixed(3)
         const parts = [
           `<b>${p.name}</b>`,
@@ -1104,7 +1106,7 @@ export function StullPlot3D({
           `Al\u2082O\u2083: ${p.y.toFixed(2)}`,
           `${zAxisLabel(zAxis)}: ${zDisplay}`,
         ]
-        if (p.cone != null) parts.push(`Cone: ${p.cone}`)
+        if (p.cone != null) parts.push(`Cone: ${formatCone(p.cone)}`)
         else parts.push('Cone: unknown')
         if (p.surfaceType && p.surfaceType !== 'unknown') parts.push(`Surface: ${p.surfaceType}`)
         if (p.source && p.source !== 'unknown') parts.push(`Source: ${p.source}`)
@@ -1565,6 +1567,10 @@ export function StullPlot3D({
         zerolinecolor: plotColors.zeroline,
         tickfont: { color: plotColors.tick },
         backgroundcolor: plotColors.axisbg,
+        ...(zAxis === 'cone' ? {
+          tickvals: CONE_TICK_VALS,
+          ticktext: CONE_TICK_TEXT,
+        } : {}),
       },
       bgcolor: plotColors.bg,
       camera: cameraWithProjection,
