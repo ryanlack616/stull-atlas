@@ -1,0 +1,2123 @@
+{
+  "meta": {
+    "project": "Stull Atlas Explorer",
+    "version": "v3.5.3",
+    "commit": "25d4b84",
+    "totalAxes": 133,
+    "totalConstantTables": 11,
+    "totalAcademicReferences": 120,
+    "generatedDate": "2026-02-17",
+    "sourceFiles": [
+      "calculator/properties.ts",
+      "calculator/zAxisRegistry.ts"
+    ],
+    "description": "133 computable glaze properties from Unity Molecular Formula (UMF). Every calculation runs in real-time — no databases, no internet lookups. Math derived from published glass science, ceramic engineering, and physical chemistry literature (1912–2018)."
+  },
+
+  "constantTables": [
+    {
+      "name": "OB_TABLE",
+      "entries": 21,
+      "source": "Duffy & Ingram (1976)",
+      "usedBy": ["optical_basicity", "fe_redox_estimate"]
+    },
+    {
+      "name": "RI_TABLE",
+      "entries": 15,
+      "source": "Appen (1961)",
+      "usedBy": ["refractive_index"]
+    },
+    {
+      "name": "MV_TABLE",
+      "entries": 14,
+      "source": "Appen (1961)",
+      "usedBy": ["density", "refractive_index", "packing_density"]
+    },
+    {
+      "name": "FLUX_EFFECTIVENESS",
+      "entries": 10,
+      "source": "Eppler & Eppler (2000)",
+      "usedBy": ["fluidity"]
+    },
+    {
+      "name": "FS_TABLE",
+      "entries": 14,
+      "source": "Dietzel (1942)",
+      "usedBy": ["surface_tension"]
+    },
+    {
+      "name": "MOLAR_MASS_TABLE",
+      "entries": 22,
+      "source": "IUPAC standard atomic weights",
+      "usedBy": ["molar_mass", "specific_heat"]
+    },
+    {
+      "name": "IONIC_VOLUME_TABLE",
+      "entries": 12,
+      "source": "Shannon (1976)",
+      "usedBy": ["packing_density"]
+    },
+    {
+      "name": "REFRACTIVITY_TABLE",
+      "entries": 12,
+      "source": "Volf (1984)",
+      "usedBy": ["molar_refractivity", "dielectric_constant"]
+    },
+    {
+      "name": "THERMAL_COND_TABLE",
+      "entries": 12,
+      "source": "Susa et al. (1995), Kang & Morita (2006)",
+      "usedBy": ["thermal_conductivity"]
+    },
+    {
+      "name": "SPECIFIC_HEAT_TABLE",
+      "entries": 12,
+      "source": "Stebbins et al. (1984), Richet & Bottinga (1985)",
+      "usedBy": ["specific_heat"]
+    },
+    {
+      "name": "CAS_EUTECTICS",
+      "entries": 5,
+      "source": "Muan & Osborn (1965)",
+      "usedBy": ["eutectic_distance", "liquidus_field"]
+    }
+  ],
+
+  "vftInfrastructure": {
+    "model": "Vogel-Fulcher-Tammann",
+    "equation": "log₁₀(η) = A + B/(T − C)",
+    "coefficients": {
+      "A": -4.55,
+      "B": "5000 + 8000·SiO₂% + 12000·Al₂O₃% − 3000·B₂O₃% − 2000·alkali% − 1500·AE%",
+      "C": "500 + 100·SiO₂% + 150·Al₂O₃% − 200·alkali%"
+    },
+    "temperatureInversion": "T = C + B/(logη − A) − 273.15",
+    "references": ["Giordano et al. (2008)", "Russell & Dingwell (2005)"],
+    "usedBy": ["grd_viscosity", "softening_point", "annealing_point", "strain_point", "flow_point", "soak_benefit", "pinhole_risk", "bubble_risk", "healing_index"]
+  },
+
+  "coneTemperatureTable": {
+    "source": "Orton Ceramic Foundation",
+    "cones": {
+      "-2": 1120, "-1": 1137, "0": 1148, "1": 1154, "2": 1162,
+      "3": 1168, "4": 1186, "5": 1196, "6": 1222, "7": 1240,
+      "8": 1263, "9": 1280, "10": 1305, "11": 1315, "12": 1326
+    }
+  },
+
+  "properties": [
+    {
+      "number": 1,
+      "key": "Li2O",
+      "label": "Li₂O",
+      "category": "Fluxes – R₂O (Alkalis)",
+      "uiGroup": "Fluxes – R₂O",
+      "equation": "UMF.Li2O.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Lithium oxide moles in the Unity Molecular Formula. Direct readout of the Li₂O content.",
+      "whyUseful": "Most powerful flux per mole. Lowers COE, promotes gloss, reduces viscosity dramatically. Small ionic radius = high field strength = fast melter. A little goes a long way. Map it to find the sweet spot between flux power and cost.",
+      "references": ["Appen (1961)", "Shelby (2005)"]
+    },
+    {
+      "number": 2,
+      "key": "Na2O",
+      "label": "Na₂O",
+      "category": "Fluxes – R₂O (Alkalis)",
+      "uiGroup": "Fluxes – R₂O",
+      "equation": "UMF.Na2O.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Sodium oxide moles in the Unity Molecular Formula. The #1 cause of crazing.",
+      "whyUseful": "Strong flux, raises COE significantly more than any other oxide. Primary alkali in most glazes. Mapping Na₂O shows exactly where formulas have dangerous alkali concentrations.",
+      "references": ["Appen (1961)", "Hesselberth & Roy (2002)"]
+    },
+    {
+      "number": 3,
+      "key": "K2O",
+      "label": "K₂O",
+      "category": "Fluxes – R₂O (Alkalis)",
+      "uiGroup": "Fluxes – R₂O",
+      "equation": "UMF.K2O.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Potassium oxide moles in the Unity Molecular Formula.",
+      "whyUseful": "Flux with slightly lower COE impact than Na₂O. Promotes smoother, less runny melt. Tends to produce softer, warmer surfaces. Map to compare soda vs potash balance across recipes.",
+      "references": ["Appen (1961)", "Rhodes (1973)"]
+    },
+    {
+      "number": 4,
+      "key": "MgO",
+      "label": "MgO",
+      "category": "Fluxes – RO (Alkaline Earths)",
+      "uiGroup": "Fluxes – RO",
+      "equation": "UMF.MgO.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Magnesium oxide moles in UMF. A divalent flux that modifies the glass network less aggressively than alkalis.",
+      "whyUseful": "Promotes matte surfaces with a buttery smooth feel. Low COE contribution. High-temperature flux. Map to find where satiny mattes develop.",
+      "references": ["Hamer & Hamer (2004)", "Rhodes (1973)"]
+    },
+    {
+      "number": 5,
+      "key": "CaO",
+      "label": "CaO",
+      "category": "Fluxes – RO (Alkaline Earths)",
+      "uiGroup": "Fluxes – RO",
+      "equation": "UMF.CaO.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Calcium oxide moles in UMF. The workhorse flux at cone 6 and above.",
+      "whyUseful": "Promotes gloss at high fire. Drives wollastonite crystallisation at saturation. Map to see CaO saturation zones and predict crystal matte development.",
+      "references": ["Muan & Osborn (1965)", "Rhodes (1973)"]
+    },
+    {
+      "number": 6,
+      "key": "SrO",
+      "label": "SrO",
+      "category": "Fluxes – RO (Alkaline Earths)",
+      "uiGroup": "Fluxes – RO",
+      "equation": "UMF.SrO.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Strontium oxide moles in UMF.",
+      "whyUseful": "Similar to CaO but with a slightly softer melt. Useful as a safe barium substitute when satin/matte surfaces are desired without toxicity concerns.",
+      "references": ["Eppler & Eppler (2000)"]
+    },
+    {
+      "number": 7,
+      "key": "BaO",
+      "label": "BaO",
+      "category": "Fluxes – RO (Alkaline Earths)",
+      "uiGroup": "Fluxes – RO",
+      "equation": "UMF.BaO.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Barium oxide moles in UMF.",
+      "whyUseful": "Promotes satin/matte finishes, high refractive index for visual depth. Toxic in raw/soluble form. Map to track where barium concentration exceeds safety limits.",
+      "references": ["Eppler & Eppler (2000)", "Hamer & Hamer (2004)"]
+    },
+    {
+      "number": 8,
+      "key": "ZnO",
+      "label": "ZnO",
+      "category": "Fluxes – RO (Alkaline Earths)",
+      "uiGroup": "Fluxes – RO",
+      "equation": "UMF.ZnO.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Zinc oxide moles in UMF.",
+      "whyUseful": "Crystal promoter — drives willemite (Zn₂SiO₄) formation. Brightens gloss, raises surface tension. Map to predict crystalline glaze potential.",
+      "references": ["Eppler & Eppler (2000)", "Zanotto (1997)"]
+    },
+    {
+      "number": 9,
+      "key": "PbO",
+      "label": "PbO",
+      "category": "Fluxes – RO (Alkaline Earths)",
+      "uiGroup": "Fluxes – RO",
+      "equation": "UMF.PbO.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Lead oxide moles in UMF.",
+      "whyUseful": "Extremely powerful low-fire flux with incomparable depth and brilliance. Toxic — historical use only. Map to ensure zero lead in functional ware.",
+      "references": ["Morey (1954)", "Hamer & Hamer (2004)"]
+    },
+    {
+      "number": 10,
+      "key": "B2O3",
+      "label": "B₂O₃",
+      "category": "Stabilisers",
+      "uiGroup": "Stabilisers",
+      "equation": "UMF.B2O3.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Boron oxide moles in UMF. Dual role: glass former AND flux.",
+      "whyUseful": "Lowers viscosity and COE. Enables low-fire glazes. Highly volatile above cone 6 — map to predict composition change from boron loss during firing.",
+      "references": ["Dell & Bray (1983)", "Shelby (2005)"]
+    },
+    {
+      "number": 11,
+      "key": "Fe2O3",
+      "label": "Fe₂O₃",
+      "category": "Stabilisers",
+      "uiGroup": "Stabilisers",
+      "equation": "UMF.Fe2O3.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Iron oxide moles in UMF. Primary colorant with minor flux role.",
+      "whyUseful": "Amber/brown in oxidation, celadon green/tenmoku black in reduction. Map for iron saturation zones. Controls color in most traditional ceramic glazes.",
+      "references": ["Eppler (1987)", "Schreiber (1987)", "Kress & Carmichael (1991)"]
+    },
+    {
+      "number": 12,
+      "key": "TiO2",
+      "label": "TiO₂",
+      "category": "Glass Formers",
+      "uiGroup": "Glass Formers",
+      "equation": "UMF.TiO2.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Titanium dioxide moles in UMF.",
+      "whyUseful": "Opacifier, promotes crystallisation (rutile needles). Provides warmth in colour (ivory tones). Map to find opacity thresholds.",
+      "references": ["Eppler & Eppler (2000)"]
+    },
+    {
+      "number": 13,
+      "key": "ZrO2",
+      "label": "ZrO₂",
+      "category": "Glass Formers",
+      "uiGroup": "Glass Formers",
+      "equation": "UMF.ZrO2.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Zirconium dioxide moles in UMF. Strongest opacifier per mole.",
+      "whyUseful": "Increases viscosity. Used in commercial white glazes. Map for optimal opacification without stiffening the melt too much.",
+      "references": ["Eppler & Eppler (2000)"]
+    },
+    {
+      "number": 14,
+      "key": "SnO2",
+      "label": "SnO₂",
+      "category": "Glass Formers",
+      "uiGroup": "Glass Formers",
+      "equation": "UMF.SnO2.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Tin dioxide moles in UMF.",
+      "whyUseful": "Classic opacifier for tin glazes and majolica. Produces chrome-tin pinks when combined with Cr₂O₃. Map to compare efficiency vs ZrO₂.",
+      "references": ["Eppler (1987)", "Hamer & Hamer (2004)"]
+    },
+    {
+      "number": 15,
+      "key": "MnO",
+      "label": "MnO",
+      "category": "Colorants / Misc",
+      "uiGroup": "Colorants",
+      "equation": "UMF.MnO.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Manganese (II) oxide moles in UMF.",
+      "whyUseful": "Purple/brown in oxidation. Metallic surface in heavy reduction. Map for concentration effects on color.",
+      "references": ["Eppler (1987)"]
+    },
+    {
+      "number": 16,
+      "key": "MnO2",
+      "label": "MnO₂",
+      "category": "Colorants / Misc",
+      "uiGroup": "Colorants",
+      "equation": "UMF.MnO2.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Manganese dioxide moles in UMF.",
+      "whyUseful": "Stronger oxidiser form of manganese. Similar color effects to MnO but with different redox behavior.",
+      "references": ["Eppler (1987)"]
+    },
+    {
+      "number": 17,
+      "key": "NiO",
+      "label": "NiO",
+      "category": "Colorants / Misc",
+      "uiGroup": "Colorants",
+      "equation": "UMF.NiO.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Nickel oxide moles in UMF.",
+      "whyUseful": "Grey-green-brown. Mutes other colorants. Used as crystalline glaze seed. Map to control color suppression effects.",
+      "references": ["Eppler (1987)"]
+    },
+    {
+      "number": 18,
+      "key": "CuO",
+      "label": "CuO",
+      "category": "Colorants / Misc",
+      "uiGroup": "Colorants",
+      "equation": "UMF.CuO.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Cupric oxide moles in UMF.",
+      "whyUseful": "Green in oxidation, red in reduction (copper reds). Map to find optimal copper red chemistry — needs fluid alkali melt with low alumina.",
+      "references": ["Eppler (1987)", "Rhodes (1973)"]
+    },
+    {
+      "number": 19,
+      "key": "Cu2O",
+      "label": "Cu₂O",
+      "category": "Colorants / Misc",
+      "uiGroup": "Colorants",
+      "equation": "UMF.Cu2O.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Cuprous oxide moles in UMF.",
+      "whyUseful": "Reduction form enabling copper-red glazes. The lower oxidation state produces colloidal copper particles that create the famous ox-blood and flambé effects.",
+      "references": ["Eppler (1987)"]
+    },
+    {
+      "number": 20,
+      "key": "CoO",
+      "label": "CoO",
+      "category": "Colorants / Misc",
+      "uiGroup": "Colorants",
+      "equation": "UMF.CoO.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Cobalt oxide moles in UMF.",
+      "whyUseful": "Strong, stable blue. Works in both oxidation and reduction atmospheres. Very powerful — map to avoid over-saturation (as little as 0.5% produces strong blue).",
+      "references": ["Eppler (1987)"]
+    },
+    {
+      "number": 21,
+      "key": "Cr2O3",
+      "label": "Cr₂O₃",
+      "category": "Colorants / Misc",
+      "uiGroup": "Colorants",
+      "equation": "UMF.Cr2O3.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Chromium oxide moles in UMF.",
+      "whyUseful": "Forest green. Produces chrome-tin pinks with SnO₂. Volatile in some temperature ranges. Map to predict color interaction zones.",
+      "references": ["Eppler (1987)"]
+    },
+    {
+      "number": 22,
+      "key": "P2O5",
+      "label": "P₂O₅",
+      "category": "Colorants / Misc",
+      "uiGroup": "Colorants",
+      "equation": "UMF.P2O5.value",
+      "unit": "mol (UMF)",
+      "whatItIs": "Phosphorus pentoxide moles in UMF.",
+      "whyUseful": "Opalescence from calcium phosphate crystallisation (bone ash). Map to find the P₂O₅ + CaO sweet spot for chün/opal effects.",
+      "references": ["Eppler & Eppler (2000)"]
+    },
+    {
+      "number": 23,
+      "key": "cone",
+      "label": "Cone",
+      "category": "Ratios & Sums",
+      "uiGroup": "Ratios & Sums",
+      "equation": "cone (user input)",
+      "unit": "cone number",
+      "whatItIs": "Firing cone number. Sets the temperature context for all temperature-dependent calculations.",
+      "whyUseful": "All viscosity, volatilisation, and crystal calculations depend on the firing temperature. When specified, uses exact Orton midpoint temperatures. When not specified, estimates from chemistry.",
+      "references": ["Orton Ceramic Foundation"]
+    },
+    {
+      "number": 24,
+      "key": "flux_ratio",
+      "label": "R₂O:RO",
+      "category": "Ratios & Sums",
+      "uiGroup": "Ratios & Sums",
+      "equation": "R₂O / (R₂O + RO)",
+      "alternateEquation": "fluxTotal / (SiO₂ + Al₂O₃ + B₂O₃ + fluxTotal)",
+      "unit": "dimensionless (0–1)",
+      "whatItIs": "Alkali fraction of total flux. The fraction of the entire formula consisting of flux oxides. A high flux ratio (>0.35) means an aggressive, fluid melt; low (<0.20) means stiff and refractory.",
+      "whyUseful": "1 = all alkali (fluid, craze-prone), 0 = all alkaline-earth (stiff, durable). This single number captures the fundamental balance between glass builders and glass breakers. Map to see which Stull chart regions produce properly melted glazes at your cone.",
+      "references": ["Hesselberth & Roy (2002)", "Eppler & Eppler (2000)"]
+    },
+    {
+      "number": 25,
+      "key": "SiO2_Al2O3_ratio",
+      "label": "SiO₂:Al₂O₃",
+      "category": "Ratios & Sums",
+      "uiGroup": "Ratios & Sums",
+      "equation": "SiO₂ / Al₂O₃",
+      "unit": "dimensionless",
+      "whatItIs": "The Stull chart X/Y ratio — the primary diagonal axis of the original Stull chart. The master controller of surface texture.",
+      "whyUseful": "Ratios of 5–8 produce classic glossy glazes. 3–5: satin/matte. Below 3: dry, rough. Above 10: melt becomes unstable. One of the most important numbers in glaze chemistry.",
+      "references": ["Stull (1912)"]
+    },
+    {
+      "number": 26,
+      "key": "total_flux_moles",
+      "label": "Total Flux Moles",
+      "category": "Ratios & Sums",
+      "uiGroup": "Ratios & Sums",
+      "equation": "Σ(Na₂O + K₂O + Li₂O + CaO + MgO + ZnO + BaO + SrO + PbO)",
+      "unit": "mol",
+      "whatItIs": "Sum of all flux species moles. In a true UMF this is normalized to 1.0.",
+      "whyUseful": "Reveals how much melting power the glaze has. Higher = more fluid at temperature. Also useful for data quality checking — large deviations from 1.0 indicate approximated normalization.",
+      "references": ["Hesselberth & Roy (2002)"]
+    },
+    {
+      "number": 27,
+      "key": "thermal_expansion",
+      "label": "Thermal Exp. (COE)",
+      "category": "Ratios & Sums",
+      "uiGroup": "Ratios & Sums",
+      "equation": "Σ xᵢ·αᵢ (Appen additive model, 15 oxide-specific factors)",
+      "unit": "×10⁻⁷/°C",
+      "whatItIs": "Coefficient of thermal expansion — how much the glaze shrinks during cooling. THE #1 practical calculation in glaze chemistry.",
+      "whyUseful": "If COE(glaze) > COE(body), the glaze is under tension → crazing. COE(glaze) ≪ COE(body) → shivering. Mapping COE as a 3D surface instantly reveals safe compositional zones. Targets: earthenware ~70, stoneware ~55, porcelain ~45.",
+      "references": ["Appen (1961)", "Shelby (2005)", "Kingery et al. (1976)"]
+    },
+    {
+      "number": 28,
+      "key": "r2o_ro_ratio",
+      "label": "R₂O : RO",
+      "category": "Ratios & Sums",
+      "uiGroup": "Ratios & Sums",
+      "equation": "R₂O / RO",
+      "unit": "dimensionless",
+      "whatItIs": "Whether fluxing is dominated by alkalis or alkaline earths.",
+      "whyUseful": ">1 = alkali-dominant (glossy, fluid, craze-prone). <1 = AE-dominant (stiffer, more durable, matte-leaning). Predicts an enormous amount about glaze character in a single number.",
+      "references": ["Hesselberth & Roy (2002)"]
+    },
+    {
+      "number": 29,
+      "key": "al2o3_flux_ratio",
+      "label": "Al₂O₃ / Flux",
+      "category": "Ratios & Sums",
+      "uiGroup": "Ratios & Sums",
+      "equation": "Al₂O₃ / (R₂O + RO)",
+      "unit": "dimensionless",
+      "whatItIs": "Alumina per flux mole — since UMF normalizes flux to ~1.0, roughly equals the raw Al₂O₃ value.",
+      "whyUseful": "Higher = stiffer melt, more matte character. The key matting/stiffening control. Map to find where alumina saturation begins to matte the surface.",
+      "references": ["Hesselberth & Roy (2002)"]
+    },
+    {
+      "number": 30,
+      "key": "nbo_t",
+      "label": "NBO/T",
+      "category": "Glass Structure",
+      "uiGroup": "Glass Structure",
+      "equation": "2·(R₂O + RO) / (SiO₂ + Al₂O₃ + B₂O₃)",
+      "unit": "dimensionless (0–4)",
+      "whatItIs": "Non-bridging oxygens per tetrahedron. THE single most important structural parameter in glass science. 0 = fully polymerized like pure silica. 4 = fully depolymerized like olivine.",
+      "whyUseful": "Controls viscosity, chemical durability, crystal tendency, diffusion rate, and almost every physical property. Typical glazes: 0.5–2.0. Map it to see how glass structure changes across the Stull chart.",
+      "references": ["Mysen & Richet (2005)", "Shelby (2005)"]
+    },
+    {
+      "number": 31,
+      "key": "optical_basicity",
+      "label": "Optical Basicity (Λ)",
+      "category": "Glass Structure",
+      "uiGroup": "Glass Structure",
+      "equation": "Σ(xᵢ·nO·Λᵢ) / Σ(xᵢ·nO) — 21-oxide table",
+      "unit": "dimensionless",
+      "whatItIs": "Weighted-average electron donation to oxygen. The overall electron-donating ability of the glass.",
+      "whyUseful": ">0.6 = basic (modifier-like, fluid, more Fe²⁺ blue/green). <0.5 = acidic (durable, more Fe³⁺ brown). Controls iron redox ratio and color, sulfur solubility, and refractoriness.",
+      "references": ["Duffy & Ingram (1971)", "Duffy & Ingram (1976)", "Duffy (1993)", "Duffy (2002)", "Dimitrov & Komatsu (2010)"]
+    },
+    {
+      "number": 32,
+      "key": "asi",
+      "label": "ASI (Alumina Saturation Index)",
+      "category": "Glass Structure",
+      "uiGroup": "Glass Structure",
+      "equation": "Al₂O₃ / (Na₂O + K₂O + Li₂O + CaO)",
+      "unit": "dimensionless",
+      "whatItIs": "Whether there's enough charge-compensating flux for all the alumina. Originally from igneous (Shand 1927), adapted for ceramic chemistry.",
+      "whyUseful": "<1 peralkaline (glossy, fluid), >1 peraluminous (matte, crystal-prone). The boundary at ASI = 1 is where many important glazing transitions happen — gloss/matte, durable/fragile.",
+      "references": ["Shand (1927)", "Mysen & Richet (2005)"]
+    },
+    {
+      "number": 33,
+      "key": "flux_entropy",
+      "label": "Flux Diversity",
+      "category": "Flux Analysis",
+      "uiGroup": "Flux Analysis",
+      "equation": "H = −Σ pᵢ·ln(pᵢ) over flux fractions",
+      "unit": "nats",
+      "whatItIs": "Shannon entropy of the flux distribution. One of the most powerful predictive tools.",
+      "whyUseful": "Higher entropy = more diverse flux cocktail = more eutectic melting points = lower firing temp, wider range, smoother melt. A single-flux glaze (H=0) is stiff. A 5-flux diverse glaze (H≈1.6) melts easily with a wide working range.",
+      "references": ["Shannon (1948)", "Eppler & Eppler (2000)"]
+    },
+    {
+      "number": 34,
+      "key": "cao_mgo_ratio",
+      "label": "CaO:MgO",
+      "category": "Flux Analysis",
+      "uiGroup": "Flux Analysis",
+      "equation": "CaO / (CaO + MgO)",
+      "unit": "dimensionless (0–1)",
+      "whatItIs": "Calcium share of Ca+Mg. The classic gloss-to-matte slider.",
+      "whyUseful": "1 = all CaO (hard, bright gloss). 0 = all MgO (buttery, smooth matte). Map to find the transition zone for your ideal satin surface.",
+      "references": ["Rhodes (1973)", "Hamer & Hamer (2004)"]
+    },
+    {
+      "number": 35,
+      "key": "combined_alkali",
+      "label": "Combined Alkali",
+      "category": "Flux Analysis",
+      "uiGroup": "Flux Analysis",
+      "equation": "Li₂O + Na₂O + K₂O",
+      "unit": "mol (UMF)",
+      "whatItIs": "Total alkali content. The single biggest predictor of crazing.",
+      "whyUseful": "Combined alkali above 0.3 UMF moles almost always produces crazing on stoneware bodies. Map as a 3D surface to instantly see which compositional regions are safe vs dangerous.",
+      "references": ["Hesselberth & Roy (2002)", "Appen (1961)"]
+    },
+    {
+      "number": 36,
+      "key": "na2o_k2o_ratio",
+      "label": "Na₂O:K₂O",
+      "category": "Flux Analysis",
+      "uiGroup": "Flux Analysis",
+      "equation": "Na₂O / (Na₂O + K₂O)",
+      "unit": "dimensionless (0–1)",
+      "whatItIs": "Soda-potash balance. A 50:50 blend creates the mixed alkali effect.",
+      "whyUseful": "Na₂O promotes brighter, more fluid melts and crystal-clear surfaces. K₂O gives softer, warmer character. Map to tune color response and surface character.",
+      "references": ["Day (1976)", "Rhodes (1973)"]
+    },
+    {
+      "number": 37,
+      "key": "viscosity_index",
+      "label": "Viscosity Index",
+      "category": "Physical Properties",
+      "uiGroup": "Physical Properties",
+      "equation": "Σ xᵢ·Vᵢ (Lakatos-type weighting: SiO₂→10, Al₂O₃→15, CaO→3, Na₂O→1, etc.)",
+      "unit": "index (1–10+)",
+      "whatItIs": "Quick stiffness ranking. Higher = stiffer melt.",
+      "whyUseful": "3–5 = typical functional glaze range. Below 3 = running/pooling. Above 8 = dry, underfired. Map to predict glaze behavior without test tiles.",
+      "references": ["Fluegel (2007)"]
+    },
+    {
+      "number": 38,
+      "key": "surface_tension",
+      "label": "Surface Tension",
+      "category": "Physical Properties",
+      "uiGroup": "Physical Properties",
+      "equation": "Σ(xᵢ·nC·FSᵢ) / Σ(xᵢ·nC) — Dietzel field strength values",
+      "unit": "mN/m (proxy)",
+      "whatItIs": "Average Dietzel field strength. Tendency of the melt surface to minimise area.",
+      "whyUseful": "Higher = crawling risk (glaze pulls away from edges and texture). Lower = wetting, leveling, spreading. ZnO-heavy glazes flag high. Critical for understanding crawling defects.",
+      "references": ["Dietzel (1942)"]
+    },
+    {
+      "number": 39,
+      "key": "durability",
+      "label": "Chem. Durability",
+      "category": "Physical Properties",
+      "uiGroup": "Physical Properties",
+      "equation": "SiO₂ / R₂O",
+      "unit": "dimensionless",
+      "whatItIs": "Chemical resistance ratio. Below 3 = poor (glass dissolves over time). 3–6 = adequate. Above 6 = laboratory glass grade.",
+      "whyUseful": "Food-safety baseline. Higher = more resistant to acid/alkali attack. Crude but directional — the fundamental measure of whether a glaze will survive daily use.",
+      "references": ["Hench & Clark (1978)", "Conradt (2008)", "Frankel et al. (2018)"]
+    },
+    {
+      "number": 40,
+      "key": "refractive_index",
+      "label": "Refractive Index",
+      "category": "Physical Properties",
+      "uiGroup": "Physical Properties",
+      "equation": "Σ xᵢ·nᵢ / Σ xᵢ·Vᵢ — 15-oxide table",
+      "unit": "dimensionless",
+      "whatItIs": "How much the glaze bends light — the fundamental optical property.",
+      "whyUseful": "Higher n = more brilliant, deeper-looking surface. Lead glazes have very high n (why they look so rich). Boron and lithium lower n. Map to predict surface depth and brilliance.",
+      "references": ["Appen (1961)", "Volf (1984)"]
+    },
+    {
+      "number": 41,
+      "key": "density",
+      "label": "Density (g/cm³)",
+      "category": "Physical Properties",
+      "uiGroup": "Physical Properties",
+      "equation": "Σ(xᵢ·Mᵢ) / Σ(xᵢ·Vᵢ) — Appen molar volume method",
+      "unit": "g/cm³",
+      "whatItIs": "Physical density of the glass.",
+      "whyUseful": "Affects settling in the bucket, application thickness, visual weight, and gravity-driven flow. Lead/barium glazes are heaviest (~3.5+ g/cm³). Boron/lithium glazes are lightest (~2.3 g/cm³).",
+      "references": ["Appen (1961)"]
+    },
+    {
+      "number": 42,
+      "key": "fluidity",
+      "label": "Melt Fluidity",
+      "category": "Physical Properties",
+      "uiGroup": "Physical Properties",
+      "equation": "Σ(xᵢ·wᵢ) / (SiO₂ + Al₂O₃) — flux-effectiveness weighted",
+      "unit": "index",
+      "whatItIs": "Flow tendency, more nuanced than viscosity_index. Li₂O×3.0 vs MgO×0.6 makes a real difference.",
+      "whyUseful": "Higher = more flow, more leveling, but more risk of running. Important for layering — top coat should be more fluid than base coat.",
+      "references": ["Eppler & Eppler (2000)"]
+    },
+    {
+      "number": 43,
+      "key": "molar_mass",
+      "label": "Molar Mass (g/mol)",
+      "category": "Physical Properties",
+      "uiGroup": "Physical Properties",
+      "equation": "M̄ = Σ(nᵢ·Mᵢ) / Σ(nᵢ) — IUPAC atomic weights",
+      "unit": "g/mol",
+      "whatItIs": "Weighted-average formula weight of the composition.",
+      "whyUseful": "Heavier glazes (high PbO, BaO) are denser and more refractive. Lighter glazes (high Li₂O, B₂O₃) are more insulating. Useful for batch weight calculations.",
+      "references": ["IUPAC"]
+    },
+    {
+      "number": 44,
+      "key": "acid_resistance",
+      "label": "Acid Resistance",
+      "category": "Physical Properties",
+      "uiGroup": "Physical Properties",
+      "equation": "(SiO₂ + 1.5·Al₂O₃ + B₂O₃) / (R₂O + 0.5·RO + 0.01)",
+      "unit": "dimensionless",
+      "whatItIs": "Network-former / modifier ratio for acid resistance. The 'lemon juice test' proxy.",
+      "whyUseful": "Values > 5 = very acid-resistant (safe for citric food). < 2 = vulnerable. Al₂O₃ contributes 1.5× because it's particularly acid-resistant in glass networks.",
+      "references": ["Hench & Clark (1978)", "Conradt (2008)"]
+    },
+    {
+      "number": 45,
+      "key": "melting_range",
+      "label": "Melting Range (°C)",
+      "category": "Physical Properties",
+      "uiGroup": "Physical Properties",
+      "equation": "T_liquidus − T_solidus (estimated from flux diversity and alumina content)",
+      "unit": "°C",
+      "whatItIs": "Temperature span between first melting and complete melting.",
+      "whyUseful": "Wider = more forgiving in the kiln (glazes that melt gradually). Narrower = sharper melting behavior. Related to eutectic behavior.",
+      "references": ["Kalmanovitch & Frank (1986)"]
+    },
+    {
+      "number": 46,
+      "key": "crawl_risk",
+      "label": "Crawl Risk",
+      "category": "Risk Assessment",
+      "uiGroup": "Risk Assessment",
+      "equation": "surface_tension × viscosity_index",
+      "unit": "index",
+      "whatItIs": "Bead-up / crawl tendency. Above ~50 = significant crawling risk.",
+      "whyUseful": "Crawling happens when high surface tension tries to minimize surface area but the melt is too viscous to re-level. ZnO-heavy glazes are flagged. Map to avoid problem zones.",
+      "references": ["Dietzel (1942)", "Eppler & Eppler (2000)"]
+    },
+    {
+      "number": 47,
+      "key": "craze_risk",
+      "label": "Craze Risk",
+      "category": "Risk Assessment",
+      "uiGroup": "Risk Assessment",
+      "equation": "COE_glaze − COE_body_limit",
+      "unit": "×10⁻⁷/°C",
+      "whatItIs": "Thermal expansion mismatch. Positive = crazing (glaze in tension). Negative = compression fit (good).",
+      "whyUseful": "The functional potter's key metric. A single positive/negative number. Auto-adjusts body COE by cone range. Map to find exactly where the crazing boundary lies in compositional space.",
+      "references": ["Appen (1961)", "Hesselberth & Roy (2002)", "Kingery et al. (1976)"]
+    },
+    {
+      "number": 48,
+      "key": "leach_risk",
+      "label": "Leach Risk",
+      "category": "Risk Assessment",
+      "uiGroup": "Risk Assessment",
+      "equation": "R₂O / (SiO₂ × Al₂O₃)",
+      "alternateEquation": "(PbO + BaO + CuO) / durability",
+      "unit": "index",
+      "whatItIs": "Alkali leaching propensity. How easily ions migrate into food/water.",
+      "whyUseful": "High leach risk = metallic taste, health concern. Both SiO₂ and Al₂O₃ must be adequate to prevent leaching. Flags lead, barium, copper with poor silica protection.",
+      "references": ["Hench & Clark (1978)", "Frankel et al. (2018)"]
+    },
+    {
+      "number": 49,
+      "key": "coe_body_fit",
+      "label": "COE Body Fit",
+      "category": "Risk Assessment",
+      "uiGroup": "Risk Assessment",
+      "equation": "|COE_glaze − COE_body|",
+      "unit": "×10⁻⁷/°C",
+      "whatItIs": "Absolute COE mismatch regardless of direction. Values below 5 are ideal.",
+      "whyUseful": "Above 10: either crazing (too high) or shivering (too low). Body COE auto-adjusts: earthenware ~70, stoneware ~55, porcelain ~45. Quick pass/fail for production.",
+      "references": ["Appen (1961)", "Kingery et al. (1976)"]
+    },
+    {
+      "number": 50,
+      "key": "matteness",
+      "label": "Matteness",
+      "category": "Classification & Prediction",
+      "uiGroup": "Classification & Prediction",
+      "equation": "1 / (viscosity_index × surface_tension / density)",
+      "alternateEquation": "ASI + 0.5·(MgO + ZnO + BaO) − 0.3·R₂O",
+      "unit": "index",
+      "whatItIs": "Composite predictor of matte surface development. Combines viscosity, surface tension, and density.",
+      "whyUseful": "Can crystals form before the surface smooths? Does the surface resist leveling? Does gravity pull it flat? Higher values predict more matte surfaces. <0.8 glossy, 0.8–1.2 satin, >1.2 matte.",
+      "references": ["Eppler & Eppler (2000)"]
+    },
+    {
+      "number": 51,
+      "key": "boron_ratio",
+      "label": "Boron Ratio",
+      "category": "Classification & Prediction",
+      "uiGroup": "Classification & Prediction",
+      "equation": "B₂O₃ / (SiO₂ + Al₂O₃ + B₂O₃)",
+      "unit": "dimensionless (0–1)",
+      "whatItIs": "What fraction of the glass network is boron.",
+      "whyUseful": "Low (<0.1) = minimal effect. Medium (0.1–0.3) = significant flux action. High (>0.3) = volatilization risk, phase separation tendency. Map to optimize boron usage.",
+      "references": ["Dell & Bray (1983)", "Shelby (2005)"]
+    },
+    {
+      "number": 52,
+      "key": "comp_entropy",
+      "label": "Comp. Entropy",
+      "category": "Classification & Prediction",
+      "uiGroup": "Classification & Prediction",
+      "equation": "H = −Σ pᵢ·ln(pᵢ) over ALL oxides",
+      "unit": "nats",
+      "whatItIs": "Total compositional complexity. More complex compositions tend to have lower melting points and wider working ranges (high-entropy alloy principle).",
+      "whyUseful": "Higher entropy = more complex = favours amorphous glass over crystal formation. Simple 3-oxide glazes are more predictable but less forgiving.",
+      "references": ["Shannon (1948)"]
+    },
+    {
+      "number": 53,
+      "key": "excess_alkali",
+      "label": "Excess Alkali",
+      "category": "Classification & Prediction",
+      "uiGroup": "Classification & Prediction",
+      "equation": "(Na₂O + K₂O + Li₂O) − Al₂O₃",
+      "unit": "mol",
+      "whatItIs": "Peralkaline vs peraluminous boundary. How much free (uncompensated) alkali exists.",
+      "whyUseful": ">0 peralkaline (glossy, fluid, dangerous free alkali causing crazing, poor durability, leaching). <0 peraluminous (all alkali safely locked into alumina network). Zero = perfect balance. One of the simplest but most powerful diagnostic numbers.",
+      "references": ["Shand (1927)", "Mysen & Richet (2005)"]
+    },
+    {
+      "number": 54,
+      "key": "knao_equivalent",
+      "label": "KNaO Equivalent",
+      "category": "Classification & Prediction",
+      "uiGroup": "Classification & Prediction",
+      "equation": "K₂O + 1.11·Na₂O + 1.94·Li₂O",
+      "alternateEquation": "Li₂O×1.87 + Na₂O + K₂O×0.66",
+      "unit": "mol equivalent",
+      "whatItIs": "All alkalis converted to a single equivalent number based on molar weight ratio. Na₂O-normalised alkali load.",
+      "whyUseful": "Different alkalis have different molecular weights but similar fluxing power. Gives a single number for total alkali effect, properly weighted across different alkali sources.",
+      "references": ["Hesselberth & Roy (2002)"]
+    },
+    {
+      "number": 55,
+      "key": "limit_conformance",
+      "label": "Limit Conformance",
+      "category": "Classification & Prediction",
+      "uiGroup": "Classification & Prediction",
+      "equation": "100 − penalty×40 (distance from Hesselberth/Stull UMF limits at firing cone)",
+      "unit": "score (0–100)",
+      "whatItIs": "Whether the formula is within accepted compositional ranges. Auto-adjusts for low-fire (cone 06–4), mid-fire (cone 5–8), and high-fire (cone 9+).",
+      "whyUseful": "100 = all oxides within standard limits. 0 = far outside. Map as a 3D landscape to see which Stull chart regions are 'normal' vs 'experimental'.",
+      "references": ["Hesselberth & Roy (2002)", "Stull (1912)"]
+    },
+    {
+      "number": 56,
+      "key": "youngs_modulus",
+      "label": "Young's Modulus (GPa)",
+      "category": "Glass Physics",
+      "uiGroup": "Glass Physics",
+      "equation": "E = Σ xᵢ·Eᵢ — Makishima-Mackenzie additive model",
+      "unit": "GPa",
+      "whatItIs": "Elastic stiffness — resistance to elastic deformation. Typical glasses: 50–90 GPa.",
+      "whyUseful": "Stiffer glaze = harder, more scratch-resistant, but more brittle. Needed for all stress calculations. High-alumina glazes tend to be stiffer. Drives all other mechanical properties.",
+      "references": ["Makishima & Mackenzie (1973)", "Makishima & Mackenzie (1975)"]
+    },
+    {
+      "number": 57,
+      "key": "hardness",
+      "label": "Hardness (GPa)",
+      "category": "Glass Physics",
+      "uiGroup": "Glass Physics",
+      "equation": "H ≈ E / 15",
+      "unit": "GPa",
+      "whatItIs": "Vickers micro-hardness. Scratch and wear resistance.",
+      "whyUseful": "Important for tableware (cutlery marking), floor tiles, and functional ware. Higher = more scratch-resistant. Map to find the most durable surface compositions.",
+      "references": ["Yamane & Mackenzie (1974)", "Makishima & Mackenzie (1973)"]
+    },
+    {
+      "number": 58,
+      "key": "poisson_ratio",
+      "label": "Poisson Ratio",
+      "category": "Glass Physics",
+      "uiGroup": "Glass Physics",
+      "equation": "ν ≈ Σ xᵢ·νᵢ — additive estimate (0.17–0.27 for oxide glasses)",
+      "unit": "dimensionless",
+      "whatItIs": "Lateral-to-axial strain ratio. How much the material spreads sideways when compressed vertically.",
+      "whyUseful": "Affects crack propagation and stress distribution. Lower ν = more brittle fracture. Higher ν = more ductile response. Used in glaze stress calculations. 0.17–0.28 for glasses.",
+      "references": ["Rouxel (2007)", "Bridge et al. (1983)"]
+    },
+    {
+      "number": 59,
+      "key": "tg_estimate",
+      "label": "Tg Estimate (°C)",
+      "category": "Glass Physics",
+      "uiGroup": "Glass Physics",
+      "equation": "Tg ≈ Σ xᵢ·Tg,ᵢ — Priven additive factors (SiO₂→730°C, Al₂O₃→900°C, B₂O₃→260°C, Na₂O→280°C, etc.)",
+      "unit": "°C",
+      "whatItIs": "Glass transition temperature — where the glaze freezes from liquid into solid during cooling.",
+      "whyUseful": "Below Tg, stress is permanently locked in. High Tg = more thermal stress. Low Tg = more compliant during cooling = fewer defects. Critical for annealing and COE matching.",
+      "references": ["Priven (2004)"]
+    },
+    {
+      "number": 60,
+      "key": "thermal_shock",
+      "label": "Thermal Shock Resist.",
+      "category": "Glass Physics",
+      "uiGroup": "Glass Physics",
+      "equation": "H / (E × COE) — Hasselman figure of merit",
+      "unit": "dimensionless",
+      "whatItIs": "Combined figure of merit for resistance to rapid temperature changes.",
+      "whyUseful": "Higher = survives dunting, raku, oven-to-table, microwave, thermal cycling better. Captures interaction between strength, stiffness, and expansion. Essential for functional ware.",
+      "references": ["Hasselman (1969)"]
+    },
+    {
+      "number": 61,
+      "key": "packing_density",
+      "label": "Packing Density",
+      "category": "Glass Physics",
+      "uiGroup": "Glass Physics",
+      "equation": "V_ionic / V_molar — Shannon ionic radii",
+      "unit": "dimensionless (0.45–0.55)",
+      "whatItIs": "Atomic packing fraction. How efficiently atoms fill space.",
+      "whyUseful": "Tighter packing = harder, denser, more chemically durable glass. Drives Makishima-Mackenzie E and H calculations. Map to find the most durable compositional zones.",
+      "references": ["Shannon (1976)", "Makishima & Mackenzie (1973)"]
+    },
+    {
+      "number": 62,
+      "key": "molar_refractivity",
+      "label": "Molar Refractivity",
+      "category": "Glass Physics",
+      "uiGroup": "Glass Physics",
+      "equation": "Rₘ = Σ xᵢ·Rᵢ — Lorentz-Lorenz ionic refractivity, 12-oxide table",
+      "unit": "cm³/mol",
+      "whatItIs": "Total electronic polarisability of the composition.",
+      "whyUseful": "Drives both refractive index and dielectric constant via Clausius-Mossotti/Lorentz-Lorenz. Higher Rm = more brilliant optical response.",
+      "references": ["Volf (1984)"]
+    },
+    {
+      "number": 63,
+      "key": "dielectric_constant",
+      "label": "Dielectric Constant",
+      "category": "Glass Physics",
+      "uiGroup": "Glass Physics",
+      "equation": "ε = (1 + 2Rₘ/Vₘ) / (1 − Rₘ/Vₘ) — Clausius-Mossotti",
+      "unit": "dimensionless",
+      "whatItIs": "Relative permittivity. Alkali-rich glasses: ε ≈ 6–10. Pure silica: ε ≈ 3.8.",
+      "whyUseful": "Microwave absorption driver. Higher ε = absorbs more microwave energy = gets hotter. Important for electronics substrates, spark plug insulators, and microwave safety.",
+      "references": ["Volf (1984)", "Clark & Sutton (1996)", "Mingos & Baghurst (1991)"]
+    },
+    {
+      "number": 64,
+      "key": "mean_coordination",
+      "label": "Mean Coord. #",
+      "category": "Advanced Glass Science",
+      "uiGroup": "Advanced Glass Science",
+      "equation": "Σ(xᵢ·nᵢ·CNᵢ) / Σ(xᵢ·nᵢ) — Si→4, Al→4, Na→6, Ca→8, B→3.5, etc.",
+      "unit": "dimensionless",
+      "whatItIs": "Average coordination number. Higher CN = more rigid network.",
+      "whyUseful": "Lower = more 'open' network (softer, more reactive). Higher = more tightly packed (harder, more durable). Tracks with density and hardness. Drive of the floppy→rigid topological transition.",
+      "references": ["Zachariasen (1932)"]
+    },
+    {
+      "number": 65,
+      "key": "constraints_per_atom",
+      "label": "Constraints/Atom",
+      "category": "Advanced Glass Science",
+      "uiGroup": "Advanced Glass Science",
+      "equation": "2.4 × (network_formers_fraction) + 0.5 × (modifiers_fraction)",
+      "unit": "dimensionless",
+      "whatItIs": "Topological constraint count (Phillips-Thorpe theory). Magic number = 3.0 (Maxwell isostatic threshold).",
+      "whyUseful": "<3.0 'floppy' (good glass former, easy to melt, soft). >3.0 'stressed-rigid' (hard, brittle, prone to cracking). At exactly 3.0 = most stable glass. The physics behind why glazes melt.",
+      "references": ["Phillips (1979)", "Thorpe (1983)", "Mauro et al. (2009)"]
+    },
+    {
+      "number": 66,
+      "key": "q4_fraction",
+      "label": "Q⁴ Fraction",
+      "category": "Advanced Glass Science",
+      "uiGroup": "Advanced Glass Science",
+      "equation": "max(0, 4Si − NBO) / (4Si) — modifier-consumption model",
+      "unit": "fraction (0–1)",
+      "whatItIs": "Fully-connected SiO₄ tetrahedra. Proportion with 4 bridging oxygens.",
+      "whyUseful": "Higher Q⁴ = hard, durable, chemically resistant glass (like pure fused silica). Low Q⁴ = soft, soluble, easily attacked. Map to predict the most durable compositional regions.",
+      "references": ["Mysen & Richet (2005)", "Stebbins et al. (1984)"]
+    },
+    {
+      "number": 67,
+      "key": "q2_fraction",
+      "label": "Q² Fraction",
+      "category": "Advanced Glass Science",
+      "uiGroup": "Advanced Glass Science",
+      "equation": "~NBO/T / 2, clamped [0,1]",
+      "unit": "fraction (0–1)",
+      "whatItIs": "Chain-forming SiO₄ — tetrahedra with only 2 bridging oxygens.",
+      "whyUseful": "High Q² = chains instead of 3D network = plastic flowing melt, poor chemical durability. Important for understanding why some glazes run — their structure is dominated by chains.",
+      "references": ["Mysen & Richet (2005)"]
+    },
+    {
+      "number": 68,
+      "key": "liquidus_estimate",
+      "label": "Liquidus (°C)",
+      "category": "Advanced Glass Science",
+      "uiGroup": "Advanced Glass Science",
+      "equation": "1730·SiO₂% + 2050·Al₂O₃% − 800·flux% − 600·B₂O₃% + 400",
+      "unit": "°C",
+      "whatItIs": "Temperature where the last crystal dissolves — above this, the melt is fully liquid.",
+      "whyUseful": "Must fire above liquidus for complete melting. Below = residual crystals (sometimes desired for texture). Distance between firing temp and liquidus determines crystal content.",
+      "references": ["Kalmanovitch & Frank (1986)"]
+    },
+    {
+      "number": 69,
+      "key": "devit_index",
+      "label": "Devit. Index",
+      "category": "Exploratory Physical",
+      "uiGroup": "Exploratory Physical",
+      "equation": "(CaO + ZnO + TiO₂) / comp_entropy",
+      "unit": "index",
+      "whatItIs": "Devitrification tendency. CaO → wollastonite, ZnO → willemite, TiO₂ → rutile. Low entropy = one phase dominates = crystals form easily.",
+      "whyUseful": "Higher = more crystal-prone on cooling. Map to avoid devitrification in functional ware, or promote it in crystal glazes.",
+      "references": ["Zanotto (1997)", "Fokin et al. (2006)"]
+    },
+    {
+      "number": 70,
+      "key": "hydration_energy",
+      "label": "Hydration Energy",
+      "category": "Exploratory Physical",
+      "uiGroup": "Exploratory Physical",
+      "equation": "Σ xᵢ·ΔG_hyd,ᵢ (kJ/mol)",
+      "unit": "kJ/mol",
+      "whatItIs": "Glass hydration susceptibility — thermodynamic durability measure.",
+      "whyUseful": "More negative = thermodynamically more susceptible to water dissolution. Predicts whether it WILL dissolve given enough time (vs kinetic durability which predicts how fast).",
+      "references": ["Conradt (2008)", "Frankel et al. (2018)"]
+    },
+    {
+      "number": 71,
+      "key": "modifier_fraction",
+      "label": "Modifier Fraction",
+      "category": "Exploratory Physical",
+      "uiGroup": "Exploratory Physical",
+      "equation": "(R₂O + RO) / all_oxides",
+      "unit": "fraction (0–1)",
+      "whatItIs": "Network modifier share. 0 = pure former, 1 = pure modifier.",
+      "whyUseful": "Higher = more fluid melt, lower Tg, more crystal-prone but easier to melt. Typical glazes: 0.3–0.5.",
+      "references": ["Shelby (2005)"]
+    },
+    {
+      "number": 72,
+      "key": "fragility_index",
+      "label": "Fragility Index (m)",
+      "category": "Exploratory Physical",
+      "uiGroup": "Exploratory Physical",
+      "equation": "m ≈ 20 + 80·modifier_fraction",
+      "unit": "dimensionless",
+      "whatItIs": "Strong vs fragile glass classification (Angell). m≈20 strong/SiO₂-like, gradual softening. m≈80+ fragile, sharp Tg.",
+      "whyUseful": "Strong glasses (m≈20) change viscosity gradually — very forgiving. Fragile glasses (m≈80+) have sharp transitions — narrow firing window, sensitive to temperature.",
+      "references": ["Angell (1995)"]
+    },
+    {
+      "number": 73,
+      "key": "fe_redox_estimate",
+      "label": "Fe²⁺ Fraction",
+      "category": "Exploratory Physical",
+      "uiGroup": "Exploratory Physical",
+      "equation": "~(Λ − 0.3) × 1.25 — linear mapping from optical basicity, clamped 0–1",
+      "unit": "fraction (0–1)",
+      "whatItIs": "Predicted Fe²⁺/Fe-total ratio from composition alone (before firing).",
+      "whyUseful": "Fe²⁺ → blue/green (celadon). Fe³⁺ → amber/brown. Higher basicity shifts toward Fe²⁺. Predicts color shift from composition alone — the ratio depends on both atmosphere AND glass composition.",
+      "references": ["Duffy (1993)", "Kress & Carmichael (1991)", "Schreiber (1987)"]
+    },
+    {
+      "number": 74,
+      "key": "firing_temp_c",
+      "label": "Firing Temp (°C)",
+      "category": "Temperature-Dependent",
+      "uiGroup": "Temperature-Dependent",
+      "equation": "Orton cone table lookup OR 1060 + 35·SiO₂ + 150·Al₂O₃ − 100·B₂O₃",
+      "unit": "°C",
+      "whatItIs": "Peak firing temperature from cone or estimated from chemistry.",
+      "whyUseful": "The thermal context for all other temperature-dependent calculations. When cone is specified, uses exact Orton midpoints. When not, estimates from chemistry to predict what cone an unfamiliar recipe needs.",
+      "references": ["Orton Ceramic Foundation"]
+    },
+    {
+      "number": 75,
+      "key": "grd_viscosity",
+      "label": "Viscosity (log Pa·s)",
+      "category": "Temperature-Dependent",
+      "uiGroup": "Temperature-Dependent",
+      "equation": "log₁₀(η) = A + B/(T − C) — VFT / Giordano-Russell-Dingwell model",
+      "unit": "log₁₀(Pa·s)",
+      "whatItIs": "Full Vogel-Fulcher-Tammann melt viscosity at firing temperature. THE master property.",
+      "whyUseful": "3–5 = runny like honey. 6–8 = stiff but flowing. 9–12 = effectively frozen. Controls flow, healing, defects, everything. Captures the highly non-linear temperature dependence that simple indices miss.",
+      "references": ["Giordano et al. (2008)", "Russell & Dingwell (2005)", "Fluegel (2007)"]
+    },
+    {
+      "number": 76,
+      "key": "liquidus_overshoot",
+      "label": "Liquidus Overshoot",
+      "category": "Temperature-Dependent",
+      "uiGroup": "Temperature-Dependent",
+      "equation": "T_fire − T_liquidus",
+      "unit": "°C",
+      "whatItIs": "Whether you're firing above or below the liquidus.",
+      "whyUseful": "Positive = fully molten (clean gloss). Negative = underfired (crystals remain, texture). Near zero = right at the melting boundary (interesting surface effects).",
+      "references": ["Kalmanovitch & Frank (1986)"]
+    },
+    {
+      "number": 77,
+      "key": "working_range",
+      "label": "Working Range (°C)",
+      "category": "Temperature-Dependent",
+      "uiGroup": "Temperature-Dependent",
+      "equation": "T_fire − Tg",
+      "unit": "°C",
+      "whatItIs": "Temperature span over which the glaze is actively flowing. Typical: 200–600°C.",
+      "whyUseful": "Wider = more forgiving (off by 20°C and still get a good result). Narrow = must hit exact temperature. Map to find compositions that are kiln-friendly.",
+      "references": ["Priven (2004)"]
+    },
+    {
+      "number": 78,
+      "key": "heatwork_excess",
+      "label": "Heatwork Excess",
+      "category": "Temperature-Dependent",
+      "uiGroup": "Temperature-Dependent",
+      "equation": "T_chemistry − T_cone_standard",
+      "unit": "°C",
+      "whatItIs": "Whether the chemistry requires more or less heat than the target cone delivers.",
+      "whyUseful": "Positive = underfired at target cone. Negative = may run. Zero = perfect match. Helps match glaze chemistry to kiln capability.",
+      "references": ["Orton Ceramic Foundation"]
+    },
+    {
+      "number": 79,
+      "key": "volatilization_index",
+      "label": "Volatilisation Index",
+      "category": "Temperature-Dependent",
+      "uiGroup": "Temperature-Dependent",
+      "equation": "1.5·B₂O₃ + 0.8·Na₂O + 0.7·K₂O + Li₂O + 1.2·PbO + 0.3·ZnO",
+      "unit": "index",
+      "whatItIs": "Evaporation risk at firing temperature. B₂O₃ is the most volatile ceramic oxide.",
+      "whyUseful": "Higher = more volatile oxides lost → composition changes in the kiln → unpredictable results. At cone 10, significant boron escapes. Important for kiln atmosphere and neighbor contamination.",
+      "references": ["Cable & Bower (1965)", "Shelby (2005)"]
+    },
+    {
+      "number": 80,
+      "key": "fe_color_ox",
+      "label": "Fe Color (Oxidation)",
+      "category": "Temperature-Dependent",
+      "uiGroup": "Temperature-Dependent",
+      "equation": "min(10, Fe/(SiO₂ + Al₂O₃) × 30)",
+      "unit": "intensity (0–10)",
+      "whatItIs": "Iron colour intensity in oxidation (electric kiln). 0 = no iron colour, 10 = saturated iron brown.",
+      "whyUseful": "Color depends not just on iron amount but on dilution in the glass network. High SiO₂ + Al₂O₃ dilute the color. Amber→brown spectrum.",
+      "references": ["Eppler (1987)"]
+    },
+    {
+      "number": 81,
+      "key": "fe_color_red",
+      "label": "Fe Color (Reduction)",
+      "category": "Temperature-Dependent",
+      "uiGroup": "Temperature-Dependent",
+      "equation": "min(10, Fe/(SiO₂ + Al₂O₃) × 30 × Ca_boost) — Ca_boost ×1.5 when CaO > 0.3",
+      "unit": "intensity (0–10)",
+      "whatItIs": "Iron colour intensity in reduction (gas kiln). Celadon→tenmoku spectrum. CaO boost captures the classic tenmoku mechanism.",
+      "whyUseful": "In reduction, Fe²⁺ dominates → green (celadon) at low iron, dark brown/black (tenmoku) at high iron. High CaO + high Fe + reduction = oil-spot and hare's fur effects.",
+      "references": ["Eppler (1987)", "Rhodes (1973)"]
+    },
+    {
+      "number": 82,
+      "key": "mixed_alkali_effect",
+      "label": "Mixed Alkali Effect",
+      "category": "Multi-Modal",
+      "uiGroup": "Multi-Modal",
+      "equation": "4 × x_Na × x_K — parabolic maximum at 50:50 Na:K",
+      "unit": "dimensionless (0–1)",
+      "whatItIs": "Anomalous transport behavior at mixed alkali compositions. Maximum at 50:50 Na:K.",
+      "whyUseful": "At 50:50, ionic conductivity drops dramatically (Day 1976). This means: lower leaching (good for durability), unusual viscosity behavior, and different color development.",
+      "references": ["Day (1976)", "Ingram (1987)"]
+    },
+    {
+      "number": 83,
+      "key": "boron_n4_fraction",
+      "label": "Boron N₄ Fraction",
+      "category": "Multi-Modal",
+      "uiGroup": "Multi-Modal",
+      "equation": "R / (R + B₂O₃) — where R = total modifier charge (Dell-Bray model)",
+      "unit": "fraction (0–1)",
+      "whatItIs": "Tetrahedral [BO₄] fraction vs trigonal [BO₃]. BO₄ strengthens network, BO₃ weakens it.",
+      "whyUseful": "Below ~16 mol% modifier → boron stays BO₃ (weakening). Above → converts to BO₄ (strengthening). Determines whether boron helps or hurts your glass.",
+      "references": ["Dell & Bray (1983)"]
+    },
+    {
+      "number": 84,
+      "key": "colorant_per_flux",
+      "label": "Colorant / Flux",
+      "category": "Multi-Modal",
+      "uiGroup": "Multi-Modal",
+      "equation": "Σ colorants / flux_total",
+      "unit": "dimensionless",
+      "whatItIs": "Effective colorant concentration normalized by flux content.",
+      "whyUseful": "Same 2% iron in stiff high-fire vs fluid low-fire glaze produces very different colors. Higher = more saturated colour, but too high = metallic surfaces, pinholing.",
+      "references": ["Eppler (1987)"]
+    },
+    {
+      "number": 85,
+      "key": "food_safety_score",
+      "label": "Food Safety Score",
+      "category": "Multi-Modal",
+      "uiGroup": "Multi-Modal",
+      "equation": "Composite 0–1 score: −0.4 for PbO, −0.2 for BaO>0.15, −0.1 for CuO>0.1, −0.1 for Cr₂O₃>0.05, −0.2 for durability<3",
+      "unit": "score (0–1)",
+      "whatItIs": "Multi-criteria food safety screening. 1.0 = passes all checks. <0.6 = fails one or more.",
+      "whyUseful": "Quick screening for functional dinnerware glazes. Checks lead (FDA zero tolerance), excess barium, excess copper, excess chromium, and adequate silica-to-alkali durability.",
+      "references": ["Hesselberth & Roy (2002)", "Eppler & Eppler (2000)"]
+    },
+    {
+      "number": 86,
+      "key": "microwave_score",
+      "label": "Microwave Safety",
+      "category": "Multi-Modal",
+      "uiGroup": "Multi-Modal",
+      "equation": "1 − Σ transition_metals × 4",
+      "unit": "score (0–1)",
+      "whatItIs": "Microwave absorption risk. 1.0 = safe (no absorbers). 0 = problematic.",
+      "whyUseful": "Fe, Mn, Ni, Cu, Co absorb 2.45 GHz microwave radiation → hot spots. Map for microwave-safe dinnerware design.",
+      "references": ["Clark & Sutton (1996)", "Mingos & Baghurst (1991)"]
+    },
+    {
+      "number": 87,
+      "key": "opacity_predictor",
+      "label": "Opacity Predictor",
+      "category": "Multi-Modal",
+      "uiGroup": "Multi-Modal",
+      "equation": "5·ZrO₂ + 4·SnO₂ + 2·TiO₂ + 1.5·P₂O₅ + 0.3·Al₂O₃",
+      "unit": "index (0–1)",
+      "whatItIs": "Opacification strength. Each opacifier weighted by effectiveness per mole.",
+      "whyUseful": "0 = transparent, 1 = opaque. ZrO₂ and SnO₂ are strongest. TiO₂ contributes via crystal formation. P₂O₅ via phase separation (opalescence). Map to design opacity gradients.",
+      "references": ["Eppler & Eppler (2000)"]
+    },
+    {
+      "number": 88,
+      "key": "robustness_score",
+      "label": "Robustness",
+      "category": "Sensitivity & Robustness",
+      "uiGroup": "Sensitivity & Robustness",
+      "equation": "max(∂COE, ∂Visc, ∂NBO per ±0.01 Δoxide) — numerical Jacobian over 10 oxides",
+      "unit": "index",
+      "whatItIs": "Maximum property swing from small composition changes. The 'production reliability' metric.",
+      "whyUseful": "Lower = more forgiving. Higher = sensitive to weighing errors. Studio potters with small scales want low robustness. Factories with precision dosing can tolerate higher.",
+      "references": ["Taylor (1997)"]
+    },
+    {
+      "number": 89,
+      "key": "critical_oxide",
+      "label": "Critical Oxide Impact",
+      "category": "Sensitivity & Robustness",
+      "uiGroup": "Sensitivity & Robustness",
+      "equation": "max COE sensitivity at ±5% — for each of 10 oxides",
+      "unit": "index",
+      "whatItIs": "Which single ingredient causes the largest property swing if mis-measured.",
+      "whyUseful": "Tells you which oxide to weigh most carefully. If Na₂O shows up, feldspar measurement errors will cause the most crazing variation. Prioritize accuracy for this material.",
+      "references": ["Taylor (1997)"]
+    },
+    {
+      "number": 90,
+      "key": "error_width",
+      "label": "Error Width (COE)",
+      "category": "Sensitivity & Robustness",
+      "uiGroup": "Sensitivity & Robustness",
+      "equation": "√(Σ(∂COE/∂xᵢ)²·σᵢ²) — Taylor first-order error propagation at ±2% relative error",
+      "unit": "×10⁻⁷/°C",
+      "whatItIs": "The ±spread in COE from ±2% weighing error on ALL oxides simultaneously.",
+      "whyUseful": "If error_width is 3.0, your COE of 55 is actually 52–58. If this overlaps body COE, some batches will craze while others won't. Critical for production consistency.",
+      "references": ["Taylor (1997)"]
+    },
+    {
+      "number": 91,
+      "key": "total_colorant",
+      "label": "Total Colorant",
+      "category": "Colorant Analysis",
+      "uiGroup": "Colorant Analysis",
+      "equation": "Σ(Fe₂O₃ + TiO₂ + MnO + NiO + CuO + CoO + Cr₂O₃)",
+      "unit": "mol",
+      "whatItIs": "Sum of all transition metal oxide moles.",
+      "whyUseful": "Quick measure of colour load. Above ~0.5 mol = saturated, dark. Below 0.05 = nearly colorless. High total = dark/opaque; very low = clear/white base.",
+      "references": ["Eppler (1987)"]
+    },
+    {
+      "number": 92,
+      "key": "fe_ti_ratio",
+      "label": "Fe:Ti",
+      "category": "Colorant Analysis",
+      "uiGroup": "Colorant Analysis",
+      "equation": "Fe₂O₃ / (Fe₂O₃ + TiO₂)",
+      "unit": "dimensionless (0–1)",
+      "whatItIs": "Iron share of Fe+Ti. 1 = all iron (warm brown). 0 = all titanium (cream/ivory).",
+      "whyUseful": "Pure iron → red/brown/black. Pure titanium → opacity. Mixtures → complex amber-gold-russet colors. Map to predict iron-titanium color interaction.",
+      "references": ["Eppler (1987)"]
+    },
+    {
+      "number": 93,
+      "key": "phase_sep_index",
+      "label": "Phase Sep. Index",
+      "category": "Crystal Prediction",
+      "uiGroup": "Crystal Prediction",
+      "equation": "SiO₂·(1 + 2·B₂O₃) / (Al₂O₃ + 0.3·(R₂O + RO) + 0.01)",
+      "unit": "index",
+      "whatItIs": "Phase-separation / immiscibility likelihood. High values (>20) suggest opalescence potential.",
+      "whyUseful": "Phase separation produces opalescent blue effects (chün, jun, opal) with slow cooling. Al₂O₃ strongly suppresses it. Boron promotes it. The key calculation for chün glaze design.",
+      "references": ["Charles (1969)", "Shelby (2005)"]
+    },
+    {
+      "number": 94,
+      "key": "wollastonite_sat",
+      "label": "Wollastonite Sat.",
+      "category": "Crystal Prediction",
+      "uiGroup": "Crystal Prediction",
+      "equation": "CaO / max(SiO₂ − 6·Al₂O₃, 0.1)",
+      "unit": "index",
+      "whatItIs": "CaSiO₃ crystal potential. (SiO₂ − 6·Al₂O₃) = 'free silica' not tied in feldspar phases.",
+      "whyUseful": ">0.5 = crystal matte development begins. Core calculation for predicting calcium matte surfaces. Classic cone 6–10 crystal matte mechanism.",
+      "references": ["Muan & Osborn (1965)"]
+    },
+    {
+      "number": 95,
+      "key": "zn_crystal",
+      "label": "Zn Crystal Index",
+      "category": "Crystal Prediction",
+      "uiGroup": "Crystal Prediction",
+      "equation": "ZnO² / (SiO₂·(Al₂O₃ + 0.1) + 0.001)",
+      "unit": "index",
+      "whatItIs": "Willemite (Zn₂SiO₄) crystal likelihood. ZnO squared because crystallisation scales with concentration² (nucleation kinetics).",
+      "whyUseful": ">0.05 = zinc-crystal texture potential. The basis of macro-crystalline glazes. Al₂O₃ inhibits zinc crystal formation.",
+      "references": ["Zanotto (1997)"]
+    },
+    {
+      "number": 96,
+      "key": "devit_resistance",
+      "label": "Devit. Resistance",
+      "category": "Crystal Prediction",
+      "uiGroup": "Crystal Prediction",
+      "equation": "max(0, 100 − devit_index × 20)",
+      "unit": "score (0–100)",
+      "whatItIs": "Devitrification safety. Inverse of devit_index.",
+      "whyUseful": "100 = very safe from unwanted crystals (clean glass). 0 = highly prone. For functional ware, aim >60. For decorative crystal glazes, aim <30.",
+      "references": ["Zanotto (1997)", "Fokin et al. (2006)"]
+    },
+    {
+      "number": 97,
+      "key": "tenmoku_index",
+      "label": "Tenmoku Index",
+      "category": "Style Indices",
+      "uiGroup": "Style Indices",
+      "equation": "Fe₂O₃·CaO / (Al₂O₃ + 0.1) × 50",
+      "unit": "score (0–100)",
+      "whatItIs": "Tenmoku/iron-saturate potential. >40 = tenmoku territory (oil-spot, hare's fur, mirror-black).",
+      "whyUseful": "Needs high Fe₂O₃ (0.5–1.0+), CaO as primary flux, moderate alumina, and reduction atmosphere. Map to find the sweet spot for your iron source and clay body.",
+      "references": ["Rhodes (1973)", "Britt (2007)"]
+    },
+    {
+      "number": 98,
+      "key": "celadon_index",
+      "label": "Celadon Index",
+      "category": "Style Indices",
+      "uiGroup": "Style Indices",
+      "equation": "100 − 10·(|SiO₂−4.0| + 2|Al₂O₃−0.4| + 2|CaO−0.6| + 5|Fe₂O₃−0.1|)",
+      "unit": "score (0–100)",
+      "whatItIs": "Proximity to ideal celadon composition (SiO₂≈4.0, Al₂O₃≈0.4, CaO≈0.6, Fe₂O₃≈0.1).",
+      "whyUseful": "Values >70 = excellent celadon potential. Iron must be LOW (~0.1 mol). Most specific glaze type — requires very precise chemistry. For jade-green reduction glazes.",
+      "references": ["Rhodes (1973)"]
+    },
+    {
+      "number": 99,
+      "key": "shino_index",
+      "label": "Shino Index",
+      "category": "Style Indices",
+      "uiGroup": "Style Indices",
+      "equation": "Na₂O² / (Al₂O₃·(K₂O + 0.1) + 0.01) × 10",
+      "unit": "score (0–100)",
+      "whatItIs": "Shino character potential. Na₂O-dominant, feldspathic character.",
+      "whyUseful": "Values >50 = strong shino character (carbon trapping, warm blushes, orange-peel texture). Classic shino uses nepheline syenite or soda feldspar — very high Na₂O, low alumina, minimal potash.",
+      "references": ["Hamer & Hamer (2004)"]
+    },
+    {
+      "number": 100,
+      "key": "copper_red_potential",
+      "label": "Copper Red Potential",
+      "category": "Style Indices",
+      "uiGroup": "Style Indices",
+      "equation": "CuO·(R₂O + B₂O₃) / (Al₂O₃ + 0.1) × 200",
+      "unit": "score (0–100)",
+      "whatItIs": "Chemistry-only copper red likelihood (still needs reduction atmosphere).",
+      "whyUseful": "Copper reds need: CuO present, fluid alkali-rich melt (low viscosity → copper colloid formation), low alumina. Boron helps (increases fluidity). Chemistry provides the canvas; atmosphere is the final ingredient.",
+      "references": ["Rhodes (1973)", "Eppler (1987)"]
+    },
+    {
+      "number": 101,
+      "key": "opal_potential",
+      "label": "Opal Potential",
+      "category": "Style Indices",
+      "uiGroup": "Style Indices",
+      "equation": "P₂O₅·CaO / (Al₂O₃ + 0.1) × 100",
+      "unit": "score (0–100)",
+      "whatItIs": "Bone-ash opalescence. Ca₃(PO₄)₂ crystal formation from P₂O₅ + CaO.",
+      "whyUseful": "Blue-white opalescence in slow cooling. Values >30 = significant effect. Needs BOTH P₂O₅ and CaO. Al₂O₃ inhibits crystallisation. Classic milky-white to blue chün effects.",
+      "references": ["Eppler & Eppler (2000)"]
+    },
+    {
+      "number": 102,
+      "key": "softening_point",
+      "label": "Softening Point (°C)",
+      "category": "Viscosity Landmarks",
+      "uiGroup": "Viscosity Landmarks",
+      "equation": "T at log₁₀(η) = 6.6 — VFT inversion (ASTM C338 Littleton softening point)",
+      "unit": "°C",
+      "whatItIs": "Glass starts to deform under its own weight. Above this, the glaze is moving.",
+      "whyUseful": "Below this temperature the glaze is rigid solid. Above it, it starts to sag and flow. Critical lower bound of the firing window.",
+      "references": ["Giordano et al. (2008)", "ASTM C338"]
+    },
+    {
+      "number": 103,
+      "key": "annealing_point",
+      "label": "Annealing Point (°C)",
+      "category": "Viscosity Landmarks",
+      "uiGroup": "Viscosity Landmarks",
+      "equation": "T at log₁₀(η) = 12.0 — VFT inversion (ASTM C336)",
+      "unit": "°C",
+      "whatItIs": "Stress relaxation in minutes. Top of the annealing range.",
+      "whyUseful": "Hold here during cooling to relieve thermal stress. Important for thick glaze applications, tiles, and sculpture. Internal strain dissipates within minutes at this temperature.",
+      "references": ["Giordano et al. (2008)", "ASTM C336"]
+    },
+    {
+      "number": 104,
+      "key": "strain_point",
+      "label": "Strain Point (°C)",
+      "category": "Viscosity Landmarks",
+      "uiGroup": "Viscosity Landmarks",
+      "equation": "T at log₁₀(η) = 13.5 — VFT inversion (ASTM C336)",
+      "unit": "°C",
+      "whatItIs": "Stress relaxation in hours — strain is effectively permanent below this. The 'point of no return'.",
+      "whyUseful": "Thermal gradients existing below this point are permanently locked in. Rapid cooling below strain point causes warping, cracking, or residual stress.",
+      "references": ["Giordano et al. (2008)", "ASTM C336"]
+    },
+    {
+      "number": 105,
+      "key": "flow_point",
+      "label": "Flow Point (°C)",
+      "category": "Viscosity Landmarks",
+      "uiGroup": "Viscosity Landmarks",
+      "equation": "T at log₁₀(η) = 4.0 — VFT inversion",
+      "unit": "°C",
+      "whatItIs": "Glaze is fully fluid and flowing freely. Maximum fluidity temperature.",
+      "whyUseful": "Firing above this produces running and pooling. Some glazes (crystalline, ash) need to reach this; functional glazes should be below. The upper working threshold.",
+      "references": ["Giordano et al. (2008)"]
+    },
+    {
+      "number": 106,
+      "key": "bulk_modulus",
+      "label": "Bulk Modulus (GPa)",
+      "category": "Mechanical Properties",
+      "uiGroup": "Mechanical Properties",
+      "equation": "K = E / (3·(1 − 2ν))",
+      "unit": "GPa",
+      "whatItIs": "Resistance to uniform compression. Typical: 30–50 GPa.",
+      "whyUseful": "Higher = harder to compress = less compressible. Important for understanding hydrostatic pressure response (autoclave testing, deep-water applications). Connects to density under pressure and impact resistance.",
+      "references": ["Green (1998)", "Makishima & Mackenzie (1973)"]
+    },
+    {
+      "number": 107,
+      "key": "shear_modulus",
+      "label": "Shear Modulus (GPa)",
+      "category": "Mechanical Properties",
+      "uiGroup": "Mechanical Properties",
+      "equation": "G = E / (2·(1 + ν))",
+      "unit": "GPa",
+      "whatItIs": "Resistance to shape change — sliding/twisting deformation.",
+      "whyUseful": "Higher = resists sliding deformation. Controls crack deflection behavior. Combined with K, defines the complete elastic response. Relevant to surface wear and abrasion resistance.",
+      "references": ["Green (1998)"]
+    },
+    {
+      "number": 108,
+      "key": "fracture_toughness",
+      "label": "Fracture Toughness (MPa√m)",
+      "category": "Mechanical Properties",
+      "uiGroup": "Mechanical Properties",
+      "equation": "K_IC ≈ 0.016·√E",
+      "unit": "MPa·√m",
+      "whatItIs": "Crack propagation resistance. Typical: 0.5–1.0 MPa·√m.",
+      "whyUseful": "Higher = tougher. A chipped rim resists further damage. The glaze's ability to stop a crack once it starts. Important for functional ceramics that take impacts.",
+      "references": ["Sehgal & Ito (1999)"]
+    },
+    {
+      "number": 109,
+      "key": "brittleness",
+      "label": "Brittleness (µm⁻¹/²)",
+      "category": "Mechanical Properties",
+      "uiGroup": "Mechanical Properties",
+      "equation": "B = H / K_IC",
+      "unit": "µm⁻¹/²",
+      "whatItIs": "Tendency to chip. The ratio of hardness to toughness. Typical: 5–10 µm⁻¹.",
+      "whyUseful": "Lower = safer for functional ware. Higher = chips from utensil impact. For tableware want moderate hardness (scratch-resistant) combined with high toughness (chip-resistant).",
+      "references": ["Lawn & Marshall (1979)"]
+    },
+    {
+      "number": 110,
+      "key": "reduced_tg",
+      "label": "Reduced Tg (Tg/Tliq)",
+      "category": "Glass-Forming Ability",
+      "uiGroup": "Glass-Forming Ability",
+      "equation": "Trg = (Tg + 273) / (T_liq + 273)",
+      "unit": "dimensionless",
+      "whatItIs": "Turnbull's glass-forming criterion. How close Tg is to the melting point.",
+      "whyUseful": ">0.67 = excellent glass former (very hard to crystallize). <0.60 = marginal (crystallises easily on cooling). Critical for crystalline glaze design — LOW Trg to grow crystals, HIGH Trg for clean glass.",
+      "references": ["Turnbull (1969)"]
+    },
+    {
+      "number": 111,
+      "key": "hruby_parameter",
+      "label": "Hrubý Parameter",
+      "category": "Glass-Forming Ability",
+      "uiGroup": "Glass-Forming Ability",
+      "equation": "K_gl = (Tg − T_onset) / (T_liq − Tg) — with T_onset ≈ 0.85·T_liq",
+      "unit": "dimensionless",
+      "whatItIs": "Glass stability metric. Resistance to crystallization.",
+      "whyUseful": "Higher = more stable glass (stays clear during cooling). Lower = narrow stability window = crystal-prone. Combined with cooling rate, predicts whether you get clean glass or unwanted crystals.",
+      "references": ["Hrubý (1972)"]
+    },
+    {
+      "number": 112,
+      "key": "critical_cooling_rate",
+      "label": "Crit. Cooling Rate (°C/hr)",
+      "category": "Glass-Forming Ability",
+      "uiGroup": "Glass-Forming Ability",
+      "equation": "log₁₀(Rc) = −20.4·Trg + 16.7",
+      "unit": "°C/hr",
+      "whatItIs": "Minimum cooling rate needed to prevent crystallization.",
+      "whyUseful": "Low Rc = can cool slowly and stay glassy. High Rc = must crash-cool. Crystal glaze artists want HIGH Rc (grow crystals by cooling slowly). Functional potters want LOW Rc.",
+      "references": ["Cabral & Fokin (2004)"]
+    },
+    {
+      "number": 113,
+      "key": "glaze_stress",
+      "label": "Glaze Stress (MPa)",
+      "category": "Glaze Stress",
+      "uiGroup": "Glaze Stress",
+      "equation": "σ = E·Δα·(Tg − 25) / (1 − ν)",
+      "unit": "MPa",
+      "whatItIs": "Actual biaxial thermal stress in the glaze film. Positive = tensile = crazing. Negative = compressive = good (up to a point).",
+      "whyUseful": "Goes beyond simple COE comparison by incorporating Young's modulus (stiffness), Poisson's ratio (lateral strain), and Tg (where stresses lock in). Professional-grade craze prediction. Quantifies the stress, not just risk.",
+      "references": ["Kingery et al. (1976)"]
+    },
+    {
+      "number": 114,
+      "key": "stress_ratio",
+      "label": "Stress Ratio (σ/τ)",
+      "category": "Glaze Stress",
+      "uiGroup": "Glaze Stress",
+      "equation": "|σ| / (H/3 × 1000)",
+      "unit": "dimensionless",
+      "whatItIs": "Applied stress vs glaze tensile strength. >1 = craze guaranteed. <0.5 = safe. 0.5–1 = marginal.",
+      "whyUseful": "The most complete crazing predictor in the system — accounts for the glaze's actual strength, not just its COE. Combines stress magnitude with material capability.",
+      "references": ["Kingery et al. (1976)", "Makishima & Mackenzie (1973)"]
+    },
+    {
+      "number": 115,
+      "key": "pinhole_risk",
+      "label": "Pinhole Risk Index",
+      "category": "Defect Prediction",
+      "uiGroup": "Defect Prediction",
+      "equation": "logη × (CaO + MgO + BaO) / (T_fire − Tg) × 50",
+      "unit": "index (0–10)",
+      "whatItIs": "Gas entrapment tendency. Pinholes: #1 studio defect. CO₂ from carbonates (whiting, dolomite) can't escape viscous melt.",
+      "whyUseful": "High viscosity + high carbonate flux + narrow working range = worst case. Map to redesign problem glazes. Pinholes form when gas can't escape through a viscous melt.",
+      "references": ["Eppler & Eppler (2000)"]
+    },
+    {
+      "number": 116,
+      "key": "bubble_risk",
+      "label": "Bubble Risk Index",
+      "category": "Defect Prediction",
+      "uiGroup": "Defect Prediction",
+      "equation": "logη × Q⁴ / (Q² + 0.1) × 0.5",
+      "unit": "index (0–10)",
+      "whatItIs": "Trapped bubble/blister retention. Different from pinholes — bubbles from pre-existing gas (air, water vapor).",
+      "whyUseful": "High Q⁴ = tightly cross-linked network = gas can't diffuse through. Combined with high viscosity = sealed bubbles. Map to predict blistering glazes.",
+      "references": ["Mysen & Richet (2005)"]
+    },
+    {
+      "number": 117,
+      "key": "healing_index",
+      "label": "Healing Index",
+      "category": "Defect Prediction",
+      "uiGroup": "Defect Prediction",
+      "equation": "10 / (logη × surface_tension)",
+      "unit": "index (0–10)",
+      "whatItIs": "Self-healing surface flow. Can surface defects flow out?",
+      "whyUseful": "Higher = better self-healing. Low viscosity + low surface tension = defects (pin marks, crawl patches, edge pulls) flow out and smooth over. Map for compositions producing flawless surfaces.",
+      "references": ["Dietzel (1942)", "Eppler & Eppler (2000)"]
+    },
+    {
+      "number": 118,
+      "key": "liquidus_field",
+      "label": "Liquidus Field (Code)",
+      "category": "Phase Diagram",
+      "uiGroup": "Phase Diagram",
+      "equation": "CAS ternary boundary classification (all fluxes projected onto CaO equivalent). Returns: 1=Cristobalite, 2=Mullite, 3=Anorthite, 4=Wollastonite, 5=Tridymite",
+      "unit": "code (1–5)",
+      "whatItIs": "Primary crystallisation field — which crystal forms first during cooling.",
+      "whyUseful": "Cristobalite → gloss with potential craze. Mullite → tough, matte. Anorthite → balanced. Wollastonite → crystal matte. Controls surface texture, opacity, and thermal behavior.",
+      "references": ["Muan & Osborn (1965)", "Levin et al."]
+    },
+    {
+      "number": 119,
+      "key": "eutectic_distance",
+      "label": "Eutectic Distance",
+      "category": "Phase Diagram",
+      "uiGroup": "Phase Diagram",
+      "equation": "min(√(ΔSi² + ΔAl² + ΔCa²)) over 5 CAS ternary eutectics (1170–1587°C)",
+      "unit": "dimensionless",
+      "whatItIs": "Distance to nearest eutectic trough in the CaO-Al₂O₃-SiO₂ system.",
+      "whyUseful": "Lower = closer to a low-melting eutectic = easier to melt = more reliable. Eutectic compositions have interesting textures from competing crystal phases. Map to find the easiest-to-melt regions.",
+      "references": ["Muan & Osborn (1965)"]
+    },
+    {
+      "number": 120,
+      "key": "abbe_number",
+      "label": "Abbe Number (Vd)",
+      "category": "Optical Extended",
+      "uiGroup": "Optical Extended",
+      "equation": "Vd ≈ 40 + 20·xSiO₂ − 30·xPbO − 15·xTiO₂",
+      "unit": "dimensionless",
+      "whatItIs": "Optical dispersion — how much refractive index varies with wavelength.",
+      "whyUseful": "Lower Abbe = more chromatic dispersion = more 'fire' and light-splitting. PbO and TiO₂ increase dispersion. High-silica = less dispersion. Relevant for decorative effects.",
+      "references": ["Hecht (2002)", "Schott glass catalog"]
+    },
+    {
+      "number": 121,
+      "key": "optical_bandgap",
+      "label": "Optical Bandgap (eV)",
+      "category": "Optical Extended",
+      "uiGroup": "Optical Extended",
+      "equation": "Eg ≈ 4.0 − 1.5·Λ — from optical basicity",
+      "unit": "eV",
+      "whatItIs": "UV absorption edge — how deep into the visible spectrum the glass absorbs.",
+      "whyUseful": "Lower bandgap → absorbs more visible light → may yellow or develop body color. Higher bandgap → more transparent. Important for understanding why some 'clear' glazes come out tinted.",
+      "references": ["Duffy (2002)", "Dimitrov & Komatsu (2010)"]
+    },
+    {
+      "number": 122,
+      "key": "luster_index",
+      "label": "Luster Index (%R)",
+      "category": "Optical Extended",
+      "uiGroup": "Optical Extended",
+      "equation": "R = ((n−1)/(n+1))² × 100 — Fresnel normal-incidence reflectance",
+      "unit": "%",
+      "whatItIs": "Normal-incidence reflectance. The actual percentage of light bouncing off the surface — shininess.",
+      "whyUseful": "Soda-lime glass: ~3.5%. Lead glass: 5–10%+. Higher = shinier, more lustrous. This is what your eye sees as 'gloss'. Map to find the most brilliant compositional regions.",
+      "references": ["Hecht (2002)"]
+    },
+    {
+      "number": 123,
+      "key": "ionic_conductivity",
+      "label": "Ionic Conductivity (log σ)",
+      "category": "Electrical",
+      "uiGroup": "Electrical",
+      "equation": "log σ ≈ −1.2 − 4.8/alkali_frac — Anderson-Stuart model",
+      "unit": "log₁₀(S/cm)",
+      "whatItIs": "Room-temperature ionic conductivity from mobile alkali ions.",
+      "whyUseful": "Higher = more mobile ions = more leaching, corrosion, electrolytic degradation. Important for food safety (mobile ions = leaching), electronics (want low), and understanding why some glazes discolor over time.",
+      "references": ["Anderson & Stuart (1954)", "Ingram (1987)"]
+    },
+    {
+      "number": 124,
+      "key": "loss_tangent",
+      "label": "Loss Tangent (tan δ)",
+      "category": "Electrical",
+      "uiGroup": "Electrical",
+      "equation": "tan δ = σ / (2πf·ε₀·εᵣ) at f = 2.45 GHz (microwave frequency)",
+      "unit": "dimensionless",
+      "whatItIs": "Dielectric loss at microwave frequency. How much energy the glaze absorbs and converts to heat.",
+      "whyUseful": "Higher = hotter in the microwave. For microwave-safe dinnerware, want very low tan δ. A cup of coffee gets hot — but so does the glazed mug? That's high loss tangent.",
+      "references": ["Clark & Sutton (1996)", "Mingos & Baghurst (1991)"]
+    },
+    {
+      "number": 125,
+      "key": "color_L_ox",
+      "label": "Pred. L* (Oxidation)",
+      "category": "Color Prediction",
+      "uiGroup": "Color Prediction",
+      "equation": "L* = 95 − 80√Fe − 40·Mn − 60·Co − 20·Cu − 30·Cr",
+      "unit": "CIE L* (0=black, 100=white)",
+      "whatItIs": "Predicted lightness in oxidation atmosphere. Beer-Lambert absorption model — each colorant darkens proportionally.",
+      "whyUseful": "Iron has the biggest effect (square root because it saturates). Map as a landscape to see the 'dark zones' of the Stull chart. Approximate — atmosphere, cooling, thickness all matter.",
+      "references": ["Eppler (1987)"]
+    },
+    {
+      "number": 126,
+      "key": "color_a_ox",
+      "label": "Pred. a* (Oxidation)",
+      "category": "Color Prediction",
+      "uiGroup": "Color Prediction",
+      "equation": "a* = 10·Fe − 5·Cu − 15·Cr + 3·Mn",
+      "unit": "CIE a* (+ red, − green)",
+      "whatItIs": "Predicted red/green axis in CIE color space.",
+      "whyUseful": "Iron pushes toward warm reds/browns. Copper and chromium push toward green. Manganese adds slight warmth. Directional colour guide for warm vs cool tones.",
+      "references": ["Eppler (1987)"]
+    },
+    {
+      "number": 127,
+      "key": "color_b_ox",
+      "label": "Pred. b* (Oxidation)",
+      "category": "Color Prediction",
+      "uiGroup": "Color Prediction",
+      "equation": "b* = 15·Fe + 5·Ti − 25·Co + 8·Mn",
+      "unit": "CIE b* (+ yellow, − blue)",
+      "whatItIs": "Predicted yellow/blue axis in CIE color space.",
+      "whyUseful": "Iron and titanium push toward warm yellows. Cobalt pushes strongly toward blue (largest coefficient). Manganese adds warmth. Map for yellow/amber vs blue tones.",
+      "references": ["Eppler (1987)"]
+    },
+    {
+      "number": 128,
+      "key": "soak_benefit",
+      "label": "Soak Benefit Index",
+      "category": "Kiln Process",
+      "uiGroup": "Kiln Process",
+      "equation": "|B/(T_fire − C)²| × 500 — VFT slope at firing temperature",
+      "unit": "index (0–10)",
+      "whatItIs": "Value of holding at peak temperature (soaking). The derivative of the VFT curve at firing temp.",
+      "whyUseful": "Steep VFT slope = every extra minute of soak produces significant viscosity reduction — soaking is highly beneficial. If flat, soaking does little. Tells you whether to hold at peak or save fuel.",
+      "references": ["Giordano et al. (2008)"]
+    },
+    {
+      "number": 129,
+      "key": "cooling_crystal_window",
+      "label": "Crystal Window (°C)",
+      "category": "Kiln Process",
+      "uiGroup": "Kiln Process",
+      "equation": "T_liquidus − Tg",
+      "unit": "°C",
+      "whatItIs": "Temperature range during cooling where crystals can nucleate and grow.",
+      "whyUseful": "Wider = more time for crystals (crystalline glaze artists want wide). Narrow = less chance of unwanted devitrification (functional potters want narrow). Map to design firing schedules.",
+      "references": ["Zanotto (1997)", "Fokin et al. (2006)"]
+    },
+    {
+      "number": 130,
+      "key": "thermal_conductivity",
+      "label": "Thermal Cond. (W/m·K)",
+      "category": "Thermal Transport",
+      "uiGroup": "Thermal Transport",
+      "equation": "λ = Σ xᵢ·λᵢ — additive model, 12-oxide table",
+      "unit": "W/m·K",
+      "whatItIs": "Rate of heat transfer through the glaze. Typical: 0.8–1.5 W/m·K.",
+      "whyUseful": "Lower = more insulating (coffee stays hot longer). Higher = better heat spreading (fewer thermal gradients → fewer thermal shock cracks). Map to design insulating vs heat-spreading surfaces.",
+      "references": ["Susa et al. (1995)", "Kang & Morita (2006)"]
+    },
+    {
+      "number": 131,
+      "key": "specific_heat",
+      "label": "Specific Heat (J/g·K)",
+      "category": "Thermal Transport",
+      "uiGroup": "Thermal Transport",
+      "equation": "Cp = Σ(xᵢ·Cpᵢ) / Σ(xᵢ·Mᵢ) — 12-oxide table",
+      "unit": "J/g·K",
+      "whatItIs": "Heat capacity per gram. Typical: 0.7–1.1 J/g·K.",
+      "whyUseful": "Higher Cp = more energy to heat/cool = slower temperature changes in the kiln. Affects firing cost, cooling rate, and thermal shock response.",
+      "references": ["Richet & Bottinga (1985)", "Stebbins et al. (1984)"]
+    },
+    {
+      "number": 132,
+      "key": "thermal_diffusivity",
+      "label": "Thermal Diffusivity (mm²/s)",
+      "category": "Thermal Transport",
+      "uiGroup": "Thermal Transport",
+      "equation": "α = λ / (ρ·Cp)",
+      "unit": "mm²/s",
+      "whatItIs": "How fast heat penetrates the material. Typical: 0.4–0.8 mm²/s.",
+      "whyUseful": "Higher = temperature equilibrates faster through thickness → fewer thermal gradients → less warping/cracking. Lower = surface heats while interior stays cold → thermal shock risk.",
+      "references": ["Susa et al. (1995)"]
+    },
+    {
+      "number": 133,
+      "key": "redox_buffer",
+      "label": "Redox Buffer Capacity",
+      "category": "Redox",
+      "uiGroup": "Redox",
+      "equation": "Σ nᵢ·Δzᵢ for polyvalent ions: Fe(1), Mn(2), Cu(1), Cr(1), Co(1), Ti(1)",
+      "unit": "electron equivalents",
+      "whatItIs": "Total electron-exchange capacity. How much atmosphere variation the glaze can absorb.",
+      "whyUseful": "High = colour stable across firing variation (atmosphere changes absorbed). Low = sensitive to kiln atmosphere (intentional for effects like copper reds). For consistent production want moderate buffer. For artistic variation, low buffer = more character.",
+      "references": ["Schreiber (1987)", "Kress & Carmichael (1991)"]
+    }
+  ],
+
+  "academicReferences": [
+    {
+      "shortCitation": "Anderson & Stuart (1954)",
+      "fullReference": "Anderson, O.L. & Stuart, D.A. \"Calculation of activation energy of ionic conductivity in silica glasses\"",
+      "topicsUsedIn": ["ionic_conductivity"]
+    },
+    {
+      "shortCitation": "Angell (1995)",
+      "fullReference": "Angell, C.A. \"Formation of glasses from liquids and biopolymers\" Science 267, 1924",
+      "topicsUsedIn": ["fragility_index"]
+    },
+    {
+      "shortCitation": "Appen (1961/1974)",
+      "fullReference": "Appen, A.A. \"Glass Chemistry\" (Leningrad, 1961; 2nd ed. 1974)",
+      "topicsUsedIn": ["thermal_expansion", "refractive_index", "density", "molar_mass"]
+    },
+    {
+      "shortCitation": "Bridge et al. (1983)",
+      "fullReference": "Bridge, B., Patel, N.D., Waters, D.N. \"Elastic constants of heavy metal oxide glasses\"",
+      "topicsUsedIn": ["poisson_ratio"]
+    },
+    {
+      "shortCitation": "Britt (2007)",
+      "fullReference": "Britt, J. \"The Complete Guide to High-Fire Glazes\" (Lark Books, 2007)",
+      "topicsUsedIn": ["tenmoku_index"]
+    },
+    {
+      "shortCitation": "Cabral & Fokin (2004)",
+      "fullReference": "Cabral, A.A. & Fokin, V.M. \"On the critical cooling rate for glass formation\"",
+      "topicsUsedIn": ["critical_cooling_rate"]
+    },
+    {
+      "shortCitation": "Cable & Bower (1965)",
+      "fullReference": "Cable, M. & Bower, C. \"The diffusion of gases through glass\"",
+      "topicsUsedIn": ["volatilization_index"]
+    },
+    {
+      "shortCitation": "Charles (1969)",
+      "fullReference": "Charles, R.J. \"Phase separation in borosilicate glasses\"",
+      "topicsUsedIn": ["phase_sep_index"]
+    },
+    {
+      "shortCitation": "Clark & Sutton (1996)",
+      "fullReference": "Clark, D.E. & Sutton, W.H. \"Microwave processing of materials\"",
+      "topicsUsedIn": ["dielectric_constant", "microwave_score", "loss_tangent"]
+    },
+    {
+      "shortCitation": "Conradt (2008)",
+      "fullReference": "Conradt, R. \"Chemical durability of oxide glasses in aqueous solutions\"",
+      "topicsUsedIn": ["hydration_energy", "durability"]
+    },
+    {
+      "shortCitation": "Day (1976)",
+      "fullReference": "Day, D.E. \"Mixed alkali glasses — their properties and uses\"",
+      "topicsUsedIn": ["mixed_alkali_effect"]
+    },
+    {
+      "shortCitation": "Dell & Bray (1983)",
+      "fullReference": "Dell, W.J. & Bray, P.J. \"¹¹B NMR studies of borosilicate glasses\"",
+      "topicsUsedIn": ["boron_n4_fraction", "boron_ratio"]
+    },
+    {
+      "shortCitation": "Dietzel (1942)",
+      "fullReference": "Dietzel, A.H. \"Die Kationenfeldstärken und ihre Beziehungen\" Z. Elektrochem. 48, 9",
+      "topicsUsedIn": ["surface_tension", "crawl_risk", "healing_index"]
+    },
+    {
+      "shortCitation": "Dimitrov & Komatsu (2010)",
+      "fullReference": "Dimitrov, V. & Komatsu, T. \"Optical basicity and electronic polarizability\"",
+      "topicsUsedIn": ["optical_basicity", "optical_bandgap"]
+    },
+    {
+      "shortCitation": "Duffy & Ingram (1971/1976)",
+      "fullReference": "Duffy, J.A. & Ingram, M.D. \"Establishment of an optical scale for Lewis basicity in inorganic oxyacids\" (1971); extended 1976",
+      "topicsUsedIn": ["optical_basicity"]
+    },
+    {
+      "shortCitation": "Duffy (1993/2002)",
+      "fullReference": "Duffy, J.A. \"A review of optical basicity and its applications\"",
+      "topicsUsedIn": ["fe_redox_estimate", "optical_bandgap"]
+    },
+    {
+      "shortCitation": "Eppler & Eppler (2000)",
+      "fullReference": "Eppler, R.A. & Eppler, D.R. \"Glazes and Glass Coatings\" (ACS, 2000)",
+      "topicsUsedIn": ["fluidity", "food_safety_score", "opacity_predictor", "crawl_risk", "pinhole_risk"]
+    },
+    {
+      "shortCitation": "Eppler (1987)",
+      "fullReference": "Eppler, R.A. \"Colorants for ceramics\" in Kirk-Othmer Encyclopedia",
+      "topicsUsedIn": ["fe_color_ox", "fe_color_red", "total_colorant", "fe_ti_ratio", "color_L_ox", "color_a_ox", "color_b_ox"]
+    },
+    {
+      "shortCitation": "Fluegel (2007)",
+      "fullReference": "Fluegel, A. \"Global model for calculating glass properties\" Glass Technol. 48(1), 13",
+      "topicsUsedIn": ["viscosity_index", "grd_viscosity"]
+    },
+    {
+      "shortCitation": "Fokin et al. (2006)",
+      "fullReference": "Fokin, V.M., Yuritsyn, N.S., Zanotto, E.D. \"Nucleation and crystallization kinetics in silicate glasses\"",
+      "topicsUsedIn": ["devit_index", "devit_resistance", "cooling_crystal_window"]
+    },
+    {
+      "shortCitation": "Frankel et al. (2018)",
+      "fullReference": "Frankel, G.S., et al. \"A comparative review of the aqueous corrosion of glasses, crystalline ceramics, and metals\"",
+      "topicsUsedIn": ["hydration_energy", "leach_risk"]
+    },
+    {
+      "shortCitation": "Giordano et al. (2008)",
+      "fullReference": "Giordano, D., Russell, J.K., Dingwell, D.B. \"Viscosity of magmatic liquids: A model\" EPSL 271, 123",
+      "topicsUsedIn": ["grd_viscosity", "softening_point", "annealing_point", "strain_point", "flow_point", "soak_benefit"]
+    },
+    {
+      "shortCitation": "Green (1998)",
+      "fullReference": "Green, D.J. \"An Introduction to the Mechanical Properties of Ceramics\" (Cambridge, 1998)",
+      "topicsUsedIn": ["bulk_modulus", "shear_modulus"]
+    },
+    {
+      "shortCitation": "Hamer & Hamer (2004)",
+      "fullReference": "Hamer, F. & Hamer, J. \"The Potter's Dictionary of Materials and Techniques\" (5th ed., 2004)",
+      "topicsUsedIn": ["MgO", "BaO", "shino_index"]
+    },
+    {
+      "shortCitation": "Hasselman (1969)",
+      "fullReference": "Hasselman, D.P.H. \"Unified theory of thermal shock fracture\"",
+      "topicsUsedIn": ["thermal_shock"]
+    },
+    {
+      "shortCitation": "Hecht (2002)",
+      "fullReference": "Hecht, E. \"Optics\" (4th ed., Addison Wesley, 2002)",
+      "topicsUsedIn": ["luster_index", "abbe_number"]
+    },
+    {
+      "shortCitation": "Hench & Clark (1978)",
+      "fullReference": "Hench, L.L. & Clark, D.E. \"Physical chemistry of glass surfaces\"",
+      "topicsUsedIn": ["durability", "acid_resistance", "leach_risk"]
+    },
+    {
+      "shortCitation": "Hesselberth & Roy (2002)",
+      "fullReference": "Hesselberth, J. & Roy, R. \"Mastering Cone 6 Glazes\" (Glaze Master Press, 2002)",
+      "topicsUsedIn": ["limit_conformance", "craze_risk", "food_safety_score", "combined_alkali"]
+    },
+    {
+      "shortCitation": "Hrubý (1972)",
+      "fullReference": "Hrubý, A. \"Evaluation of glass-forming tendency\" Czech. J. Phys. 22, 1187",
+      "topicsUsedIn": ["hruby_parameter"]
+    },
+    {
+      "shortCitation": "Ingram (1987)",
+      "fullReference": "Ingram, M.D. \"Ionic conductivity in glass\" Phys. Chem. Glasses 28, 215",
+      "topicsUsedIn": ["ionic_conductivity", "mixed_alkali_effect"]
+    },
+    {
+      "shortCitation": "Kalmanovitch & Frank (1986)",
+      "fullReference": "Kalmanovitch, D.P. & Frank, M. \"An effective model for viscosity of ash deposition\"",
+      "topicsUsedIn": ["liquidus_estimate", "melting_range", "liquidus_overshoot"]
+    },
+    {
+      "shortCitation": "Kang & Morita (2006)",
+      "fullReference": "Kang, Y. & Morita, K. \"Thermal conductivity of molten slags\"",
+      "topicsUsedIn": ["thermal_conductivity"]
+    },
+    {
+      "shortCitation": "Kingery et al. (1976)",
+      "fullReference": "Kingery, W.D., Bowen, H.K., Uhlmann, D.R. \"Introduction to Ceramics\" (2nd ed., Wiley, 1976)",
+      "topicsUsedIn": ["thermal_expansion", "glaze_stress", "stress_ratio"]
+    },
+    {
+      "shortCitation": "Kress & Carmichael (1991)",
+      "fullReference": "Kress, V.C. & Carmichael, I.S.E. \"Stoichiometry of the iron oxidation reaction in silicate melts\"",
+      "topicsUsedIn": ["fe_redox_estimate", "redox_buffer"]
+    },
+    {
+      "shortCitation": "Lawn & Marshall (1979)",
+      "fullReference": "Lawn, B.R. & Marshall, D.B. \"Hardness, toughness, and brittleness\" J. Am. Ceram. Soc. 62, 347",
+      "topicsUsedIn": ["brittleness"]
+    },
+    {
+      "shortCitation": "Levin et al.",
+      "fullReference": "Levin, E.M., Robbins, C.R., McMurdie, H.F. \"Phase Diagrams for Ceramists\" (ACS, multiple volumes)",
+      "topicsUsedIn": ["liquidus_field"]
+    },
+    {
+      "shortCitation": "Makishima & Mackenzie (1973/1975)",
+      "fullReference": "Makishima, A. & Mackenzie, J.D. \"Direct calculation of Young's modulus of glass\" J. Non-Cryst. Solids 12, 35",
+      "topicsUsedIn": ["youngs_modulus", "hardness", "packing_density", "stress_ratio"]
+    },
+    {
+      "shortCitation": "Mauro et al. (2009/2013)",
+      "fullReference": "Mauro, J.C. et al. \"Topological constraint theory of glass\" Am. Ceram. Soc. Bull. 90, 31",
+      "topicsUsedIn": ["constraints_per_atom"]
+    },
+    {
+      "shortCitation": "Mingos & Baghurst (1991)",
+      "fullReference": "Mingos, D.M.P. & Baghurst, D.R. \"Applications of microwave dielectric heating\"",
+      "topicsUsedIn": ["dielectric_constant", "loss_tangent", "microwave_score"]
+    },
+    {
+      "shortCitation": "Morey (1954)",
+      "fullReference": "Morey, G.W. \"The Properties of Glass\" (2nd ed., Reinhold, 1954)",
+      "topicsUsedIn": ["PbO"]
+    },
+    {
+      "shortCitation": "Muan & Osborn (1965)",
+      "fullReference": "Muan, A. & Osborn, E.F. \"Phase Equilibria among Oxides in Steelmaking\" (Addison-Wesley, 1965)",
+      "topicsUsedIn": ["liquidus_field", "eutectic_distance", "wollastonite_sat"]
+    },
+    {
+      "shortCitation": "Mysen & Richet (2005)",
+      "fullReference": "Mysen, B.O. & Richet, P. \"Silicate Glasses and Melts: Properties and Structure\" (Elsevier, 2005)",
+      "topicsUsedIn": ["nbo_t", "q4_fraction", "q2_fraction", "bubble_risk"]
+    },
+    {
+      "shortCitation": "Phillips (1979)",
+      "fullReference": "Phillips, J.C. \"Topology of covalent non-crystalline solids\" J. Non-Cryst. Solids 34, 153",
+      "topicsUsedIn": ["constraints_per_atom"]
+    },
+    {
+      "shortCitation": "Priven (2004)",
+      "fullReference": "Priven, A.I. \"General method for calculating the properties of oxide glasses and glass-forming melts\" Glass Phys. Chem. 30, 158",
+      "topicsUsedIn": ["tg_estimate", "working_range"]
+    },
+    {
+      "shortCitation": "Rhodes (1973)",
+      "fullReference": "Rhodes, D. \"Clay and Glazes for the Potter\" (Chilton, 1973)",
+      "topicsUsedIn": ["K2O", "MgO", "CaO", "tenmoku_index", "celadon_index", "copper_red_potential", "fe_color_red"]
+    },
+    {
+      "shortCitation": "Richet & Bottinga (1985)",
+      "fullReference": "Richet, P. & Bottinga, Y. \"Heat capacity of silicate liquids\" Geochim. Cosmochim. Acta 49, 471",
+      "topicsUsedIn": ["specific_heat"]
+    },
+    {
+      "shortCitation": "Rouxel (2007)",
+      "fullReference": "Rouxel, T. \"Elastic properties and short-to-medium range order in glasses\" J. Am. Ceram. Soc. 90, 3019",
+      "topicsUsedIn": ["poisson_ratio"]
+    },
+    {
+      "shortCitation": "Russell & Dingwell (2005)",
+      "fullReference": "Russell, J.K. & Dingwell, D.B. \"High-T viscosity parameterisation for silicate melts\"",
+      "topicsUsedIn": ["grd_viscosity"]
+    },
+    {
+      "shortCitation": "Schreiber (1987)",
+      "fullReference": "Schreiber, H.D. \"An electrochemical series of redox couples in silicate melts\" J. Non-Cryst. Solids 84, 129",
+      "topicsUsedIn": ["fe_redox_estimate", "redox_buffer"]
+    },
+    {
+      "shortCitation": "Sehgal & Ito (1999)",
+      "fullReference": "Sehgal, J. & Ito, S. \"Brittleness of glass\" J. Non-Cryst. Solids 253, 126",
+      "topicsUsedIn": ["fracture_toughness"]
+    },
+    {
+      "shortCitation": "Shand (1927)",
+      "fullReference": "Shand, S.J. \"A classification of igneous rocks\" (adapted for ceramic chemistry)",
+      "topicsUsedIn": ["asi", "excess_alkali"]
+    },
+    {
+      "shortCitation": "Shannon (1948)",
+      "fullReference": "Shannon, C.E. \"A Mathematical Theory of Communication\" Bell Syst. Tech. J. 27, 379–423",
+      "topicsUsedIn": ["flux_entropy", "comp_entropy"]
+    },
+    {
+      "shortCitation": "Shannon (1976)",
+      "fullReference": "Shannon, R.D. \"Revised effective ionic radii\" Acta Cryst. A32, 751",
+      "topicsUsedIn": ["packing_density"]
+    },
+    {
+      "shortCitation": "Shelby (2005)",
+      "fullReference": "Shelby, J.E. \"Introduction to Glass Science and Technology\" (2nd ed., Royal Society of Chemistry, 2005)",
+      "topicsUsedIn": ["Li2O", "B2O3", "modifier_fraction", "volatilization_index", "phase_sep_index"]
+    },
+    {
+      "shortCitation": "Stebbins et al. (1984)",
+      "fullReference": "Stebbins, J.F., Carmichael, I.S.E., Moret, L.K. \"Heat capacities of silicate liquids and glasses\"",
+      "topicsUsedIn": ["specific_heat", "q4_fraction"]
+    },
+    {
+      "shortCitation": "Stull (1912)",
+      "fullReference": "Stull, R.T. \"Transactions of the American Ceramic Society\" 14, 62 (1912)",
+      "topicsUsedIn": ["SiO2_Al2O3_ratio", "limit_conformance"]
+    },
+    {
+      "shortCitation": "Susa et al. (1995)",
+      "fullReference": "Susa, M., Kubota, S., et al. \"Thermal conductivity of CaO-SiO₂-Al₂O₃ glassy slags\"",
+      "topicsUsedIn": ["thermal_conductivity", "thermal_diffusivity"]
+    },
+    {
+      "shortCitation": "Taylor (1997)",
+      "fullReference": "Taylor, J.R. \"An Introduction to Error Analysis\" (University Science Books, 2nd ed., 1997)",
+      "topicsUsedIn": ["robustness_score", "critical_oxide", "error_width"]
+    },
+    {
+      "shortCitation": "Thorpe (1983)",
+      "fullReference": "Thorpe, M.F. \"Continuous deformations in random networks\" J. Non-Cryst. Solids 57, 355",
+      "topicsUsedIn": ["constraints_per_atom"]
+    },
+    {
+      "shortCitation": "Turnbull (1969)",
+      "fullReference": "Turnbull, D. \"Under what conditions can a glass be formed?\" Contemp. Phys. 10, 473",
+      "topicsUsedIn": ["reduced_tg"]
+    },
+    {
+      "shortCitation": "Volf (1984)",
+      "fullReference": "Volf, M.B. \"Chemical Approach to Glass\" (Elsevier, 1984)",
+      "topicsUsedIn": ["molar_refractivity", "dielectric_constant", "refractive_index"]
+    },
+    {
+      "shortCitation": "Yamane & Mackenzie (1974)",
+      "fullReference": "Yamane, M. & Mackenzie, J.D. \"Vickers hardness of glass\" J. Non-Cryst. Solids 15, 153",
+      "topicsUsedIn": ["hardness"]
+    },
+    {
+      "shortCitation": "Zanotto (1997)",
+      "fullReference": "Zanotto, E.D. \"Metastable phases in lithium disilicate glasses\" J. Non-Cryst. Solids 219, 42",
+      "topicsUsedIn": ["devit_index", "zn_crystal", "devit_resistance", "cooling_crystal_window"]
+    },
+    {
+      "shortCitation": "Zachariasen (1932)",
+      "fullReference": "Zachariasen, W.H. \"The atomic arrangement in glass\" J. Am. Chem. Soc. 54, 3841",
+      "topicsUsedIn": ["mean_coordination"]
+    }
+  ],
+
+  "mathematicalFoundations": [
+    {
+      "technique": "Additive linear models",
+      "equation": "Property = Σ xᵢ·factorᵢ",
+      "usedBy": ["thermal_expansion", "density", "refractive_index", "tg_estimate", "hardness", "specific_heat", "thermal_conductivity"],
+      "references": ["Appen (1961)", "Priven (2004)"]
+    },
+    {
+      "technique": "VFT non-linear viscosity",
+      "equation": "log η = A + B/(T−C)",
+      "usedBy": ["grd_viscosity", "softening_point", "annealing_point", "strain_point", "flow_point", "soak_benefit"],
+      "references": ["Giordano et al. (2008)"]
+    },
+    {
+      "technique": "Shannon entropy",
+      "equation": "H = −Σ pᵢ·ln(pᵢ)",
+      "usedBy": ["flux_entropy", "comp_entropy"],
+      "references": ["Shannon (1948)"]
+    },
+    {
+      "technique": "Clausius-Mossotti relation",
+      "equation": "ε = (1 + 2Rm/Vm) / (1 − Rm/Vm)",
+      "usedBy": ["dielectric_constant"],
+      "references": ["Volf (1984)"]
+    },
+    {
+      "technique": "Fresnel equations",
+      "equation": "R = ((n−1)/(n+1))²",
+      "usedBy": ["luster_index"],
+      "references": ["Hecht (2002)"]
+    },
+    {
+      "technique": "Phillips-Thorpe topology",
+      "equation": "Bond-stretching + bond-bending constraint counting",
+      "usedBy": ["constraints_per_atom"],
+      "references": ["Phillips (1979)", "Thorpe (1983)"]
+    },
+    {
+      "technique": "Numerical Jacobian (finite differencing)",
+      "equation": "∂f/∂xᵢ via ±Δx perturbation",
+      "usedBy": ["robustness_score", "critical_oxide", "error_width"],
+      "references": ["Taylor (1997)"]
+    },
+    {
+      "technique": "Error propagation (GUM)",
+      "equation": "σ² = Σ(∂f/∂xᵢ)²·σᵢ²",
+      "usedBy": ["error_width"],
+      "references": ["Taylor (1997)"]
+    },
+    {
+      "technique": "Euclidean metric",
+      "equation": "d = √(Σ Δxᵢ²)",
+      "usedBy": ["eutectic_distance", "celadon_index"],
+      "references": []
+    },
+    {
+      "technique": "Recursive property evaluation",
+      "equation": "Properties depending on other computed properties",
+      "usedBy": ["glaze_stress", "stress_ratio", "pinhole_risk", "bubble_risk", "healing_index"],
+      "references": []
+    }
+  ],
+
+  "walkFeatures": [
+    {
+      "name": "UMF Delta Display",
+      "version": "v3.6.0",
+      "description": "Click two points on the Stull chart to see the exact oxide-by-oxide difference between them.",
+      "purpose": "Shows which oxides are responsible for property differences between two formulas."
+    },
+    {
+      "name": "Interpolation Path",
+      "version": "v3.6.1",
+      "description": "Draws a virtual line between two compositions with a slider that walks along it, computing every Z-axis value at intermediate points.",
+      "purpose": "Answer 'what would happen if I moved 30% toward recipe B?' without mixing and firing test tiles."
+    },
+    {
+      "name": "Recipe Suggestions",
+      "version": "v3.6.2",
+      "description": "Given a target UMF point, suggests real material combinations that achieve that composition.",
+      "purpose": "Bridges theory and practice: the Stull chart shows WHAT you want, this shows HOW to make it."
+    },
+    {
+      "name": "Wet Blend",
+      "version": "v3.6.3",
+      "description": "Simulates physically mixing two glazes at any ratio, computing the resulting UMF plus all 133 properties on the blended composition.",
+      "purpose": "Discover that a 70:30 blend produces better COE match than either glaze alone."
+    }
+  ]
+}
