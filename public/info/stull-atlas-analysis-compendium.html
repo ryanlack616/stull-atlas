@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stull Atlas — Advanced Analysis Compendium</title>
+<script>
+window.MathJax = {
+  loader: { load: ['[tex]/mhchem', '[tex]/cancel', '[tex]/boldsymbol'] },
+  tex: {
+    inlineMath: [['$','$']],
+    displayMath: [['\\[','\\]']],
+    processEscapes: true,
+    tags: 'ams',
+    packages: { '[+]': ['mhchem', 'cancel', 'boldsymbol'] },
+    macros: {
+      SiO: '\\text{SiO}_2',
+      AlO: '\\text{Al}_2\\text{O}_3',
+      NaO: '\\text{Na}_2\\text{O}',
+      KO: '\\text{K}_2\\text{O}',
+      CaOx: '\\text{CaO}',
+      MgOx: '\\text{MgO}',
+      BO: '\\text{B}_2\\text{O}_3',
+      FeO: '\\text{Fe}_2\\text{O}_3',
+      LiO: '\\text{Li}_2\\text{O}',
+      ZnOx: '\\text{ZnO}',
+      BaOx: '\\text{BaO}',
+      SrOx: '\\text{SrO}',
+      PbOx: '\\text{PbO}',
+      TiO: '\\text{TiO}_2',
+      ZrO: '\\text{ZrO}_2',
+      SnO: '\\text{SnO}_2',
+      CoOx: '\\text{CoO}',
+      CuOx: '\\text{CuO}',
+      MnOx: '\\text{MnO}',
+      NiOx: '\\text{NiO}',
+      CrO: '\\text{Cr}_2\\text{O}_3',
+      PO: '\\text{P}_2\\text{O}_5',
+      arraystretch: '1.3',
+      bm: ['\\boldsymbol{#1}', 1],
+    }
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+:root {
+  --accent: #8B5CF6;
+  --bg: #0f0f0f;
+  --surface: #1a1a1a;
+  --surface2: #242424;
+  --text: #e5e5e5;
+  --text-muted: #a3a3a3;
+  --border: #333;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg); color: var(--text);
+  line-height: 1.75; font-size: 16px;
+}
+.top-nav {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 12px 24px; position: sticky; top: 0; z-index: 100;
+  display: flex; flex-wrap: wrap; gap: 8px; backdrop-filter: blur(10px);
+}
+.nav-link {
+  color: var(--text-muted); text-decoration: none; font-size: 13px;
+  padding: 4px 10px; border-radius: 4px; transition: all .2s;
+}
+.nav-link:hover { color: var(--accent); background: rgba(255,255,255,.05); }
+.page-container {
+  display: grid; grid-template-columns: 260px 1fr;
+  max-width: 1400px; margin: 0 auto; min-height: 100vh;
+}
+@media (max-width: 900px) {
+  .page-container { grid-template-columns: 1fr; }
+  .toc { display: none; }
+}
+.toc {
+  position: sticky; top: 60px; height: calc(100vh - 60px);
+  overflow-y: auto; padding: 24px 16px;
+  border-right: 1px solid var(--border); font-size: 13px;
+}
+.toc h2 {
+  font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--text-muted); margin-bottom: 16px;
+}
+.toc ul { list-style: none; }
+.toc li { margin-bottom: 3px; }
+.toc a {
+  color: var(--text-muted); text-decoration: none; display: block;
+  padding: 3px 8px; border-radius: 4px; transition: all .2s; line-height: 1.4;
+}
+.toc a:hover { color: var(--accent); background: rgba(255,255,255,.04); }
+.toc-h3 { padding-left: 14px; }
+.toc-h3 a { font-size: 12px; }
+.content { padding: 40px 52px 100px; max-width: 880px; }
+.title-page {
+  text-align: center; padding: 56px 20px 36px; margin-bottom: 44px;
+  border-bottom: 1px solid var(--border);
+}
+.main-title {
+  font-size: 2.6em; font-weight: 800; color: var(--accent);
+  margin-bottom: 8px; letter-spacing: -0.5px;
+}
+.subtitle { font-size: 1.3em; color: var(--text-muted); margin-bottom: 14px; }
+.title-desc { color: var(--text-muted); font-size: 0.95em; max-width: 600px; margin: 6px auto; }
+.abstract {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 24px 28px; margin-bottom: 40px;
+}
+.abstract h2 { color: var(--accent); font-size: 1.1em; margin-bottom: 12px; }
+.abstract p { color: var(--text-muted); font-size: 0.95em; line-height: 1.7; }
+.part-header { margin: 48px 0 24px; }
+.part-title {
+  font-size: 2.2em; color: var(--accent); text-align: center;
+  padding: 40px 0 20px; border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+}
+h2.section-title {
+  font-size: 1.55em; color: var(--accent); margin: 52px 0 18px;
+  padding-bottom: 10px; border-bottom: 2px solid var(--accent);
+}
+h3.subsection-title {
+  font-size: 1.2em; color: var(--text); margin: 36px 0 14px; font-weight: 600;
+}
+h4.subsubsection-title {
+  font-size: 1.02em; color: var(--text-muted); font-style: italic; margin: 26px 0 10px;
+}
+.styled-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 4px solid var(--accent); border-radius: 6px;
+  padding: 22px 26px; margin: 24px 0;
+}
+.box-title { font-weight: 700; font-size: 1.05em; margin-bottom: 12px; }
+.box-content { color: var(--text); line-height: 1.75; }
+.box-content p { margin-bottom: 10px; }
+.equationbox { background: rgba(245, 158, 11, .04); border-color: rgba(255,255,255,.1); border-left-color: #F59E0B; }
+.infobox { background: rgba(59, 130, 246, .04); border-color: rgba(255,255,255,.1); border-left-color: #3B82F6; }
+.warnbox { background: rgba(239, 68, 68, .04); border-color: rgba(255,255,255,.1); border-left-color: #EF4444; }
+.examplebox { background: rgba(34, 197, 94, .04); border-color: rgba(255,255,255,.1); border-left-color: #22C55E; }
+.deepbox { background: rgba(124, 58, 237, .04); border-color: rgba(255,255,255,.1); border-left-color: #7C3AED; }
+.crystalbox { background: rgba(13, 148, 136, .04); border-color: rgba(255,255,255,.1); border-left-color: #0D9488; }
+.cobaltbox { background: rgba(30, 58, 138, .06); border-color: rgba(255,255,255,.1); border-left-color: #1E3A8A; }
+.copperbox { background: rgba(184, 115, 51, .04); border-color: rgba(255,255,255,.1); border-left-color: #B87333; }
+.ironbox { background: rgba(139, 69, 19, .04); border-color: rgba(255,255,255,.1); border-left-color: #8B4513; }
+.histbox { background: rgba(13, 148, 136, .04); border-color: rgba(255,255,255,.1); border-left-color: #0D9488; }
+.safebox { background: rgba(71, 85, 105, .06); border-color: rgba(255,255,255,.1); border-left-color: #475569; }
+
+.table-wrapper { overflow-x: auto; margin: 18px 0; }
+.styled-table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+.styled-table th {
+  background: var(--surface2); color: var(--accent); font-weight: 600;
+  text-align: left; padding: 10px 14px; border-bottom: 2px solid var(--accent);
+}
+.styled-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+.styled-table tr:hover td { background: rgba(255,255,255,.02); }
+ul, ol { margin: 14px 0; padding-left: 26px; }
+li { margin-bottom: 7px; line-height: 1.65; }
+dl.description-list { margin: 18px 0; }
+dl.description-list dt {
+  color: var(--accent); font-size: 1.05em; margin-top: 20px; padding-bottom: 4px;
+}
+dl.description-list dd { margin: 0 0 14px 0; padding-left: 22px; line-height: 1.75; }
+.math-display { overflow-x: auto; padding: 14px 0; }
+p { margin-bottom: 14px; }
+code {
+  background: var(--surface2); padding: 2px 6px; border-radius: 3px;
+  font-size: 0.9em; color: #e879f9; font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+.centered { text-align: center; margin: 18px 0; }
+.small-caps { font-variant: small-caps; }
+.fbox { border: 1px solid var(--border); padding: 4px 8px; border-radius: 3px; }
+.footnote-ref a { color: var(--accent); text-decoration: none; font-size: 0.8em; }
+.footnotes { margin-top: 60px; font-size: 0.9em; color: var(--text-muted); }
+.footnotes hr { border: none; border-top: 1px solid var(--border); margin-bottom: 16px; }
+.footnotes-title { font-size: 1.1em; color: var(--accent); margin-bottom: 12px; }
+.footnote-list { padding-left: 20px; }
+.footnote-list li { margin-bottom: 8px; line-height: 1.6; }
+.footnote-backref { text-decoration: none; color: var(--accent); margin-left: 4px; }
+.caption { font-size: 0.9em; color: var(--text-muted); text-align: center; margin: 8px 0; }
+strong { color: #fff; }
+a { color: var(--accent); }
+/* Figures */
+.figure { text-align: center; margin: 24px 0; }
+.responsive-img { max-width: 100%; height: auto; border-radius: 6px; }
+/* Code blocks */
+pre { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 16px 20px; overflow-x: auto; margin: 18px 0; }
+pre code { background: none; padding: 0; color: var(--text); font-size: 0.88em; }
+/* Theorem blocks */
+.theorem-block { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 6px; padding: 18px 22px; margin: 22px 0; }
+.theorem-heading { font-weight: 700; font-size: 1.02em; margin-bottom: 8px; }
+.theorem-body { line-height: 1.75; }
+.proof-block { border-left-style: dashed; }
+.qed { text-align: right; font-size: 1.1em; margin-top: 4px; color: var(--text-muted); }
+/* Bibliography */
+.bibliography { margin: 40px 0; padding-top: 20px; border-top: 2px solid var(--border); }
+.bib-list { padding-left: 26px; }
+.bib-list li { margin-bottom: 10px; font-size: 0.92em; }
+/* Cross-ref links */
+.ref-link { color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); }
+.ref-link:hover { border-bottom-style: solid; }
+/* Paragraph/subparagraph */
+h5.paragraph-title { font-size: 0.98em; font-weight: 700; margin: 20px 0 6px; color: var(--text); }
+h6.subparagraph-title { font-size: 0.92em; font-weight: 600; margin: 16px 0 4px; color: var(--text-muted); }
+/* Placeholders */
+.placeholder { background: var(--surface2); border: 1px dashed var(--border); border-radius: 6px; padding: 20px; text-align: center; color: var(--text-muted); font-style: italic; margin: 18px 0; }
+/* Dark/light toggle */
+.theme-toggle { cursor: pointer; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); font-size: 13px; padding: 4px 10px; margin-left: auto; }
+.theme-toggle:hover { color: var(--accent); }
+/* TOC scroll-spy */
+.toc a.active { color: var(--accent); background: rgba(99,102,241,.08); font-weight: 600; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+/* Light theme */
+body.light { --bg: #fafafa; --surface: #fff; --surface2: #f3f4f6; --text: #1f2937; --text-muted: #6b7280; --border: #e5e7eb; }
+body.light strong { color: #111827; }
+/* Print */
+@media print {
+  body { background: #fff !important; color: #000 !important; font-size: 11pt; }
+  .top-nav, .toc, .theme-toggle { display: none !important; }
+  .page-container { display: block !important; }
+  .content { max-width: 100% !important; padding: 0 !important; }
+  a { color: #000 !important; text-decoration: underline; }
+  .styled-box, .theorem-block { break-inside: avoid; border-color: #999 !important; }
+  pre { border-color: #ccc !important; }
+}
+</style>
+</head>
+<body>
+<nav class="top-nav"><a href="index.html" class="nav-link">← Home</a> <a href="stull-atlas-report.html" class="nav-link">Comprehensive Report</a> <a href="stull-atlas-equations-report.html" class="nav-link">Equations Deep Dive</a> <a href="stull-atlas-flux-report.html" class="nav-link">Flux & Flux Ratio Report</a> <a href="stull-atlas-colorant-report.html" class="nav-link">Colorant & Crystal Field Theory</a> <a href="stull-atlas-crystallisation-report.html" class="nav-link">Crystallisation & Phase Equilibria</a> <a href="stull-atlas-analysis-compendium.html" class="nav-link">Advanced Analysis Compendium</a><button class="theme-toggle" onclick="document.body.classList.toggle('light')">☀/☾</button></nav>
+<div class="page-container">
+<nav class="toc"><h2>Contents</h2><ul><li class="toc-h2"><a href="#introduction-to-glaze-defects">Introduction to Glaze Defects</a></li><li class="toc-h2"><a href="#crazing">Crazing</a></li><li class="toc-h3"><a href="#what-it-is">What It Is</a></li><li class="toc-h3"><a href="#the-physics">The Physics</a></li><li class="toc-h3"><a href="#the-role-of-coe-atlas-eq-nbsp-6">The Role of COE (Atlas Eq.&nbsp;6)</a></li><li class="toc-h3"><a href="#crazing-diagnostic-flowchart">Crazing Diagnostic Flowchart</a></li><li class="toc-h2"><a href="#shivering-spalling">Shivering (Spalling)</a></li><li class="toc-h3"><a href="#what-it-is-2">What It Is</a></li><li class="toc-h3"><a href="#the-physics-2">The Physics</a></li><li class="toc-h3"><a href="#fixes">Fixes</a></li><li class="toc-h2"><a href="#crawling">Crawling</a></li><li class="toc-h3"><a href="#what-it-is-3">What It Is</a></li><li class="toc-h3"><a href="#the-physics-3">The Physics</a></li><li class="toc-h2"><a href="#pinholing-amp-blistering">Pinholing &amp; Blistering</a></li><li class="toc-h3"><a href="#what-it-is-4">What It Is</a></li><li class="toc-h3"><a href="#the-physics-4">The Physics</a></li><li class="toc-h3"><a href="#atlas-connection">Atlas Connection</a></li><li class="toc-h3"><a href="#pinholing-diagnostic">Pinholing Diagnostic</a></li><li class="toc-h2"><a href="#dunting">Dunting</a></li><li class="toc-h3"><a href="#what-it-is-5">What It Is</a></li><li class="toc-h3"><a href="#the-physics-5">The Physics</a></li><li class="toc-h3"><a href="#prevention">Prevention</a></li><li class="toc-h2"><a href="#defect-summary-matrix">Defect Summary Matrix</a></li><li class="toc-h2"><a href="#the-sensitivity-question">The Sensitivity Question</a></li><li class="toc-h3"><a href="#the-jacobian-matrix">The Jacobian Matrix</a></li><li class="toc-h3"><a href="#sensitivity-heatmap">Sensitivity Heatmap</a></li><li class="toc-h2"><a href="#gradient-descent-recipe-design">Gradient-Descent Recipe Design</a></li><li class="toc-h3"><a href="#the-optimisation-problem">The Optimisation Problem</a></li><li class="toc-h3"><a href="#the-gradient">The Gradient</a></li><li class="toc-h3"><a href="#pareto-frontiers">Pareto Frontiers</a></li><li class="toc-h2"><a href="#which-oxide-is-the-strongest-lever">Which Oxide Is the Strongest Lever?</a></li><li class="toc-h2"><a href="#the-vft-derived-firing-profile">The VFT-Derived Firing Profile</a></li><li class="toc-h3"><a href="#the-optimal-soak-temperature">The Optimal Soak Temperature</a></li><li class="toc-h2"><a href="#soak-optimisation">Soak Optimisation</a></li><li class="toc-h3"><a href="#why-soak">Why Soak?</a></li><li class="toc-h3"><a href="#drop-and-soak-vs-traditional-soak">Drop-and-Soak vs. Traditional Soak</a></li><li class="toc-h2"><a href="#atmosphere-chemistry">Atmosphere Chemistry</a></li><li class="toc-h3"><a href="#oxygen-partial-pressure-profiles">Oxygen Partial Pressure Profiles</a></li><li class="toc-h3"><a href="#effect-on-atlas-properties">Effect on Atlas Properties</a></li><li class="toc-h2"><a href="#volatile-loss-kinetics">Volatile Loss Kinetics</a></li><li class="toc-h3"><a href="#what-volatilises">What Volatilises?</a></li><li class="toc-h3"><a href="#consequences">Consequences</a></li><li class="toc-h2"><a href="#energy-cost-modelling">Energy Cost Modelling</a></li><li class="toc-h3"><a href="#the-energy-temperature-relationship">The Energy–Temperature Relationship</a></li><li class="toc-h3"><a href="#low-fire-design-via-atlas">Low-Fire Design via Atlas</a></li><li class="toc-h2"><a href="#introduction-the-deep-archive">Introduction: The Deep Archive</a></li><li class="toc-h2"><a href="#song-dynasty-celadons-china-960-1279-ce">Song Dynasty Celadons (China, 960–1279 CE)</a></li><li class="toc-h3"><a href="#the-longquan-tradition">The Longquan Tradition</a></li><li class="toc-h3"><a href="#atlas-analysis">Atlas Analysis</a></li><li class="toc-h2"><a href="#roman-glass-1st-4th-century-ce">Roman Glass (1st–4th Century CE)</a></li><li class="toc-h3"><a href="#the-soda-lime-formula">The Soda–Lime Formula</a></li><li class="toc-h3"><a href="#atlas-analysis-2">Atlas Analysis</a></li><li class="toc-h2"><a href="#islamic-lustre-ware-9th-14th-century-ce">Islamic Lustre Ware (9th–14th Century CE)</a></li><li class="toc-h3"><a href="#the-lustre-process">The Lustre Process</a></li><li class="toc-h3"><a href="#atlas-connections">Atlas Connections</a></li><li class="toc-h2"><a href="#iznik-fritware-ottoman-empire-15th-17th-century-ce">Iznik Fritware (Ottoman Empire, 15th–17th Century CE)</a></li><li class="toc-h3"><a href="#atlas-analysis-3">Atlas Analysis</a></li><li class="toc-h2"><a href="#joseon-buncheong-korea-15th-16th-century-ce">Joseon Buncheong (Korea, 15th–16th Century CE)</a></li><li class="toc-h2"><a href="#italian-majolica-15th-17th-century-ce">Italian Majolica (15th–17th Century CE)</a></li><li class="toc-h3"><a href="#the-tin-opacified-glaze">The Tin-Opacified Glaze</a></li><li class="toc-h3"><a href="#the-pigment-palette">The Pigment Palette</a></li><li class="toc-h2"><a href="#from-rocks-to-oxides">From Rocks to Oxides</a></li><li class="toc-h3"><a href="#the-umf-convention">The UMF Convention</a></li><li class="toc-h2"><a href="#mineral-decomposition-reactions">Mineral Decomposition Reactions</a></li><li class="toc-h2"><a href="#batch-to-umf-conversion">Batch-to-UMF Conversion</a></li><li class="toc-h3"><a href="#the-forward-problem-umf-batch">The Forward Problem: UMF → Batch</a></li><li class="toc-h3"><a href="#the-inverse-problem-batch-umf">The Inverse Problem: Batch → UMF</a></li><li class="toc-h2"><a href="#material-substitution">Material Substitution</a></li><li class="toc-h3"><a href="#substitution-equivalence">Substitution Equivalence</a></li><li class="toc-h3"><a href="#flux-sourcing-strategies">Flux Sourcing Strategies</a></li><li class="toc-h2"><a href="#the-chart-as-a-property-landscape">The Chart as a Property Landscape</a></li><li class="toc-h3"><a href="#iso-property-contours">Iso-Property Contours</a></li><li class="toc-h3"><a href="#the-safe-zone-and-boundary-regions">The “Safe Zone” and Boundary Regions</a></li><li class="toc-h2"><a href="#property-gradients-and-design-vectors">Property Gradients and Design Vectors</a></li><li class="toc-h3"><a href="#moving-around-the-chart">Moving Around the Chart</a></li><li class="toc-h3"><a href="#the-si-al-ratio-as-a-master-variable">The Si:Al Ratio as a Master Variable</a></li><li class="toc-h2"><a href="#the-leaching-problem">The Leaching Problem</a></li><li class="toc-h2"><a href="#regulatory-standards">Regulatory Standards</a></li><li class="toc-h3"><a href="#us-fda-california-proposition-65">US FDA / California Proposition 65</a></li><li class="toc-h3"><a href="#european-union-84-500-eec-amended">European Union (84/500/EEC, amended)</a></li><li class="toc-h2"><a href="#atlas-equations-for-durability">Atlas Equations for Durability</a></li><li class="toc-h3"><a href="#chemical-durability-eq-nbsp-28">Chemical Durability (Eq.&nbsp;28)</a></li><li class="toc-h3"><a href="#hydration-free-energy-eq-nbsp-29">Hydration Free Energy (Eq.&nbsp;29)</a></li><li class="toc-h2"><a href="#safe-colorant-practices">Safe Colorant Practices</a></li><li class="toc-h2"><a href="#microwave-safety">Microwave Safety</a></li><li class="toc-h2"><a href="#the-nature-of-atlas-predictions">The Nature of Atlas Predictions</a></li><li class="toc-h3"><a href="#the-additive-assumption">The Additive Assumption</a></li><li class="toc-h2"><a href="#where-the-additive-model-works-well">Where the Additive Model Works Well</a></li><li class="toc-h3"><a href="#thermal-expansion-coe">Thermal Expansion (COE)</a></li><li class="toc-h3"><a href="#density-and-molar-volume">Density and Molar Volume</a></li><li class="toc-h3"><a href="#refractive-index">Refractive Index</a></li><li class="toc-h2"><a href="#where-the-additive-model-breaks-down">Where the Additive Model Breaks Down</a></li><li class="toc-h3"><a href="#viscosity">Viscosity</a></li><li class="toc-h3"><a href="#glass-transition-temperature">Glass Transition Temperature</a></li><li class="toc-h3"><a href="#surface-properties">Surface Properties</a></li><li class="toc-h2"><a href="#uncertainty-budgets">Uncertainty Budgets</a></li><li class="toc-h2"><a href="#accuracy-by-property-class">Accuracy by Property Class</a></li><li class="toc-h2"><a href="#improving-the-models">Improving the Models</a></li><li class="toc-h3"><a href="#beyond-additive-interaction-terms">Beyond Additive: Interaction Terms</a></li><li class="toc-h3"><a href="#machine-learning-approaches">Machine Learning Approaches</a></li><li class="toc-h3"><a href="#the-atlas-approach-honest-simplicity">The Atlas Approach: Honest Simplicity</a></li><li class="toc-h2"><a href="#cross-reference-to-companion-reports">Cross-Reference to Companion Reports</a></li></ul></nav>
+<main class="content">
+<div class="title-page">
+<h1 class="main-title">Stull Atlas</h1>
+<p class="subtitle"></p>
+<p class="title-desc">Eight Analytical Perspectives on Ceramic Glaze Science</p>
+<p class="title-desc">Companion Report to the Stull Atlas Application</p>
+</div>
+
+<div class="part-header"><h1 class="part-title">Defect Physics</h1></div>
+<a id="label-part-defects"></a>
+
+<h2 id="introduction-to-glaze-defects" class="section-title">Introduction to Glaze Defects</h2>
+
+<p>Every glaze defect is a message from the physics. Crazing says the thermal expansion is too high. Crawling says the surface tension is too high relative to the melt's ability to wet the body. Pinholing says gases were trapped. Understanding defects through the Atlas equations transforms troubleshooting from guesswork into engineering.</p>
+
+<p>This chapter covers the six major glaze defects: <strong>crazing</strong>, <strong>shivering</strong>, <strong>crawling</strong>, <strong>pinholing/blistering</strong>, <strong>crawling</strong>, and <strong>dunting</strong>. For each defect, we describe the physics, identify the controlling Atlas equations, and provide diagnostic flowcharts.</p>
+
+<h2 id="crazing" class="section-title">Crazing</h2>
+<a id="label-sec-crazing"></a>
+
+<h3 id="what-it-is" class="subsection-title">What It Is</h3>
+
+<p>Crazing is a network of fine cracks in the glaze surface. The cracks do not penetrate the clay body — they exist entirely within the glaze layer. Crazing may appear immediately after cooling, hours later, or even months/years later (“delayed crazing”).</p>
+
+<h3 id="the-physics" class="subsection-title">The Physics</h3>
+
+<p>Crazing occurs when the glaze is in <strong>tension</strong> — when it contracts more during cooling than the underlying body. The glaze “wants” to be smaller than the body, and when the tensile stress exceeds the glaze's fracture strength, it cracks.</p>
+
+<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Glaze Stress from Thermal Mismatch</div><div class="box-content">
+<div class="math-display">\begin{equation}
+    \sigma_{\text{glaze}} = \frac{E_g}{1 - \nu_g}\,(\alpha_g - \alpha_b)\,(T_{\text{set}} - T_{\text{room}})
+    \label{eq:crazing_stress}
+\end{equation}</div>
+where:
+<ul><li>$E_g$: Elastic modulus of the glaze (Atlas Eq.&nbsp;16, typically 60–80&nbsp;GPa)</li><li>$\nu_g$: Poisson's ratio of the glaze (Atlas Eq.&nbsp;17, typically 0.20–0.25)</li><li>$\alpha_g$: Coefficient of thermal expansion of the glaze (Atlas Eq.&nbsp;6)</li><li>$\alpha_b$: Coefficient of thermal expansion of the body</li><li>$T_{\text{set}}$: Temperature at which glaze becomes rigid ($\approx T_g + 50$°C)</li><li>$\sigma \gt  0$: Tension (crazing risk). $\sigma \lt  0$: Compression (shivering risk).</li></ul>
+</div></div>
+
+<p><strong>Crazing occurs when $\alpha_g \gt  \alpha_b$.</strong> The glaze contracts more than the body.</p>
+
+<h3 id="the-role-of-coe-atlas-eq-nbsp-6" class="subsection-title">The Role of COE (Atlas Eq.&nbsp;6)</h3>
+
+<p>The Atlas calculates COE using an additive model:
+<div class="math-display">\[\alpha_g = \sum_i x_i \cdot \alpha_i\]</div>
+where $x_i$ is the mole fraction of oxide $i$ and $\alpha_i$ is its expansion factor.</p>
+
+<p>Oxide contributions to expansion:
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>High Expansion (increase crazing)</strong></th><th><strong>Moderate</strong></th><th><strong>Low Expansion (reduce crazing)</strong></th></tr><tr><td>Na<sub>2</sub>O ($\alpha_i \approx 39.5$)</td><td>CaO ($\approx 16.3$)</td><td>SiO<sub>2</sub> ($\approx 3.7$)</td></tr><tr><td>K<sub>2</sub>O ($\approx 28.3$)</td><td>MgO ($\approx 4.5$)</td><td>Al<sub>2</sub>O<sub>3</sub> ($\approx 1.3$)</td></tr><tr><td>Li<sub>2</sub>O ($\approx 27.0$)</td><td>ZnO ($\approx 7.0$)</td><td>B<sub>2</sub>O<sub>3</sub> ($\approx -5.0$ to $+3.0$)</td></tr><tr><td>BaO ($\approx 20.0$)</td><td>Fe<sub>2</sub>O<sub>3</sub> ($\approx 11.0$)</td><td>TiO<sub>2</sub> ($\approx 2.6$)</td></tr></table></div></div></p>
+
+<h3 id="crazing-diagnostic-flowchart" class="subsection-title">Crazing Diagnostic Flowchart</h3>
+
+<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Crazing Troubleshooting</div><div class="box-content">
+<ol><li><strong>Calculate $\alpha_g$ from Atlas Eq.&nbsp;6.</strong> Is $\alpha_g \gt  \alpha_b$?
+    <ul><li></li><li>Yes → Confirmed: thermal mismatch. Go to step 2.</li><li>No → Crazing may be from moisture expansion of the body (see step 5).</li></ul></li><li><strong>Reduce $\alpha_g$:</strong> Replace Na<sub>2</sub>O with K<sub>2</sub>O (slightly lower α), or better, increase SiO<sub>2</sub> or Al<sub>2</sub>O<sub>3</sub>.</li><li><strong>Or increase $\alpha_b$:</strong> Add flux to the body (quartz, feldspar).</li><li><strong>Target $\alpha_g - \alpha_b \approx -0.5$ to $-1.0 \times 10^{-6}$&nbsp;/K:</strong> The glaze should be in <em>slight compression</em>, not exactly matched.</li><li><strong>Delayed crazing?</strong> The body may be absorbing moisture from the environment, causing it to expand over time. If $\alpha_g \approx \alpha_b$, even small moisture expansion breaks the balance. Increase the compression margin or fire the body harder (reduce porosity).</li></ol>
+</div></div>
+
+<h2 id="shivering-spalling" class="section-title">Shivering (Spalling)</h2>
+<a id="label-sec-shivering"></a>
+
+<h3 id="what-it-is-2" class="subsection-title">What It Is</h3>
+
+<p>Shivering is the opposite of crazing: the glaze is in <strong>excessive compression</strong> and flakes or chips off the body. It typically manifests as curved flakes popping off rims and edges.</p>
+
+<h3 id="the-physics-2" class="subsection-title">The Physics</h3>
+
+<p>$\alpha_g \ll \alpha_b$: The glaze contracts <em>less</em> than the body during cooling, putting the glaze under compression. A small amount of compression (&lt;30&nbsp;MPa) is desirable (it strengthens the ware). But if the compressive stress exceeds the glaze-body adhesion strength (∼50–100&nbsp;MPa), the glaze delaminates.</p>
+
+<h3 id="fixes" class="subsection-title">Fixes</h3>
+
+<ol><li>Increase $\alpha_g$: Add more alkali flux (Na<sub>2</sub>O, K<sub>2</sub>O, Li<sub>2</sub>O)</li><li>Decrease $\alpha_b$: Use a body with more silica or less feldspar</li><li>Check: Was the body over-fired? Over-fired bodies contract more (higher $\alpha_b$), pushing the glaze into compression.</li></ol>
+
+<h2 id="crawling" class="section-title">Crawling</h2>
+<a id="label-sec-crawling"></a>
+
+<h3 id="what-it-is-3" class="subsection-title">What It Is</h3>
+
+<p>Crawling is the withdrawal of the molten glaze from areas of the surface, exposing bare clay. The glaze “beads up” like water on a waxed surface.</p>
+
+<h3 id="the-physics-3" class="subsection-title">The Physics</h3>
+
+<p>Crawling occurs when the surface tension of the molten glaze (γ, Atlas Eq.&nbsp;26) is too high relative to its wetting ability. The balance is:</p>
+
+<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Crawling Condition</div><div class="box-content">
+<div class="math-display">\begin{equation}
+    \gamma_{LV}\cos\theta \gt  \gamma_{SL}
+    \label{eq:crawling}
+\end{equation}</div>
+where $\gamma_{LV}$ is the liquid-vapor surface tension, θ is the contact angle, and $\gamma_{SL}$ is the solid-liquid interfacial tension. When the glaze-body contact angle exceeds ∼90°, the glaze de-wets.
+</div></div>
+
+<p>Common causes:
+<ol><li><strong>Dusty or contaminated bisque:</strong> Dust, oils, or wax prevent wetting. Always clean bisqueware.</li><li><strong>High surface tension:</strong> MgO and Al<sub>2</sub>O<sub>3</sub> increase γ. Compositions with $\gt 0.3$ MgO or $\gt 0.5$ Al<sub>2</sub>O<sub>3</sub> in UMF are crawling-prone.</li><li><strong>Raw material issues:</strong> Raw calcined materials (especially zinc oxide, titanium dioxide) applied dry can shrink dramatically during firing, cracking the unfired glaze layer and creating stress points that promote crawling.</li><li><strong>Thick application:</strong> Very thick glaze layers develop drying cracks that become crawling initiation sites.</li><li><strong>Under-sinter of the bisque:</strong> Low bisque temperatures (&lt;900&nbsp;°C) leave the body too porous, absorbing too much glaze water and destabilising the raw glaze layer.</li></ol></p>
+
+<div class="styled-box deepbox" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 Atlas Equation for Surface Tension</div><div class="box-content">
+The Stull Atlas Eq.&nbsp;26 calculates surface tension using an additive model:
+<div class="math-display">\[\gamma = \sum_i x_i \cdot \gamma_i\]</div>
+
+<p>Oxides that increase surface tension (crawling risk): Al<sub>2</sub>O<sub>3</sub>, MgO, CaO, SiO<sub>2</sub>.</p>
+
+<p>Oxides that decrease surface tension (crawling resistance): PbO, B<sub>2</sub>O<sub>3</sub>, Na<sub>2</sub>O, K<sub>2</sub>O, Li<sub>2</sub>O.</p>
+
+<p>A practical threshold: $\gamma \gt  350$&nbsp;mN/m at peak temperature signals crawling risk.
+</div></div></p>
+
+<h2 id="pinholing-amp-blistering" class="section-title">Pinholing &amp; Blistering</h2>
+<a id="label-sec-pinhole"></a>
+
+<h3 id="what-it-is-4" class="subsection-title">What It Is</h3>
+
+<p>Pinholing: small, rounded holes in the glaze surface where gas bubbles reached the surface but the glaze failed to heal (flow together and smooth over). Blistering: larger, raised bubbles that never broke or broke but left a crater.</p>
+
+<h3 id="the-physics-4" class="subsection-title">The Physics</h3>
+
+<p>During firing, multiple gas sources produce bubbles in the glaze:
+<ul><li>CO<sub>2</sub> from carbonate decomposition (CaCO<sub>3</sub> → CaO + CO<sub>2</sub>)</li><li>SO<sub>2</sub> from sulfate decomposition</li><li>H<sub>2</sub>O from dehydroxylation of clay minerals</li><li>CO from organic burnout or reduction atmosphere</li><li>O<sub>2</sub> from iron and manganese redox reactions</li></ul></p>
+
+<p>These gases must escape <em>before</em> the glaze becomes too viscous to heal. The critical competition:</p>
+
+<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Pinholing Condition</div><div class="box-content">
+The time for a bubble to heal after breaking at the surface:
+<div class="math-display">\begin{equation}
+    t_{\text{heal}} \propto \frac{\eta}{\gamma}
+    \label{eq:healing}
+\end{equation}</div>
+Pinholing occurs when $t_{\text{heal}} \gt  t_{\text{available}}$ — the glaze becomes too viscous to flow before all bubbles have escaped and healed.
+</div></div>
+
+<h3 id="atlas-connection" class="subsection-title">Atlas Connection</h3>
+
+<p>The key Atlas equations:
+<ul><li><strong>VFT viscosity (Eq.&nbsp;11):</strong> Lower viscosity at peak → faster healing. Target $\log\eta \lt  4.5$ at peak temperature.</li><li><strong>Surface tension (Eq.&nbsp;26):</strong> Higher γ → faster healing (surface tension pulls the glaze closed). But too-high γ causes crawling.</li><li><strong>Gas solubility:</strong> Not directly modelled, but correlated with NBO/T (Eq.&nbsp;14): more depolymerised melts dissolve more gas.</li></ul></p>
+
+<h3 id="pinholing-diagnostic" class="subsection-title">Pinholing Diagnostic</h3>
+
+<div class="styled-box warnbox" style="border-left-color:#EF4444"><div class="box-title" style="color:#EF4444">⚠️ Pinholing Troubleshooting</div><div class="box-content">
+<ol><li><strong>Are the pinholes concentrated on thick areas?</strong>
+    <ul><li></li><li>Yes → Body gas source. The thicker the glaze, the longer the gas path and the later gas arrives at the surface.</li><li>Fix: Higher bisque temperature to burn out organics/carbonates before glazing.</li></ul></li><li><strong>Are the pinholes uniform across the surface?</strong>
+    <ul><li></li><li>Yes → Glaze viscosity too high at peak. Check VFT viscosity.</li><li>Fix: Add more flux, reduce Al<sub>2</sub>O<sub>3</sub>, extend soak at peak temperature.</li></ul></li><li><strong>Are there large blisters rather than pinholes?</strong>
+    <ul><li></li><li>Yes → Gas generation at or above peak temperature (late sulfate decomposition or reduction bubbles).</li><li>Fix: Oxidation soak before reduction. Use materials with lower sulfur content.</li></ul></li></ol>
+</div></div>
+
+<h2 id="dunting" class="section-title">Dunting</h2>
+<a id="label-sec-dunting"></a>
+
+<h3 id="what-it-is-5" class="subsection-title">What It Is</h3>
+
+<p>Dunting is the cracking of the entire pot (body + glaze) during cooling, typically producing clean, sharp-edged breaks. It is not a glaze defect per se — it is a body failure, but glaze stress contributes.</p>
+
+<h3 id="the-physics-5" class="subsection-title">The Physics</h3>
+
+<p>Dunting occurs at specific temperatures where rapid volume changes occur:
+<ul><li><strong>573&nbsp;°C:</strong> Quartz inversion (α-quartz → β-quartz). Volume change: ∼0.45%. This is the most dangerous temperature during cooling. If the kiln cools too fast through this zone, free quartz particles in the body undergo a sudden contraction (exothermic $\beta \to \alpha$), creating internal stress fractures.</li><li><strong>226&nbsp;°C:</strong> Cristobalite inversion ($\alpha \to \beta$). Volume change: ∼3%. Only relevant if the body contains significant cristobalite (over-fired, or high free silica).</li></ul></p>
+
+<h3 id="prevention" class="subsection-title">Prevention</h3>
+
+<ol><li>Cool slowly through $600–500$°C: Maximum 50°C/h for thick-walled ware, 100°C/h for thin ware.</li><li>Distribute the quartz: Use finer-ground silica (smaller particles undergo the inversion with less stress concentration). Or convert free quartz to mullite by firing higher.</li><li>The glaze contribution: If $\alpha_g \gg \alpha_b$, the glaze adds additional tensile stress during cooling, increasing dunting risk. Atlas COE (Eq.&nbsp;6) helps here.</li></ol>
+
+<h2 id="defect-summary-matrix" class="section-title">Defect Summary Matrix</h2>
+
+<div class="centered">
+<div class="table-wrapper"><table class="styled-table"><tr><th><strong>Defect</strong></th><th><strong>Root Cause</strong></th><th><strong>Atlas Eq.</strong></th><th><strong>Primary Fix</strong></th></tr><tr><td>Crazing</td><td>$\alpha_g \gt  \alpha_b$</td><td>COE (Eq.&nbsp;6)</td><td>Reduce alkali; increase SiO<sub>2</sub></td></tr><tr><td>Shivering</td><td>$\alpha_g \ll \alpha_b$</td><td>COE (Eq.&nbsp;6)</td><td>Increase alkali; decrease SiO<sub>2</sub></td></tr><tr><td>Crawling</td><td>High γ + poor wetting</td><td>γ (Eq.&nbsp;26), η (Eq.&nbsp;11)</td><td>Lower MgO, Al<sub>2</sub>O<sub>3</sub>; add B<sub>2</sub>O<sub>3</sub></td></tr><tr><td>Pinholing</td><td>η too high at peak</td><td>η (Eq.&nbsp;11), γ (Eq.&nbsp;26)</td><td>More flux; longer soak; higher bisque</td></tr><tr><td>Blistering</td><td>Late gas generation</td><td>η (Eq.&nbsp;11)</td><td>Higher bisque; oxidation soak</td></tr><tr><td>Dunting</td><td>Quartz inversion stress</td><td>COE (Eq.&nbsp;6)</td><td>Slow cool 600–500°C</td></tr></table></div></div>
+
+<div class="part-header"><h1 class="part-title">Property Sensitivity &amp; Optimisation</h1></div>
+<a id="label-part-sensitivity"></a>
+
+<h2 id="the-sensitivity-question" class="section-title">The Sensitivity Question</h2>
+
+<p>The potter's fundamental question: “If I change the amount of oxide $X$ by some small amount, how much does property $Y$ change?” This is a question about <strong>partial derivatives</strong> — the calculus of glaze optimisation.</p>
+
+<h3 id="the-jacobian-matrix" class="subsection-title">The Jacobian Matrix</h3>
+
+<p>For a glaze with $n$ oxides and $m$ properties, the complete sensitivity information is captured in the <strong>Jacobian matrix</strong>:</p>
+
+<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Jacobian Matrix of Glaze Properties</div><div class="box-content">
+<div class="math-display">\begin{equation}
+    \mathbf{J} = \begin{pmatrix}
+        \frac{\partial P_1}{\partial x_1} & \frac{\partial P_1}{\partial x_2} & \cdots & \frac{\partial P_1}{\partial x_n} \\[6pt]
+        \frac{\partial P_2}{\partial x_1} & \frac{\partial P_2}{\partial x_2} & \cdots & \frac{\partial P_2}{\partial x_n} \\[6pt]
+        \vdots & \vdots & \ddots & \vdots \\[6pt]
+        \frac{\partial P_m}{\partial x_1} & \frac{\partial P_m}{\partial x_2} & \cdots & \frac{\partial P_m}{\partial x_n}
+    \end{pmatrix}
+    \label{eq:jacobian}
+\end{equation}</div>
+where $P_j$ is property $j$ (COE, viscosity, durability, etc.) and $x_i$ is the mole fraction of oxide $i$.
+</div></div>
+
+<p>For the Stull Atlas with 12+ oxides and 40 equations, this is a $40 \times 12$ matrix with 480 entries. The Atlas can compute every entry analytically (since most equations are additive models, the partial derivatives are simply the coefficients).</p>
+
+<h3 id="sensitivity-heatmap" class="subsection-title">Sensitivity Heatmap</h3>
+
+<div class="styled-box deepbox" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 Reading the Sensitivity Heatmap</div><div class="box-content">
+Imagine a colour-coded table: rows are properties (COE, $T_g$, viscosity, durability, Λ, etc.); columns are oxides (SiO<sub>2</sub>, Al<sub>2</sub>O<sub>3</sub>, Na<sub>2</sub>O, K<sub>2</sub>O, CaO, MgO, etc.). Each cell is coloured by the magnitude and sign of $\partial P / \partial x$:
+<ul><li><strong>Bright red (large positive):</strong> Increasing this oxide strongly increases this property</li><li><strong>Bright blue (large negative):</strong> Increasing this oxide strongly decreases this property</li><li><strong>White/gray (near zero):</strong> This oxide has little effect on this property</li></ul>
+
+<p>Key patterns that emerge:
+<ol><li>Na<sub>2</sub>O has large positive sensitivity for COE, large negative for viscosity, moderate positive for optical basicity — it is a “strong lever” that moves many properties simultaneously. Adjusting Na<sub>2</sub>O is powerful but dangerous: it changes everything at once.</li><li>SiO<sub>2</sub> has moderate negative sensitivity for most properties (COE, Λ, NBO/T) and positive for hardness, durability, $T_g$. It is the “stabiliser” — more silica makes nearly everything more conservative.</li><li>Al<sub>2</sub>O<sub>3</sub> has small sensitivities in most additive models but enormous structural effects (2:1 NBO/T lever, viscosity increase). It is the “structural enforcer.”</li><li>MgO has surprisingly small effects on most bulk properties but large effects on surface tension and crystallisation tendency. It is a “hidden influencer.”</li></ol>
+</div></div></p>
+
+<h2 id="gradient-descent-recipe-design" class="section-title">Gradient-Descent Recipe Design</h2>
+
+<h3 id="the-optimisation-problem" class="subsection-title">The Optimisation Problem</h3>
+
+<p>Given:
+<ul><li>A starting composition $\mathbf{x}_0 = (x_1, x_2, \ldots, x_n)$</li><li>A set of target properties $\mathbf{P}^* = (P_1^*, P_2^*, \ldots, P_m^*)$</li></ul></p>
+
+<p>Find the composition $\mathbf{x}$ that minimises:</p>
+
+<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Optimisation Objective</div><div class="box-content">
+<div class="math-display">\begin{equation}
+    L(\mathbf{x}) = \sum_{j=1}^{m} w_j \left(\frac{P_j(\mathbf{x}) - P_j^*}{P_j^*}\right)^2
+    \label{eq:loss}
+\end{equation}</div>
+subject to constraints:
+<div class="math-display">\begin{align}
+    \sum_i x_i &= 1 \quad \text{(composition sums to 1)} \\
+    x_i &\geq 0 \quad \text{(no negative oxides)} \\
+    x_i^{\min} \leq x_i &\leq x_i^{\max} \quad \text{(practical oxide limits)}
+\end{align}</div>
+where $w_j$ are user-assigned importance weights.
+</div></div>
+
+<h3 id="the-gradient" class="subsection-title">The Gradient</h3>
+
+<p>The gradient of $L$ with respect to composition:
+<div class="math-display">\[\nabla_{\mathbf{x}} L = \mathbf{J}^T \cdot \mathbf{r}\]</div>
+where $\mathbf{J}$ is the Jacobian and $\mathbf{r}$ is the residual vector.</p>
+
+<p>The composition update step:
+<div class="math-display">\[\mathbf{x}_{k+1} = \mathbf{x}_k - \alpha_k \nabla_{\mathbf{x}} L\]</div></p>
+
+<p>This is the foundation of automated recipe optimisation: the Atlas equations provide $\mathbf{J}$, the user provides the targets, and gradient descent (or a more sophisticated algorithm like L-BFGS or Nelder–Mead) finds the optimal composition.</p>
+
+<h3 id="pareto-frontiers" class="subsection-title">Pareto Frontiers</h3>
+
+<p>Many property pairs are fundamentally in conflict:
+<ul><li>Low COE (no crazing) vs. low viscosity (good healing)</li><li>High durability vs. low firing temperature</li><li>High hardness vs. low surface tension (no crawling)</li></ul></p>
+
+<p>No single composition can optimise both simultaneously. The <strong>Pareto frontier</strong> is the set of compositions where no property can be improved without degrading another:</p>
+
+<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Pareto Frontier</div><div class="box-content">
+A composition is <strong>Pareto-optimal</strong> if there exists no other feasible composition that is better in all objectives. The collection of all Pareto-optimal points forms the Pareto frontier — a curve (in 2D) or surface (in higher dimensions) that represents the fundamental trade-off boundary.
+
+<p>Example: For COE vs. viscosity at cone 6, the Pareto frontier might run from (COE = $5.5 \times 10^{-6}$, $\log\eta = 5.0$) to (COE = $8.5 \times 10^{-6}$, $\log\eta = 2.5$). Every point on this curve is optimal in the sense that you cannot lower COE without raising viscosity, and vice versa. The potter chooses their preferred trade-off along this curve based on priorities.
+</div></div></p>
+
+<h2 id="which-oxide-is-the-strongest-lever" class="section-title">Which Oxide Is the Strongest Lever?</h2>
+
+<p>For each property, we can rank the oxides by sensitivity magnitude:</p>
+
+<div class="centered">
+<div class="table-wrapper"><table class="styled-table"><tr><th><strong>Property</strong></th><th><strong>Strongest Lever</strong></th><th><strong>2nd Lever</strong></th><th><strong>Direction</strong></th></tr><tr><td>COE (α)</td><td>Na<sub>2</sub>O ($+39.5$)</td><td>K<sub>2</sub>O ($+28.3$)</td><td>Increase alkali = increase COE</td></tr><tr><td>Viscosity (η)</td><td>Al<sub>2</sub>O<sub>3</sub> ($+$ large)</td><td>SiO<sub>2</sub> ($+$ moderate)</td><td>Increase formers = increase η</td></tr><tr><td>$T_g$</td><td>SiO<sub>2</sub> ($+$)</td><td>Al<sub>2</sub>O<sub>3</sub> ($+$)</td><td>More network = higher $T_g$</td></tr><tr><td>Optical basicity (Λ)</td><td>BaO ($+1.15$)</td><td>Na<sub>2</sub>O ($+1.15$)</td><td>Heavy flux = higher Λ</td></tr><tr><td>NBO/T</td><td>Na<sub>2</sub>O ($+$ large)</td><td>CaO ($+$ large)</td><td>More modifier = more NBO/T</td></tr><tr><td>Durability</td><td>SiO<sub>2</sub> ($+$)</td><td>Al<sub>2</sub>O<sub>3</sub> ($+$)</td><td>Network integrity = durability</td></tr><tr><td>Surface tension (γ)</td><td>Al<sub>2</sub>O<sub>3</sub> ($+$)</td><td>MgO ($+$)</td><td>Network tighteners raise γ</td></tr><tr><td>Refractive index ($n$)</td><td>PbO ($+$)</td><td>BaO ($+$)</td><td>Heavy atoms = higher $n$</td></tr></table></div></div>
+
+<div class="part-header"><h1 class="part-title">Firing Schedule Science</h1></div>
+<a id="label-part-firing"></a>
+
+<h2 id="the-vft-derived-firing-profile" class="section-title">The VFT-Derived Firing Profile</h2>
+
+<p>The VFT equation (Atlas Eq.&nbsp;11) gives viscosity as a function of temperature:
+<div class="math-display">\[\log_{10}\eta(T) = A + \frac{B}{T - T_0}\]</div></p>
+
+<p>This single equation encodes the entire temperature–fluidity relationship of the glaze. By inverting it, we can calculate the temperatures at which specific viscosity milestones occur:</p>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Viscosity Point</strong></th><th>$\log\eta$ (Pas)</th><th><strong>Physical Meaning</strong></th></tr><tr><td>Melting point</td><td>$1.0$</td><td>Free-flowing liquid</td></tr><tr><td>Working point</td><td>$3.0$</td><td>Glass can be shaped (blowing, drawing)</td></tr><tr><td>Softening (Littleton)</td><td>$6.65$</td><td>Glass deforms under own weight</td></tr><tr><td>Annealing point</td><td>$12.0$</td><td>Stress relaxes in ∼15 minutes</td></tr><tr><td>Strain point</td><td>$13.5$</td><td>Stress relaxes in ∼16 hours</td></tr><tr><td>$T_g$</td><td>$\sim 12–13$</td><td>Glass transition</td></tr></table></div></div>
+
+<h3 id="the-optimal-soak-temperature" class="subsection-title">The Optimal Soak Temperature</h3>
+
+<p>For a glaze to mature properly, the peak viscosity should be in the range $\log\eta = 3.0–5.0$. Below 3.0, the glaze runs off. Above 5.0, it may not heal pinholes.</p>
+
+<p>The Atlas reports the VFT parameters ($A$, $B$, $T_0$), allowing the potter to calculate the exact temperature at which the glaze reaches any target viscosity:</p>
+
+<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Inverting VFT for Target Viscosity</div><div class="box-content">
+<div class="math-display">\begin{equation}
+    T(\log\eta^*) = T_0 + \frac{B}{\log\eta^* - A}
+    \label{eq:vft_invert}
+\end{equation}</div>
+</div></div>
+
+<h2 id="soak-optimisation" class="section-title">Soak Optimisation</h2>
+
+<h3 id="why-soak" class="subsection-title">Why Soak?</h3>
+
+<p>A soak (hold at peak temperature) serves three purposes:
+<ol><li><strong>Equalisation:</strong> Kiln temperature is never perfectly uniform. A soak allows cooler spots to catch up. With typical kiln gradients of 20&nbsp;°C–50&nbsp;°C between top and bottom, a 15–30 minute soak brings all zones to within 5&nbsp;°C.</li><li><strong>Bubble healing:</strong> Gas bubbles must reach the surface, break, and the glaze must flow to heal the crater. The healing time (Eq.&nbsp;\ref{eq:healing}) depends on $\eta/\gamma$. A longer soak at peak gives more healing time.</li><li><strong>Dissolution:</strong> Refractory materials (quartz grains, alumina lumps, zircon) need time to dissolve into the melt. Undissolved particles cause surface defects and optical scattering.</li></ol></p>
+
+<h3 id="drop-and-soak-vs-traditional-soak" class="subsection-title">Drop-and-Soak vs. Traditional Soak</h3>
+
+<p>Modern kiln controllers enable “drop-and-soak” schedules:
+<ol><li>Fire to peak temperature and hold briefly (5–10 minutes)</li><li>Drop 50&nbsp;°C–100&nbsp;°C rapidly</li><li>Hold at the lower temperature for 30–60 minutes</li></ol></p>
+
+<p>The advantage: at the lower temperature, viscosity is higher, so the glaze does not run. But it is still fluid enough ($\log\eta \lt  6$) to heal pinholes. This is particularly effective for glazes that tend to run at peak but have pinholing issues.</p>
+
+<p>The Atlas VFT equation calculates the exact viscosity at the drop temperature, confirming that it is in the healing range ($\log\eta = 4–6$).</p>
+
+<h2 id="atmosphere-chemistry" class="section-title">Atmosphere Chemistry</h2>
+
+<h3 id="oxygen-partial-pressure-profiles" class="subsection-title">Oxygen Partial Pressure Profiles</h3>
+
+<p>The atmosphere in a fuel-burning kiln varies dramatically with time and location:</p>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Atmosphere</strong></th><th>$\log p_{\text{O}_2}$ (atm)</th><th><strong>Chemical Environment</strong></th></tr><tr><td>Full oxidation</td><td>$-0.7$</td><td>Air (∼21% O<sub>2</sub>)</td></tr><tr><td>Neutral</td><td>$-3$ to $-5$</td><td>CO/CO<sub>2</sub> balance</td></tr><tr><td>Light reduction</td><td>$-8$ to $-10$</td><td>CO-rich, Fe<sup>2+</sup> promoted</td></tr><tr><td>Heavy reduction</td><td>$-12$ to $-15$</td><td>H<sub>2</sub>-rich, Cu<sup>0</sup> possible</td></tr><tr><td>Extreme reduction</td><td>$\lt  -18$</td><td>Carbon deposition, FeO/Fe<sub>3</sub>O<sub>4</sub></td></tr></table></div></div>
+
+<h3 id="effect-on-atlas-properties" class="subsection-title">Effect on Atlas Properties</h3>
+
+<ul><li><strong>Optical basicity (Λ):</strong> Not directly affected by atmosphere (it is a compositional property), but the <em>effective</em> Λ experienced by a redox-sensitive ion depends on the local electron availability. Reduction effectively increases the electron donation to the cation.</li><li><strong>Viscosity:</strong> Fe<sup>2+</sup> is a weaker network modifier than Fe<sup>3+</sup> (it tends to sit in network-modifying sites in either case, but with subtle structural effects). Heavy reduction can slightly lower viscosity in iron-bearing glazes.</li><li><strong>Color:</strong> As described extensively in the companion colorant report, atmosphere controls the Fe<sup>2+</sup>/Fe<sup>3+</sup> ratio, Cu<sup>2+</sup>/Cu<sup>+</sup>/Cu<sup>0</sup> balance, and Mn<sup>2+</sup>/Mn<sup>3+</sup> equilibrium.</li><li><strong>Surface quality:</strong> Reduction atmosphere generates CO/CO<sub>2</sub> gas at the glaze surface. If reduction begins too early (before the glaze has melted and sealed), carbon deposits trap beneath the glaze surface, causing blistering and gray/black discoloration (“carbon coring” or “bloating”).</li></ul>
+
+<h2 id="volatile-loss-kinetics" class="section-title">Volatile Loss Kinetics</h2>
+
+<h3 id="what-volatilises" class="subsection-title">What Volatilises?</h3>
+
+<p>At high temperatures, some oxide components evaporate from the glaze surface:</p>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>At Risk</strong></th><th><strong>$T$ onset (°C)</strong></th><th><strong>Vapour Species</strong></th><th><strong>Effect of Loss</strong></th></tr><tr><td>Na<sub>2</sub>O</td><td>$\gt 1000$</td><td>NaOH, NaCl (if Cl present)</td><td>Increased viscosity, matte surface</td></tr><tr><td>K<sub>2</sub>O</td><td>$\gt 1050$</td><td>KOH</td><td>Increased viscosity, matte surface</td></tr><tr><td>B<sub>2</sub>O<sub>3</sub></td><td>$\gt 900$</td><td>B(OH)<sub>3</sub>, B<sub>2</sub>O<sub>3</sub></td><td>Major viscosity, flow changes</td></tr><tr><td>PbO</td><td>$\gt 800$</td><td>PbO (g)</td><td>Toxicity hazard; property changes</td></tr><tr><td>Li<sub>2</sub>O</td><td>$\gt 1000$</td><td>LiOH</td><td>COE drop, matte surface</td></tr><tr><td>ZnO</td><td>$\gt 1100$</td><td>Zn (g) in reduction</td><td>Loss of opacifier/crystalliser</td></tr></table></div></div>
+
+<p>The Stull Atlas Volatilisation Index (Eq.&nbsp;23) estimates the relative volatility of a composition.</p>
+
+<h3 id="consequences" class="subsection-title">Consequences</h3>
+
+<p>Volatile loss changes the surface composition relative to the bulk. The surface becomes enriched in refractory, non-volatile components (SiO<sub>2</sub>, Al<sub>2</sub>O<sub>3</sub>, CaO) and depleted in volatile flux. This creates a “surface skin” with:
+<ul><li>Higher viscosity than the bulk</li><li>Higher $T_g$ than the bulk</li><li>Different COE than the bulk (possible surface crazing)</li><li>Matte or dry appearance even though the bulk glass is fully melted</li></ul></p>
+
+<p>In extreme cases, the volatile-depleted surface layer devitrifies (cristobalite, wollastonite) while the interior remains glassy.</p>
+
+<h2 id="energy-cost-modelling" class="section-title">Energy Cost Modelling</h2>
+
+<h3 id="the-energy-temperature-relationship" class="subsection-title">The Energy–Temperature Relationship</h3>
+
+<p>The total energy required to fire a glaze is approximately:
+<div class="math-display">\begin{equation}
+    E_{\text{total}} = m \cdot c_p \cdot (T_{\text{peak}} - T_{\text{room}}) + m \cdot \sum_i \Delta H_i
+\end{equation}</div>
+where the first term is sensible heat and the second includes endothermic reactions (combustion of organics, dehydroxylation, carbonate decomposition, melting).</p>
+
+<p>For a typical stoneware kiln load (500&nbsp;), the energy cost of a cone 6 firing (1222&nbsp;°C) is approximately 200–400 kWh (electric) or 30–60&nbsp;³m natural gas. Increasing the firing temperature by 50&nbsp;°C increases energy consumption by approximately 5–8%.</p>
+
+<h3 id="low-fire-design-via-atlas" class="subsection-title">Low-Fire Design via Atlas</h3>
+
+<p>The Atlas can identify compositions that achieve target properties at lower temperatures by:
+<ol><li>Using VFT inversion (Eq.&nbsp;\ref{eq:vft_invert}) to find compositions where $\log\eta = 4$ occurs at lower $T$</li><li>Increasing flux content (especially Li<sub>2</sub>O, B<sub>2</sub>O<sub>3</sub>, Na<sub>2</sub>O) to depress the melting point</li><li>Checking that lower-temperature compositions still meet durability and COE targets</li></ol></p>
+
+<div class="part-header"><h1 class="part-title">Historical &amp; Archaeological Glazes</h1></div>
+<a id="label-part-historical"></a>
+
+<h2 id="introduction-the-deep-archive" class="section-title">Introduction: The Deep Archive</h2>
+
+<p>For 5,000 years, potters have been empirical glass chemists. Every ancient glaze is a frozen experiment — a record of a specific combination of raw materials, firing conditions, and atmospheric chemistry. The Stull Atlas equations allow us to “read” these ancient experiments quantitatively.</p>
+
+<p>This chapter analyses six landmark historical glaze traditions through the lens of the Atlas equations.</p>
+
+<h2 id="song-dynasty-celadons-china-960-1279-ce" class="section-title">Song Dynasty Celadons (China, 960–1279 CE)</h2>
+<a id="label-sec-song"></a>
+
+<h3 id="the-longquan-tradition" class="subsection-title">The Longquan Tradition</h3>
+
+<p>Song Dynasty Longquan celadons are considered the pinnacle of celadon art. The characteristic jade-green or blue-green color, unctuous surface texture, and translucent depth are the result of precise compositional and atmospheric control.</p>
+
+<div class="styled-box histbox" style="border-left-color:#0D9488"><div class="box-title" style="color:#0D9488">📜 Typical Longquan Celadon Composition (from XRF analysis)</div><div class="box-content">
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Oxide</strong></th><th><strong>wt%</strong></th></tr><tr><td>SiO<sub>2</sub></td><td>62–68</td></tr><tr><td>Al<sub>2</sub>O<sub>3</sub></td><td>13–16</td></tr><tr><td>CaO</td><td>8–12</td></tr><tr><td>K<sub>2</sub>O</td><td>3–5</td></tr><tr><td>Na<sub>2</sub>O</td><td>1–2</td></tr><tr><td>MgO</td><td>1–2</td></tr><tr><td>Fe<sub>2</sub>O<sub>3</sub></td><td>1.0–2.5</td></tr><tr><td>TiO<sub>2</sub></td><td>0.3–0.8</td></tr><tr><td>P<sub>2</sub>O<sub>5</sub></td><td>0.5–2.0</td></tr><tr><td>MnO</td><td>0.1–0.5</td></tr></table></div></div>
+</div></div>
+
+<h3 id="atlas-analysis" class="subsection-title">Atlas Analysis</h3>
+
+<p>Calculating Atlas properties for a representative Longquan composition:
+<ul><li><strong>Optical basicity (Λ):</strong> $\approx 0.54–0.56$. Moderate basicity. High enough to support Fe<sup>2+</sup> in heavy reduction but not so high as to promote excessive iron reduction.</li><li><strong>NBO/T:</strong> $\approx 0.6–0.8$. Moderately polymerised — contributes to the viscous, “thick” quality of the melt.</li><li><strong>VFT viscosity at 1280&nbsp;°C:</strong> $\log\eta \approx 3.5–4.5$. Appropriately fluid but not runny. The glaze self-levels but does not run off.</li><li><strong>COE:</strong> $\approx 6.5–7.5 \times 10^{-6}$/°C. Well-matched to the porcelain body ($\alpha_b \approx 7.0$).</li><li><strong>Fe<sup>2+</sup>/Fe<sup>3+</sup> ratio:</strong> At $\Lambda = 0.55$ and heavy reduction ($\log p_{\text{O}_2} \approx -12$), the Fe<sup>2+</sup> fraction is ∼0.6–0.7. The Fe<sup>2+</sup> $d–d$ band absorbs red, transmitting blue-green celadon.</li><li><strong>P<sub>2</sub>O<sub>5</sub> role:</strong> The 0.5–2% P<sub>2</sub>O<sub>5</sub> from wood ash induces nanoscale phase separation, producing a subtle opalescence that gives Longquan celadons their distinctive “depth” and “glow.”</li></ul></p>
+
+<div class="styled-box deepbox" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 Why Longquan Has “Jade” Quality</div><div class="box-content">
+The jade metaphor is not merely poetic. Jade (nephrite, Ca<sub>2</sub>(Mg,Fe)<sub>5</sub>Si<sub>8</sub>O<sub>22</sub>(OH)<sub>2</sub>) is a fibrous silicate with a semi-translucent, waxy quality. Longquan celadon achieves a similar visual effect through:
+<ol><li>Thick glaze layers (1–3&nbsp;mm) that create an optical path for Fe<sup>2+</sup> absorption</li><li>Phosphate-induced opalescence that scatters light within the glaze bulk, creating a luminous interior glow</li><li>Surface smoothness from optimal viscosity at peak temperature</li><li>Slight opacity that prevents clear-through transparency, giving the appearance of “depth”</li></ol>
+No single Atlas equation captures this quality, but the combination of VFT viscosity (controls thickness and smoothness), refractive index (light interaction), and phase separation (opalescence) together predict it.
+</div></div>
+
+<h2 id="roman-glass-1st-4th-century-ce" class="section-title">Roman Glass (1st–4th Century CE)</h2>
+
+<h3 id="the-soda-lime-formula" class="subsection-title">The Soda–Lime Formula</h3>
+
+<p>Roman glass is the ancestor of all modern container and flat glass. Its composition is remarkably consistent across the empire, suggesting a standardised raw material supply chain (Egyptian natron for flux, beach sand for silica, lime from shell fragments).</p>
+
+<div class="styled-box histbox" style="border-left-color:#0D9488"><div class="box-title" style="color:#0D9488">📜 Typical Roman Soda–Lime Glass</div><div class="box-content">
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Oxide</strong></th><th><strong>wt%</strong></th></tr><tr><td>SiO<sub>2</sub></td><td>66–72</td></tr><tr><td>Na<sub>2</sub>O</td><td>14–20</td></tr><tr><td>CaO</td><td>6–10</td></tr><tr><td>Al<sub>2</sub>O<sub>3</sub></td><td>2–3</td></tr><tr><td>MgO</td><td>0.5–1.5</td></tr><tr><td>K<sub>2</sub>O</td><td>0.5–1.5</td></tr><tr><td>Fe<sub>2</sub>O<sub>3</sub></td><td>0.3–1.5</td></tr><tr><td>MnO</td><td>0.5–3.0</td></tr></table></div></div>
+</div></div>
+
+<h3 id="atlas-analysis-2" class="subsection-title">Atlas Analysis</h3>
+
+<ul><li><strong>Λ:</strong> $\approx 0.55–0.58$. Moderately basic due to high soda.</li><li><strong>NBO/T:</strong> $\approx 1.2–1.5$. Highly depolymerised — the glass is very fluid at relatively low temperatures.</li><li><strong>$T_g$:</strong> ≈&nbsp;500&nbsp;°C–530&nbsp;°C. Low — this is a “soft” glass.</li><li><strong>COE:</strong> $\approx 8.5–9.5 \times 10^{-6}$/°C. Very high due to the Na<sub>2</sub>O. This is why Roman glass crazes easily if used as a glaze on a modern body.</li><li><strong>Durability:</strong> Low. The high soda and low alumina make Roman glass susceptible to hydrolysis. Archaeological Roman glass is often heavily weathered (iridescent surface from repeated hydration/alkali leaching cycles). The Atlas durability equation (Eq.&nbsp;28) correctly predicts this vulnerability.</li><li><strong>Mn decolouring:</strong> The 0.5–3% MnO<sub>2</sub> serves as a decoloriser. Fe<sup>2+</sup> (green) is oxidised to Fe<sup>3+</sup> (weak amber) by Mn$^{3+} \to$ Mn<sup>2+</sup>. The net color becomes nearly colorless or very pale yellow.</li></ul>
+
+<h2 id="islamic-lustre-ware-9th-14th-century-ce" class="section-title">Islamic Lustre Ware (9th–14th Century CE)</h2>
+
+<p>Lustre ware represents one of the most sophisticated applications of chemistry in the ancient world. The metallic sheen on the glaze surface is produced by metallic nanoparticles of copper and silver embedded in the glaze surface layer.</p>
+
+<h3 id="the-lustre-process" class="subsection-title">The Lustre Process</h3>
+
+<ol><li>A lead-tin opaque white glaze is fired on the pot (first firing, oxidation, ∼1050&nbsp;°C).</li><li>A “lustre paint” (a mixture of copper and silver salts/oxides, plus ochre clay, vinegar, and sulfur) is applied to the fired surface.</li><li>Second firing at ∼600&nbsp;°C in heavy reduction:
+    <ul><li></li><li>The organic binder burns, generating CO and H<sub>2</sub></li><li>Cu<sup>2+</sup> and Ag<sup>+</sup> ions from the paint diffuse into the glaze surface</li><li>The reducing atmosphere converts them to Cu<sup>0</sup> and Ag<sup>0</sup> nanoparticles</li><li>The nanoparticles (5–50&nbsp;nm) embed in the top 50–500&nbsp;nm of the glaze surface</li></ul></li><li>The unfired ochre/residue is wiped off, revealing the metallic lustre.</li></ol>
+
+<h3 id="atlas-connections" class="subsection-title">Atlas Connections</h3>
+
+<ul><li>The host glaze must have a low $T_g$ (&lt;550&nbsp;°C) so that the ions can diffuse into the surface at ∼600&nbsp;°C. Lead glazes satisfy this perfectly ($T_g \approx$&nbsp;400&nbsp;°C–500&nbsp;°C).</li><li>The optical basicity must be high enough ($\Lambda \gt  0.55$) to promote reduction of Cu<sup>2+</sup> and Ag<sup>+</sup> to their metallic states.</li><li>The refractive index of the host glass (Eq.&nbsp;24) determines the SPR wavelength of the nanoparticles and hence the lustre color (gold, ruby, amber, etc.).</li></ul>
+
+<h2 id="iznik-fritware-ottoman-empire-15th-17th-century-ce" class="section-title">Iznik Fritware (Ottoman Empire, 15th–17th Century CE)</h2>
+
+<p>Iznik ceramics are among the most technically accomplished in Islamic art. The body is a frit (ground glass) + clay, and the glaze is a lead-alkali silicate. The brilliant white ground, vibrant cobalt blue, turquoise, sage green, and the famous raised “Armenian bole” red are achieved through precise chemistry.</p>
+
+<div class="styled-box histbox" style="border-left-color:#0D9488"><div class="box-title" style="color:#0D9488">📜 Iznik Glaze Composition (Mid-16th Century)</div><div class="box-content">
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Oxide</strong></th><th><strong>wt%</strong></th></tr><tr><td>SiO<sub>2</sub></td><td>52–58</td></tr><tr><td>PbO</td><td>20–30</td></tr><tr><td>Na<sub>2</sub>O</td><td>5–8</td></tr><tr><td>Al<sub>2</sub>O<sub>3</sub></td><td>2–4</td></tr><tr><td>CaO</td><td>2–5</td></tr><tr><td>SnO<sub>2</sub></td><td>4–8 (opacifier)</td></tr><tr><td>K<sub>2</sub>O</td><td>1–3</td></tr></table></div></div>
+</div></div>
+
+<h3 id="atlas-analysis-3" class="subsection-title">Atlas Analysis</h3>
+
+<ul><li><strong>Λ:</strong> $\approx 0.58–0.62$. The high lead content makes this a basic glass, promoting Fe<sup>2+</sup> (if iron is present) and providing an excellent host for colorants.</li><li><strong>$T_g$:</strong> Very low (∼400&nbsp;°C) due to PbO. This allows low firing temperatures (∼850&nbsp;°C–950&nbsp;°C).</li><li><strong>Refractive index:</strong> High ($n \approx 1.60–1.65$ from PbO). This gives Iznik glazes exceptional depth and brilliance — colors appear more saturated in a high-$n$ matrix.</li><li><strong>Durability:</strong> Moderate. The PbO lowers durability, but the SnO<sub>2</sub> and moderate silica content partly compensate.</li><li><strong>The “Armenian bole” red:</strong> This is not a standard glaze colorant. It is a slip of iron-rich bole (hematite-rich clay) applied on the white ground, then glazed over. The raised red is a physical layer, not a glass-phase colorant. It survived because the lead-alkali glaze has a low enough viscosity at 900&nbsp;°C to flow smoothly over the bole without dissolving it.</li></ul>
+
+<h2 id="joseon-buncheong-korea-15th-16th-century-ce" class="section-title">Joseon Buncheong (Korea, 15th–16th Century CE)</h2>
+
+<p>Buncheong wares are distinguished by their vigorous, spontaneous decoration techniques: inlaid, stamped, sgraffito, iron-painted, and “brushed” white slip designs. The glazes are typically ash-based with moderate iron content.</p>
+
+<div class="styled-box histbox" style="border-left-color:#0D9488"><div class="box-title" style="color:#0D9488">📜 Typical Buncheong Ash Glaze</div><div class="box-content">
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Oxide</strong></th><th><strong>wt%</strong></th></tr><tr><td>SiO<sub>2</sub></td><td>55–65</td></tr><tr><td>Al<sub>2</sub>O<sub>3</sub></td><td>10–14</td></tr><tr><td>CaO</td><td>10–15</td></tr><tr><td>K<sub>2</sub>O</td><td>3–6</td></tr><tr><td>MgO</td><td>2–4</td></tr><tr><td>Fe<sub>2</sub>O<sub>3</sub></td><td>1–3</td></tr><tr><td>P<sub>2</sub>O<sub>5</sub></td><td>1–3</td></tr><tr><td>Na<sub>2</sub>O</td><td>1–2</td></tr></table></div></div>
+</div></div>
+
+<p>The strong wood-ash character (high CaO, moderate P<sub>2</sub>O<sub>5</sub>) places these glazes near the wollastonite liquidus field. Many buncheong glazes show characteristic micro-crystallisation of wollastonite, producing a semi-matte or satin surface. The Atlas $T_{rg}$ (Eq.&nbsp;39) for these compositions is typically 0.55–0.60 — the borderline region where modest undercooling can trigger devitrification.</p>
+
+<h2 id="italian-majolica-15th-17th-century-ce" class="section-title">Italian Majolica (15th–17th Century CE)</h2>
+
+<p>Majolica (or maiolica) is the Italian tradition of tin-opacified lead glazes decorated with metallic oxide pigments. The technique came to Italy from Islamic Spain (via Majorca, hence the name).</p>
+
+<h3 id="the-tin-opacified-glaze" class="subsection-title">The Tin-Opacified Glaze</h3>
+
+<p>The white ground is achieved by adding 5–10% SnO<sub>2</sub> (cassiterite) to a lead-alkali base glaze. The SnO<sub>2</sub> remains undissolved as fine particles (&lt;1&nbsp;µm) that scatter light, producing an opaque white. This is Mie scattering, not Rayleigh — the particles are comparable in size to the wavelength of light.</p>
+
+<p>Atlas Eq.&nbsp;24 (refractive index) is relevant: the opacity depends on $\Delta n = n_{\text{SnO}_2} - n_{\text{glass}}$. Cassiterite has $n \approx 2.05$; the lead glass has $n \approx 1.55–1.65$. The large $\Delta n \approx 0.4–0.5$ produces strong scattering — far more effective than, say, zircon ($n \approx 1.96$) in a similar matrix.</p>
+
+<h3 id="the-pigment-palette" class="subsection-title">The Pigment Palette</h3>
+
+<p>Every majolica color is a case study in crystal field theory (see companion colorant report):
+<ul><li><strong>Blue:</strong> Cobalt oxide (Co<sup>2+</sup> tetrahedral)</li><li><strong>Green:</strong> Copper oxide (Cu<sup>2+</sup> octahedral in the lead glass)</li><li><strong>Yellow:</strong> Antimony yellow (Pb<sub>2</sub>Sb<sub>2</sub>O<sub>7</sub>, Naples yellow pigment)</li><li><strong>Orange:</strong> Iron oxide (Fe<sup>3+</sup> LMCT + iron oxide pigment)</li><li><strong>Purple/brown:</strong> Manganese oxide (Mn<sup>3+</sup> in oxidation)</li><li><strong>Black:</strong> Mixed Fe + Co + Mn (broadband absorption)</li></ul></p>
+
+<div class="part-header"><h1 class="part-title">Raw Materials &amp; Batch Chemistry</h1></div>
+<a id="label-part-raw"></a>
+
+<h2 id="from-rocks-to-oxides" class="section-title">From Rocks to Oxides</h2>
+
+<p>The Stull Atlas works in <strong>oxide notation</strong> (UMF — Unity Molecular Formula). But potters work with <strong>raw materials</strong> — feldspars, silica, whiting, kaolin, ball clay, dolomite, talc, bone ash, etc. Converting between the two is the central problem of batch chemistry.</p>
+
+<h3 id="the-umf-convention" class="subsection-title">The UMF Convention</h3>
+
+<p>In UMF notation:
+<ul><li>Flux oxides (R<sub>2</sub>O + RO) are normalised to sum to 1.000</li><li>Al<sub>2</sub>O<sub>3</sub> and SiO<sub>2</sub> are expressed as ratios to the flux unity</li><li>Additional oxides (colorants, etc.) are listed separately</li></ul></p>
+
+<p>Example reference composition: $\text{K}_2\text{O}~0.11$, $\text{Na}_2\text{O}~0.24$, $\text{CaO}~0.42$, $\text{MgO}~0.18$, $\text{ZnO}~0.05$. Flux sum: $0.11 + 0.24 + 0.42 + 0.18 + 0.05 = 1.00$. $\text{Al}_2\text{O}_3 = 0.35$. $\text{SiO}_2 = 3.20$.</p>
+
+<h2 id="mineral-decomposition-reactions" class="section-title">Mineral Decomposition Reactions</h2>
+
+<p>Every raw material undergoes thermal decomposition before contributing its oxides to the melt. Understanding these reactions is essential for designing firing schedules.</p>
+
+<div class="centered">
+<div class="table-wrapper"><table class="styled-table"><tr><th><strong>Material</strong></th><th><strong>Decomposition Reaction</strong></th><th><strong>$T$ (°C)</strong></th></tr><tr><td>Calcite (CaCO<sub>3</sub>)</td><td>CaCO<sub>3</sub> → CaO + CO<sub>2</sub>↑</td><td>750–900</td></tr><tr><td>Dolomite (CaMg(CO<sub>3</sub>)<sub>2</sub>)</td><td>CaMg(CO<sub>3</sub>)<sub>2</sub> → CaO + MgO + 2CO<sub>2</sub>↑</td><td>700–850</td></tr><tr><td>Kaolin (Al<sub>2</sub>Si<sub>2</sub>O<sub>5</sub>(OH)<sub>4</sub>)</td><td>→ Al<sub>2</sub>O<sub>3</sub>·2SiO<sub>2</sub> + 2H<sub>2</sub>O↑</td><td>500–600</td></tr><tr><td></td><td>→ Al<sub>2</sub>O<sub>3</sub> + 2SiO<sub>2</sub> (spinel, then mullite)</td><td>950–1200</td></tr><tr><td>Talc (Mg<sub>3</sub>Si<sub>4</sub>O<sub>10</sub>(OH)<sub>2</sub>)</td><td>→ 3MgO + 4SiO<sub>2</sub> + H<sub>2</sub>O↑</td><td>800–1000</td></tr><tr><td>Bone ash (Ca<sub>3</sub>(PO<sub>4</sub>)<sub>2</sub>)</td><td>Stable (no decomposition)</td><td>—</td></tr><tr><td>Borax (Na<sub>2</sub>B<sub>4</sub>O<sub>7</sub>·10H<sub>2</sub>O)</td><td>→ Na<sub>2</sub>O + 2B<sub>2</sub>O<sub>3</sub> + 10H<sub>2</sub>O↑</td><td>75–350</td></tr><tr><td>Wollastonite (CaSiO<sub>3</sub>)</td><td>Stable (no gas evolution)</td><td>—</td></tr><tr><td>Soda ash (Na<sub>2</sub>CO<sub>3</sub>)</td><td>Na<sub>2</sub>CO<sub>3</sub> → Na<sub>2</sub>O + CO<sub>2</sub>↑</td><td>850</td></tr></table></div></div>
+
+<div class="styled-box warnbox" style="border-left-color:#EF4444"><div class="box-title" style="color:#EF4444">⚠️ LOI — Loss on Ignition</div><div class="box-content">
+Every raw material that releases gas (CO<sub>2</sub>, H<sub>2</sub>O, SO<sub>2</sub>) during firing has a non-zero LOI. The batch weight of raw materials is <em>always greater</em> than the weight of oxides in the fired glaze. Typical LOI values:
+<ul><li>Calcite: 44% (CaCO<sub>3</sub> is 56% CaO, 44% CO<sub>2</sub>)</li><li>Dolomite: 47%</li><li>Kaolin: 14%</li><li>Ball clay: 8–12%</li><li>Feldspar: &lt;1%</li><li>Silica: 0%</li></ul>
+Failure to account for LOI is the single most common error in glaze batch calculation.
+</div></div>
+
+<h2 id="batch-to-umf-conversion" class="section-title">Batch-to-UMF Conversion</h2>
+
+<h3 id="the-forward-problem-umf-batch" class="subsection-title">The Forward Problem: UMF → Batch</h3>
+
+<p>Given a target UMF, the potter must calculate the weight of each raw material needed. This is a linear system:</p>
+
+<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Batch Calculation</div><div class="box-content">
+<div class="math-display">\begin{equation}
+    \mathbf{A} \cdot \mathbf{b} = \mathbf{u}
+    \label{eq:batch}
+\end{equation}</div>
+where:
+<ul><li>$\mathbf{A}$: Matrix of oxide contributions per gram of each raw material (from material analyses)</li><li>$\mathbf{b}$: Vector of batch weights (unknowns)</li><li>$\mathbf{u}$: Vector of target oxide moles (from UMF)</li></ul>
+The system is typically under-determined (more raw materials available than oxides needed), so additional constraints (cost, availability, plasticity) are used to select among feasible solutions.
+</div></div>
+
+<h3 id="the-inverse-problem-batch-umf" class="subsection-title">The Inverse Problem: Batch → UMF</h3>
+
+<p>Given a batch recipe (in weight percentages), calculate the fired UMF:
+<ol><li>Multiply each material weight by its oxide analysis (wt% of each oxide per material)</li><li>Sum all oxide contributions</li><li>Subtract LOI</li><li>Convert wt% to moles (divide by molecular weight of each oxide)</li><li>Normalise flux moles to 1.000</li></ol></p>
+
+<h2 id="material-substitution" class="section-title">Material Substitution</h2>
+
+<h3 id="substitution-equivalence" class="subsection-title">Substitution Equivalence</h3>
+
+<p>When a raw material is unavailable, the potter must substitute another that provides the same oxides. The critical question: “How many grams of material B provide the same oxides as 100&nbsp;g of material A?”</p>
+
+<div class="styled-box examplebox" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Substituting Wollastonite for Whiting</div><div class="box-content">
+Both provide CaO. Which provides more, gram for gram?
+
+<ul><li>Whiting (CaCO<sub>3</sub>): MW = 100 g/mol → 56&nbsp;g CaO per 100&nbsp;g (with 44&nbsp;g CO<sub>2</sub> lost)</li><li>Wollastonite (CaSiO<sub>3</sub>): MW = 116 g/mol → 48.3&nbsp;g CaO + 51.7&nbsp;g SiO<sub>2</sub> per 100&nbsp;g (no gas!)</li></ul>
+
+<p>So substituting wollastonite for whiting:
+<ol><li>Requires $100 \times (56/48.3) = 115.9$&nbsp;g wollastonite to provide the same CaO</li><li>But adds $115.9 \times 0.517 = 59.9$&nbsp;g extra SiO<sub>2</sub> — must reduce silica elsewhere</li><li>Eliminates CO<sub>2</sub> gas evolution — reduces pinholing risk</li></ol>
+</div></div></p>
+
+<h3 id="flux-sourcing-strategies" class="subsection-title">Flux Sourcing Strategies</h3>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Flux Oxide</strong></th><th><strong>Common Sources</strong></th><th><strong>Notes</strong></th></tr><tr><td>Na<sub>2</sub>O</td><td>Soda feldspar, nepheline syenite, soda ash, borax</td><td>Soda ash is soluble — use frit</td></tr><tr><td>K<sub>2</sub>O</td><td>Potash feldspar, Cornwall stone, wood ash</td><td>Feldspar is the most predictable source</td></tr><tr><td>CaO</td><td>Whiting, wollastonite, dolomite, bone ash, wood ash</td><td>Wollastonite avoids LOI</td></tr><tr><td>MgO</td><td>Dolomite, talc, magnesium carbonate</td><td>Talc contributes SiO<sub>2</sub> too</td></tr><tr><td>ZnO</td><td>Zinc oxide (calcined or raw)</td><td>Raw ZnO can cause crawling at thick application</td></tr><tr><td>B<sub>2</sub>O<sub>3</sub></td><td>Gerstley borate, colemanite, frits</td><td>Always use frits for predictability</td></tr><tr><td>Li<sub>2</sub>O</td><td>Spodumene, petalite, lithium carbonate</td><td>Powerful flux, expensive</td></tr><tr><td>BaO</td><td>Barium carbonate</td><td>Toxic raw; non-toxic in fired glass if fully dissolved</td></tr></table></div></div>
+
+<div class="part-header"><h1 class="part-title">Stull Chart Topology</h1></div>
+<a id="label-part-topology"></a>
+
+<h2 id="the-chart-as-a-property-landscape" class="section-title">The Chart as a Property Landscape</h2>
+
+<p>The Stull Chart plots glazes in a two-dimensional space: <strong>Al<sub>2</sub>O<sub>3</sub></strong> (x-axis) vs. <strong>SiO<sub>2</sub></strong> (y-axis), with all flux oxides normalised to unity. Every point on the chart represents a unique Al:Si ratio at a given flux level. Moving across the chart changes the balance between network formers (SiO<sub>2</sub>), intermediates (Al<sub>2</sub>O<sub>3</sub>), and modifiers (fluxes).</p>
+
+<h3 id="iso-property-contours" class="subsection-title">Iso-Property Contours</h3>
+
+<p>The Atlas calculates 40 properties at every point on the chart. When plotted as contour maps, these reveal the topological structure of property space:</p>
+
+<div class="styled-box deepbox" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 Contour Map Observations</div><div class="box-content">
+<ul><li><strong>COE contours</strong> run nearly vertically (parallel to the Si axis): COE is almost entirely determined by flux identity and amount, with little dependence on Si:Al ratio. Moving horizontally (changing Al) barely changes COE; moving vertically (changing Si) does.</li><li><strong>Viscosity contours</strong> run diagonally from lower-left to upper-right: Both Al<sub>2</sub>O<sub>3</sub> and SiO<sub>2</sub> increase viscosity, but Al<sub>2</sub>O<sub>3</sub> has a stronger per-mole effect. The viscosity gradient is steepest toward low Si, low Al (high flux fraction).</li><li><strong>Durability contours</strong> run roughly horizontally: Durability increases strongly with SiO<sub>2</sub> and moderately with Al<sub>2</sub>O<sub>3</sub>. The most durable glazes are in the upper-right quadrant.</li><li><strong>NBO/T contours</strong> run diagonally: NBO/T is maximal at low Si, low Al (fully depolymerised melt) and minimal at high Si, high Al (fully polymerised network).</li><li><strong>Optical basicity (Λ)</strong> contours are nearly vertical: Λ depends primarily on the identity and amount of the flux oxides, not on the Si:Al ratio.</li></ul>
+</div></div>
+
+<h3 id="the-safe-zone-and-boundary-regions" class="subsection-title">The “Safe Zone” and Boundary Regions</h3>
+
+<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ The Five Regions of the Stull Chart</div><div class="box-content">
+<ol><li><strong>Upper-right quadrant (high Si, high Al):</strong> Very refractory. Hard, durable, chemically resistant glazes but require very high temperatures. Risk of underfiring. These are porcelain/stoneware glazes.</li><li><strong>Upper-left quadrant (high Si, low Al):</strong> Clear, glossy, hard glazes. Excellent durability. Risk of cristobalite devitrification at extreme silica levels. These are the Stull Chart “sweet spot” for functional ware.</li><li><strong>Lower-right quadrant (low Si, high Al):</strong> Matte, rough, viscous. These glazes may not fully melt. Risk of crawling (high surface tension from Al<sub>2</sub>O<sub>3</sub>). Rarely useful.</li><li><strong>Lower-left quadrant (low Si, low Al):</strong> Highly fluxed, very fluid. Low durability, high COE, poor chemical resistance. These are crystal glazes, low-fire glazes, and lead glazes. Functional use limited.</li><li><strong>Central region (∼0.3–0.5 Al, ∼2.5–4.0 Si):</strong> The convergence zone. Multiple eutectic boundaries intersect here. These compositions have:
+    <ul><li></li><li>Moderate viscosity (good healing, acceptable running)</li><li>Moderate durability</li><li>Moderate COE (adjustable by flux choice)</li><li>Best glass-forming ability (highest $T_{rg}$)</li><li>Most predictable behavior</li></ul>
+    <strong>This is where the majority of functional stoneware glazes live.</strong></li></ol>
+</div></div>
+
+<h2 id="property-gradients-and-design-vectors" class="section-title">Property Gradients and Design Vectors</h2>
+
+<h3 id="moving-around-the-chart" class="subsection-title">Moving Around the Chart</h3>
+
+<p>Every compositional change is a vector on the Stull Chart. Key design moves:</p>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Change</strong></th><th><strong>Chart Direction</strong></th><th><strong>Property Effects</strong></th></tr><tr><td>Increase SiO<sub>2</sub></td><td>Up ($+\hat{y}$)</td><td>+ Durability, + hardness, + viscosity, - COE slightly</td></tr><tr><td>Increase Al<sub>2</sub>O<sub>3</sub></td><td>Right ($+\hat{x}$)</td><td>+ Viscosity (strongly), + matte tendency, + $T_g$</td></tr><tr><td>Increase Si:Al ratio</td><td>Up-left</td><td>+ Glossy, + clear, + durable</td></tr><tr><td>Decrease Si:Al ratio</td><td>Down-right</td><td>+ Matte, + opaque, - durable</td></tr><tr><td>Increase total flux</td><td>Down-left (toward origin)</td><td>- Viscosity, - $T_g$, + COE, - durability</td></tr></table></div></div>
+
+<h3 id="the-si-al-ratio-as-a-master-variable" class="subsection-title">The Si:Al Ratio as a Master Variable</h3>
+
+<p>The Si:Al ratio is arguably the single most important structural parameter in a silicate glass. It controls:
+<ul><li>The balance between 4-coordinated (tetrahedral) Al (Al<sup>[4]</sup>, acts as a network former) and 5/6-coordinated Al (Al$^{[5]}/\text{Al}^{[6]}$, acts as a modifier)</li><li>The degree of network polymerisation (NBO/T)</li><li>The tendency toward crystallisation (which crystal phase nucleates)</li><li>The optical properties (refractive index, transparency)</li></ul></p>
+
+<p>The Atlas reports Si:Al ratio directly and uses it in several equations.</p>
+
+<div class="part-header"><h1 class="part-title">Food Safety &amp; Regulatory Compliance</h1></div>
+<a id="label-part-safety"></a>
+
+<h2 id="the-leaching-problem" class="section-title">The Leaching Problem</h2>
+
+<p>A ceramic glaze is in contact with food and beverages, often acidic (citrus juice, coffee, wine, vinegar, pickled foods). If the glaze is not sufficiently durable, metal ions from the glaze can leach into the food. The metals of primary concern are:</p>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Element</strong></th><th><strong>Source in Glaze</strong></th><th><strong>Health Risk</strong></th><th><strong>Regulatory Focus</strong></th></tr><tr><td>Lead (Pb)</td><td>PbO flux</td><td>Neurotoxicity, developmental</td><td>High: strictest limits</td></tr><tr><td>Cadmium (Cd)</td><td>CdS/CdSe pigments</td><td>Kidney damage, carcinogen</td><td>High: strict limits</td></tr><tr><td>Cobalt (Co)</td><td>CoO colorant</td><td>Cardiomyopathy (at high dose)</td><td>Moderate</td></tr><tr><td>Barium (Ba)</td><td>BaO flux</td><td>GI toxicity, muscle weakness</td><td>Moderate</td></tr><tr><td>Chromium (Cr)</td><td>Cr<sub>2</sub>O<sub>3</sub> colorant</td><td>Depends on valence: Cr<sup>6+</sup> is carcinogenic</td><td>Moderate</td></tr><tr><td>Copper (Cu)</td><td>CuO colorant</td><td>GI upset (low toxicity)</td><td>Low</td></tr><tr><td>Zinc (Zn)</td><td>ZnO flux</td><td>GI upset (low toxicity)</td><td>Low</td></tr></table></div></div>
+
+<h2 id="regulatory-standards" class="section-title">Regulatory Standards</h2>
+
+<h3 id="us-fda-california-proposition-65" class="subsection-title">US FDA / California Proposition 65</h3>
+
+<p>The FDA limits for lead and cadmium in ceramic ware (21 CFR 109.16):</p>
+
+<div class="styled-box safebox" style="border-left-color:#475569"><div class="box-title" style="color:#475569">🛡️ FDA Ceramic Limits (Action Levels)</div><div class="box-content">
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Category</strong></th><th><strong>Pb Limit (ppm)</strong></th><th><strong>Cd Limit (ppm)</strong></th></tr><tr><td>Flatware (plates, saucers)</td><td>3.0</td><td>0.5</td></tr><tr><td>Small hollowware (</td><td>lt;1.1&nbsp;L)</td><td>2.0</td><td>0.5</td></tr><tr><td>Large hollowware (</td><td>gt;1.1&nbsp;L)</td><td>1.0</td><td>0.25</td></tr><tr><td>Cups and mugs</td><td>0.5</td><td>0.25</td></tr><tr><td>Pitchers</td><td>0.5</td><td>0.25</td></tr></table></div></div>
+Test method: 4% acetic acid, 22&nbsp;°C, 24 hours.
+</div></div>
+
+<p>California Proposition 65 limits are even stricter:
+<ul><li>Pb: 0.226&nbsp;/day (approximately 10× stricter than FDA for daily use)</li><li>Cd: 4.1&nbsp;/day</li></ul></p>
+
+<h3 id="european-union-84-500-eec-amended" class="subsection-title">European Union (84/500/EEC, amended)</h3>
+
+<p>EU ceramic limits are broadly similar to FDA but tested with a slightly different protocol (4% acetic acid, 22&nbsp;°C, 24 hours, in the dark):
+<ul><li>Flatware: Pb $\leq 0.8$&nbsp;mg/dm<sup>2</sup>; Cd $\leq 0.07$&nbsp;mg/dm<sup>2</sup></li><li>Hollowware: Pb $\leq 4.0$&nbsp;mg/L; Cd $\leq 0.3$&nbsp;mg/L</li><li>Cooking ware: Pb $\leq 1.5$&nbsp;mg/L; Cd $\leq 0.1$&nbsp;mg/L</li></ul></p>
+
+<h2 id="atlas-equations-for-durability" class="section-title">Atlas Equations for Durability</h2>
+
+<h3 id="chemical-durability-eq-nbsp-28" class="subsection-title">Chemical Durability (Eq.&nbsp;28)</h3>
+
+<p>The Atlas chemical durability equation estimates the resistance of the glass to acid attack:</p>
+
+<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Chemical Durability Index</div><div class="box-content">
+<div class="math-display">\begin{equation}
+    D = \sum_i x_i \cdot d_i
+    \label{eq:durability}
+\end{equation}</div>
+where $d_i$ is the durability contribution of each oxide. Higher $D$ = more durable.
+
+<p>Oxides that improve durability: SiO<sub>2</sub> ($+$), Al<sub>2</sub>O<sub>3</sub> ($+$), ZrO<sub>2</sub> ($+$large), SnO<sub>2</sub> ($+$).</p>
+
+<p>Oxides that reduce durability: Na<sub>2</sub>O ($-$), K<sub>2</sub>O ($-$), PbO ($-$), B<sub>2</sub>O<sub>3</sub> ($-$).
+</div></div></p>
+
+<h3 id="hydration-free-energy-eq-nbsp-29" class="subsection-title">Hydration Free Energy (Eq.&nbsp;29)</h3>
+
+<p>The Atlas hydration free energy estimates the thermodynamic tendency of the glass to react with water:
+<div class="math-display">\[\Delta G_{\text{hyd}} = \sum_i x_i \cdot \Delta G_{\text{hyd},i}\]</div></p>
+
+<p>More negative $\Delta G_{\text{hyd}}$ = stronger tendency to hydrate = lower durability.</p>
+
+<h2 id="safe-colorant-practices" class="section-title">Safe Colorant Practices</h2>
+
+<div class="styled-box warnbox" style="border-left-color:#EF4444"><div class="box-title" style="color:#EF4444">⚠️ Colorant Safety Guidelines</div><div class="box-content">
+<ol><li><strong>Lead-free glazes:</strong> For any ware intended for food contact, use zero PbO. Modern frits and flux combinations can achieve all the same colors and surface qualities without lead.</li><li><strong>Cadmium-free:</strong> Avoid CdS/CdSe inclusion pigments unless the encapsulating zircon matrix is proven to prevent leaching at the specific firing temperature.</li><li><strong>Barium:</strong> BaO is relatively safe in a well-formulated, durable glass (Ba<sup>2+</sup> is tightly bound in the network). However, underfired barium glazes or those applied over porous bodies can leach toxic Ba<sup>2+</sup>. Use only in fully matured glazes with $D \gt  0.6$.</li><li><strong>Cobalt:</strong> Safe at typical glaze concentrations (&lt;3% CoO). The Co<sup>2+</sup> is strongly bound in the tetrahedral glass network.</li><li><strong>Copper:</strong> Safe in most oxidation glazes. Reduced copper (Cu<sup>0</sup> nanoparticles) in copper red glazes has not been shown to leach.</li><li><strong>Chromium:</strong> Safe as Cr<sup>3+</sup> (essentially non-toxic, strongly bound in octahedral sites). Dangerous as Cr<sup>6+</sup> (chromate), but Cr<sup>6+</sup> forms only in extremely basic compositions ($\Lambda \gt  0.65$). Avoid chrome in high-alkali, high-barium, or lead-bearing glazes.</li><li><strong>Manganese:</strong> Safe in glass if fully dissolved. Underfired or crystalline manganese glazes may contain MnO<sub>2</sub> particles that can dissolve in acid.</li></ol>
+</div></div>
+
+<h2 id="microwave-safety" class="section-title">Microwave Safety</h2>
+
+<p>Microwave-safe ceramics must not:
+<ol><li>Contain metals that absorb microwave radiation (heating the pot, not the food)</li><li>Absorb water into the body (steam generation, cracking)</li></ol></p>
+
+<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Microwave Absorption by Glazes</div><div class="box-content">
+Most silicate glazes are transparent to microwaves (2.45&nbsp;GHz). However:
+<ul><li><strong>Iron-bearing glazes:</strong> Fe<sup>2+</sup>–Fe<sup>3+</sup> IVCT absorption extends into the microwave region. High-iron glazes (&gt;5% Fe<sub>2</sub>O<sub>3</sub>) can absorb significant microwave energy, causing the pot to heat unevenly.</li><li><strong>Metallic glazes:</strong> Any glaze containing metallic particles (copper red Cu<sup>0</sup>, iron metallic, gold lustre) will absorb microwaves and produce sparking/arcing.</li><li><strong>Carbon-cored bodies:</strong> If the body contains trapped carbon from incomplete burnout, the carbon absorbs microwaves intensely.</li></ul>
+
+<p>Most functional stoneware and porcelain glazes are microwave-safe unless they contain metallic inclusions or are heavily iron-bearing.
+</div></div></p>
+
+<div class="part-header"><h1 class="part-title">Validation &amp; Model Accuracy</h1></div>
+<a id="label-part-validation"></a>
+
+<h2 id="the-nature-of-atlas-predictions" class="section-title">The Nature of Atlas Predictions</h2>
+
+<p>The Stull Atlas is built on <strong>additive oxide-contribution models</strong>: for most properties, the prediction is a weighted linear sum of oxide mole fractions. This is the simplest possible model, and it is important to understand both its strengths and its limitations honestly.</p>
+
+<h3 id="the-additive-assumption" class="subsection-title">The Additive Assumption</h3>
+
+<p>The core assumption:
+<div class="math-display">\begin{equation}
+    P = \sum_i x_i \cdot p_i + P_0
+\end{equation}</div>
+where $P$ is the predicted property, $x_i$ is the mole fraction of oxide $i$, $p_i$ is the oxide's contribution coefficient, and $P_0$ is a baseline (often zero).</p>
+
+<p>This assumes:
+<ol><li>Each oxide contributes <em>independently</em> to the property</li><li>There are no <em>interaction terms</em> (cross-products $x_i \cdot x_j$)</li><li>The relationship is <em>linear</em> in composition (no curvature, no thresholds)</li></ol></p>
+
+<p>These assumptions are <em>approximately correct</em> for many properties over limited composition ranges, but they are <em>fundamentally wrong</em> in important ways.</p>
+
+<h2 id="where-the-additive-model-works-well" class="section-title">Where the Additive Model Works Well</h2>
+
+<h3 id="thermal-expansion-coe" class="subsection-title">Thermal Expansion (COE)</h3>
+
+<p>The additive model works best for COE (Eq.&nbsp;6). Thermal expansion is primarily determined by the mean bond strength and coordination number, both of which are additive to first order. Literature comparisons show:</p>
+
+<div class="styled-box examplebox" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 COE Model Accuracy</div><div class="box-content">
+<ul><li><strong>Composition range:</strong> Soda-lime-silica glasses (∼60–75% SiO<sub>2</sub>, 10–20% Na<sub>2</sub>O, 5–15% CaO)</li><li><strong>Accuracy:</strong> $\pm 0.3–0.5 \times 10^{-6}$/°C (relative error ∼4–7%)</li><li><strong>Systematic bias:</strong> Slight underprediction at very high alkali content (the expansion increase is super-linear beyond ∼20% Na<sub>2</sub>O)</li><li><strong>Known failure:</strong> The “boron anomaly” — B<sub>2</sub>O<sub>3</sub> changes from a network former ($[3]$-coordinated) to a modifier ($[4]$-coordinated) at ∼15 mol% B<sub>2</sub>O<sub>3</sub> in sodium borosilicate glasses, causing a non-monotonic COE response that the linear model cannot capture</li></ul>
+</div></div>
+
+<h3 id="density-and-molar-volume" class="subsection-title">Density and Molar Volume</h3>
+
+<p>Density (Eq.&nbsp;7/8) is one of the most accurately predicted properties by additive models. The molar volume is simply the sum of partial molar volumes:
+<div class="math-display">\[V = \sum_i x_i \cdot V_i\]</div></p>
+
+<p>Typical accuracy: $\pm 1–2\%$ for compositions within the training range.</p>
+
+<h3 id="refractive-index" class="subsection-title">Refractive Index</h3>
+
+<p>Refractive index (Eq.&nbsp;24) is closely related to density through the Lorentz–Lorenz relation:
+<div class="math-display">\[\frac{n^2 - 1}{n^2 + 2} = \frac{4\pi}{3}\,N_A\,\frac{\alpha_e}{V}\]</div></p>
+
+<p>The additive model for $n$ inherits the good accuracy of the density model. Typical accuracy: $\pm 0.005–0.01$ (relative error ∼0.3–0.7%).</p>
+
+<h2 id="where-the-additive-model-breaks-down" class="section-title">Where the Additive Model Breaks Down</h2>
+
+<h3 id="viscosity" class="subsection-title">Viscosity</h3>
+
+<p>VFT viscosity (Eq.&nbsp;11) is the property where the additive model is most severely strained. The reason: viscosity depends on the <em>connectivity</em> of the silicate network, which is a highly nonlinear function of composition.</p>
+
+<div class="styled-box warnbox" style="border-left-color:#EF4444"><div class="box-title" style="color:#EF4444">⚠️ The Mixed-Alkali Effect</div><div class="box-content">
+The most dramatic failure of any additive oxide model is the <strong>mixed-alkali effect</strong> (MAE). When two alkali oxides (e.g., Na<sub>2</sub>O and K<sub>2</sub>O) are present simultaneously, viscosity is <em>higher</em> than predicted by a linear interpolation between the two end-member compositions. The deviation can be enormous — up to 2 orders of magnitude in log viscosity.
+
+<p>The MAE arises because dissimilar alkali ions block each other's diffusion paths through the glass network (a cooperative structural effect). The additive model has no terms for $x_{\text{Na}} \cdot x_{\text{K}}$ interactions and completely misses this effect.</p>
+
+<p>Practical impact: A glaze with $0.5~\text{Na}_2\text{O} + 0.5~\text{K}_2\text{O}$ will be <em>more viscous</em> (and fire higher) than one with $1.0~\text{Na}_2\text{O}$ or $1.0~\text{K}_2\text{O}$ alone, even though the additive model predicts the same viscosity.
+</div></div></p>
+
+<h3 id="glass-transition-temperature" class="subsection-title">Glass Transition Temperature</h3>
+
+<p>$T_g$ (Eq.&nbsp;10) inherits the viscosity model's limitations because $T_g$ is defined as the temperature where $\log\eta \approx 12$. Any error in the viscosity model translates directly to error in $T_g$. Typical accuracy: $\pm 20–40$&nbsp;°C for standard compositions, potentially $\pm 50–80$&nbsp;°C for compositions with strong mixed-alkali effects.</p>
+
+<h3 id="surface-properties" class="subsection-title">Surface Properties</h3>
+
+<p>Surface tension (Eq.&nbsp;26), surface energy, and contact angle are poorly predicted by additive models because surface properties depend on <em>preferential surface segregation</em>: certain oxides (especially alkalis and lead) preferentially concentrate at the glass surface, creating a surface composition different from the bulk. The additive model uses bulk composition, not surface composition, and therefore systematically overpredicts surface tension.</p>
+
+<h2 id="uncertainty-budgets" class="section-title">Uncertainty Budgets</h2>
+
+<div class="centered">
+<div class="table-wrapper"><table class="styled-table"><tr><th><strong>Property</strong></th><th><strong>Typical Error</strong></th><th><strong>Relative Error</strong></th><th><strong>Dominant Error Source</strong></th></tr><tr><td>COE</td><td>$\pm 0.5 \times 10^{-6}$</td><td>5–8%</td><td>Boron anomaly; crystallisation</td></tr><tr><td>Density</td><td>$\pm 0.05$&nbsp;g/cm<sup>3</sup></td><td>1–2%</td><td>Bubble content; crystallisation</td></tr><tr><td>Refractive index</td><td>$\pm 0.01$</td><td>0.3–0.7%</td><td>Composition accuracy</td></tr><tr><td>$T_g$</td><td>$\pm 30$&nbsp;°C</td><td>3–5%</td><td>Mixed-alkali effect</td></tr><tr><td>VFT viscosity</td><td>$\pm 0.5–1.0$ log units</td><td>5–10%</td><td>Mixed-alkali; network topology</td></tr><tr><td>Optical basicity</td><td>$\pm 0.02$</td><td>3–4%</td><td>Coordination changes</td></tr><tr><td>NBO/T</td><td>$\pm 0.1$</td><td>5–15%</td><td>Al coordination assumptions</td></tr><tr><td>Surface tension</td><td>$\pm 20$&nbsp;mN/m</td><td>5–7%</td><td>Surface segregation</td></tr><tr><td>Durability</td><td>$\pm 0.1$ (index)</td><td>10–20%</td><td>Microstructure, crystallisation</td></tr><tr><td>Elastic modulus</td><td>$\pm 5$&nbsp;GPa</td><td>5–10%</td><td>Network topology; porosity</td></tr></table></div></div>
+
+<h2 id="accuracy-by-property-class" class="section-title">Accuracy by Property Class</h2>
+
+<div class="styled-box deepbox" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 Property Classes Ranked by Model Reliability</div><div class="box-content">
+<strong>Tier 1 — High reliability (&lt;5% error, additive model valid):</strong>
+<ul><li>Density, molar volume, refractive index</li><li>COE (within binary/ternary systems without boron anomaly)</li><li>Optical basicity (additive by definition)</li></ul>
+
+<p><strong>Tier 2 — Moderate reliability (5–15% error, additive model approximate):</strong>
+<ul><li>$T_g$ (if no mixed-alkali effect)</li><li>Elastic modulus, hardness</li><li>NBO/T (if Al coordination is correctly assumed)</li><li>Optical bandgap</li></ul></p>
+
+<p><strong>Tier 3 — Semi-quantitative (15–30% error, additive model questionable):</strong>
+<ul><li>VFT viscosity (especially at extreme compositions)</li><li>Chemical durability (strongly affected by microstructure)</li><li>Surface tension (surface segregation effects)</li><li>Working range temperatures ($T_{12}$, softening point)</li></ul></p>
+
+<p><strong>Tier 4 — Qualitative only (&gt;30% error possible):</strong>
+<ul><li>Crystallisation tendency ($T_{rg}$, $K_H$ are proxies, not direct predictions)</li><li>Color (depends on redox, atmosphere, cooling rate — not solely compositional)</li><li>Defect prediction (multi-factorial; composition is necessary but not sufficient)</li></ul>
+</div></div></p>
+
+<h2 id="improving-the-models" class="section-title">Improving the Models</h2>
+
+<h3 id="beyond-additive-interaction-terms" class="subsection-title">Beyond Additive: Interaction Terms</h3>
+
+<p>The next level of model sophistication adds pairwise interaction terms:
+<div class="math-display">\begin{equation}
+    P = \sum_i x_i \cdot p_i + \sum_{i\lt j} x_i x_j \cdot p_{ij}
+    \label{eq:interaction}
+\end{equation}</div></p>
+
+<p>This captures effects like:
+<ul><li>Mixed-alkali effect ($x_{\text{Na}} \cdot x_{\text{K}}$ term)</li><li>Borosilicate anomaly ($x_{\text{B}} \cdot x_{\text{Na}}$ term)</li><li>Lead-alkali synergy ($x_{\text{Pb}} \cdot x_{\text{Na}}$ term)</li></ul></p>
+
+<p>The cost: many more parameters to fit, requiring many more experimental data points.</p>
+
+<h3 id="machine-learning-approaches" class="subsection-title">Machine Learning Approaches</h3>
+
+<p>Neural networks, random forests, and Gaussian process models can capture arbitrary nonlinear composition-property relationships. Recent work (2018–2024) has shown ML models achieving:
+<ul><li>COE prediction within $\pm 0.2 \times 10^{-6}$/°C</li><li>$T_g$ prediction within $\pm 15$&nbsp;°C</li><li>Viscosity prediction within $\pm 0.3$ log units</li></ul></p>
+
+<p>However, ML models require large training datasets (&gt;1000 compositions) and offer less physical insight than parametric models. They also risk overfitting to specific composition families.</p>
+
+<h3 id="the-atlas-approach-honest-simplicity" class="subsection-title">The Atlas Approach: Honest Simplicity</h3>
+
+<p>The Stull Atlas deliberately uses additive models because:
+<ol><li>They are <strong>transparent</strong>: every coefficient has a physical meaning.</li><li>They are <strong>robust</strong>: they never produce wildly wrong predictions (no extrapolation catastrophes from overfitting).</li><li>They are <strong>fast</strong>: instant computation for any composition.</li><li>They are <strong>sufficient for the target audience</strong>: potters need reliable rank-ordering (“will composition A have higher COE than composition B?”) more than exact numerical values. Additive models excel at rank-ordering.</li></ol></p>
+
+<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ The Honest Disclaimer</div><div class="box-content">
+The Stull Atlas predictions should be used as <strong>guides, not guarantees</strong>. They are most reliable for:
+<ol><li>Comparing two compositions (“which direction should I move?”)</li><li>Identifying compositions that are clearly outside safe/functional ranges</li><li>Rank-ordering candidate recipes for testing</li></ol>
+
+<p>They are <em>least</em> reliable for:
+<ol><li>Predicting exact numerical property values for novel compositions</li><li>Compositions far from the soda–lime–alumina–silica family</li><li>Properties that depend on processing (atmosphere, cooling rate, raw material particle size) as much as composition</li></ol></p>
+
+<p><strong>Always test.</strong> The kiln is the final arbiter, and no model replaces a well-designed test tile programme.
+</div></div></p>
+
+<h2 id="cross-reference-to-companion-reports" class="section-title">Cross-Reference to Companion Reports</h2>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Topic in This Report</strong></th><th><strong>Companion Report</strong></th><th><strong>Relevant Section</strong></th></tr><tr><td>Crazing / COE (Part I)</td><td>Main Report</td><td>Eq.&nbsp;6; Worked Example 1</td></tr><tr><td>Viscosity / VFT (Parts I, III)</td><td>Main Report; Equations Report</td><td>Eqs.&nbsp;11, 12; Deep-dive Ch.&nbsp;3</td></tr><tr><td>Surface Tension (Part I)</td><td>Equations Report</td><td>Eq.&nbsp;26; Deep-dive Ch.&nbsp;7</td></tr><tr><td>Crystal Field Theory (Part IV)</td><td>Colorant Report</td><td>All sections</td></tr><tr><td>Phase Separation (Part IV)</td><td>Crystallisation Report</td><td>Sections 7, 8</td></tr><tr><td>Flux Analysis (Part V)</td><td>Flux Report</td><td>All sections</td></tr><tr><td>Optical Basicity / Redox (Parts IV, VII)</td><td>Main Report; Equations Report</td><td>Eqs.&nbsp;1, 33</td></tr><tr><td>NBO/T Network Structure (Part VI)</td><td>Equations Report</td><td>Eq.&nbsp;14; Deep-dive Ch.&nbsp;4</td></tr><tr><td>Durability / Food Safety (Part VII)</td><td>Equations Report</td><td>Eqs.&nbsp;28, 29</td></tr><tr><td>Glass-Forming Ability (Part VIII)</td><td>Crystallisation Report</td><td>Eqs.&nbsp;39, 40</td></tr></table></div></div>
+</main>
+</div>
+<script>
+// TOC scroll-spy
+(function(){
+  const links = document.querySelectorAll('.toc a');
+  if(!links.length) return;
+  const ids = Array.from(links).map(a => a.getAttribute('href')?.slice(1)).filter(Boolean);
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        links.forEach(a => a.classList.remove('active'));
+        const a = document.querySelector('.toc a[href="#'+e.target.id+'"]');
+        if(a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -75% 0px' });
+  ids.forEach(id => { const el = document.getElementById(id); if(el) observer.observe(el); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stull Atlas Explorer</title>
+<style>
+:root { --bg: #0f0f0f; --surface: #1a1a1a; --text: #e5e5e5; --text-muted: #a3a3a3; --border: #333; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+.hero { text-align: center; padding: 80px 24px 40px; }
+.hero h1 { font-size: 3em; font-weight: 800; background: linear-gradient(135deg, #6366F1, #F59E0B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 12px; }
+.hero p { color: var(--text-muted); font-size: 1.15em; max-width: 600px; margin: 0 auto; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; padding: 20px 24px 80px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid; border-radius: 8px; padding: 28px 24px; text-decoration: none; transition: all .25s; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,.3); border-color: #555; }
+.card h2 { font-size: 1.2em; margin-bottom: 8px; }
+.card p { color: var(--text-muted); font-size: 0.9em; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="hero">
+    <h1>Stull Atlas Explorer</h1>
+    <p>In-depth technical reports covering the math, chemistry, and analysis</p>
+</div>
+<div class="cards">
+        <a href="stull-atlas-report.html" class="card" style="border-top-color:#6366F1">
+            <h2 style="color:#6366F1">Comprehensive Report</h2>
+            <p>133 computed properties, 22 oxides, 120+ references. The complete specification.</p>
+        </a>
+        <a href="stull-atlas-equations-report.html" class="card" style="border-top-color:#F59E0B">
+            <h2 style="color:#F59E0B">Equations Deep Dive</h2>
+            <p>40 core equations with history, meaning, worked examples, and limitations.</p>
+        </a>
+        <a href="stull-atlas-flux-report.html" class="card" style="border-top-color:#6366F1">
+            <h2 style="color:#6366F1">Flux & Flux Ratio Report</h2>
+            <p>10 flux oxides, their chemistry, historical traditions, and interaction effects.</p>
+        </a>
+        <a href="stull-atlas-colorant-report.html" class="card" style="border-top-color:#1E3A8A">
+            <h2 style="color:#1E3A8A">Colorant & Crystal Field Theory</h2>
+            <p>Transition-metal color chemistry: iron, cobalt, copper, manganese, chromium.</p>
+        </a>
+        <a href="stull-atlas-crystallisation-report.html" class="card" style="border-top-color:#0D9488">
+            <h2 style="color:#0D9488">Crystallisation & Phase Equilibria</h2>
+            <p>Nucleation theory, devitrification, crystal glaze design, phase separation.</p>
+        </a>
+        <a href="stull-atlas-analysis-compendium.html" class="card" style="border-top-color:#8B5CF6">
+            <h2 style="color:#8B5CF6">Advanced Analysis Compendium</h2>
+            <p>Defect physics, sensitivity analysis, firing science, food safety, validation.</p>
+        </a>
+</div>
+</body>
+</html>

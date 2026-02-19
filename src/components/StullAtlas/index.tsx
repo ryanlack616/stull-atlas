@@ -21,6 +21,7 @@ import { NearbyList } from './NearbyList'
 import { ImageCarousel } from './ImageCarousel'
 import { explorerStyles } from './explorer-styles'
 import { exportPlotAsImage, exportAsPrintPDF, exportSurfaceAsOBJ, exportSurfaceAsSTL, exportScatterAsCSV } from '@/utils'
+import { features } from '@/featureFlags'
 
 // Lazy-load heavy components that aren't always visible
 const StullPlot3D = lazy(() => import('./StullPlot3D').then(m => ({ default: m.StullPlot3D })))
@@ -630,7 +631,7 @@ export function StullAtlas() {
                   )}
                 </div>
 
-                {/* Proximity radius filter */}
+                {/* Proximity toggle (options card floats over plot) */}
                 <div className="three-d-control-row proximity-control">
                   <label className="surface-toggle" style={{ margin: 0 }}>
                     <input
@@ -641,133 +642,15 @@ export function StullAtlas() {
                     />
                     Proximity
                   </label>
-                  {proximityEnabled && selectedGlaze && (
-                    <div className="inline-slider">
-                      <input
-                        type="range"
-                        min="0.05"
-                        max="1.5"
-                        step="0.05"
-                        value={proximityRadius}
-                        onChange={e => setProximityRadius(Number(e.target.value))}
-                        title={`Radius: ${(proximityRadius * 100).toFixed(0)}%`}
-                      />
-                      <span className="slider-value">
-                        {proximityStats
-                          ? `${proximityStats.visible}/${proximityStats.total}`
-                          : `${(proximityRadius * 100).toFixed(0)}%`
-                        }
-                      </span>
-                    </div>
-                  )}
                   {proximityEnabled && !selectedGlaze && (
                     <span className="slider-value" style={{ fontSize: 10, opacity: 0.6 }}>Select a glaze</span>
                   )}
+                  {proximityEnabled && selectedGlaze && proximityStats && (
+                    <span className="slider-value" style={{ fontSize: 10 }}>
+                      {proximityStats.visible}/{proximityStats.total}
+                    </span>
+                  )}
                 </div>
-
-                {/* Aesthetic Compass — weighted similarity sliders */}
-                {proximityEnabled && selectedGlaze && (() => {
-                  const COMPASS_PRESETS: { label: string; title: string; weights: ProximityWeights }[] = [
-                    { label: 'Balanced', title: 'Equal weight on all axes', weights: { x: 0.5, y: 0.5, z: 0.5, cone: 0.0, surface: 0.0 } },
-                    { label: 'Chemistry Twin', title: 'Prioritize SiO₂ and Al₂O₃ match', weights: { x: 1.0, y: 1.0, z: 0.3, cone: 0.0, surface: 0.0 } },
-                    { label: 'Same Surface', title: 'Must match surface type', weights: { x: 0.3, y: 0.3, z: 0.2, cone: 0.0, surface: 1.0 } },
-                    { label: 'Same Cone', title: 'Prioritize firing temperature match', weights: { x: 0.2, y: 0.2, z: 0.2, cone: 1.0, surface: 0.0 } },
-                    { label: 'Flux Sibling', title: 'Match on Z-axis (flux/ratio)', weights: { x: 0.2, y: 0.2, z: 1.0, cone: 0.0, surface: 0.0 } },
-                  ]
-
-                  const COMPASS_SLIDERS: { key: keyof ProximityWeights; label: string; color: string }[] = [
-                    { key: 'x', label: 'SiO₂', color: '#3b82f6' },
-                    { key: 'y', label: 'Al₂O₃', color: '#22c55e' },
-                    { key: 'z', label: zAxisLabel(zAxis), color: '#f59e0b' },
-                    { key: 'cone', label: 'Cone', color: '#a855f7' },
-                    { key: 'surface', label: 'Surface', color: '#ec4899' },
-                  ]
-
-                  const isDefault = Object.keys(DEFAULT_PROXIMITY_WEIGHTS).every(
-                    k => compassWeights[k as keyof ProximityWeights] === DEFAULT_PROXIMITY_WEIGHTS[k as keyof ProximityWeights]
-                  )
-
-                  return (
-                    <div className="aesthetic-compass">
-                      <button
-                        className={`compass-toggle${compassExpanded ? ' open' : ''}`}
-                        onClick={() => setCompassExpanded(prev => !prev)}
-                      >
-                        <span className="compass-icon">🧭</span>
-                        <span>Aesthetic Compass</span>
-                        {!isDefault && <span className="compass-active-dot" />}
-                        <span className="compass-chevron">{compassExpanded ? '▾' : '▸'}</span>
-                      </button>
-
-                      {compassExpanded && (
-                        <div className="compass-body">
-                          {/* Presets */}
-                          <div className="compass-presets">
-                            {COMPASS_PRESETS.map(preset => {
-                              const isActive = Object.keys(preset.weights).every(
-                                k => Math.abs(compassWeights[k as keyof ProximityWeights] - preset.weights[k as keyof ProximityWeights]) < 0.01
-                              )
-                              return (
-                                <button
-                                  key={preset.label}
-                                  className={`compass-preset-btn${isActive ? ' active' : ''}`}
-                                  onClick={() => setCompassWeights({ ...preset.weights })}
-                                  title={preset.title}
-                                >{preset.label}</button>
-                              )
-                            })}
-                          </div>
-
-                          {/* Sliders */}
-                          <div className="compass-sliders">
-                            {COMPASS_SLIDERS.map(s => (
-                              <div key={s.key} className="compass-slider-row">
-                                <span className="compass-slider-label" style={{ color: s.color }}>{s.label}</span>
-                                <input
-                                  type="range"
-                                  min="0"
-                                  max="1"
-                                  step="0.05"
-                                  value={compassWeights[s.key]}
-                                  onChange={e => setCompassWeights(prev => ({ ...prev, [s.key]: Number(e.target.value) }))}
-                                  className="compass-slider"
-                                  style={{ '--slider-color': s.color } as React.CSSProperties}
-                                />
-                                <span className="compass-slider-val">{(compassWeights[s.key] * 100).toFixed(0)}%</span>
-                              </div>
-                            ))}
-                          </div>
-
-                          {/* Reset */}
-                          {!isDefault && (
-                            <button
-                              className="compass-reset-btn"
-                              onClick={() => setCompassWeights({ ...DEFAULT_PROXIMITY_WEIGHTS })}
-                            >Reset to default</button>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  )
-                })()}
-
-                {/* Nearby glazes list */}
-                {proximityEnabled && proximityStats && proximityStats.nearby.length > 0 && (
-                  <NearbyList
-                    proximityStats={proximityStats}
-                    glazes={glazes}
-                    selectedGlaze={selectedGlaze}
-                    pinnedCenterId={pinnedCenterId}
-                    hoveredNeighborId={hoveredNeighborId}
-                    explorationPath={explorationPath}
-                    zAxis={zAxis}
-                    onSelectGlaze={setSelectedGlaze}
-                    onCompareGlaze={addToCompare}
-                    onHoverNeighbor={setHoveredNeighborId}
-                    onPinCenter={setPinnedCenterId}
-                    onExplorationPathChange={setExplorationPath}
-                  />
-                )}
 
                 {/* Keyboard shortcut hints */}
                 <div className="three-d-shortcuts-hint">
@@ -891,12 +774,11 @@ export function StullAtlas() {
             </div>
           </div>
           
-          <MolarSetPicker />
-          <AnalysisSetPicker />
+          {features.molarWeights && <MolarSetPicker />}
+          {features.analysisSetPicker && <AnalysisSetPicker />}
           <DatasetStats />
 
-          {/* ── Filter Panel (hidden for NCECA) ── */}
-          {/* <FilterPanel /> */}
+          {features.filterPanel && <FilterPanel />}
           
           {densityMap && (
             <div className="control-group">
@@ -966,6 +848,143 @@ export function StullAtlas() {
               limitCone={showLimits ? limitCone : null}
             />
           )}
+
+          {/* Floating Proximity Options Card */}
+          {is3D && proximityEnabled && selectedGlaze && (
+            <div className="proximity-floating-card">
+              <div className="proximity-floating-header">
+                <span>Proximity Options</span>
+                <button 
+                  className="proximity-floating-close"
+                  onClick={() => setProximityEnabled(false)}
+                  aria-label="Close proximity"
+                >×</button>
+              </div>
+
+              {/* Radius slider */}
+              <div className="proximity-floating-section">
+                <label className="proximity-floating-label">Radius</label>
+                <div className="inline-slider">
+                  <input
+                    type="range"
+                    min="0.05"
+                    max="1.5"
+                    step="0.05"
+                    value={proximityRadius}
+                    onChange={e => setProximityRadius(Number(e.target.value))}
+                    title={`Radius: ${(proximityRadius * 100).toFixed(0)}%`}
+                  />
+                  <span className="slider-value">
+                    {proximityStats
+                      ? `${proximityStats.visible}/${proximityStats.total}`
+                      : `${(proximityRadius * 100).toFixed(0)}%`
+                    }
+                  </span>
+                </div>
+              </div>
+
+              {/* Aesthetic Compass */}
+              {(() => {
+                const COMPASS_PRESETS: { label: string; title: string; weights: ProximityWeights }[] = [
+                  { label: 'Balanced', title: 'Equal weight on all axes', weights: { x: 0.5, y: 0.5, z: 0.5, cone: 0.0, surface: 0.0 } },
+                  { label: 'Chemistry Twin', title: 'Prioritize SiO₂ and Al₂O₃ match', weights: { x: 1.0, y: 1.0, z: 0.3, cone: 0.0, surface: 0.0 } },
+                  { label: 'Same Surface', title: 'Must match surface type', weights: { x: 0.3, y: 0.3, z: 0.2, cone: 0.0, surface: 1.0 } },
+                  { label: 'Same Cone', title: 'Prioritize firing temperature match', weights: { x: 0.2, y: 0.2, z: 0.2, cone: 1.0, surface: 0.0 } },
+                  { label: 'Flux Sibling', title: 'Match on Z-axis (flux/ratio)', weights: { x: 0.2, y: 0.2, z: 1.0, cone: 0.0, surface: 0.0 } },
+                ]
+
+                const COMPASS_SLIDERS: { key: keyof ProximityWeights; label: string; color: string }[] = [
+                  { key: 'x', label: 'SiO₂', color: '#3b82f6' },
+                  { key: 'y', label: 'Al₂O₃', color: '#22c55e' },
+                  { key: 'z', label: zAxisLabel(zAxis), color: '#f59e0b' },
+                  { key: 'cone', label: 'Cone', color: '#a855f7' },
+                  { key: 'surface', label: 'Surface', color: '#ec4899' },
+                ]
+
+                const isDefault = Object.keys(DEFAULT_PROXIMITY_WEIGHTS).every(
+                  k => compassWeights[k as keyof ProximityWeights] === DEFAULT_PROXIMITY_WEIGHTS[k as keyof ProximityWeights]
+                )
+
+                return (
+                  <div className="aesthetic-compass" style={{ margin: 0 }}>
+                    <button
+                      className={`compass-toggle${compassExpanded ? ' open' : ''}`}
+                      onClick={() => setCompassExpanded(prev => !prev)}
+                    >
+                      <span className="compass-icon">🧭</span>
+                      <span>Aesthetic Compass</span>
+                      {!isDefault && <span className="compass-active-dot" />}
+                      <span className="compass-chevron">{compassExpanded ? '▾' : '▸'}</span>
+                    </button>
+
+                    {compassExpanded && (
+                      <div className="compass-body">
+                        <div className="compass-presets">
+                          {COMPASS_PRESETS.map(preset => {
+                            const isActive = Object.keys(preset.weights).every(
+                              k => Math.abs(compassWeights[k as keyof ProximityWeights] - preset.weights[k as keyof ProximityWeights]) < 0.01
+                            )
+                            return (
+                              <button
+                                key={preset.label}
+                                className={`compass-preset-btn${isActive ? ' active' : ''}`}
+                                onClick={() => setCompassWeights({ ...preset.weights })}
+                                title={preset.title}
+                              >{preset.label}</button>
+                            )
+                          })}
+                        </div>
+
+                        <div className="compass-sliders">
+                          {COMPASS_SLIDERS.map(s => (
+                            <div key={s.key} className="compass-slider-row">
+                              <span className="compass-slider-label" style={{ color: s.color }}>{s.label}</span>
+                              <input
+                                type="range"
+                                min="0"
+                                max="1"
+                                step="0.05"
+                                value={compassWeights[s.key]}
+                                onChange={e => setCompassWeights(prev => ({ ...prev, [s.key]: Number(e.target.value) }))}
+                                className="compass-slider"
+                                style={{ '--slider-color': s.color } as React.CSSProperties}
+                              />
+                              <span className="compass-slider-val">{(compassWeights[s.key] * 100).toFixed(0)}%</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {!isDefault && (
+                          <button
+                            className="compass-reset-btn"
+                            onClick={() => setCompassWeights({ ...DEFAULT_PROXIMITY_WEIGHTS })}
+                          >Reset to default</button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )
+              })()}
+
+              {/* Nearby glazes list */}
+              {proximityStats && proximityStats.nearby.length > 0 && (
+                <NearbyList
+                  proximityStats={proximityStats}
+                  glazes={glazes}
+                  selectedGlaze={selectedGlaze}
+                  pinnedCenterId={pinnedCenterId}
+                  hoveredNeighborId={hoveredNeighborId}
+                  explorationPath={explorationPath}
+                  zAxis={zAxis}
+                  onSelectGlaze={setSelectedGlaze}
+                  onCompareGlaze={addToCompare}
+                  onHoverNeighbor={setHoveredNeighborId}
+                  onPinCenter={setPinnedCenterId}
+                  onExplorationPathChange={setExplorationPath}
+                />
+              )}
+            </div>
+          )}
         </main>
         
         {showSidebar && !kiosk.active && (
@@ -998,16 +1017,17 @@ export function StullAtlas() {
               >
                 Analysis
               </button>
-              {/* ── Knowledge tab (hidden for NCECA) ── */}
-              {/* <button 
-                className={`sidebar-tab ${sidebarTab === 'knowledge' ? 'active' : ''}`}
-                onClick={() => setSidebarTab('knowledge')}
-                role="tab"
-                aria-selected={sidebarTab === 'knowledge'}
-                title="Ceramic knowledge from Tony Hansen's Digitalfire Reference Library"
-              >
-                Knowledge
-              </button> */}
+              {features.knowledgeTab && (
+                <button 
+                  className={`sidebar-tab ${sidebarTab === 'knowledge' ? 'active' : ''}`}
+                  onClick={() => setSidebarTab('knowledge')}
+                  role="tab"
+                  aria-selected={sidebarTab === 'knowledge'}
+                  title="Ceramic knowledge from Tony Hansen's Digitalfire Reference Library"
+                >
+                  Knowledge
+                </button>
+              )}
             </div>
             
             {sidebarTab === 'detail' && (
@@ -1254,14 +1274,13 @@ export function StullAtlas() {
               </Suspense>
             )}
             
-            {/* ── Knowledge panel (hidden for NCECA) ── */}
-            {/* {sidebarTab === 'knowledge' && (
+            {features.knowledgeTab && sidebarTab === 'knowledge' && (
               <Suspense fallback={<div style={{ padding: 16, fontSize: 13, color: 'var(--text-secondary)' }}>Loading knowledge...</div>}>
                 <DigitalfirePanel
                   selectedGlaze={selectedGlaze}
                 />
               </Suspense>
-            )} */}
+            )}
           </aside>
         )}
 

@@ -66,8 +66,8 @@ if (-not $SkipBuild) {
     Push-Location $projectRoot
     try {
         $env:FORCE_COLOR = "0"
-        # Build with custom base path and output dir
-        npx vite build --base "$DevBasePath" --outDir "dist-dev" --emptyOutDir 2>&1 | ForEach-Object { Write-Host "  $_" }
+        # Build with custom base path, output dir, and RJE feature flags
+        npx vite build --mode rje --base "$DevBasePath" --outDir "dist-dev" --emptyOutDir 2>&1 | ForEach-Object { Write-Host "  $_" }
         $env:FORCE_COLOR = $null
         if ($LASTEXITCODE -ne 0) {
             Write-Host "Build failed!" -ForegroundColor Red

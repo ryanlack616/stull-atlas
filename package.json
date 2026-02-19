@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:prod": "tsc && vite build --mode prod",
+    "build:dev": "tsc && vite build --mode dev",
+    "build:rje": "tsc && vite build --mode rje",
     "postbuild": "node scripts/postbuild.mjs",
     "preview": "vite preview",
     "test": "vitest",

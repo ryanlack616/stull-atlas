@@ -93,7 +93,7 @@ export function UserMenu() {
           <div className="user-dropdown-divider" />
           {trialStatus === 'expired' && (
             <div className="user-dropdown-notice">
-              Your trial has ended. <a href="/#/pricing">Upgrade</a> to keep Pro features.
+              Your trial has ended. All features are currently free.
             </div>
           )}
           {effectiveTier === 'free' && trialStatus !== 'active' && (

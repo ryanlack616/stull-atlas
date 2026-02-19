@@ -27,6 +27,7 @@ import { fitSurface, type SurfaceGrid } from '@/analysis/surfaceFit'
 import { classifySurface, SURFACE_TYPE_COLORS_RGBA, type SurfaceClassifyGrid } from '@/analysis/surfaceClassify'
 import { glazeTypeColor, glazeTypeName } from '@/domain/glaze'
 import { useFilteredPoints } from '@/hooks'
+import { features } from '@/featureFlags'
 
 // ─── Public types ──────────────────────────────────────────────
 
@@ -76,6 +77,12 @@ const FS_TABLE: [OxideSymbol, number, number][] = [
   ['SrO',1,0.28],['ZnO',1,0.40],['PbO',1,0.27],
   ['Fe2O3',2,0.73],['TiO2',1,1.19],
 ]
+
+/** Stull chart axis bounds — single source of truth for filter, surface, and layout */
+const STULL_BOUNDS = {
+  x: [0.4, 7.5] as const,   // SiO₂
+  y: [0.0, 1.1] as const,   // Al₂O₃
+} as const
 
 /**
  * Compute Z-axis value from a UMF.
@@ -284,21 +291,25 @@ type PlotComponentType = React.ComponentType<any>
 // ─── Discrete cone colorscale (matches 2D) ─────────────────────
 
 const CONE_COLORSCALE: [number, string][] = [
-  [0,        '#6366f1'], [0.5 / 14, '#6366f1'],   // Cone 04 — indigo
-  [0.5 / 14, '#3b82f6'], [1.5 / 14, '#3b82f6'],   // Cone 03 — blue
-  [1.5 / 14, '#06b6d4'], [2.5 / 14, '#06b6d4'],   // Cone 02 — cyan
-  [2.5 / 14, '#14b8a6'], [3.5 / 14, '#14b8a6'],   // Cone 01 — teal
-  [3.5 / 14, '#10b981'], [4.5 / 14, '#10b981'],   // Cone 0  — emerald
-  [4.5 / 14, '#22c55e'], [5.5 / 14, '#22c55e'],   // Cone 1  — green
-  [5.5 / 14, '#84cc16'], [6.5 / 14, '#84cc16'],   // Cone 2  — lime
-  [6.5 / 14, '#a3e635'], [7.5 / 14, '#a3e635'],   // Cone 3  — chartreuse
-  [7.5 / 14, '#facc15'], [8.5 / 14, '#facc15'],   // Cone 4  — yellow
-  [8.5 / 14, '#f59e0b'], [9.5 / 14, '#f59e0b'],   // Cone 5  — amber
-  [9.5 / 14, '#f97316'], [10.5 / 14, '#f97316'],  // Cone 6  — orange
-  [10.5 / 14, '#ef4444'], [11.5 / 14, '#ef4444'],  // Cone 7  — red
-  [11.5 / 14, '#dc2626'], [12.5 / 14, '#dc2626'],  // Cone 8  — crimson
-  [12.5 / 14, '#e11d48'], [13.5 / 14, '#e11d48'],  // Cone 9  — rose
-  [13.5 / 14, '#a855f7'], [1,        '#a855f7'],   // Cone 10 — purple
+  [0,        '#6366f1'], [0.5 / 18, '#6366f1'],   // Cone 04 — indigo
+  [0.5 / 18, '#3b82f6'], [1.5 / 18, '#3b82f6'],   // Cone 03 — blue
+  [1.5 / 18, '#06b6d4'], [2.5 / 18, '#06b6d4'],   // Cone 02 — cyan
+  [2.5 / 18, '#14b8a6'], [3.5 / 18, '#14b8a6'],   // Cone 01 — teal
+  [3.5 / 18, '#10b981'], [4.5 / 18, '#10b981'],   // Cone 0  — emerald
+  [4.5 / 18, '#22c55e'], [5.5 / 18, '#22c55e'],   // Cone 1  — green
+  [5.5 / 18, '#84cc16'], [6.5 / 18, '#84cc16'],   // Cone 2  — lime
+  [6.5 / 18, '#a3e635'], [7.5 / 18, '#a3e635'],   // Cone 3  — chartreuse
+  [7.5 / 18, '#facc15'], [8.5 / 18, '#facc15'],   // Cone 4  — yellow
+  [8.5 / 18, '#f59e0b'], [9.5 / 18, '#f59e0b'],   // Cone 5  — amber
+  [9.5 / 18, '#f97316'], [10.5 / 18, '#f97316'],  // Cone 6  — orange
+  [10.5 / 18, '#ef4444'], [11.5 / 18, '#ef4444'],  // Cone 7  — red
+  [11.5 / 18, '#dc2626'], [12.5 / 18, '#dc2626'],  // Cone 8  — crimson
+  [12.5 / 18, '#e11d48'], [13.5 / 18, '#e11d48'],  // Cone 9  — rose
+  [13.5 / 18, '#a855f7'], [14.5 / 18, '#a855f7'],  // Cone 10 — purple
+  [14.5 / 18, '#7c3aed'], [15.5 / 18, '#7c3aed'],  // Cone 11 — violet
+  [15.5 / 18, '#6d28d9'], [16.5 / 18, '#6d28d9'],  // Cone 12 — deep violet
+  [16.5 / 18, '#581c87'], [17.5 / 18, '#581c87'],  // Cone 13 — dark purple
+  [17.5 / 18, '#3b0764'], [1,        '#3b0764'],   // Cone 14 — blackberry
 ]
 
 const COLOR_SCALES: Record<string, string | [number, string][]> = {
@@ -699,8 +710,13 @@ export function StullPlot3D({
     return filteredPoints.filter(p =>
       p.x != null && p.y != null &&
       !isNaN(p.x) && !isNaN(p.y) &&
-      p.x > 0 && p.y > 0 &&
-      p.cone != null && p.cone >= -4 && p.cone <= 10
+      // Clamp to Stull chart bounds — points outside float outside
+      // the 3D wireframe box (Plotly 3D doesn't clip like 2D)
+      p.x >= STULL_BOUNDS.x[0] && p.x <= STULL_BOUNDS.x[1] &&
+      p.y >= STULL_BOUNDS.y[0] && p.y <= STULL_BOUNDS.y[1] &&
+      // Allow null-cone glazes — they're valid for all non-cone z-axes
+      // (computeZFromUMF defaults cone to 6 when null)
+      (p.cone == null || (p.cone >= -4 && p.cone <= 14))
     ).map(p => {
       const glaze = glazes.get(p.id)
       const umfData = glaze?.umf
@@ -897,16 +913,21 @@ export function StullPlot3D({
   // ─── Z range and floor ────────────────────────────────────────
 
   const zRange = useMemo(() => {
-    let min = Infinity, max = -Infinity
+    // Use 99th percentile for max to prevent outlier stretching.
+    // Most z-axis choices have long tails (e.g., B₂O₃ — 99% < 1.25 but max 3.8)
+    // that squish the bulk of data into the bottom of the box.
+    const vals: number[] = []
     for (const p of plotData) {
-      const z = p.z
-      if (isFinite(z) && !isNaN(z)) {
-        if (z < min) min = z
-        if (z > max) max = z
-      }
+      if (isFinite(p.z) && !isNaN(p.z)) vals.push(p.z)
     }
-    if (min === Infinity) return { min: 0, max: 1 }
-    return { min, max: max === min ? min + 1 : max }
+    if (vals.length === 0) return { min: 0, max: 1 }
+    vals.sort((a, b) => a - b)
+    const min = vals[0]
+    const p99 = vals[Math.min(Math.floor(vals.length * 0.99), vals.length - 1)]
+    const rawMax = vals[vals.length - 1]
+    // Use p99 with 10% headroom, but never less than raw max if range is tiny
+    const max = p99 === min ? min + 1 : p99 * 1.1
+    return { min, max: Math.min(max, rawMax) }
   }, [plotData])
 
   const zFloor = zRange.min - (zRange.max - zRange.min) * 0.05
@@ -918,8 +939,8 @@ export function StullPlot3D({
     return fitSurface(
       plotData.map(p => ({ x: p.x, y: p.y, z: p.z })),
       {
-        xRange: [0.5, 7.2],
-        yRange: [0, 1.0],
+        xRange: [...STULL_BOUNDS.x],
+        yRange: [...STULL_BOUNDS.y],
         resolution: 40,
       },
     )
@@ -943,8 +964,8 @@ export function StullPlot3D({
     if (points.length < 5) return null
 
     return classifySurface(points, {
-      xRange: [0.5, 7.2],
-      yRange: [0.0, 1.0],
+      xRange: [...STULL_BOUNDS.x],
+      yRange: [...STULL_BOUNDS.y],
       resolution: 30,
     })
   }, [plotData, showPrediction])
@@ -1061,13 +1082,13 @@ export function StullPlot3D({
           colorscale: isCone ? CONE_COLORSCALE : (COLOR_SCALES[colorBy] || 'Viridis'),
           reversescale: false,
           cmin: isCone ? -4 : colorRange?.min,
-          cmax: isCone ? 10 : colorRange?.max,
+          cmax: isCone ? 14 : colorRange?.max,
           colorbar: {
             title: colorBy === 'z_axis' ? zAxisLabel(zAxis) : getColorBarTitle(colorBy),
             thickness: 15,
             len: 0.5,
-            tickvals: isCone ? [-4, -2, 0, 2, 4, 6, 8, 10] : undefined,
-            ticktext: isCone ? ['04', '02', '0', '2', '4', '6', '8', '10'] : undefined,
+            tickvals: isCone ? [-4, -2, 0, 2, 4, 6, 8, 10, 12, 14] : undefined,
+            ticktext: isCone ? ['04', '02', '0', '2', '4', '6', '8', '10', '12', '14'] : undefined,
           },
         }),
         line: { width: 0 },
@@ -1244,8 +1265,11 @@ export function StullPlot3D({
   // ─── Floor region traces ──────────────────────────────────────
 
   const regionTraces = useMemo(() => buildStullRegionTraces(zFloor), [zFloor])
-  // Temperature contours hidden for NCECA
-  const tempContours: PlotData[] = [] // useMemo(() => buildTempContourTraces(zFloor, isDark), [zFloor, isDark])
+  // Temperature contours
+  const tempContours = useMemo(() =>
+    features.tempContours ? buildTempContourTraces(zFloor, isDark) : [] as PlotData[],
+    [zFloor, isDark]
+  )
   const qLineTrace = useMemo(() => buildQLineTrace(zFloor), [zFloor])
 
   // ─── Region labels ────────────────────────────────────────────
@@ -1516,7 +1540,7 @@ export function StullPlot3D({
     scene: {
       xaxis: {
         title: { text: 'SiO\u2082', font: { color: plotColors.axisTitle } },
-        range: [0.5, 7.2],
+        range: [...STULL_BOUNDS.x],
         gridcolor: plotColors.grid,
         zerolinecolor: plotColors.zeroline,
         tickfont: { color: plotColors.tick },
@@ -1524,7 +1548,7 @@ export function StullPlot3D({
       },
       yaxis: {
         title: { text: 'Al\u2082O\u2083', font: { color: plotColors.axisTitle } },
-        range: [0, 1.0],
+        range: [...STULL_BOUNDS.y],
         gridcolor: plotColors.grid,
         zerolinecolor: plotColors.zeroline,
         tickfont: { color: plotColors.tick },
@@ -1532,6 +1556,7 @@ export function StullPlot3D({
       },
       zaxis: {
         title: { text: zAxisLabel(zAxis), font: { color: plotColors.axisTitle } },
+        range: [zRange.min - (zRange.max - zRange.min) * 0.05, zRange.max],
         gridcolor: plotColors.grid,
         zerolinecolor: plotColors.zeroline,
         tickfont: { color: plotColors.tick },
@@ -1548,7 +1573,7 @@ export function StullPlot3D({
     hovermode: 'closest' as const,
     showlegend: false,
     uirevision: 'stull3d',
-  }), [zAxis, plotColors, cameraWithProjection, zStretch])
+  }), [zAxis, zRange, plotColors, cameraWithProjection, zStretch])
 
   // ─── Event handlers ───────────────────────────────────────────
 

@@ -153,8 +153,8 @@ export function WelcomeOverlay({ onDismiss }: WelcomeOverlayProps) {
               <button className="welcome-btn welcome-btn-primary" onClick={handleExplore}>
                 Start Exploring
               </button>
-              <button className="welcome-btn welcome-btn-ghost" onClick={handlePricing}>
-                View Plans & Pricing
+              <button className="welcome-btn welcome-btn-ghost" onClick={handleExplore}>
+                Jump Straight In
               </button>
             </div>
 

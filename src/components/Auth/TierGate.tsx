@@ -177,8 +177,8 @@ export function TierGate({ feature, children, title, description }: TierGateProp
           </div>
         ) : (
           <div className="tier-gate-actions">
-            <Link to="/pricing" className="tier-gate-primary">
-              View Plans
+            <Link to="/" className="tier-gate-primary">
+              Back to Explorer
             </Link>
             <p className="tier-gate-hint">
               You're on the <strong>{tierDisplayName(effectiveDisplay)}</strong> plan.

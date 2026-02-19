@@ -8,6 +8,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { usePageTitle } from '@/hooks'
+import { appVersion } from '@/featureFlags'
 
 export function UpdatesPage() {
   usePageTitle('What\'s New')
@@ -394,7 +395,7 @@ export function UpdatesPage() {
           <p>
             Built by Ryan L - Michigan.
           </p>
-          <p className="version">v3.4.0</p>
+          <p className="version">v{appVersion}</p>
         </section>
 
       </div>

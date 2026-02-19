@@ -43,8 +43,8 @@ const WEB_EDITION: Edition = {
   name: 'Stull Atlas',
   allUnlocked: false,
   showAuth: true,
-  showPricing: true,
-  showPayments: true,
+  showPricing: false,
+  showPayments: false,
   offlineData: false,
   extraSkins: false,
 }

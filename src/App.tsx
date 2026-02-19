@@ -152,7 +152,6 @@ function App() {
         <Route path="guide" element={<LazyPage><GuidePage /></LazyPage>} />
         <Route path="suggest" element={<LazyPage><SuggestionPage /></LazyPage>} />
         <Route path="updates" element={<LazyPage><UpdatesPage /></LazyPage>} />
-        <Route path="pricing" element={<LazyPage><PricingPage /></LazyPage>} />
         <Route path="nceca" element={<LazyPage><NCECAPage /></LazyPage>} />
         <Route path="help/variability" element={<LazyPage><VariabilityPage /></LazyPage>} />
         <Route path="henry" element={<LazyPage><HenryPage /></LazyPage>} />

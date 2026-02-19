@@ -40,6 +40,9 @@ export function DatasetStats() {
 
   if (stats.total === 0) return null
 
+  // Hidden for now — pricing/tier info removed
+  return null
+
   return (
     <div style={{ fontSize: 11, color: 'var(--text-label)' }}>
       <button

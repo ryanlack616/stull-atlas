@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stull Atlas — Colorant & Crystal Field Theory</title>
+<script>
+window.MathJax = {
+  loader: { load: ['[tex]/mhchem', '[tex]/cancel', '[tex]/boldsymbol'] },
+  tex: {
+    inlineMath: [['$','$']],
+    displayMath: [['\\[','\\]']],
+    processEscapes: true,
+    tags: 'ams',
+    packages: { '[+]': ['mhchem', 'cancel', 'boldsymbol'] },
+    macros: {
+      SiO: '\\text{SiO}_2',
+      AlO: '\\text{Al}_2\\text{O}_3',
+      NaO: '\\text{Na}_2\\text{O}',
+      KO: '\\text{K}_2\\text{O}',
+      CaOx: '\\text{CaO}',
+      MgOx: '\\text{MgO}',
+      BO: '\\text{B}_2\\text{O}_3',
+      FeO: '\\text{Fe}_2\\text{O}_3',
+      LiO: '\\text{Li}_2\\text{O}',
+      ZnOx: '\\text{ZnO}',
+      BaOx: '\\text{BaO}',
+      SrOx: '\\text{SrO}',
+      PbOx: '\\text{PbO}',
+      TiO: '\\text{TiO}_2',
+      ZrO: '\\text{ZrO}_2',
+      SnO: '\\text{SnO}_2',
+      CoOx: '\\text{CoO}',
+      CuOx: '\\text{CuO}',
+      MnOx: '\\text{MnO}',
+      NiOx: '\\text{NiO}',
+      CrO: '\\text{Cr}_2\\text{O}_3',
+      PO: '\\text{P}_2\\text{O}_5',
+      arraystretch: '1.3',
+      bm: ['\\boldsymbol{#1}', 1],
+    }
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+:root {
+  --accent: #1E3A8A;
+  --bg: #0f0f0f;
+  --surface: #1a1a1a;
+  --surface2: #242424;
+  --text: #e5e5e5;
+  --text-muted: #a3a3a3;
+  --border: #333;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg); color: var(--text);
+  line-height: 1.75; font-size: 16px;
+}
+.top-nav {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 12px 24px; position: sticky; top: 0; z-index: 100;
+  display: flex; flex-wrap: wrap; gap: 8px; backdrop-filter: blur(10px);
+}
+.nav-link {
+  color: var(--text-muted); text-decoration: none; font-size: 13px;
+  padding: 4px 10px; border-radius: 4px; transition: all .2s;
+}
+.nav-link:hover { color: var(--accent); background: rgba(255,255,255,.05); }
+.page-container {
+  display: grid; grid-template-columns: 260px 1fr;
+  max-width: 1400px; margin: 0 auto; min-height: 100vh;
+}
+@media (max-width: 900px) {
+  .page-container { grid-template-columns: 1fr; }
+  .toc { display: none; }
+}
+.toc {
+  position: sticky; top: 60px; height: calc(100vh - 60px);
+  overflow-y: auto; padding: 24px 16px;
+  border-right: 1px solid var(--border); font-size: 13px;
+}
+.toc h2 {
+  font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--text-muted); margin-bottom: 16px;
+}
+.toc ul { list-style: none; }
+.toc li { margin-bottom: 3px; }
+.toc a {
+  color: var(--text-muted); text-decoration: none; display: block;
+  padding: 3px 8px; border-radius: 4px; transition: all .2s; line-height: 1.4;
+}
+.toc a:hover { color: var(--accent); background: rgba(255,255,255,.04); }
+.toc-h3 { padding-left: 14px; }
+.toc-h3 a { font-size: 12px; }
+.content { padding: 40px 52px 100px; max-width: 880px; }
+.title-page {
+  text-align: center; padding: 56px 20px 36px; margin-bottom: 44px;
+  border-bottom: 1px solid var(--border);
+}
+.main-title {
+  font-size: 2.6em; font-weight: 800; color: var(--accent);
+  margin-bottom: 8px; letter-spacing: -0.5px;
+}
+.subtitle { font-size: 1.3em; color: var(--text-muted); margin-bottom: 14px; }
+.title-desc { color: var(--text-muted); font-size: 0.95em; max-width: 600px; margin: 6px auto; }
+.abstract {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 24px 28px; margin-bottom: 40px;
+}
+.abstract h2 { color: var(--accent); font-size: 1.1em; margin-bottom: 12px; }
+.abstract p { color: var(--text-muted); font-size: 0.95em; line-height: 1.7; }
+.part-header { margin: 48px 0 24px; }
+.part-title {
+  font-size: 2.2em; color: var(--accent); text-align: center;
+  padding: 40px 0 20px; border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+}
+h2.section-title {
+  font-size: 1.55em; color: var(--accent); margin: 52px 0 18px;
+  padding-bottom: 10px; border-bottom: 2px solid var(--accent);
+}
+h3.subsection-title {
+  font-size: 1.2em; color: var(--text); margin: 36px 0 14px; font-weight: 600;
+}
+h4.subsubsection-title {
+  font-size: 1.02em; color: var(--text-muted); font-style: italic; margin: 26px 0 10px;
+}
+.styled-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 4px solid var(--accent); border-radius: 6px;
+  padding: 22px 26px; margin: 24px 0;
+}
+.box-title { font-weight: 700; font-size: 1.05em; margin-bottom: 12px; }
+.box-content { color: var(--text); line-height: 1.75; }
+.box-content p { margin-bottom: 10px; }
+.equationbox { background: rgba(245, 158, 11, .04); border-color: rgba(255,255,255,.1); border-left-color: #F59E0B; }
+.infobox { background: rgba(59, 130, 246, .04); border-color: rgba(255,255,255,.1); border-left-color: #3B82F6; }
+.warnbox { background: rgba(239, 68, 68, .04); border-color: rgba(255,255,255,.1); border-left-color: #EF4444; }
+.examplebox { background: rgba(34, 197, 94, .04); border-color: rgba(255,255,255,.1); border-left-color: #22C55E; }
+.deepbox { background: rgba(124, 58, 237, .04); border-color: rgba(255,255,255,.1); border-left-color: #7C3AED; }
+.crystalbox { background: rgba(13, 148, 136, .04); border-color: rgba(255,255,255,.1); border-left-color: #0D9488; }
+.cobaltbox { background: rgba(30, 58, 138, .06); border-color: rgba(255,255,255,.1); border-left-color: #1E3A8A; }
+.copperbox { background: rgba(184, 115, 51, .04); border-color: rgba(255,255,255,.1); border-left-color: #B87333; }
+.ironbox { background: rgba(139, 69, 19, .04); border-color: rgba(255,255,255,.1); border-left-color: #8B4513; }
+.histbox { background: rgba(13, 148, 136, .04); border-color: rgba(255,255,255,.1); border-left-color: #0D9488; }
+.safebox { background: rgba(71, 85, 105, .06); border-color: rgba(255,255,255,.1); border-left-color: #475569; }
+
+.table-wrapper { overflow-x: auto; margin: 18px 0; }
+.styled-table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+.styled-table th {
+  background: var(--surface2); color: var(--accent); font-weight: 600;
+  text-align: left; padding: 10px 14px; border-bottom: 2px solid var(--accent);
+}
+.styled-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+.styled-table tr:hover td { background: rgba(255,255,255,.02); }
+ul, ol { margin: 14px 0; padding-left: 26px; }
+li { margin-bottom: 7px; line-height: 1.65; }
+dl.description-list { margin: 18px 0; }
+dl.description-list dt {
+  color: var(--accent); font-size: 1.05em; margin-top: 20px; padding-bottom: 4px;
+}
+dl.description-list dd { margin: 0 0 14px 0; padding-left: 22px; line-height: 1.75; }
+.math-display { overflow-x: auto; padding: 14px 0; }
+p { margin-bottom: 14px; }
+code {
+  background: var(--surface2); padding: 2px 6px; border-radius: 3px;
+  font-size: 0.9em; color: #e879f9; font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+.centered { text-align: center; margin: 18px 0; }
+.small-caps { font-variant: small-caps; }
+.fbox { border: 1px solid var(--border); padding: 4px 8px; border-radius: 3px; }
+.footnote-ref a { color: var(--accent); text-decoration: none; font-size: 0.8em; }
+.footnotes { margin-top: 60px; font-size: 0.9em; color: var(--text-muted); }
+.footnotes hr { border: none; border-top: 1px solid var(--border); margin-bottom: 16px; }
+.footnotes-title { font-size: 1.1em; color: var(--accent); margin-bottom: 12px; }
+.footnote-list { padding-left: 20px; }
+.footnote-list li { margin-bottom: 8px; line-height: 1.6; }
+.footnote-backref { text-decoration: none; color: var(--accent); margin-left: 4px; }
+.caption { font-size: 0.9em; color: var(--text-muted); text-align: center; margin: 8px 0; }
+strong { color: #fff; }
+a { color: var(--accent); }
+/* Figures */
+.figure { text-align: center; margin: 24px 0; }
+.responsive-img { max-width: 100%; height: auto; border-radius: 6px; }
+/* Code blocks */
+pre { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 16px 20px; overflow-x: auto; margin: 18px 0; }
+pre code { background: none; padding: 0; color: var(--text); font-size: 0.88em; }
+/* Theorem blocks */
+.theorem-block { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 6px; padding: 18px 22px; margin: 22px 0; }
+.theorem-heading { font-weight: 700; font-size: 1.02em; margin-bottom: 8px; }
+.theorem-body { line-height: 1.75; }
+.proof-block { border-left-style: dashed; }
+.qed { text-align: right; font-size: 1.1em; margin-top: 4px; color: var(--text-muted); }
+/* Bibliography */
+.bibliography { margin: 40px 0; padding-top: 20px; border-top: 2px solid var(--border); }
+.bib-list { padding-left: 26px; }
+.bib-list li { margin-bottom: 10px; font-size: 0.92em; }
+/* Cross-ref links */
+.ref-link { color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); }
+.ref-link:hover { border-bottom-style: solid; }
+/* Paragraph/subparagraph */
+h5.paragraph-title { font-size: 0.98em; font-weight: 700; margin: 20px 0 6px; color: var(--text); }
+h6.subparagraph-title { font-size: 0.92em; font-weight: 600; margin: 16px 0 4px; color: var(--text-muted); }
+/* Placeholders */
+.placeholder { background: var(--surface2); border: 1px dashed var(--border); border-radius: 6px; padding: 20px; text-align: center; color: var(--text-muted); font-style: italic; margin: 18px 0; }
+/* Dark/light toggle */
+.theme-toggle { cursor: pointer; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); font-size: 13px; padding: 4px 10px; margin-left: auto; }
+.theme-toggle:hover { color: var(--accent); }
+/* TOC scroll-spy */
+.toc a.active { color: var(--accent); background: rgba(99,102,241,.08); font-weight: 600; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+/* Light theme */
+body.light { --bg: #fafafa; --surface: #fff; --surface2: #f3f4f6; --text: #1f2937; --text-muted: #6b7280; --border: #e5e7eb; }
+body.light strong { color: #111827; }
+/* Print */
+@media print {
+  body { background: #fff !important; color: #000 !important; font-size: 11pt; }
+  .top-nav, .toc, .theme-toggle { display: none !important; }
+  .page-container { display: block !important; }
+  .content { max-width: 100% !important; padding: 0 !important; }
+  a { color: #000 !important; text-decoration: underline; }
+  .styled-box, .theorem-block { break-inside: avoid; border-color: #999 !important; }
+  pre { border-color: #ccc !important; }
+}
+</style>
+</head>
+<body>
+<nav class="top-nav"><a href="index.html" class="nav-link">← Home</a> <a href="stull-atlas-report.html" class="nav-link">Comprehensive Report</a> <a href="stull-atlas-equations-report.html" class="nav-link">Equations Deep Dive</a> <a href="stull-atlas-flux-report.html" class="nav-link">Flux & Flux Ratio Report</a> <a href="stull-atlas-colorant-report.html" class="nav-link">Colorant & Crystal Field Theory</a> <a href="stull-atlas-crystallisation-report.html" class="nav-link">Crystallisation & Phase Equilibria</a> <a href="stull-atlas-analysis-compendium.html" class="nav-link">Advanced Analysis Compendium</a><button class="theme-toggle" onclick="document.body.classList.toggle('light')">☀/☾</button></nav>
+<div class="page-container">
+<nav class="toc"><h2>Contents</h2><ul><li class="toc-h2"><a href="#introduction-why-glass-has-color">Introduction: Why Glass Has Color</a></li><li class="toc-h3"><a href="#connection-to-the-stull-atlas">Connection to the Stull Atlas</a></li><li class="toc-h2"><a href="#crystal-field-theory-fundamentals">Crystal Field Theory Fundamentals</a></li><li class="toc-h3"><a href="#the-five-d-orbitals">The Five $d$-Orbitals</a></li><li class="toc-h3"><a href="#crystal-field-splitting">Crystal Field Splitting</a></li><li class="toc-h3"><a href="#factors-controlling">Factors Controlling Δ</a></li><li class="toc-h3"><a href="#the-tanabe-sugano-diagrams">The Tanabe–Sugano Diagrams</a></li><li class="toc-h3"><a href="#selection-rules-and-intensity">Selection Rules and Intensity</a></li><li class="toc-h2"><a href="#iron-the-universal-colorant">Iron — The Universal Colorant</a></li><li class="toc-h3"><a href="#electronic-structure">Electronic Structure</a></li><li class="toc-h3"><a href="#fe3-the-oxidation-color">Fe3+ — The Oxidation Color</a></li><li class="toc-h3"><a href="#fe2-the-reduction-color">Fe2+ — The Reduction Color</a></li><li class="toc-h3"><a href="#fe2-fe3-intervalence-charge-transfer">Fe2+/Fe3+ Intervalence Charge Transfer</a></li><li class="toc-h3"><a href="#iron-redox-control">Iron Redox Control</a></li><li class="toc-h3"><a href="#iron-concentration-effects">Iron Concentration Effects</a></li><li class="toc-h3"><a href="#special-iron-effects">Special Iron Effects</a></li><li class="toc-h2"><a href="#cobalt-the-archetypal-blue">Cobalt — The Archetypal Blue</a></li><li class="toc-h3"><a href="#historical-context">Historical Context</a></li><li class="toc-h3"><a href="#electronic-structure-2">Electronic Structure</a></li><li class="toc-h3"><a href="#the-physics-of-cobalt-blue">The Physics of Cobalt Blue</a></li><li class="toc-h3"><a href="#compositional-effects-on-cobalt-color">Compositional Effects on Cobalt Color</a></li><li class="toc-h3"><a href="#cobalt-at-high-concentration">Cobalt at High Concentration</a></li><li class="toc-h3"><a href="#cobalt-combined-with-other-colorants">Cobalt Combined with Other Colorants</a></li><li class="toc-h2"><a href="#copper-the-shape-shifter">Copper — The Shape-Shifter</a></li><li class="toc-h3"><a href="#three-oxidation-states">Three Oxidation States</a></li><li class="toc-h3"><a href="#cu2-turquoise-and-egyptian-blue">Cu2+ — Turquoise and Egyptian Blue</a></li><li class="toc-h3"><a href="#cu-the-invisible-intermediate">Cu+ — The Invisible Intermediate</a></li><li class="toc-h3"><a href="#cu0-copper-red-surface-plasmon-resonance">Cu0 — Copper Red (Surface Plasmon Resonance)</a></li><li class="toc-h2"><a href="#manganese-purple-brown-and-black">Manganese — Purple, Brown, and Black</a></li><li class="toc-h3"><a href="#three-oxidation-states-2">Three Oxidation States</a></li><li class="toc-h3"><a href="#mn2-the-phantom-colorant">Mn2+ — The Phantom Colorant</a></li><li class="toc-h3"><a href="#mn3-the-purple-maker">Mn3+ — The Purple Maker</a></li><li class="toc-h3"><a href="#mn4-dark-brown-and-black">Mn4+ — Dark Brown and Black</a></li><li class="toc-h3"><a href="#practical-manganese-recipes">Practical Manganese Recipes</a></li><li class="toc-h2"><a href="#chromium-green-pink-and-the-tin-connection">Chromium — Green, Pink, and the Tin Connection</a></li><li class="toc-h3"><a href="#electronic-structure-3">Electronic Structure</a></li><li class="toc-h3"><a href="#cr3-chrome-green">Cr3+ — Chrome Green</a></li><li class="toc-h3"><a href="#chrome-tin-pink-sphene">Chrome-Tin Pink (Sphene)</a></li><li class="toc-h3"><a href="#cr6-chrome-yellow">Cr6+ — Chrome Yellow</a></li><li class="toc-h2"><a href="#nickel-the-composition-chameleon">Nickel — The Composition Chameleon</a></li><li class="toc-h3"><a href="#electronic-structure-4">Electronic Structure</a></li><li class="toc-h3"><a href="#practical-applications">Practical Applications</a></li><li class="toc-h2"><a href="#vanadium-amp-minor-colorants">Vanadium &amp; Minor Colorants</a></li><li class="toc-h3"><a href="#vanadium">Vanadium</a></li><li class="toc-h3"><a href="#praseodymium-pr">Praseodymium (Pr)</a></li><li class="toc-h3"><a href="#neodymium-nd">Neodymium (Nd)</a></li><li class="toc-h3"><a href="#uranium-u">Uranium (U)</a></li><li class="toc-h2"><a href="#colorant-interactions-amp-incompatibilities">Colorant Interactions &amp; Incompatibilities</a></li><li class="toc-h3"><a href="#additive-non-interacting">Additive (Non-Interacting)</a></li><li class="toc-h3"><a href="#redox-interaction">Redox Interaction</a></li><li class="toc-h3"><a href="#structural-incompatibilities">Structural Incompatibilities</a></li><li class="toc-h2"><a href="#mapping-colorant-behaviour-to-atlas-equations">Mapping Colorant Behaviour to Atlas Equations</a></li><li class="toc-h2"><a href="#summary-the-periodic-table-of-ceramic-color">Summary: The Periodic Table of Ceramic Color</a></li></ul></nav>
+<main class="content">
+<div class="title-page">
+<h1 class="main-title">Stull Atlas</h1>
+<p class="subtitle"></p>
+<p class="title-desc">A Comprehensive Analysis of Transition-Metal Color Chemistry
+    in Silicate Ceramic Glazes</p>
+<p class="title-desc">Companion Report to the Stull Atlas Application</p>
+</div>
+
+<h2 id="introduction-why-glass-has-color" class="section-title">Introduction: Why Glass Has Color</h2>
+<a id="label-sec-intro"></a>
+
+<p>A ceramic glaze, in its base state, is a colorless or near-colorless glass. The optical bandgap of a typical stoneware glass ($E_g \approx 3.0–3.5$&nbsp;eV) places the absorption edge in the near-UV, well below the visible spectrum. The glass transmits all visible wavelengths equally and appears transparent or, when applied over a white body, simply white.</p>
+
+<p>Color arises when this transparency is selectively broken — when certain wavelengths of visible light are absorbed and others are transmitted or reflected. In ceramic glazes, three mechanisms produce color:</p>
+
+<ol><li><strong>Ligand field (crystal field) absorption:</strong> Transition-metal cations (Fe, Co, Cu, Mn, Cr, Ni, V) embedded in the glass network have partially filled $d$-electron shells. The surrounding oxide ligands split the $d$-orbital energy levels, creating allowed electronic transitions in the visible spectrum. Each transition absorbs light at specific wavelengths, producing the complementary color. <em>This is the dominant color mechanism in ceramic glazes.</em></li><li><strong>Charge-transfer absorption:</strong> Electron transfer between adjacent cations of different oxidation states (Fe$^{2+} \to$ Fe<sup>3+</sup> intervalence charge transfer, or O$^{2-} \to$ Fe<sup>3+</sup> ligand-to-metal charge transfer) produces broad, intense absorption bands, typically in the UV-blue region. This mechanism produces amber/brown colors in iron-bearing glasses.</li><li><strong>Colloidal absorption (Mie scattering):</strong> Nanoscale metallic particles (Cu<sup>0</sup>, Au<sup>0</sup>, Ag<sup>0</sup>) or semiconductor nanocrystals (CdS, CdSe) interact with light through surface plasmon resonance, producing intense colors that depend on particle size and shape. This is the mechanism behind copper red, gold ruby (Purple of Cassius), and silver yellow stain.</li></ol>
+
+<p>This report focuses primarily on mechanism (1), with treatment of (2) and (3) where they are essential to understanding specific colorant systems.</p>
+
+<h3 id="connection-to-the-stull-atlas" class="subsection-title">Connection to the Stull Atlas</h3>
+
+<p>The Stull Atlas provides several equations that directly influence colorant behavior:</p>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Atlas Equation</strong></th><th><strong>Parameter</strong></th><th><strong>Effect on Color</strong></th></tr><tr><td>Optical Basicity (Λ)</td><td>Electron density on O<sup>2-</sup></td><td>Controls redox state; shifts coordination</td></tr><tr><td>NBO/T</td><td>Network depolymerisation</td><td>Determines available coordination sites</td></tr><tr><td>VFT Viscosity (η)</td><td>Melt fluidity</td><td>Controls diffusion, nucleation, crystal growth</td></tr><tr><td>Glass Transition ($T_g$)</td><td>Freeze-in temperature</td><td>Locks coordination at $T_g$</td></tr><tr><td>Refractive Index ($n$)</td><td>Light-matter interaction</td><td>Affects color saturation and depth</td></tr><tr><td>Optical Bandgap ($E_g$)</td><td>UV absorption edge</td><td>Determines base glass tint</td></tr></table></div></div>
+
+<h2 id="crystal-field-theory-fundamentals" class="section-title">Crystal Field Theory Fundamentals</h2>
+<a id="label-sec-cft"></a>
+
+<h3 id="the-five-d-orbitals" class="subsection-title">The Five $d$-Orbitals</h3>
+
+<p>Transition metals have partially filled $3d$ electron shells. In a free ion (no surrounding ligands), all five $d$-orbitals are degenerate — they have the same energy. The five orbitals are:</p>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Orbital</strong></th><th><strong>Shape</strong></th><th><strong>Orientation</strong></th></tr><tr><td>$d_{xy}$</td><td>Four-lobed, planar</td><td>Lobes between $x$ and $y$ axes</td></tr><tr><td>$d_{xz}$</td><td>Four-lobed, planar</td><td>Lobes between $x$ and $z$ axes</td></tr><tr><td>$d_{yz}$</td><td>Four-lobed, planar</td><td>Lobes between $y$ and $z$ axes</td></tr><tr><td>$d_{x^2 - y^2}$</td><td>Four-lobed, planar</td><td>Lobes along $x$ and $y$ axes</td></tr><tr><td>$d_{z^2}$</td><td>Two-lobed + ring</td><td>Lobes along $z$ axis, torus in $xy$ plane</td></tr></table></div></div>
+
+<p>The crucial distinction: $d_{xy}$, $d_{xz}$, and $d_{yz}$ (the <strong>$t_{2g}$</strong> set) have lobes that point <em>between</em> the Cartesian axes. $d_{x^2-y^2}$ and $d_{z^2}$ (the <strong>$e_g$</strong> set) have lobes that point <em>directly along</em> the axes.</p>
+
+<h3 id="crystal-field-splitting" class="subsection-title">Crystal Field Splitting</h3>
+
+<p>When a transition-metal cation is placed inside a glass network, it is surrounded by negatively charged oxide ions (O<sup>2-</sup>). These ligands create an <em>electrostatic field</em> that breaks the degeneracy of the five $d$-orbitals.</p>
+
+<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Crystal Field Splitting Energy</div><div class="box-content">
+<div class="math-display">\begin{equation}
+    \Delta = E(e_g) - E(t_{2g}) \quad [\text{octahedral}]
+    \label{eq:cfs_oct}
+\end{equation}</div>
+<div class="math-display">\begin{equation}
+    \Delta_t = E(t_2) - E(e) \quad [\text{tetrahedral}]
+    \label{eq:cfs_tet}
+\end{equation}</div>
+The crystal field splitting energy Δ determines which wavelengths of light are absorbed. Δ is measured in /cm (wavenumbers) or eV.
+</div></div>
+
+<h4 id="octahedral-coordination-6-fold" class="subsubsection-title">Octahedral Coordination (6-fold)</h4>
+
+<p>In octahedral coordination, six O<sup>2-</sup> ligands sit along the $\pm x$, $\pm y$, $\pm z$ directions. The $e_g$ orbitals ($d_{x^2-y^2}$ and $d_{z^2}$) point directly at the ligands and experience strong electrostatic repulsion. The $t_{2g}$ orbitals ($d_{xy}$, $d_{xz}$, $d_{yz}$) point between the ligands and experience less repulsion. Result: $e_g$ is pushed <strong>up</strong> in energy; $t_{2g}$ is pushed <strong>down</strong>.</p>
+
+<div class="styled-box deepbox" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 The Color Connection</div><div class="box-content">
+An electron in the lower $t_{2g}$ set can absorb a photon of energy Δ and jump to the upper $e_g$ set. This $d–d$ transition removes light of wavelength $\lambda = hc/\Delta$ from the transmitted beam. The wavelengths <em>not</em> absorbed are what reach the eye, producing the observed color.
+
+<p>If Δ corresponds to red light absorption (∼15,000&nbsp;/cm, $\lambda \approx 670$&nbsp;nm), the glass appears green/blue (the complementary color). If Δ corresponds to blue-violet absorption (∼22,000&nbsp;/cm, $\lambda \approx 450$&nbsp;nm), the glass appears yellow/orange.
+</div></div></p>
+
+<h4 id="tetrahedral-coordination-4-fold" class="subsubsection-title">Tetrahedral Coordination (4-fold)</h4>
+
+<p>In tetrahedral coordination, four O<sup>2-</sup> ligands sit at alternate corners of a cube. Now the $t_2$ orbitals (the subscript notation changes slightly) point more toward the ligands, while the $e$ orbitals point away. The splitting is <strong>inverted</strong> compared to octahedral, and <strong>smaller</strong>:</p>
+
+<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Tetrahedral Splitting</div><div class="box-content">
+<div class="math-display">\begin{equation}
+    \Delta_t \approx \frac{4}{9}\,\Delta_{\text{oct}}
+    \label{eq:tet_split}
+\end{equation}</div>
+Tetrahedral splitting is roughly $4/9$ of octahedral splitting for the same metal-ligand combination.
+</div></div>
+
+<p>This smaller splitting shifts the absorption band to longer wavelengths (lower energy), producing dramatically different colors. The classic example: Co<sup>2+</sup> in octahedral coordination appears pink; in tetrahedral coordination, it appears an intense, saturated blue.</p>
+
+<h3 id="factors-controlling" class="subsection-title">Factors Controlling Δ</h3>
+
+<p>The crystal field splitting Δ — and hence the color — depends on four factors:</p>
+
+<ol><li><strong>Cation identity:</strong> Different metals have different inherent $d$-orbital energies. $3d$ metals have smaller Δ than $4d$ metals, which have smaller Δ than $5d$ metals.</li><li><strong>Oxidation state:</strong> Higher oxidation state → higher charge → stronger field → larger Δ. Example: Cr<sup>3+</sup> ($\Delta \approx 17,400$&nbsp;/cm, green) vs. Cr<sup>6+</sup> (Δ so large it absorbs in the UV, producing yellow via charge-transfer).</li><li><strong>Coordination geometry:</strong> Octahedral Δ is ∼2.25× larger than tetrahedral Δ for the same system. This is the primary reason Co<sup>2+</sup> changes from pink to blue.</li><li><strong>Ligand field strength:</strong> Different ligands create different splitting. The spectrochemical series ranks ligands by their splitting power:
+    <div class="math-display">\[\text{I}^- \lt  \text{Br}^- \lt  \text{Cl}^- \lt  \text{F}^- \lt  \text{OH}^- \lt  \text{O}^{2-} \lt  \text{H}_2\text{O} \lt  \text{NH}_3 \lt  \text{CN}^-\]</div>
+    O<sup>2-</sup> is a moderate-field ligand, which is why oxide glasses produce moderate $d–d$ splittings and hence colors spread across the full visible spectrum.</li></ol>
+
+<h3 id="the-tanabe-sugano-diagrams" class="subsection-title">The Tanabe–Sugano Diagrams</h3>
+
+<p>For ions with more than one $d$-electron, the situation is complicated by electron–electron repulsion. The Tanabe–Sugano diagrams (1954) plot all possible electronic state energies as a function of $\Delta/B$ (the ratio of crystal field splitting to the Racah electron-repulsion parameter $B$). These diagrams predict the number, positions, and relative intensities of all possible $d–d$ absorption bands for any given $d^n$ configuration in octahedral symmetry.</p>
+
+<p>The Stull Atlas does not compute Tanabe–Sugano diagrams directly, but understanding them explains why:
+<ul><li>Some colorants produce one broad absorption band (Co<sup>2+</sup> tetrahedral)</li><li>Others produce two or three bands (Cr<sup>3+</sup> octahedral)</li><li>Band positions shift with composition (changing Δ)</li><li>Band intensities differ by orders of magnitude (symmetry selection rules)</li></ul></p>
+
+<h3 id="selection-rules-and-intensity" class="subsection-title">Selection Rules and Intensity</h3>
+
+<p>Two quantum-mechanical selection rules govern $d–d$ transitions:</p>
+
+<p><strong>Laporte rule:</strong> In a centrosymmetric environment (octahedral), transitions between orbitals of the same parity ($d \to d$) are formally forbidden. This makes octahedral $d–d$ bands <em>weak</em>. Tetrahedral sites lack a center of symmetry, so the Laporte rule is partially relaxed — tetrahedral bands are ∼10–100× more intense.</p>
+
+<p><strong>Spin selection rule:</strong> Transitions that require a change in total spin quantum number ($\Delta S \neq 0$) are forbidden. These “spin-forbidden” transitions are extremely weak (often invisible). All $d–d$ transitions in Mn<sup>2+</sup> ($d^5$, high-spin, all electrons unpaired) are spin-forbidden, which is why Mn<sup>2+</sup> produces only a pale pink color at high concentrations.</p>
+
+<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Why Cobalt Blue Is So Intense</div><div class="box-content">
+Co<sup>2+</sup> in tetrahedral coordination benefits from both relaxed selection rules: the tetrahedral site has no center of symmetry (Laporte-allowed), and the main $^4A_2 \to\, ^4T_1(P)$ transition is spin-allowed ($\Delta S = 0$). Combined, these produce the most intense $d–d$ absorption band of any common ceramic colorant — roughly 50× stronger than the equivalent octahedral band. This is why as little as 0.25% CoO produces a brilliant, saturated blue.
+</div></div>
+
+<h2 id="iron-the-universal-colorant" class="section-title">Iron — The Universal Colorant</h2>
+<a id="label-sec-iron"></a>
+
+<p>Iron is the most important colorant in ceramic history. It is present as an impurity in virtually all natural clay bodies and feldspars, and has been deliberately used as a primary colorant for at least 3,000 years. The extraordinary range of iron colors — from pale straw yellow to forest green to rich brown to jet black — arises from the interplay of oxidation state, coordination, concentration, and atmosphere.</p>
+
+<h3 id="electronic-structure" class="subsection-title">Electronic Structure</h3>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Species</strong></th><th><strong>Config.</strong></th><th><strong>$d$-electrons</strong></th><th><strong>Ground State</strong></th></tr><tr><td>Fe<sup>3+</sup></td><td>$[\text{Ar}]\,3d^5$</td><td>5</td><td>$^6S_{5/2}$ (half-filled, high-spin)</td></tr><tr><td>Fe<sup>2+</sup></td><td>$[\text{Ar}]\,3d^6$</td><td>6</td><td>$^5D_4$</td></tr></table></div></div>
+
+<h3 id="fe3-the-oxidation-color" class="subsection-title">Fe<sup>3+</sup> — The Oxidation Color</h3>
+
+<p>Fe<sup>3+</sup> has five $d$-electrons, one in each orbital (high-spin configuration). Every possible $d–d$ transition requires a spin flip ($\Delta S = 1$), making all transitions <strong>spin-forbidden</strong>. This means Fe<sup>3+</sup> $d–d$ bands are extremely weak — too weak to produce strong body color.</p>
+
+<p>The dominant absorption mechanism for Fe<sup>3+</sup> is instead the <strong>ligand-to-metal charge transfer</strong> (LMCT) band:
+<div class="math-display">\[\text{O}^{2-}(2p) \to \text{Fe}^{3+}(3d): \quad \lambda_{\text{max}} \approx 250\text{--}380\;\text{nm}\]</div></p>
+
+<p>This intense UV band has a long tail extending into the visible blue-violet region ($400–500$&nbsp;nm), absorbing blue and violet light. The result: Fe<sup>3+</sup> glasses appear <strong>amber to yellow-brown</strong>, because blue/violet is removed and red/yellow is transmitted.</p>
+
+<div class="styled-box ironbox" style="border-left-color:#8B4513"><div class="box-title" style="color:#8B4513">🟫 The Amber Glass Bottle</div><div class="box-content">
+Every amber glass beer bottle gets its color from Fe<sup>3+</sup> LMCT absorption. The amber color protects light-sensitive compounds (hops acids) from UV degradation. This is Fe<sup>3+</sup> in an oxidised soda-lime glass — the simplest iron color system.
+</div></div>
+
+<p>At higher concentrations ($\gt 5\%$ Fe<sub>2</sub>O<sub>3</sub>), Fe<sup>3+</sup>–Fe<sup>3+</sup> pair interactions (exchange coupling) and Fe<sup>3+</sup> in octahedral sites begin contributing visible absorption, shifting the color from amber toward brown and eventually near-opaque brown-black (tenmoku/kaki territory).</p>
+
+<h3 id="fe2-the-reduction-color" class="subsection-title">Fe<sup>2+</sup> — The Reduction Color</h3>
+
+<p>Fe<sup>2+</sup> ($d^6$, high-spin) has one spin-allowed transition in octahedral coordination:
+<div class="math-display">\[^5T_{2g} \to\, ^5E_g: \quad \Delta \approx 10,000\text{--}11,500\;\text{/cm} \quad (\lambda \approx 870\text{--}1000\;\text{nm})\]</div></p>
+
+<p>This transition is in the <strong>near-infrared</strong>, not the visible spectrum. However, the long-wavelength tail of this broad band extends into the red region ($600–700$&nbsp;nm), weakly absorbing red light. The result: Fe<sup>2+</sup> transmits green and blue light, producing colors from <strong>pale aqua to blue-green to celadon green</strong>.</p>
+
+<div class="styled-box deepbox" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 The Celadon Mystery Solved</div><div class="box-content">
+The classic celadon green of Song Dynasty Longquan ware is not a “green” absorption — it is a <em>red</em> absorption. Fe<sup>2+</sup> subtracts red from white light, leaving a blue-green residual that the eye perceives as celadon. The color deepens with:
+<ul><li>Higher Fe<sup>2+</sup> fraction (stronger reduction)</li><li>Higher total iron (more absorbing centers)</li><li>Thicker glaze layer (longer optical path)</li><li>Lower optical basicity Λ (shifts equilibrium toward Fe<sup>2+</sup>... wait, actually higher Λ promotes reduction)</li></ul>
+
+<p>The Song potters achieved celadon green by:
+<ol><li>Using iron-bearing local clays (1&nbsp;%–3&nbsp;% Fe<sub>2</sub>O<sub>3</sub>)</li><li>Firing in heavy reduction atmosphere</li><li>Applying thick glaze layers (1–3&nbsp;mm)</li><li>Slow cooling to maintain Fe<sup>2+</sup> state</li></ol>
+</div></div></p>
+
+<h3 id="fe2-fe3-intervalence-charge-transfer" class="subsection-title">Fe<sup>2+</sup>/Fe<sup>3+</sup> Intervalence Charge Transfer</h3>
+
+<p>When both Fe<sup>2+</sup> and Fe<sup>3+</sup> coexist in adjacent sites in the glass network, a third absorption mechanism emerges:
+<div class="math-display">\[\text{Fe}^{2+} + \text{Fe}^{3+} \to \text{Fe}^{3+} + \text{Fe}^{2+}\]</div></p>
+
+<p>This <strong>intervalence charge transfer</strong> (IVCT) band appears at ∼14,000–15,000&nbsp;/cm ($\lambda \approx 680$&nbsp;nm) — squarely in the visible red region. The IVCT band is very broad and moderately intense. It dominates the color of glasses containing both oxidation states in significant amounts.</p>
+
+<p>Colors produced:
+<ul><li>Low total Fe + moderate IVCT: <strong>olive green</strong> (celadon's “dark side”)</li><li>Moderate total Fe + strong IVCT: <strong>brown</strong> (the classic stoneware brown)</li><li>High total Fe + strong IVCT: <strong>tenmoku / kaki / saturate iron</strong></li><li>Very high total Fe (>8%): <strong>near-opaque dark brown to black</strong></li></ul></p>
+
+<h3 id="iron-redox-control" class="subsection-title">Iron Redox Control</h3>
+
+<p>The Fe<sup>2+</sup>/Fe<sup>3+</sup> ratio in the fired glass is controlled by three variables, as described in Equation 33 of the equations report:</p>
+
+<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Iron Redox Equilibrium</div><div class="box-content">
+<div class="math-display">\begin{equation}
+    \frac{[\text{Fe}^{2+}]}{[\text{Fe}^{3+}]} = f(\Lambda, \; T, \; p_{\text{O}_2})
+\end{equation}</div>
+</div></div>
+
+<p><strong>Optical basicity (Λ):</strong> Higher Λ shifts equilibrium toward Fe<sup>2+</sup>. Each 0.1-unit increase in Λ roughly doubles the Fe<sup>2+</sup> fraction. Practical implications:
+<ul><li>Adding alkali flux (increases Λ) promotes Fe<sup>2+</sup> formation even in oxidation</li><li>Adding silica (decreases Λ) promotes Fe<sup>3+</sup> dominance</li><li>High-alumina glazes (low Λ) resist reduction — Fe<sup>3+</sup> persists</li></ul></p>
+
+<p><strong>Temperature ($T$):</strong> Higher firing temperature promotes Fe<sup>2+</sup>. The redox equilibrium “freezes in” during cooling at approximately $T_g + 100$°C. Faster cooling preserves a higher Fe<sup>2+</sup> fraction.</p>
+
+<p><strong>Oxygen partial pressure ($p_{\text{O}_2}$):</strong>
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Atmosphere</strong></th><th>$\log p_{\text{O}_2}$</th><th><strong>Fe<sup>2+</sup> fraction</strong></th><th><strong>Resulting Color</strong></th></tr><tr><td>Oxidation (electric kiln)</td><td>$-0.7$</td><td>0.05–0.15</td><td>Amber, tan, brown</td></tr><tr><td>Neutral</td><td>$-5$</td><td>0.20–0.40</td><td>Olive green</td></tr><tr><td>Light reduction</td><td>$-8$ to $-10$</td><td>0.40–0.60</td><td>Gray-green, celadon</td></tr><tr><td>Heavy reduction</td><td>$-12$ to $-15$</td><td>0.60–0.85</td><td>Blue-green celadon</td></tr></table></div></div></p>
+
+<h3 id="iron-concentration-effects" class="subsection-title">Iron Concentration Effects</h3>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Fe<sub>2</sub>O<sub>3</sub> (wt%)</strong></th><th><strong>Oxidation Color</strong></th><th><strong>Reduction Color</strong></th></tr><tr><td>0.5–1.0</td><td>Pale straw / cream</td><td>Pale blue-green</td></tr><tr><td>1.0–2.0</td><td>Warm tan / light amber</td><td>Celadon green</td></tr><tr><td>2.0–4.0</td><td>Amber / honey</td><td>Deep celadon / olive</td></tr><tr><td>4.0–6.0</td><td>Rust brown</td><td>Dark olive / brown-green</td></tr><tr><td>6.0–8.0</td><td>Dark brown (kaki)</td><td>Tenmoku black-brown</td></tr><tr><td>8.0–12.0</td><td>Saturate iron brown</td><td>Oil-spot / hare's fur</td></tr><tr><td>$\gt  12.0$</td><td>Near-opaque brown-black</td><td>Metallic black; crystal formation</td></tr></table></div></div>
+
+<h3 id="special-iron-effects" class="subsection-title">Special Iron Effects</h3>
+
+<h4 id="tenmoku" class="subsubsection-title">Tenmoku (天目)</h4>
+
+<p>Tenmoku glazes contain 5–12% Fe<sub>2</sub>O<sub>3</sub> in a moderately fluxed base. The defining characteristic is a thick, viscous melt layer containing both Fe<sup>2+</sup> and Fe<sup>3+</sup> in high concentrations. The color is a rich, deep brown-black from Fe<sup>2+</sup>–Fe<sup>3+</sup> IVCT.</p>
+
+<p>Compositional requirements:
+<ul><li>Fe<sub>2</sub>O<sub>3</sub>: 6–12 wt%</li><li>CaO: 5–10 wt% (calcia promotes iron as a network participant rather than a precipitating phase)</li><li>Moderate Λ (0.52–0.58): Enough basicity for partial reduction, not so much as to fully reduce iron</li><li>Moderate viscosity ($\log\eta = 3.5–5.0$ at $T_{\text{cone}}$): Fluid enough to heal, viscous enough to retain texture</li></ul></p>
+
+<h4 id="oil-spot" class="subsubsection-title">Oil Spot (油滴)</h4>
+
+<p>Oil-spot tenmoku features circular spots of iron crystal (hematite or magnetite) on a dark brown background. The spots form when:
+<ol><li>Rising iron-enriched bubbles burst at the surface during peak temperature</li><li>Fe<sub>2</sub>O<sub>3</sub> or Fe<sub>3</sub>O<sub>4</sub> microcrystals nucleate in the iron-rich puddles during cooling</li><li>The glaze viscosity is high enough to prevent the crystals from re-dissolving</li></ol></p>
+
+<p>Atlas equations involved: VFT viscosity (Eq.&nbsp;11), surface tension (Eq.&nbsp;26), bubble risk (from viscosity), $T_{rg}$ (Eq.&nbsp;39).</p>
+
+<h4 id="hare-s-fur" class="subsubsection-title">Hare's Fur (兔毫)</h4>
+
+<p>Hare's fur tenmoku features fine, elongated streaks of iron crystal radiating down the vessel wall. The streaks form when:
+<ol><li>Iron oxide crystals nucleate at the glaze surface during cooling</li><li>The crystals are carried downward by gravity-driven flow of the viscous melt</li><li>Crystal growth continues during descent, creating needle-like streaks</li></ol></p>
+
+<p>The critical parameter is the viscosity-temperature relationship: the glaze must be fluid enough to flow ($\log\eta \lt  5$) but viscous enough to preserve the streaks ($\log\eta \gt  3$). The VFT working range (Eq.&nbsp;12) maps this window.</p>
+
+<h4 id="iron-red-kaki" class="subsubsection-title">Iron Red / Kaki (柿)</h4>
+
+<p>Iron red/kaki represents the extreme oxidation end of the iron color spectrum. At 8–15% Fe<sub>2</sub>O<sub>3</sub> in strong oxidation:
+<ul><li>Nearly all iron is Fe<sup>3+</sup></li><li>Hematite (Fe<sub>2</sub>O<sub>3</sub>) nanocrystals precipitate during cooling</li><li>These nanocrystals scatter red light (Mie scattering), producing a brick-red, orange, or persimmon color</li><li>The color depends on crystal size: 50–100&nbsp;nm particles scatter red; larger particles scatter orange/yellow</li></ul></p>
+
+<h2 id="cobalt-the-archetypal-blue" class="section-title">Cobalt — The Archetypal Blue</h2>
+<a id="label-sec-cobalt"></a>
+
+<p>Cobalt is the most powerful and reliable ceramic colorant. As little as 0.1% CoO produces a visible blue tint; 0.5% produces a rich, saturated blue. The color is extraordinarily stable across a wide range of firing temperatures, atmospheres, and base compositions. Cobalt blue is one of the most ancient and universally recognised colours in human culture.</p>
+
+<h3 id="historical-context" class="subsection-title">Historical Context</h3>
+
+<ul><li><strong>Ancient Egypt (∼1550 BCE):</strong> Cobalt blue glass beads from the 18th Dynasty. The cobalt source was likely alum from the Western Desert oases.</li><li><strong>China, Tang Dynasty (∼750 CE):</strong> First confirmed use of cobalt blue on ceramic ware (imported cobalt).</li><li><strong>Persia (∼1200 CE):</strong> Development of distinctive cobalt-blue-on-white fritware.</li><li><strong>China, Yuan/Ming Dynasty (1300–1600):</strong> The golden age of blue-and-white porcelain using imported Persian cobalt (rich in Fe and Mn impurities, creating the characteristic “heaped and piled” effect).</li><li><strong>Europe, 18th century:</strong> Thénard's Blue / Cobalt Blue pigment (CoAl<sub>2</sub>O<sub>4</sub> spinel) synthesised as the first modern inorganic blue pigment.</li></ul>
+
+<h3 id="electronic-structure-2" class="subsection-title">Electronic Structure</h3>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Species</strong></th><th><strong>Config.</strong></th><th><strong>$d$-electrons</strong></th><th><strong>Coordination Preference</strong></th></tr><tr><td>Co<sup>2+</sup></td><td>$[\text{Ar}]\,3d^7$</td><td>7</td><td>Tetrahedral (in glass)</td></tr><tr><td>Co<sup>3+</sup></td><td>$[\text{Ar}]\,3d^6$</td><td>6</td><td>Octahedral (rare in glass)</td></tr></table></div></div>
+
+<p>In oxide glasses, Co<sup>2+</sup> overwhelmingly prefers <strong>tetrahedral</strong> coordination. This is unusual — most transition metals in glass adopt octahedral or mixed coordination. The tetrahedral preference arises because $d^7$ in a tetrahedral field achieves a particularly stable electronic configuration with high crystal field stabilisation energy.</p>
+
+<h3 id="the-physics-of-cobalt-blue" class="subsection-title">The Physics of Cobalt Blue</h3>
+
+<div class="styled-box cobaltbox" style="border-left-color:#1E3A8A"><div class="box-title" style="color:#1E3A8A">🔵 Why Cobalt Blue Is Unique</div><div class="box-content">
+Co<sup>2+</sup> in tetrahedral coordination produces a triple absorption band centered at:
+<div class="math-display">\[^4A_2(F) \to\, ^4T_1(P): \quad \nu \approx 15,000\text{--}17,000\;\text{/cm} \quad (\lambda \approx 590\text{--}670\;\text{nm})\]</div>
+
+<p>This broad band absorbs <strong>yellow-orange-red</strong> light, transmitting the blue-violet portion of the spectrum. The band is:
+<ol><li><strong>Spin-allowed</strong> ($\Delta S = 0$): All four unpaired electrons maintain their spin orientation</li><li><strong>Laporte partially allowed</strong> (tetrahedral sites lack inversion symmetry)</li><li><strong>Very intense</strong>: Molar absorptivity $\varepsilon \approx 600$&nbsp;L/mol — roughly 50× stronger than octahedral $d–d$ transitions</li></ol></p>
+
+<p>This extraordinary intensity explains why cobalt is the most powerful ceramic colorant per unit concentration.
+</div></div></p>
+
+<h3 id="compositional-effects-on-cobalt-color" class="subsection-title">Compositional Effects on Cobalt Color</h3>
+
+<p>While cobalt blue is famously stable, subtle color shifts do occur with base composition:</p>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Compositional Change</strong></th><th><strong>Effect on Δ</strong></th><th><strong>Color Shift</strong></th></tr><tr><td>Increase Na<sub>2</sub>O (increase Λ)</td><td>Slight decrease</td><td>Blue → slightly purple-blue</td></tr><tr><td>Increase ZnO</td><td>Significant decrease</td><td>Blue → green-blue (turquoise)</td></tr><tr><td>Increase MgO</td><td>Slight increase</td><td>Blue → blue-violet</td></tr><tr><td>Increase CaO</td><td>Minimal change</td><td>Stable blue</td></tr><tr><td>Add B<sub>2</sub>O<sub>3</sub></td><td>Minimal change</td><td>Stable blue</td></tr><tr><td>Increase temperature</td><td>Slight decrease</td><td>Slight red-shift</td></tr></table></div></div>
+
+<p>The ZnO effect is particularly notable: zinc promotes 4-fold coordination of Co<sup>2+</sup> but in a subtly different local environment than alkali/calcia-based glasses, shifting the absorption toward lower energy and producing a green-blue rather than pure blue.</p>
+
+<h3 id="cobalt-at-high-concentration" class="subsection-title">Cobalt at High Concentration</h3>
+
+<p>Above ∼3% CoO, the color deepens beyond the blue range:
+<ul><li>3–5%: Very deep, near-opaque blue-black</li><li>&gt;5%: Effectively black; CoO·Al<sub>2</sub>O<sub>3</sub> (cobalt aluminate spinel) may crystallise</li><li>With $\MgOx$: Co<sub>2</sub>SiO<sub>4</sub> (cobalt olivine, willemite analogue) can form, producing a matte blue-purple</li></ul></p>
+
+<h3 id="cobalt-combined-with-other-colorants" class="subsection-title">Cobalt Combined with Other Colorants</h3>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Combination</strong></th><th><strong>Typical Recipe</strong></th><th><strong>Result</strong></th><th><strong>Mechanism</strong></th></tr><tr><td>Co + Fe (ox.)</td><td>0.5% CoO + 2% Fe<sub>2</sub>O<sub>3</sub></td><td>Smoky blue-gray</td><td>IVCT Fe bands overlay Co blue</td></tr><tr><td>Co + Cu (ox.)</td><td>0.5% CoO + 2% CuO</td><td>Teal / blue-green</td><td>Cu<sup>2+</sup> green adds to Co blue</td></tr><tr><td>Co + Mn</td><td>0.5% CoO + 3% MnO<sub>2</sub></td><td>Purple / blue-violet</td><td>Mn<sup>3+</sup> red-purple adds to Co blue</td></tr><tr><td>Co + Ni</td><td>0.5% CoO + 1% NiO</td><td>Blue-gray / steel</td><td>Ni<sup>2+</sup> yellow-brown desaturates blue</td></tr><tr><td>Co + Ru (rare)</td><td>0.5% CoO + 0.1% RuO<sub>2</sub></td><td>Pink-blue</td><td>Ru<sup>4+</sup> red adds to Co blue</td></tr></table></div></div>
+
+<h2 id="copper-the-shape-shifter" class="section-title">Copper — The Shape-Shifter</h2>
+<a id="label-sec-copper"></a>
+
+<p>No ceramic colorant matches copper's versatility. Depending on oxidation state, coordination, and concentration regime, copper produces turquoise, green, blue, red, purple, black, and metallic luster. This chameleon behavior arises from copper's three accessible oxidation states and the unique physics of colloidal metal nanoparticles.</p>
+
+<h3 id="three-oxidation-states" class="subsection-title">Three Oxidation States</h3>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Species</strong></th><th><strong>Config.</strong></th><th><strong>$d$-electrons</strong></th><th><strong>Color Mechanism</strong></th><th><strong>Color</strong></th></tr><tr><td>Cu<sup>2+</sup></td><td>$[\text{Ar}]\,3d^9$</td><td>9</td><td>$d–d$ transition</td><td>Blue-green / turquoise</td></tr><tr><td>Cu<sup>+</sup></td><td>$[\text{Ar}]\,3d^{10}$</td><td>10 (full)</td><td>No $d–d$ possible</td><td>Colorless</td></tr><tr><td>Cu<sup>0</sup></td><td>$[\text{Ar}]\,3d^{10}4s^1$</td><td>—</td><td>Surface plasmon resonance</td><td>Red (colloidal)</td></tr></table></div></div>
+
+<h3 id="cu2-turquoise-and-egyptian-blue" class="subsection-title">Cu<sup>2+</sup> — Turquoise and Egyptian Blue</h3>
+
+<p>Cu<sup>2+</sup> ($d^9$, one electron “hole” in the $d$-shell) has a single spin-allowed $d–d$ transition:
+<div class="math-display">\[^2E_g \to\, ^2T_{2g} \quad (\text{octahedral}): \quad \Delta \approx 12,500\;\text{/cm} \quad (\lambda \approx 800\;\text{nm})\]</div></p>
+
+<p>This band absorbs in the near-IR with a strong tail into the red region, transmitting blue-green light. In most alkaline glass compositions, Cu<sup>2+</sup> adopts a distorted octahedral or square-planar coordination (Jahn–Teller distortion, because $d^9$ in octahedral geometry has an orbitally degenerate ground state that spontaneously distorts).</p>
+
+<div class="styled-box copperbox" style="border-left-color:#B87333"><div class="box-title" style="color:#B87333">🟤 Egyptian Blue — Humanity's First Synthetic Pigment</div><div class="box-content">
+Egyptian Blue (CaCuSi<sub>2</sub>O<sub>6</sub>, the mineral cuprorivaite) was synthesised in Egypt from approximately 3100 BCE by heating together:
+<ul><li>Silica sand (SiO<sub>2</sub>)</li><li>Limestone (CaCO<sub>3</sub>)</li><li>Copper ore (malachite, Cu<sub>2</sub>CO<sub>3</sub>(OH)<sub>2</sub>)</li><li>Natron flux (Na<sub>2</sub>CO<sub>3</sub>)</li></ul>
+at ∼900&nbsp;°C. The resulting crystalline phase contains Cu<sup>2+</sup> in square-planar coordination within silicate sheets, producing a vivid sky-blue color. This is Cu<sup>2+</sup> at its most intense — the square-planar crystal field produces a larger splitting than octahedral, shifting the absorption deeper into the near-IR and leaving a purer blue transmission.
+
+<p>Egyptian Blue also exhibits a remarkable property discovered only in 2009: near-infrared luminescence. When illuminated with visible light, it emits at ∼910&nbsp;nm — useful for art authentication and potentially for photovoltaic down-conversion.
+</div></div></p>
+
+<h3 id="cu-the-invisible-intermediate" class="subsection-title">Cu<sup>+</sup> — The Invisible Intermediate</h3>
+
+<p>Cu<sup>+</sup> ($d^{10}$) has a completely filled $d$-shell — no $d–d$ transitions are possible. It is therefore <strong>colorless</strong> in glass and acts as a “reservoir” species for the Cu$^{2+} \rightleftharpoons$ Cu$^+ \rightleftharpoons$ Cu<sup>0</sup> redox cascade.</p>
+
+<p>Cu<sup>+</sup> can produce color indirectly:
+<ul><li>As the precursor to Cu<sup>0</sup> nanoparticle nucleation (copper red)</li><li>Through Cu<sup>+</sup>–Cu<sup>2+</sup> charge transfer at high concentrations (brown)</li><li>As CuCl (nantokite) in lead glasses, producing the distinctive “dichroic” effect in Lycurgus Cup-type glasses</li></ul></p>
+
+<h3 id="cu0-copper-red-surface-plasmon-resonance" class="subsection-title">Cu<sup>0</sup> — Copper Red (Surface Plasmon Resonance)</h3>
+
+<div class="styled-box deepbox" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 The Physics of Copper Red</div><div class="box-content">
+Copper red is fundamentally different from all other ceramic colors. It does not arise from $d–d$ crystal field transitions or charge transfer. Instead, it arises from the interaction of light with <strong>metallic copper nanoparticles</strong> (2–20&nbsp;nm diameter) suspended in the glass matrix.
+
+<p>When a photon encounters a metallic nanoparticle smaller than its wavelength, the oscillating electric field of the light wave drives the conduction electrons of the particle into collective oscillation. At a specific frequency — the <strong>surface plasmon resonance</strong> (SPR) frequency — this oscillation is resonant, and the particle absorbs and scatters light extremely strongly.</p>
+
+<p>For copper nanoparticles in a glass matrix ($n \approx 1.5$), the SPR occurs at:
+<div class="math-display">\[\lambda_{\text{SPR}} \approx 570\;\text{nm} \quad (\text{green-yellow})\]</div></p>
+
+<p>The nanoparticles absorb green-yellow light, transmitting red. The result is the characteristic deep, blood-red color of copper red glazes.</p>
+
+<p>Key dependencies:
+<ul><li><strong>Particle size:</strong> 1–5&nbsp;nm → pale pink (few atoms, weak SPR). 5–20&nbsp;nm → rich red (optimal SPR). &gt;50&nbsp;nm → metallic/opaque (scattering dominates).</li><li><strong>Particle density:</strong> Too few → pale. Too many → opaque “liver” red/brown.</li><li><strong>Matrix refractive index:</strong> Higher $n$ shifts SPR to longer wavelengths (redder red). Lead glasses ($n \approx 1.6$) produce deeper reds than borosilicate ($n \approx 1.47$).</li></ul>
+</div></div></p>
+
+<h4 id="requirements-for-successful-copper-red" class="subsubsection-title">Requirements for Successful Copper Red</h4>
+
+<ol><li><strong>Strong reduction atmosphere:</strong> $\log p_{\text{O}_2} \lt  -10$. The melt must reduce Cu$^{2+} \to$ Cu$^+ \to$ Cu<sup>0</sup>. This requires carbon monoxide or hydrogen in the kiln atmosphere.</li><li><strong>High optical basicity:</strong> $\Lambda \gt  0.58$. The base glass must be basic enough to thermodynamically favor reduction. High-alkali, high-calcia, low-alumina compositions work best.</li><li><strong>Tin as nucleating agent:</strong> 1–2% SnO<sub>2</sub> is typically added. During reduction, Sn$^{4+} \to$ Sn<sup>2+</sup> provides electrons for Cu<sup>2+</sup> reduction and acts as a heterogeneous nucleation site for Cu<sup>0</sup> particles.</li><li><strong>Controlled cooling:</strong> Too fast → particles too small (pale pink). Too slow → particles too large (liver/metallic). A brief hold at ∼1000&nbsp;°C during cooling promotes optimal particle growth.</li><li><strong>Low total copper:</strong> 0.3–1.5% CuO. Higher concentrations produce opaque “liver” red or metallic effects.</li><li><strong>Moderate viscosity:</strong> $\log\eta = 3–5$ at peak temperature. Too fluid → particles grow too large. Too viscous → nucleation suppressed.</li></ol>
+
+<div class="styled-box warnbox" style="border-left-color:#EF4444"><div class="box-title" style="color:#EF4444">⚠️ Why Copper Red Fails</div><div class="box-content">
+The most common failure modes:
+<ol><li><strong>Insufficient reduction:</strong> Cu stays as Cu<sup>2+</sup> (green) or Cu<sup>+</sup> (colorless). The kiln never achieved the required $p_{\text{O}_2}$.</li><li><strong>Re-oxidation during cooling:</strong> Cu<sup>0</sup> particles dissolve back to Cu<sup>2+</sup> if oxygen leaks into the kiln during the critical $T_g$–1000&nbsp;°C range.</li><li><strong>Over-reduction:</strong> Excessive carbon atmosphere reduces Cu<sup>0</sup> particles so aggressively that they grow too large, producing a muddy gray-brown metallic surface.</li><li><strong>Wrong base composition:</strong> Λ too low (acidic glass) thermodynamically prevents Cu<sup>0</sup> formation. High-alumina glazes are particularly resistant to copper red.</li></ol>
+</div></div>
+
+<h2 id="manganese-purple-brown-and-black" class="section-title">Manganese — Purple, Brown, and Black</h2>
+<a id="label-sec-manganese"></a>
+
+<p>Manganese is the third most commonly used ceramic colorant after iron and cobalt. Its color chemistry is complex because it has three accessible oxidation states in glass, each with different spectral properties.</p>
+
+<h3 id="three-oxidation-states-2" class="subsection-title">Three Oxidation States</h3>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Species</strong></th><th><strong>Config.</strong></th><th><strong>$d$-electrons</strong></th><th><strong>$d–d$ Bands</strong></th><th><strong>Color Contribution</strong></th></tr><tr><td>Mn<sup>2+</sup></td><td>$3d^5$</td><td>5 (half-filled)</td><td>All spin-forbidden</td><td>Pale pink / near-colorless</td></tr><tr><td>Mn<sup>3+</sup></td><td>$3d^4$</td><td>4</td><td>Spin-allowed; Jahn–Teller active</td><td>Purple / violet</td></tr><tr><td>Mn<sup>4+</sup></td><td>$3d^3$</td><td>3</td><td>Spin-allowed</td><td>Dark brown / black</td></tr></table></div></div>
+
+<h3 id="mn2-the-phantom-colorant" class="subsection-title">Mn<sup>2+</sup> — The Phantom Colorant</h3>
+
+<p>Mn<sup>2+</sup> ($d^5$, high-spin) is isoelectronic with Fe<sup>3+</sup>: exactly five $d$-electrons, one in each orbital. Every $d–d$ transition is spin-forbidden. The resulting bands are extraordinarily weak — roughly 100× weaker than a spin-allowed transition. At low concentrations, Mn<sup>2+</sup> is essentially invisible.</p>
+
+<p>At high concentrations ($\gt  5$%), a very pale pink appears from the cumulative effect of multiple weak spin-forbidden bands clustered around $21,000–25,000$&nbsp;/cm ($\lambda \approx 400–480$&nbsp;nm). This pink is familiar from rhodonite (MnSiO<sub>3</sub>) and rhodochrosite (MnCO<sub>3</sub>) minerals.</p>
+
+<h3 id="mn3-the-purple-maker" class="subsection-title">Mn<sup>3+</sup> — The Purple Maker</h3>
+
+<p>Mn<sup>3+</sup> ($d^4$) is the species responsible for manganese purple in glass. It has a spin-allowed transition:
+<div class="math-display">\[^5E_g \to\, ^5T_{2g}: \quad \Delta \approx 20,000\;\text{/cm} \quad (\lambda \approx 500\;\text{nm})\]</div></p>
+
+<p>This absorbs green-yellow light, producing a <strong>deep purple to amethyst</strong> color. The transition is further enhanced by a Jahn–Teller distortion: $d^4$ in octahedral geometry is orbitally degenerate and spontaneously elongates two axial bonds, splitting the single $d–d$ band into two components. This broadens the absorption, deepening the color.</p>
+
+<p><strong>The “manganese purple” of medieval and Renaissance European glass</strong> — the deep violet-purple seen in cathedral windows — is Mn<sup>3+</sup>. It requires an oxidising atmosphere to maintain the 3+ state, which is why these glasses were fired in wood-burning furnaces with good air supply.</p>
+
+<h3 id="mn4-dark-brown-and-black" class="subsection-title">Mn<sup>4+</sup> — Dark Brown and Black</h3>
+
+<p>At very high oxidation potentials, Mn can reach the 4+ state ($d^3$), which is isoelectronic with Cr<sup>3+</sup>. Mn<sup>4+</sup> produces intense dark brown to black colors through strong, broad absorption bands. In practice, Mn<sup>4+</sup> is rare in glass because the oxidation potential required is extreme.</p>
+
+<p>More commonly, the dark brown/black of high-manganese glazes arises from Mn<sub>3</sub>O<sub>4</sub> (hausmannite) or MnO·SiO<sub>2</sub> crystallite precipitation during cooling, rather than dissolved Mn<sup>4+</sup>.</p>
+
+<h3 id="practical-manganese-recipes" class="subsection-title">Practical Manganese Recipes</h3>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Effect</strong></th><th><strong>MnO<sub>2</sub> (%)</strong></th><th><strong>Atmosphere</strong></th><th><strong>Additional Req.</strong></th></tr><tr><td>Pale pink (Mn<sup>2+</sup>)</td><td>5–8</td><td>Reduction</td><td>High silica, low flux</td></tr><tr><td>Amethyst purple (Mn<sup>3+</sup>)</td><td>2–6</td><td>Oxidation</td><td>Low Fe to avoid brown</td></tr><tr><td>Plum/aubergine</td><td>4–8</td><td>Oxidation</td><td>Moderate flux</td></tr><tr><td>Brown-black</td><td>8–15</td><td>Oxidation</td><td>With Fe for dark brown</td></tr><tr><td>Metallic black</td><td>10–20</td><td>Any</td><td>Crystal surface (MnO<sub>2</sub> or Mn<sub>3</sub>O<sub>4</sub>)</td></tr></table></div></div>
+
+<h2 id="chromium-green-pink-and-the-tin-connection" class="section-title">Chromium — Green, Pink, and the Tin Connection</h2>
+<a id="label-sec-chromium"></a>
+
+<p>Chromium is a powerful but tricky colorant. In isolation, it produces green. Combined with tin, it produces pink (chrome-tin pink). At high concentrations or high temperatures, it can produce yellow or red through chromate formation. These wild color swings make chromium one of the most composition-sensitive colorants.</p>
+
+<h3 id="electronic-structure-3" class="subsection-title">Electronic Structure</h3>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Species</strong></th><th><strong>Config.</strong></th><th><strong>$d$-electrons</strong></th><th><strong>Coordination</strong></th><th><strong>Color</strong></th></tr><tr><td>Cr<sup>3+</sup></td><td>$3d^3$</td><td>3</td><td>Octahedral (strong pref.)</td><td>Green</td></tr><tr><td>Cr<sup>6+</sup></td><td>$3d^0$</td><td>0</td><td>Tetrahedral (CrO<sub>4</sub><sup>2-</sup>)</td><td>Yellow / orange</td></tr><tr><td>Cr<sup>3+</sup> in SnO<sub>2</sub></td><td>$3d^3$</td><td>3</td><td>Octahedral (substitutional)</td><td>Pink</td></tr></table></div></div>
+
+<h3 id="cr3-chrome-green" class="subsection-title">Cr<sup>3+</sup> — Chrome Green</h3>
+
+<p>Cr<sup>3+</sup> ($d^3$) has a particularly stable electronic configuration: three electrons occupy the three $t_{2g}$ orbitals, one each, with all spins parallel. This half-filled $t_{2g}$ set is very stable, and Cr<sup>3+</sup> has an exceptionally strong preference for octahedral coordination (the highest crystal field stabilisation energy of any common $3d$ ion: CFSE $= 1.2\,\Delta_{\text{oct}}$).</p>
+
+<p>Two spin-allowed absorption bands:
+<div class="math-display">\begin{align}
+    ^4A_{2g} \to\, ^4T_{2g}: &\quad \Delta \approx 17,400\;\text{/cm} \quad (\lambda \approx 575\;\text{nm}) \quad \text{[absorbs yellow-orange]} \\
+    ^4A_{2g} \to\, ^4T_{1g}: &\quad \nu \approx 24,700\;\text{/cm} \quad (\lambda \approx 405\;\text{nm}) \quad \text{[absorbs violet]}
+\end{align}</div></p>
+
+<p>With both yellow-orange and violet absorbed, the transmitted light is <strong>green</strong> — specifically, a rich, slightly blue-green (unlike copper green, which is more yellow-green).</p>
+
+<p><strong>Cr<sup>3+</sup> green is extremely stable:</strong> It does not change with atmosphere (Cr<sup>3+</sup> is the stable state in most glass compositions), varies only slightly with base composition, and is unaffected by the presence of most other colorants.</p>
+
+<p>The green of chromium in glass is closely related to the green of emerald (Cr<sup>3+</sup> in beryl, Be<sub>3</sub>Al<sub>2</sub>Si<sub>6</sub>O<sub>18</sub>) and the red of ruby (Cr<sup>3+</sup> in corundum, Al<sub>2</sub>O<sub>3</sub>). The difference is in Δ: the stronger alumina crystal field in ruby pushes Δ higher, shifting the absorption into the blue-green and transmitting red. In glass (weaker field), Δ is lower, and the color is green.</p>
+
+<h3 id="chrome-tin-pink-sphene" class="subsection-title">Chrome-Tin Pink (Sphene)</h3>
+
+<div class="styled-box deepbox" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 The Chrome-Tin Pink Mechanism</div><div class="box-content">
+When Cr<sub>2</sub>O<sub>3</sub> is added to a glaze containing SnO<sub>2</sub> (tin oxide), the glaze turns <strong>pink</strong> instead of green. This transformation is one of the most commercially important color effects in ceramics and has been used since the 18th century (Sèvres, Meissen).
+
+<p>The mechanism:
+<ol><li>During firing, Cr<sup>3+</sup> ions substitute for Sn<sup>4+</sup> (or Ti<sup>4+</sup>) in the cassiterite (SnO<sub>2</sub>) or sphene (CaTiSiO<sub>5</sub>) crystal lattice. The substitution is possible because Cr<sup>3+</sup> (0.62&nbsp;Å) and Sn<sup>4+</sup> (0.69&nbsp;Å) have similar ionic radii.</li><li>Inside the SnO<sub>2</sub> lattice, the Cr<sup>3+</sup> ion experiences a stronger crystal field than it would in the glass matrix. The octahedral site in SnO<sub>2</sub> has shorter Cr–O bond lengths and stronger covalent overlap.</li><li>The stronger field increases Δ to ∼18,000–20,000&nbsp;/cm, shifting the first absorption band from yellow-orange toward green-yellow. The transmitted color shifts from green toward <strong>pink/rose</strong>.</li></ol></p>
+
+<p>The pink color is therefore not from a different oxidation state of chromium — it is the same Cr<sup>3+</sup> ion in a different crystal field environment.
+</div></div></p>
+
+<p>Requirements for chrome-tin pink:
+<ul><li>Cr<sub>2</sub>O<sub>3</sub>: 0.1–0.5% (trace amounts; more → too dark, may go green)</li><li>SnO<sub>2</sub>: 3–8% (major component; need excess Sn for Cr incorporation)</li><li><strong>No zinc!</strong> ZnO destroys chrome-tin pink by preferentially incorporating into the SnO<sub>2</sub> lattice, preventing Cr<sup>3+</sup> substitution. This is one of the most important incompatibilities in ceramic colorant chemistry.</li><li>CaO: Beneficial (promotes sphene formation)</li><li>Low temperature preferred (cone 6 or below; at high temperatures, Cr<sup>3+</sup> dissolves out of the crystal into the glass, reverting to green)</li></ul></p>
+
+<h3 id="cr6-chrome-yellow" class="subsection-title">Cr<sup>6+</sup> — Chrome Yellow</h3>
+
+<p>At very high temperatures or in strongly alkaline compositions ($\Lambda \gt  0.65$), Cr<sup>3+</sup> can be oxidised to Cr<sup>6+</sup>, which forms the tetrahedral chromate ion CrO<sub>4</sub><sup>2-</sup>. Cr<sup>6+</sup> has $d^0$ configuration (no $d$-electrons), so there are no $d–d$ transitions. The intense yellow-orange color comes from a <strong>ligand-to-metal charge transfer</strong> band:
+<div class="math-display">\[\text{O}^{2-}(2p) \to \text{Cr}^{6+}(3d^0): \quad \lambda_{\text{max}} \approx 370\;\text{nm}\]</div></p>
+
+<p>This produces the familiar “chrome yellow” color. However:</p>
+
+<div class="styled-box warnbox" style="border-left-color:#EF4444"><div class="box-title" style="color:#EF4444">⚠️ Cr<sup>6+</sup> Toxicity</div><div class="box-content">
+Hexavalent chromium (Cr<sup>6+</sup>) is a known human carcinogen (IARC Group 1). Its formation in ceramic glazes is a serious health and safety concern. Cr<sup>6+</sup> is water-soluble and highly bioavailable, unlike Cr<sup>3+</sup> which is essentially non-toxic.
+
+<p>To prevent Cr<sup>6+</sup> formation:
+<ul><li>Keep Λ below 0.60 (avoid strongly basic compositions)</li><li>Do not fire above cone&thinsp;8 with chrome</li><li>Avoid combining chrome with barium or lead (promote Cr<sup>6+</sup> stability)</li></ul>
+</div></div></p>
+
+<h2 id="nickel-the-composition-chameleon" class="section-title">Nickel — The Composition Chameleon</h2>
+<a id="label-sec-nickel"></a>
+
+<p>Nickel is unusual among ceramic colorants because its color is <em>extremely sensitive</em> to base glass composition. The same NiO addition can produce brown, green, yellow, blue, gray, or purple depending on the surrounding oxide environment. This makes nickel both fascinating and frustrating for the potter.</p>
+
+<h3 id="electronic-structure-4" class="subsection-title">Electronic Structure</h3>
+
+<p>Ni<sup>2+</sup> ($d^8$) is the only common oxidation state in ceramic glasses. It has three spin-allowed transitions in octahedral coordination:
+<div class="math-display">\begin{align}
+    ^3A_{2g} \to ^3T_{2g}: &\quad \nu_1 \approx 8,000\text{--}10,000\;\text{/cm} \quad (\text{near-IR}) \\
+    ^3A_{2g} \to ^3T_{1g}(F): &\quad \nu_2 \approx 13,000\text{--}16,000\;\text{/cm} \quad (\text{visible red-orange}) \\
+    ^3A_{2g} \to ^3T_{1g}(P): &\quad \nu_3 \approx 24,000\text{--}27,000\;\text{/cm} \quad (\text{UV-blue})
+\end{align}</div></p>
+
+<p>The middle band ($\nu_2$) is what determines the visible color. Its position shifts dramatically with the crystal field strength (controlled by the ligand environment, i.e., the base glass composition):</p>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Base Glass</strong></th><th><strong>Ni<sup>2+</sup> Color</strong></th><th><strong>Reason</strong></th></tr><tr><td>High-CaO, lime–alumina</td><td>Brown (warm)</td><td>Octahedral; moderate Δ</td></tr><tr><td>High-Na<sub>2</sub>O, soda–lime</td><td>Yellow-green</td><td>Octahedral; slightly higher Δ</td></tr><tr><td>High-K<sub>2</sub>O, potash</td><td>Gray-purple</td><td>Mixed oct./tet.; band shifts</td></tr><tr><td>High-ZnO</td><td>Blue-gray</td><td>Tetrahedral NiO<sub>4</sub>; inverted splitting</td></tr><tr><td>High-MgO</td><td>Green</td><td>Octahedral in MgO-like sites</td></tr><tr><td>BaO-bearing</td><td>Purple</td><td>Strong field from large Ba<sup>2+</sup></td></tr><tr><td>Borosilicate (B<sub>2</sub>O<sub>3</sub>)</td><td>Olive-brown</td><td>Mixed coordination</td></tr></table></div></div>
+
+<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Nickel as a Diagnostic Tool</div><div class="box-content">
+Because nickel is so composition-sensitive, it can be used as a <em>diagnostic colorant</em>: adding 1% NiO to an unknown base glaze and observing the fired color provides information about the coordination environment and the crystal field strength of the glass. This can help identify the dominant structural features of the glass (NBO/T, dominant modifier cation environment, etc.).
+</div></div>
+
+<h3 id="practical-applications" class="subsection-title">Practical Applications</h3>
+
+<ul><li><strong>Muting agent:</strong> 0.5–1% NiO “grays” or “dirtifies” other colors. Added to cobalt blue, it produces steel blue. Added to copper green, it produces sage or olive.</li><li><strong>Brown stoneware:</strong> 2–3% NiO in a calcia-based stoneware glaze produces a warm, earthy brown.</li><li><strong>Crystal glazes:</strong> NiO promotes nucleation of zinc silicate crystals, affecting crystal morphology without dramatically changing the matrix color.</li></ul>
+
+<h2 id="vanadium-amp-minor-colorants" class="section-title">Vanadium &amp; Minor Colorants</h2>
+<a id="label-sec-minor"></a>
+
+<h3 id="vanadium" class="subsection-title">Vanadium</h3>
+
+<p>Vanadium has three accessible oxidation states in glass:</p>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Species</strong></th><th><strong>$d$-electrons</strong></th><th><strong>Color</strong></th><th><strong>Notes</strong></th></tr><tr><td>V<sup>5+</sup> ($d^0$)</td><td>0</td><td>Pale yellow</td><td>LMCT band; no $d–d$ transitions</td></tr><tr><td>V<sup>4+</sup> ($d^1$)</td><td>1</td><td>Blue-green</td><td>Single $d–d$ band; vanadyl VO<sup>2+</sup></td></tr><tr><td>V<sup>3+</sup> ($d^2$)</td><td>2</td><td>Green</td><td>Two $d–d$ bands; octahedral</td></tr></table></div></div>
+
+<p>V<sup>5+</sup> is the dominant species in oxidising conditions. Its pale yellow color is very weak (no $d$-electrons = no $d–d$ transitions; color comes from an O$^{2-} \to$ V<sup>5+</sup> charge-transfer tail). It is used primarily:
+<ul><li>As a <strong>yellow opacifier</strong>: V<sub>2</sub>O<sub>5</sub> + ZrO<sub>2</sub> = vanadium-zircon yellow (V substitutes in the ZrSiO<sub>4</sub> lattice)</li><li>Combined with tin: V–Sn yellow stains</li><li>In combination with other colorants for subtle warm tints</li></ul></p>
+
+<p>V<sup>4+</sup> (the vanadyl ion VO<sup>2+</sup>) produces a distinctive blue-green in reduced or mildly oxidising conditions. It has a single, well-defined $d–d$ transition ($^2T_{2g} \to {}^2E_g$) at ∼13,000&nbsp;/cm, absorbing in the orange-red and transmitting blue-green.</p>
+
+<h3 id="praseodymium-pr" class="subsection-title">Praseodymium (Pr)</h3>
+
+<p>Pr<sup>3+</sup> ($4f^2$): A rare-earth colorant that produces a characteristic <strong>canary yellow</strong> in zircon-based stains (praseodymium-zircon yellow, the most important and widely used yellow ceramic stain worldwide). The $f–f$ transitions are Laporte-forbidden but become partially allowed when Pr<sup>3+</sup> substitutes in the low-symmetry ZrSiO<sub>4</sub> lattice.</p>
+
+<h3 id="neodymium-nd" class="subsection-title">Neodymium (Nd)</h3>
+
+<p>Nd<sup>3+</sup> ($4f^3$): Produces a distinctive <strong>warm lilac-purple</strong> color in glass via $f–f$ transitions. The color is notable for its <em>alexandrite-like dichroism</em>: neodymium glass appears blue-purple in fluorescent light but warm pink-purple in incandescent light, due to the sharp, narrow absorption bands interacting differently with the two light source spectra. (This is the color of “Didymium” glass, used in glassblower's goggles.)</p>
+
+<h3 id="uranium-u" class="subsection-title">Uranium (U)</h3>
+
+<p>Historically, U<sup>6+</sup> (as uranyl UO<sub>2</sub><sup>2+</sup>) produced the famous “Vaseline glass” fluorescent green-yellow. The color arises from charge-transfer transitions in the linear UO<sub>2</sub><sup>2+</sup> molecular ion. Uranium glass production ceased around 1940 for obvious reasons, though it is not significantly radioactive. Vintage uranium glazes (Fiestaware red-orange, which uses U<sub>3</sub>O<sub>8</sub>) remain collector's items.</p>
+
+<h2 id="colorant-interactions-amp-incompatibilities" class="section-title">Colorant Interactions &amp; Incompatibilities</h2>
+<a id="label-sec-interactions"></a>
+
+<p>When two or more colorants are present simultaneously, the result is not simply the sum of their individual colors. Three types of interaction occur:</p>
+
+<h3 id="additive-non-interacting" class="subsection-title">Additive (Non-Interacting)</h3>
+
+<p>The simplest case: two colorants absorb at different wavelengths without affecting each other's electronic structure. The resulting color is the subtractive mixture.</p>
+
+<div class="styled-box examplebox" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Additive Example: Cobalt + Iron</div><div class="box-content">
+<ul><li>Co<sup>2+</sup> absorbs at ∼600–670&nbsp;nm (red-orange)</li><li>Fe<sup>3+</sup> absorbs at ∼400–450&nbsp;nm (violet-blue)</li><li>Both absorptions occur independently</li><li>Result: the glass transmits only the narrow green window between the two bands → <strong>deep olive-blue or slate</strong></li></ul>
+</div></div>
+
+<h3 id="redox-interaction" class="subsection-title">Redox Interaction</h3>
+
+<p>One colorant changes the oxidation state of another. The most important examples:</p>
+
+<div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Pair</strong></th><th><strong>Interaction</strong></th><th><strong>Result</strong></th></tr><tr><td>Fe + Mn</td><td>Fe<sup>2+</sup> + Mn$^{3+} \to$ Fe<sup>3+</sup> + Mn<sup>2+</sup></td><td>Mn decolorises Fe reduction</td></tr><tr><td></td><td>(Mn “oxidises” Fe)</td><td>colors; Fe “reduces” Mn purple</td></tr><tr><td>Cu + Fe</td><td>Cu<sup>2+</sup> + Fe$^{2+} \to$ Cu$^+ +$ Fe<sup>3+</sup></td><td>Cu is reduced by Fe; can</td></tr><tr><td></td><td></td><td>promote Cu red in Fe-bearing base</td></tr><tr><td>Cr + Sn</td><td>Cr<sup>3+</sup> does not redox with Sn</td><td>But substitutes into SnO<sub>2</sub> lattice</td></tr></table></div></div>
+
+<p>The Fe/Mn interaction is historically significant: <strong>manganese was used as a “decoloriser” in Roman glass-making</strong>, deliberately added to oxidise Fe<sup>2+</sup> (green) to Fe<sup>3+</sup> (weak yellow), producing a nearly colorless glass. This is why archaeologists call manganese the “glassmaker's soap.”</p>
+
+<h3 id="structural-incompatibilities" class="subsection-title">Structural Incompatibilities</h3>
+
+<p>Some colorants compete for the same structural sites:</p>
+
+<div class="styled-box warnbox" style="border-left-color:#EF4444"><div class="box-title" style="color:#EF4444">⚠️ Critical Incompatibilities</div><div class="box-content">
+<ol><li><strong>Chrome + Tin in the presence of Zinc:</strong> As discussed in the chromium section, ZnO prevents the Cr<sup>3+</sup> substitution into SnO<sub>2</sub> that produces chrome-tin pink. Adding even 2% ZnO can destroy the pink and produce a muddy olive-brown.</li><li><strong>Chrome + Tin at high temperature (&gt; cone 8):</strong> The SnO<sub>2</sub> crystal lattice dissolves at high temperature, releasing Cr<sup>3+</sup> back into the glass where it reverts to green. Chrome-tin pink is strictly a low-to-mid-fire effect.</li><li><strong>Cobalt + high ZnO:</strong> The Co<sup>2+</sup> color shifts from blue toward green-blue (turquoise) as ZnO increases, because Zn<sup>2+</sup> modifies the local coordination environment.</li><li><strong>Copper red + any oxidation:</strong> Even trace oxygen leaks during cooling destroy Cu<sup>0</sup> nanoparticles, reverting the color to green or colorless.</li></ol>
+</div></div>
+
+<h2 id="mapping-colorant-behaviour-to-atlas-equations" class="section-title">Mapping Colorant Behaviour to Atlas Equations</h2>
+<a id="label-sec-mapping"></a>
+
+<p>The following table maps each colorant decision to the specific Stull Atlas equation(s) that quantify it:</p>
+
+<div class="centered">
+<div class="table-wrapper"><table class="styled-table"><tr><th><strong>Colorant Question</strong></th><th><strong>Atlas Equation(s)</strong></th><th><strong>How It Helps</strong></th></tr><tr><td>Will Fe be Fe<sup>2+</sup> or Fe<sup>3+</sup>?</td><td>Optical Basicity (Λ) + Redox Eq.&nbsp;33</td><td>$\Lambda \gt  0.58 \Rightarrow$ Fe<sup>2+</sup> favoured</td></tr><tr><td>Can I get copper red?</td><td>Λ + VFT viscosity + $T_{rg}$</td><td>Need $\Lambda \gt  0.58$, moderate η, controlled cooling</td></tr><tr><td>Will cobalt shift from blue?</td><td>NBO/T (Eq.&nbsp;14) + Composition</td><td>High NBO/T → more modifier sites → possible oct. shift</td></tr><tr><td>Is chrome-tin pink possible?</td><td>Composition check (Zn = 0?) + $T_{\text{cone}}$</td><td>ZnO kills pink; high temp dissolves SnO<sub>2</sub></td></tr><tr><td>How deep will the color be?</td><td>Refractive index ($n$, Eq.&nbsp;24) + $E_g$ (Eq.&nbsp;27)</td><td>Higher $n$ → more light bending → deeper color</td></tr><tr><td>Will Mn be purple or brown?</td><td>Λ + Atmosphere</td><td>Low Λ + oxidation → Mn<sup>3+</sup> purple; high Λ → brown</td></tr><tr><td>Which Ni color will appear?</td><td>NBO/T + modifier identity</td><td>Depends on dominant modifier cation</td></tr><tr><td>Will colorant survive firing?</td><td>Volatilisation Index (Eq.&nbsp;23)</td><td>Some colorants (especially Pb-based) volatilise</td></tr><tr><td>Food safety with colorant?</td><td>Durability (Eq.&nbsp;28) + Hydration (Eq.&nbsp;29)</td><td>Low durability → colorant leaching risk</td></tr><tr><td>Will colorant affect fit?</td><td>COE (Eq.&nbsp;6)</td><td>Some colorants (esp. high MnO<sub>2</sub>) change expansion</td></tr></table></div></div>
+
+<h2 id="summary-the-periodic-table-of-ceramic-color" class="section-title">Summary: The Periodic Table of Ceramic Color</h2>
+<a id="label-sec-summary"></a>
+
+<div class="centered">
+<div class="table-wrapper"><table class="styled-table"><tr><th><strong>Element</strong></th><th><strong>Typical wt%</strong></th><th><strong>Oxidation State</strong></th><th><strong>Coord.</strong></th><th><strong>Color</strong></th><th><strong>Mechanism</strong></th></tr><tr><td>Fe</td><td>1–12</td><td>3+</td><td>Oct</td><td>Amber/brown</td><td>LMCT</td></tr><tr><td>Fe</td><td>1–12</td><td>2+</td><td>Oct</td><td>Blue-green</td><td>$d–d$</td></tr><tr><td>Fe</td><td>3–12</td><td>2+/3+ mix</td><td>Both</td><td>Brown/black</td><td>IVCT</td></tr><tr><td>Co</td><td>0.1–3</td><td>2+</td><td>Tet</td><td>Blue</td><td>$d–d$</td></tr><tr><td>Cu</td><td>1–3</td><td>2+</td><td>Oct/SqPl</td><td>Turquoise</td><td>$d–d$</td></tr><tr><td>Cu</td><td>0.3–2</td><td>0</td><td>Colloid</td><td>Red</td><td>SPR</td></tr><tr><td>Mn</td><td>2–8</td><td>2+</td><td>Oct</td><td>Pale pink</td><td>$d–d$ (forbidden)</td></tr><tr><td>Mn</td><td>2–8</td><td>3+</td><td>Oct</td><td>Purple</td><td>$d–d$</td></tr><tr><td>Cr</td><td>0.1–1</td><td>3+</td><td>Oct</td><td>Green</td><td>$d–d$</td></tr><tr><td>Cr</td><td>0.1–0.5</td><td>3+ in SnO<sub>2</sub></td><td>Oct</td><td>Pink</td><td>$d–d$ (shifted Δ)</td></tr><tr><td>Cr</td><td>—</td><td>6+</td><td>Tet</td><td>Yellow</td><td>LMCT</td></tr><tr><td>Ni</td><td>1–3</td><td>2+</td><td>Oct/Tet</td><td>Variable</td><td>$d–d$</td></tr><tr><td>V</td><td>1–3</td><td>5+</td><td>—</td><td>Pale yellow</td><td>LMCT</td></tr><tr><td>V</td><td>1–3</td><td>4+</td><td>—</td><td>Blue-green</td><td>$d–d$</td></tr></table></div></div>
+
+<div class="styled-box deepbox" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 The Depth of Color</div><div class="box-content">
+Every color in a ceramic glaze is ultimately a story about electrons. An electron absorbs a photon, jumps to a higher energy level, and the missing photon leaves a gap in the spectrum that the eye perceives as color. Crystal field theory gives us the vocabulary to tell that story precisely — to predict which photons will be absorbed, how strongly, and how the surrounding glass network modulates the energies.
+
+<p>The Stull Atlas, through its composition-dependent models of optical basicity, NBO/T, viscosity, and refractive index, provides the quantitative bridge between the potter's recipe and the physics of light absorption. Understanding that bridge transforms color from a mystery into a science — though, mercifully, never completely: the kiln always has the last word.
+</div></div></p>
+</main>
+</div>
+<script>
+// TOC scroll-spy
+(function(){
+  const links = document.querySelectorAll('.toc a');
+  if(!links.length) return;
+  const ids = Array.from(links).map(a => a.getAttribute('href')?.slice(1)).filter(Boolean);
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        links.forEach(a => a.classList.remove('active'));
+        const a = document.querySelector('.toc a[href="#'+e.target.id+'"]');
+        if(a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -75% 0px' });
+  ids.forEach(id => { const el = document.getElementById(id); if(el) observer.observe(el); });
+})();
+</script>
+</body>
+</html>

@@ -8,6 +8,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { usePageTitle } from '@/hooks'
 import { edition } from '@/edition'
+import { features, appVersion } from '@/featureFlags'
 
 export function AboutPage() {
   usePageTitle('About')
@@ -17,31 +18,40 @@ export function AboutPage() {
         
         <section className="about-hero">
           <h1>Stull Atlas</h1>
-          <p className="subtitle">A Computational Ceramic Glaze Explorer — 114 years after Stull</p>
+          <p className="subtitle">A Computational Ceramic Glaze Explorer - 114 years after Stull</p>
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '12px 0 0' }} />
+          <p style={{ marginTop: 0 }}>
+            📄 <a href="/info/index.html" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-link)' }}>
+              Documentation Hub
+            </a>
+            {' - '}
+            <span style={{ color: 'var(--text-secondary)', fontSize: '0.9em' }}>
+              In-depth technical reports covering the math, chemistry, and analysis.
+            </span>
+          </p>
         </section>
-
-        <section className="about-section">
+        <section className="about-section" style={{ marginTop: 0 }}>
           <h2>What is this?</h2>
           <p>
             Stull Atlas is a tool for ceramic artists and glaze chemists. It lets you explore thousands 
-            of glaze recipes mapped onto a <strong>Stull chart</strong> — the standard coordinate system 
+            of glaze recipes mapped onto a <strong>Stull chart</strong> - the standard coordinate system 
             for understanding glaze chemistry through Unity Molecular Formula (UMF).
           </p>
           <p>
             In 1912, Ray T. Stull published a paper mapping the relationship between silica (SiO₂) and 
-            alumina (Al₂O₃) in ceramic glazes. His chart revealed that glaze surface quality — matte, 
-            satin, or glossy — could be predicted by the ratio of these two oxides. Over a century later, 
+            alumina (Al₂O₃) in ceramic glazes. His chart revealed that glaze surface quality - matte, 
+            satin, or glossy - could be predicted by the ratio of these two oxides. Over a century later, 
             this framework remains the foundation of glaze chemistry.
           </p>
 
           <figure className="original-chart">
             <img 
               src="/stull-original-1912.jpg" 
-              alt="Original Stull Chart from 1912 — Chart 1 from Transactions of the American Ceramic Society, Vol. XIV, showing the relationship between molecules of SiO₂ (x-axis) and Al₂O₃ (y-axis) with labeled regions for Unfused, Mattes, Semi-Matte, Bright Gloss, and Devitrified zones"
+              alt="Original Stull Chart from 1912 - Chart 1 from Transactions of the American Ceramic Society, Vol. XIV, showing the relationship between molecules of SiO₂ (x-axis) and Al₂O₃ (y-axis) with labeled regions for Unfused, Mattes, Semi-Matte, Bright Gloss, and Devitrified zones"
               loading="lazy"
             />
             <figcaption>
-              The original Stull chart — Chart 1 from <em>Transactions of the American Ceramic Society</em>, Vol. XIV (1912). 
+              The original Stull chart - Chart 1 from <em>Transactions of the American Ceramic Society</em>, Vol. XIV (1912). 
               Stull mapped test glazes by their SiO₂:Al₂O₃ molar ratio and identified the regions that predict surface quality.
             </figcaption>
           </figure>
@@ -76,19 +86,19 @@ export function AboutPage() {
                 (y-axis) values. The chart shows Stull's empirical regions:
               </p>
               <ul>
-                <li><strong>Bright Gloss</strong> — Low alumina relative to silica. Smooth, reflective surfaces.</li>
-                <li><strong>Matte</strong> — Higher alumina. Soft, non-reflective surfaces.</li>
-                <li><strong>Semi-Matte</strong> — The transition zone between matte and gloss.</li>
-                <li><strong>Crazed</strong> — Too little silica. The glaze contracts more than the clay body, creating cracks.</li>
-                <li><strong>Underfired</strong> — Not enough flux to fully melt at temperature.</li>
-                <li><strong>Unfused</strong> — Extreme alumina. Won't melt into a glaze.</li>
+                <li><strong>Bright Gloss</strong> - Low alumina relative to silica. Smooth, reflective surfaces.</li>
+                <li><strong>Matte</strong> - Higher alumina. Soft, non-reflective surfaces.</li>
+                <li><strong>Semi-Matte</strong> - The transition zone between matte and gloss.</li>
+                <li><strong>Crazed</strong> - Too little silica. The glaze contracts more than the clay body, creating cracks.</li>
+                <li><strong>Underfired</strong> - Not enough flux to fully melt at temperature.</li>
+                <li><strong>Unfused</strong> - Extreme alumina. Won't melt into a glaze.</li>
               </ul>
               <p>
                 <strong>Click any point</strong> to see the full recipe, UMF breakdown, firing info, and 
                 similar glazes ranked by oxide-distance.
               </p>
               <p>
-                <strong>Compare mode</strong> — select up to 3 glazes for side-by-side UMF comparison.
+                <strong>Compare mode</strong> - select up to 3 glazes for side-by-side UMF comparison.
                 See differences in flux balance, Si:Al ratio, and recipe ingredients at a glance.
               </p>
               <p>
@@ -96,12 +106,12 @@ export function AboutPage() {
                 boron content, or data confidence.
               </p>
               <p>
-                <strong>3D mode</strong> adds a Z-axis — choose any oxide, cone, flux ratio, or Si:Al 
+                <strong>3D mode</strong> adds a Z-axis - choose any oxide, cone, flux ratio, or Si:Al 
                 ratio to see the data in three dimensions.
               </p>
               <p>
                 <strong>Analysis tab</strong> in the sidebar provides clustering (DBSCAN), density heatmap, 
-                and void detection — find gaps in the explored chemistry space.
+                and void detection - find gaps in the explored chemistry space.
               </p>
             </div>
 
@@ -109,13 +119,13 @@ export function AboutPage() {
               <h3>🧮 <Link to="/calc">Calculators</Link></h3>
               <p>Tools for computing and exploring glaze recipes:</p>
               <ul>
-                <li><strong>UMF Calculator</strong> — Enter a recipe by weight, get the Unity Molecular Formula.</li>
-                <li><strong>Line Blend</strong> — Interpolate between two recipes across N steps.</li>
-                <li><strong>Triaxial Blend</strong> — Three-corner blend with configurable divisions.</li>
-                <li><strong>Biaxial Blend</strong> — Two-axis grid blend (4 corners).</li>
-                <li><strong>Quadaxial Blend</strong> — Four-material blend.</li>
-                <li><strong>Radial Blend</strong> — Circular blend pattern around a center point.</li>
-                <li><strong>Space-Filling</strong> — Algorithmic blend exploration using space-filling curves.</li>
+                <li><strong>UMF Calculator</strong> - Enter a recipe by weight, get the Unity Molecular Formula.</li>
+                <li><strong>Line Blend</strong> - Interpolate between two recipes across N steps.</li>
+                <li><strong>Triaxial Blend</strong> - Three-corner blend with configurable divisions.</li>
+                <li><strong>Biaxial Blend</strong> - Two-axis grid blend (4 corners).</li>
+                <li><strong>Quadaxial Blend</strong> - Four-material blend.</li>
+                <li><strong>Radial Blend</strong> - Circular blend pattern around a center point.</li>
+                <li><strong>Space-Filling</strong> - Algorithmic blend exploration using space-filling curves.</li>
               </ul>
               <p>
                 All blend calculators export CSV for your studio notebook and can overlay results 
@@ -127,7 +137,7 @@ export function AboutPage() {
               <h3>🧱 <Link to="/materials">Materials</Link></h3>
               <p>
                 Browse the raw materials database (sourced from Digitalfire). Search by name or category, 
-                see the oxide analysis for each material. This is the data that drives the UMF calculations — 
+                see the oxide analysis for each material. This is the data that drives the UMF calculations - 
                 knowing what's in your materials is how you know what's in your glaze.
               </p>
             </div>
@@ -153,15 +163,15 @@ export function AboutPage() {
           <h3 style={{ marginTop: 24 }}>Interface Features</h3>
           <ul>
             <li>
-              <strong>Light / dark mode</strong> — Toggle with the ☀/🌙 button in the header. 
+              <strong>Light / dark mode</strong> - Toggle with the ☀/🌙 button in the header. 
               Your preference is saved between sessions.
             </li>
             <li>
-              <strong>Print support</strong> — Press Ctrl+P (Cmd+P on Mac) on any page for a 
+              <strong>Print support</strong> - Press Ctrl+P (Cmd+P on Mac) on any page for a 
               clean, paper-friendly layout with light colors and hidden UI controls.
             </li>
             <li>
-              <strong>Keyboard accessible</strong> — Full keyboard navigation with visible focus 
+              <strong>Keyboard accessible</strong> - Full keyboard navigation with visible focus 
               indicators, screen-reader labels, and skip-to-content link.
             </li>
           </ul>
@@ -207,7 +217,7 @@ export function AboutPage() {
         <section className="about-section">
           <h2>Stull Regions</h2>
           <p>
-            The colored regions on the chart are empirical boundaries — not hard lines, but zones 
+            The colored regions on the chart are empirical boundaries - not hard lines, but zones 
             where glazes tend to behave a certain way. Real glazes don't always obey the chart: 
             boron and lithium can push a glaze to melt where alumina alone would predict matte. 
             Firing temperature matters. Kiln atmosphere matters. The clay body matters.
@@ -218,7 +228,7 @@ export function AboutPage() {
           </p>
         </section>
 
-        {/* Temperature Contours section hidden for NCECA
+        {features.tempContoursAbout && (
         <section className="about-section">
           <h2>Temperature Contours</h2>
           <p>
@@ -226,25 +236,25 @@ export function AboutPage() {
             based on empirical data collected by{' '}
             <a href="https://glazy.org" target="_blank" rel="noopener noreferrer">Derek Philip Au</a>.
             These indicate where glazes at a given UMF position tend to mature. They're guides, 
-            not guarantees — your kiln, your firing schedule, and your materials will shift 
+            not guarantees - your kiln, your firing schedule, and your materials will shift 
             these boundaries.
           </p>
         </section>
-        */}
+        )}
 
         <section className="about-section">
           <h2>Credits & Sources</h2>
           <p style={{ marginBottom: 16, fontStyle: 'italic', opacity: 0.85 }}>
             Every tool is built from what came before it. The potters and researchers listed 
-            here didn't just advance ceramic chemistry — they gave their work away so others 
+            here didn't just advance ceramic chemistry - they gave their work away so others 
             could build on it. Stull Atlas is our attempt to carry that forward.
           </p>
           <ul className="credits-list">
             <li>
-              <strong>Ray T. Stull</strong> (1912) — Original SiO₂/Al₂O₃ diagram and zone classifications
+              <strong>Ray T. Stull</strong> (1912) - Original SiO₂/Al₂O₃ diagram and zone classifications
             </li>
             <li>
-              <strong><a href="https://glazy.org" target="_blank" rel="noopener noreferrer">Derek Philip Au</a></strong> — 
+              <strong><a href="https://glazy.org" target="_blank" rel="noopener noreferrer">Derek Philip Au</a></strong> - 
               Derek's contributions to open-source ceramic chemistry tools are extraordinary.
               He created{' '}
               <a href="https://glazy.org" target="_blank" rel="noopener noreferrer">Glazy</a>,
@@ -259,25 +269,25 @@ export function AboutPage() {
               9,000+ glazes comes from Glazy's open data. Thank you, Derek.
             </li>
             <li>
-              <strong><a href="https://digitalfire.com" target="_blank" rel="noopener noreferrer">Digitalfire Reference Library</a></strong> (Tony Hansen) — 
+              <strong><a href="https://digitalfire.com" target="_blank" rel="noopener noreferrer">Digitalfire Reference Library</a></strong> (Tony Hansen) - 
               Comprehensive ceramic chemistry knowledge base, materials database, oxide reference, 
               and troubleshooting guides. Tony Hansen has spent over 30 years building the most 
               thorough freely-available reference library in ceramics. His work on understanding 
               glaze chemistry, material properties, and ceramic testing is foundational to how 
               modern potters think about glazes. The knowledge panel in our Explorer and the 
-              contextual links throughout Stull Atlas draw from his library — always linking back 
+              contextual links throughout Stull Atlas draw from his library - always linking back 
               to the original articles at{' '}
               <a href="https://digitalfire.com" target="_blank" rel="noopener noreferrer">digitalfire.com</a>.
             </li>
           </ul>
         </section>
 
-        {/* Standing on Shoulders section hidden for NCECA
+        {features.standingOnShoulders && (
         <section className="about-section studio-appreciation">
             <h2>Standing on Shoulders</h2>
             <p className="appreciation-intro">
               Stull Atlas wouldn't exist without the generosity of the ceramics 
-              community. Two projects in particular made this tool possible — both built by 
+              community. Two projects in particular made this tool possible - both built by 
               individuals who chose to share their life's work openly.
             </p>
 
@@ -320,7 +330,7 @@ export function AboutPage() {
                   <h3>Glazy</h3>
                   <p className="card-author">Derek Philip Au</p>
                   <p className="card-desc">
-                    The world's largest open glaze recipe database — 9,000+ recipes with full 
+                    The world's largest open glaze recipe database - 9,000+ recipes with full 
                     UMF analysis, all CC BY-NC-SA 4.0 licensed. Derek's Stull region geometry, 
                     temperature contours, and ceramic-chemistry-visualization project made 
                     data-driven glaze exploration possible for everyone. The entire dataset 
@@ -334,19 +344,38 @@ export function AboutPage() {
               These two projects represent decades of work given freely to the ceramics community.
             </p>
           </section>
-        */}
+        )}
+
+        <section className="about-section">
+          <h2>Documentation</h2>
+          <p>
+            In-depth technical reports covering the math, chemistry, and analysis.
+          </p>
+          <div className="feature-list">
+            <div className="feature">
+              <h3>📄 <a href="/info/index.html" target="_blank" rel="noopener noreferrer">Documentation Hub</a></h3>
+              <p>
+                Six comprehensive reports: the complete specification (133 computed properties, 22 oxides),
+                equations deep-dive (40 core equations with history and worked examples),
+                flux chemistry, colorant &amp; crystal field theory, crystallisation &amp; phase equilibria,
+                and the advanced analysis compendium covering defect physics, sensitivity analysis, 
+                firing science.
+              </p>
+            </div>
+          </div>
+        </section>
 
         <section className="about-section about-footer">
           <p>
             Built by Ryan L - Michigan.
           </p>
           <p style={{ marginTop: 8 }}>
-            <Link to="/nceca" style={{ color: 'var(--text-link)' }}>NCECA 2026 — Detroit</Link>
+            <Link to="/nceca" style={{ color: 'var(--text-link)' }}>NCECA 2026 - Detroit</Link>
             {edition.showPricing && <>{' · '}<Link to="/pricing" style={{ color: 'var(--text-link)' }}>Plans & Pricing</Link></>}
             {' · '}
             <Link to="/help/variability" style={{ color: 'var(--text-link)' }}>Understanding Variability</Link>
           </p>
-          <p className="version">v3.3.1</p>
+          <p className="version">v{appVersion}</p>
         </section>
 
       </div>
@@ -357,7 +386,7 @@ export function AboutPage() {
           overflow-y: auto;
           background: var(--bg-primary);
           color: var(--text-primary);
-          padding: 40px 20px;
+          padding: 12px 20px 40px;
         }
 
         .about-content {
@@ -366,8 +395,8 @@ export function AboutPage() {
         }
 
         .about-hero {
-          margin-bottom: 40px;
-          padding-bottom: 24px;
+          margin-bottom: 16px;
+          padding-bottom: 16px;
           border-bottom: 1px solid var(--border-primary);
         }
 

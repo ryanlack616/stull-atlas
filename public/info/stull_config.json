@@ -1,0 +1,197 @@
+{
+  "_comment": "Config for the Stull Atlas ceramic glaze reports — replicates original convert.py",
+
+  "files": [
+    {
+      "input": "stull-atlas-report.tex",
+      "output": "stull-atlas-report.html",
+      "title": "Stull Atlas Explorer — Comprehensive Report",
+      "accent": "#6366F1",
+      "description": "133 computed properties, 22 oxides, 120+ references. The complete specification."
+    },
+    {
+      "input": "stull-atlas-equations-report.tex",
+      "output": "stull-atlas-equations-report.html",
+      "title": "Stull Atlas — Equations Deep Dive",
+      "accent": "#F59E0B",
+      "description": "40 core equations with history, meaning, worked examples, and limitations."
+    },
+    {
+      "input": "stull-atlas-flux-report.tex",
+      "output": "stull-atlas-flux-report.html",
+      "title": "Stull Atlas — Flux & Flux Ratio Report",
+      "accent": "#6366F1",
+      "description": "10 flux oxides, their chemistry, historical traditions, and interaction effects."
+    },
+    {
+      "input": "stull-atlas-colorant-report.tex",
+      "output": "stull-atlas-colorant-report.html",
+      "title": "Stull Atlas — Colorant & Crystal Field Theory",
+      "accent": "#1E3A8A",
+      "description": "Transition-metal color chemistry: iron, cobalt, copper, manganese, chromium."
+    },
+    {
+      "input": "stull-atlas-crystallisation-report.tex",
+      "output": "stull-atlas-crystallisation-report.html",
+      "title": "Stull Atlas — Crystallisation & Phase Equilibria",
+      "accent": "#0D9488",
+      "description": "Nucleation theory, devitrification, crystal glaze design, phase separation."
+    },
+    {
+      "input": "stull-atlas-analysis-compendium.tex",
+      "output": "stull-atlas-analysis-compendium.html",
+      "title": "Stull Atlas — Advanced Analysis Compendium",
+      "accent": "#8B5CF6",
+      "description": "Defect physics, sensitivity analysis, firing science, food safety, validation."
+    }
+  ],
+
+  "theme": {
+    "mode": "dark",
+    "bg": "#0f0f0f",
+    "surface": "#1a1a1a",
+    "surface2": "#242424",
+    "border": "#333",
+    "text": "#e5e5e5",
+    "muted": "#a3a3a3",
+    "accent": "#6366F1",
+    "font_body": "'Segoe UI', system-ui, -apple-system, sans-serif",
+    "font_mono": "'JetBrains Mono', 'Fira Code', monospace",
+    "max_width": "880px"
+  },
+
+  "mathjax": {
+    "version": "3",
+    "macros": {
+      "SiO": "\\text{SiO}_2",
+      "AlO": "\\text{Al}_2\\text{O}_3",
+      "NaO": "\\text{Na}_2\\text{O}",
+      "KO": "\\text{K}_2\\text{O}",
+      "CaOx": "\\text{CaO}",
+      "MgOx": "\\text{MgO}",
+      "BO": "\\text{B}_2\\text{O}_3",
+      "FeO": "\\text{Fe}_2\\text{O}_3",
+      "LiO": "\\text{Li}_2\\text{O}",
+      "ZnOx": "\\text{ZnO}",
+      "BaOx": "\\text{BaO}",
+      "SrOx": "\\text{SrO}",
+      "PbOx": "\\text{PbO}",
+      "TiO": "\\text{TiO}_2",
+      "ZrO": "\\text{ZrO}_2",
+      "SnO": "\\text{SnO}_2",
+      "CoOx": "\\text{CoO}",
+      "CuOx": "\\text{CuO}",
+      "MnOx": "\\text{MnO}",
+      "NiOx": "\\text{NiO}",
+      "CrO": "\\text{Cr}_2\\text{O}_3",
+      "PO": "\\text{P}_2\\text{O}_5"
+    }
+  },
+
+  "text_macros": {
+    "\\SiO": "SiO<sub>2</sub>",
+    "\\AlO": "Al<sub>2</sub>O<sub>3</sub>",
+    "\\NaO": "Na<sub>2</sub>O",
+    "\\KO": "K<sub>2</sub>O",
+    "\\CaOx": "CaO",
+    "\\MgOx": "MgO",
+    "\\BO": "B<sub>2</sub>O<sub>3</sub>",
+    "\\FeO": "Fe<sub>2</sub>O<sub>3</sub>",
+    "\\LiO": "Li<sub>2</sub>O",
+    "\\ZnOx": "ZnO",
+    "\\BaOx": "BaO",
+    "\\SrOx": "SrO",
+    "\\PbOx": "PbO",
+    "\\TiO": "TiO<sub>2</sub>",
+    "\\ZrO": "ZrO<sub>2</sub>",
+    "\\SnO": "SnO<sub>2</sub>",
+    "\\CoOx": "CoO",
+    "\\CuOx": "CuO",
+    "\\MnOx": "MnO",
+    "\\NiOx": "NiO",
+    "\\CrO": "Cr<sub>2</sub>O<sub>3</sub>",
+    "\\PO": "P<sub>2</sub>O<sub>5</sub>",
+    "\\VOx": "V<sub>2</sub>O<sub>5</sub>"
+  },
+
+  "environments": {
+    "equationbox": {
+      "icon": "⚡",
+      "bg": "rgba(245, 158, 11, .04)",
+      "border": "#F59E0B",
+      "title_bg": "#4e3d1f"
+    },
+    "infobox": {
+      "icon": "ℹ️",
+      "bg": "rgba(59, 130, 246, .04)",
+      "border": "#3B82F6",
+      "title_bg": "#1f2d4e"
+    },
+    "warnbox": {
+      "icon": "⚠️",
+      "bg": "rgba(239, 68, 68, .04)",
+      "border": "#EF4444",
+      "title_bg": "#4e1f1f"
+    },
+    "examplebox": {
+      "icon": "📝",
+      "bg": "rgba(34, 197, 94, .04)",
+      "border": "#22C55E",
+      "title_bg": "#1f4e2d"
+    },
+    "deepbox": {
+      "icon": "🔬",
+      "bg": "rgba(124, 58, 237, .04)",
+      "border": "#7C3AED",
+      "title_bg": "#2d1f4e"
+    },
+    "crystalbox": {
+      "icon": "💎",
+      "bg": "rgba(13, 148, 136, .04)",
+      "border": "#0D9488",
+      "title_bg": "#1f3d3a"
+    },
+    "cobaltbox": {
+      "icon": "🔵",
+      "bg": "rgba(30, 58, 138, .06)",
+      "border": "#1E3A8A",
+      "title_bg": "#1a2a5e"
+    },
+    "copperbox": {
+      "icon": "🟤",
+      "bg": "rgba(184, 115, 51, .04)",
+      "border": "#B87333",
+      "title_bg": "#4e3520"
+    },
+    "ironbox": {
+      "icon": "🟫",
+      "bg": "rgba(139, 69, 19, .04)",
+      "border": "#8B4513",
+      "title_bg": "#3e2510"
+    },
+    "histbox": {
+      "icon": "📜",
+      "bg": "rgba(13, 148, 136, .04)",
+      "border": "#0D9488",
+      "title_bg": "#1f3d3a"
+    },
+    "safebox": {
+      "icon": "🛡️",
+      "bg": "rgba(71, 85, 105, .06)",
+      "border": "#475569",
+      "title_bg": "#2a3040"
+    }
+  },
+
+  "siunitx_extra": {
+    "\\poise": "P",
+    "\\dyne": "dyn"
+  },
+
+  "generate_index": true,
+  "navigation": true,
+  "toc_sidebar": true,
+  "toc_depth": 3,
+  "index_title": "Stull Atlas Explorer",
+  "index_subtitle": "Comprehensive documentation for the real-time 3D ceramic glaze analysis application"
+}

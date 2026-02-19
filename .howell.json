@@ -1,0 +1,108 @@
+{
+  "_meta": {
+    "purpose": "Deep project context for Claude-Howell. Read at session start when working on this project.",
+    "updated": "2026-02-17"
+  },
+
+  "project": "Stull Atlas",
+  "path": "C:\\rje\\dev\\stull-atlas",
+  "type": "web-app",
+  "stack": "React 18 + TypeScript 5.3 + Vite 5 + Plotly.js + Zustand v4.4 + Immer v10 + decimal.js",
+  "serve": "npm run dev",
+  "build": "npm run build",
+  "test": "npm test (vitest, 269 passing, 25 skipped)",
+  "deploy": "powershell -File scripts/deploy.ps1 -SkipBuild → stullatlas.app via GitHub Pages",
+  "repo": "ryanlack616/stull-atlas (master branch)",
+
+  "description": "Computational ceramic glaze explorer — visualizes glazes on a Stull chart (SiO2 vs Al2O3 in UMF space). Connects pottery/glaze chemistry with computational tools.",
+
+  "version": "3.5.0",
+
+  "design": {
+    "themes": ["dark", "light"],
+    "studio_skins": ["normal (#708090)", "digitalfire (#2B5797)", "glazy (#26A69A)"],
+    "note": "CSS custom properties via data-theme attribute on html element"
+  },
+
+  "editions": {
+    "web": "Freemium, auth, pricing, cloud data",
+    "studio": "allUnlocked, no auth/pricing, offline data, 3 extra skins. Tauri desktop app.",
+    "config": "src/edition.ts detects isTauri at runtime"
+  },
+
+  "architecture": {
+    "single_dataset_umf": "GlazeRecipe.umf is UMF | null (not Map). Multi-dataset removed in 64c43d3.",
+    "molar_wiggle": "precomputeAllMolarVariants() runs after glaze load, glazeStore.getPlotPoints() takes optional MolarWeightSetId",
+    "tier_gating": "TierGate component wraps gated routes. Solo: line blend, import/export. Pro: triaxial, quadaxial, biaxial, radial, space-filling, optimizer, AI suggest.",
+    "demo_mode": "VITE_DEMO_MODE=true or ?demo=1 URL param bypasses all gates for NCECA booth"
+  },
+
+  "key_features": [
+    "Explorer 2D/3D",
+    "Suggestion engine",
+    "Optimizer (gradient + genetic algorithm)",
+    "Validation",
+    "Similarity search",
+    "DBSCAN/density/void analysis",
+    "6 blend calculators (line, triaxial, quadaxial, biaxial, radial, space-filling)",
+    "Import/export",
+    "Gallery page",
+    "Timeline (140 events, 18000 BCE to 2026)",
+    "Aesthetic Compass"
+  ],
+
+  "key_files": {
+    "src/components/StullPlot.tsx": "Main chart component",
+    "src/pages/index.tsx": "Container/controls",
+    "src/stores/glazeStore.ts": "Zustand store",
+    "src/types/glaze.ts": "Type definitions",
+    "src/edition.ts": "Edition detection (web vs studio)"
+  },
+
+  "data": {
+    "glazes": "9000+ from Glazy",
+    "cone_range": "04 to 10",
+    "molar_weights": "molar_weights_database.json covering 1912-2024"
+  },
+
+  "gotchas": [
+    "UMF is UMF|null not a Map",
+    "DigitalFire uses FeO = 81.8 g/mol which is WRONG (should be 71.844)"
+  ],
+
+  "upcoming": {
+    "v3.6": "The Walk — spatial navigation features",
+    "v3.9": "The Controls — keyboard as instrument (full interaction spec)",
+    "nceca": "March 25-28 2026, Detroit. Demo at Huntington Place."
+  },
+
+  "quick_start": {
+    "serve": "cd C:\\rje\\dev\\stull-atlas && npm run dev",
+    "open": "http://localhost:5173",
+    "test": "cd C:\\rje\\dev\\stull-atlas && npm test",
+    "demo": "http://localhost:5173/?demo=1"
+  },
+
+  "data_snapshot": {
+    "_captured": "2026-02-17",
+    "glazes": 3214,
+    "tests_total": 294,
+    "tests_passing": 294,
+    "tests_failing": 0,
+    "test_suites": 87
+  },
+
+  "resume": {
+    "last_session": "2026-02-17",
+    "did": [
+      "Stable at v3.5.0, all 294 tests green"
+    ],
+    "next": [
+      "v3.6 — The Walk (spatial navigation)",
+      "NCECA demo mode testing (March 25-28)",
+      "Deploy latest to stullatlas.app"
+    ]
+  },
+
+  "recent_changes": []
+}

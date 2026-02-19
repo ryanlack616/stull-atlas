@@ -56,7 +56,6 @@ const APP_PAGES: { title: string; path: string; keywords: string }[] = [
   { title: 'Guide', path: '/guide', keywords: 'guide tutorial help how to get started' },
   { title: 'Timeline', path: '/timeline', keywords: 'timeline history ceramics pottery' },
   { title: 'About', path: '/about', keywords: 'about credits tony hansen digitalfire' },
-  { title: 'Pricing', path: '/pricing', keywords: 'pricing plans tier pro free' },
   { title: 'What\'s New', path: '/updates', keywords: 'updates changelog release notes version' },
 ]
 

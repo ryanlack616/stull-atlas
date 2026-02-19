@@ -196,7 +196,8 @@ function umfToPlotPoint(
   const Al2O3 = umf.Al2O3?.value ?? 0
   const R2O = (umf.Li2O?.value ?? 0) + (umf.Na2O?.value ?? 0) + (umf.K2O?.value ?? 0)
   const RO  = (umf.MgO?.value ?? 0) + (umf.CaO?.value ?? 0) + (umf.BaO?.value ?? 0) +
-              (umf.SrO?.value ?? 0) + (umf.ZnO?.value ?? 0)
+              (umf.SrO?.value ?? 0) + (umf.ZnO?.value ?? 0) + (umf.PbO?.value ?? 0)
+  const fluxTotal = R2O + RO
 
   return {
     id: g.id,
@@ -207,7 +208,7 @@ function umfToPlotPoint(
     cone: parseCone(g.coneRange[0]),
     surfaceType: g.surfaceType,
     glazeTypeId: g.glazeTypeId ?? null,
-    fluxRatio: RO > 0.001 ? R2O / RO : 0,
+    fluxRatio: fluxTotal > 0.001 ? R2O / fluxTotal : 0,
     boron: umf.B2O3?.value ?? 0,
     confidence: g.umfConfidence,
   }

@@ -314,6 +314,65 @@ export const explorerStyles = `
     text-align: center;
   }
 
+  /* ── Floating Proximity Card ── */
+  .proximity-floating-card {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    width: 280px;
+    max-height: calc(100% - 32px);
+    overflow-y: auto;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    z-index: 20;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .proximity-floating-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border-secondary);
+  }
+
+  .proximity-floating-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0 2px;
+    line-height: 1;
+    border-radius: 4px;
+  }
+  .proximity-floating-close:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+  }
+
+  .proximity-floating-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .proximity-floating-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-label);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
   /* Proximity nearby ranked list */
   .proximity-nearby-list {
     margin-top: 10px;
@@ -1033,6 +1092,7 @@ export const explorerStyles = `
   .plot-container {
     flex: 1;
     min-width: 0;
+    position: relative;
   }
   
   .detail-panel {
