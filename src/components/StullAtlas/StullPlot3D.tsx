@@ -1095,13 +1095,17 @@ export function StullPlot3D({
       },
       hoverinfo: 'text' as const,
       hovertemplate: visibleData.map(p => {
+        const zDisplay = zAxis === 'cone'
+          ? (p.cone != null ? String(p.cone) : 'unknown')
+          : p.z.toFixed(3)
         const parts = [
           `<b>${p.name}</b>`,
           `SiO\u2082: ${p.x.toFixed(2)}`,
           `Al\u2082O\u2083: ${p.y.toFixed(2)}`,
-          `${zAxisLabel(zAxis)}: ${zAxis === 'cone' ? p.z : p.z.toFixed(3)}`,
+          `${zAxisLabel(zAxis)}: ${zDisplay}`,
         ]
         if (p.cone != null) parts.push(`Cone: ${p.cone}`)
+        else parts.push('Cone: unknown')
         if (p.surfaceType && p.surfaceType !== 'unknown') parts.push(`Surface: ${p.surfaceType}`)
         if (p.source && p.source !== 'unknown') parts.push(`Source: ${p.source}`)
         return parts.join('<br>') + '<extra></extra>'

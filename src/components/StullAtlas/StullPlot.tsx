@@ -43,23 +43,27 @@ const COLOR_SCALES: Record<string, string> = {
 }
 
 // Discrete cone colorscale — one distinct color per cone value
-// Range: -4 (cone 04) to 10, total span = 14, boundaries at half-integers
+// Range: -4 (cone 04) to 14, total span = 18, boundaries at half-integers
 const CONE_COLORSCALE: [number, string][] = [
-  [0,       '#6366f1'], [0.5/14,  '#6366f1'],   // Cone 04 — indigo
-  [0.5/14,  '#3b82f6'], [1.5/14,  '#3b82f6'],   // Cone 03 — blue
-  [1.5/14,  '#06b6d4'], [2.5/14,  '#06b6d4'],   // Cone 02 — cyan
-  [2.5/14,  '#14b8a6'], [3.5/14,  '#14b8a6'],   // Cone 01 — teal
-  [3.5/14,  '#10b981'], [4.5/14,  '#10b981'],   // Cone 0  — emerald
-  [4.5/14,  '#22c55e'], [5.5/14,  '#22c55e'],   // Cone 1  — green
-  [5.5/14,  '#84cc16'], [6.5/14,  '#84cc16'],   // Cone 2  — lime
-  [6.5/14,  '#a3e635'], [7.5/14,  '#a3e635'],   // Cone 3  — chartreuse
-  [7.5/14,  '#facc15'], [8.5/14,  '#facc15'],   // Cone 4  — yellow
-  [8.5/14,  '#f59e0b'], [9.5/14,  '#f59e0b'],   // Cone 5  — amber
-  [9.5/14,  '#f97316'], [10.5/14, '#f97316'],   // Cone 6  — orange
-  [10.5/14, '#ef4444'], [11.5/14, '#ef4444'],   // Cone 7  — red
-  [11.5/14, '#dc2626'], [12.5/14, '#dc2626'],   // Cone 8  — crimson
-  [12.5/14, '#e11d48'], [13.5/14, '#e11d48'],   // Cone 9  — rose
-  [13.5/14, '#a855f7'], [1,       '#a855f7'],   // Cone 10 — purple
+  [0,        '#6366f1'], [0.5 / 18, '#6366f1'],   // Cone 04 — indigo
+  [0.5 / 18, '#3b82f6'], [1.5 / 18, '#3b82f6'],   // Cone 03 — blue
+  [1.5 / 18, '#06b6d4'], [2.5 / 18, '#06b6d4'],   // Cone 02 — cyan
+  [2.5 / 18, '#14b8a6'], [3.5 / 18, '#14b8a6'],   // Cone 01 — teal
+  [3.5 / 18, '#10b981'], [4.5 / 18, '#10b981'],   // Cone 0  — emerald
+  [4.5 / 18, '#22c55e'], [5.5 / 18, '#22c55e'],   // Cone 1  — green
+  [5.5 / 18, '#84cc16'], [6.5 / 18, '#84cc16'],   // Cone 2  — lime
+  [6.5 / 18, '#a3e635'], [7.5 / 18, '#a3e635'],   // Cone 3  — chartreuse
+  [7.5 / 18, '#facc15'], [8.5 / 18, '#facc15'],   // Cone 4  — yellow
+  [8.5 / 18, '#f59e0b'], [9.5 / 18, '#f59e0b'],   // Cone 5  — amber
+  [9.5 / 18, '#f97316'], [10.5 / 18, '#f97316'],  // Cone 6  — orange
+  [10.5 / 18, '#ef4444'], [11.5 / 18, '#ef4444'],  // Cone 7  — red
+  [11.5 / 18, '#dc2626'], [12.5 / 18, '#dc2626'],  // Cone 8  — crimson
+  [12.5 / 18, '#e11d48'], [13.5 / 18, '#e11d48'],  // Cone 9  — rose
+  [13.5 / 18, '#a855f7'], [14.5 / 18, '#a855f7'],  // Cone 10 — purple
+  [14.5 / 18, '#7c3aed'], [15.5 / 18, '#7c3aed'],  // Cone 11 — violet
+  [15.5 / 18, '#6d28d9'], [16.5 / 18, '#6d28d9'],  // Cone 12 — deep violet
+  [16.5 / 18, '#581c87'], [17.5 / 18, '#581c87'],  // Cone 13 — dark purple
+  [17.5 / 18, '#3b0764'], [1,        '#3b0764'],   // Cone 14 — blackberry
 ]
 
 // Stull chart regions — empirical boundaries from Ray Stull (1912)
@@ -322,13 +326,13 @@ export function StullPlot({
     }
   }, [highlightCircle])
 
-  // Filter out invalid points and restrict to cone 04–10 range
+  // Filter out invalid points — allow full cone range [-4, 14] and null-cone glazes
   const validPoints = useMemo(() => {
     return plotPoints.filter(p => 
       p.x != null && p.y != null && 
       !isNaN(p.x) && !isNaN(p.y) &&
       p.x > 0 && p.y > 0 &&
-      p.cone != null && p.cone >= -4 && p.cone <= 10
+      (p.cone == null || (p.cone >= -4 && p.cone <= 14))
     )
   }, [plotPoints])
 
@@ -426,14 +430,14 @@ export function StullPlot({
       ...(colorBy === 'glaze_type' ? {} : {
         colorscale: colorBy === 'cone' ? CONE_COLORSCALE : (COLOR_SCALES[colorBy] || 'Viridis'),
         reversescale: false,
-        cmin: colorBy === 'cone' ? -6 : undefined,
-        cmax: colorBy === 'cone' ? 12 : undefined,
+        cmin: colorBy === 'cone' ? -4 : undefined,
+        cmax: colorBy === 'cone' ? 14 : undefined,
         colorbar: {
           title: getColorBarTitle(colorBy),
           thickness: 15,
           len: 0.7,
-          tickvals: colorBy === 'cone' ? [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] : undefined,
-          ticktext: colorBy === 'cone' ? ['04', '03', '02', '01', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'] : undefined
+          tickvals: colorBy === 'cone' ? [-4, -2, 0, 2, 4, 6, 8, 10, 12, 14] : undefined,
+          ticktext: colorBy === 'cone' ? ['04', '02', '0', '2', '4', '6', '8', '10', '12', '14'] : undefined,
         },
       }),
       line: {
@@ -450,13 +454,16 @@ export function StullPlot({
       }
     },
     hoverinfo: 'text' as const,
-    hovertemplate: 
-      '<b>%{text}</b><br>' +
-      `${xAxis}: %{x:.2f}<br>` +
-      `${yAxis}: %{y:.2f}<br>` +
-      (colorBy === 'glaze_type' ? '%{meta}<br>' : '') +
-      '<extra></extra>',
-    meta: colorBy === 'glaze_type' ? validPoints.map(p => glazeTypeName(p.glazeTypeId)) : undefined
+    hovertemplate: validPoints.map(p => {
+      const parts = [
+        `<b>${p.name}</b>`,
+        `${xAxis}: ${p.x.toFixed(2)}`,
+        `${yAxis}: ${p.y.toFixed(2)}`,
+        `Cone: ${p.cone != null ? p.cone : 'unknown'}`,
+      ]
+      if (colorBy === 'glaze_type') parts.push(glazeTypeName(p.glazeTypeId))
+      return parts.join('<br>') + '<extra></extra>'
+    }),
   }), [validPoints, colorValues, colorBy, xAxis, yAxis, selectedGlaze, selectedForBlend])
   
   // Calculate zoomed axis ranges — Stull chart canonical range

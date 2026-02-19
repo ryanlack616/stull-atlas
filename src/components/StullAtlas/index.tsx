@@ -268,6 +268,7 @@ export function StullAtlas() {
   const clearCompare = useSelectionStore(s => s.clearCompare)
   // Use selectors for frequently-changing state to avoid re-rendering the whole tree
   const glazes = useGlazeStore(s => s.glazes)
+  const glazeStats = useGlazeStore(s => s.stats)
   
   // Highlight state for analysis panel → plot bridge
   const [highlightPointIds, setHighlightPointIds] = useState<string[]>([])
@@ -983,6 +984,13 @@ export function StullAtlas() {
                   onExplorationPathChange={setExplorationPath}
                 />
               )}
+            </div>
+          )}
+
+          {/* Data count badge */}
+          {!kiosk.active && glazeStats.total > 0 && (
+            <div className="data-count-badge" title={`${glazeStats.total.toLocaleString()} glazes in database`}>
+              {glazeStats.total.toLocaleString()} glazes
             </div>
           )}
         </main>

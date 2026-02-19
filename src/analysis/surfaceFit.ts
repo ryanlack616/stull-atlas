@@ -92,11 +92,72 @@ function autoBandwidth(
 }
 
 /**
+ * Compute the weighted local estimate for a single grid cell.
+ * Returns null if total weight is below threshold.
+ */
+function kernelEstimate(
+  nx: number,
+  ny: number,
+  normPoints: { nx: number; ny: number; z: number; robustWeight: number }[],
+  hSq: number,
+  minWeight: number,
+): number | null {
+  let weightedSum = 0
+  let weightSum = 0
+
+  for (const p of normPoints) {
+    const dx = nx - p.nx
+    const dy = ny - p.ny
+    const distSq = dx * dx + dy * dy
+    const w = gaussianKernel(distSq, hSq) * p.robustWeight
+    weightedSum += w * p.z
+    weightSum += w
+  }
+
+  return weightSum >= minWeight ? weightedSum / weightSum : null
+}
+
+/**
+ * Compute a local estimate at a data point's own location (for residuals).
+ * Uses leave-one-out by skipping the point's own index.
+ */
+function kernelEstimateAtPoint(
+  pointIdx: number,
+  normPoints: { nx: number; ny: number; z: number; robustWeight: number }[],
+  hSq: number,
+): number | null {
+  const p0 = normPoints[pointIdx]
+  let weightedSum = 0
+  let weightSum = 0
+
+  for (let i = 0; i < normPoints.length; i++) {
+    if (i === pointIdx) continue
+    const p = normPoints[i]
+    const dx = p0.nx - p.nx
+    const dy = p0.ny - p.ny
+    const distSq = dx * dx + dy * dy
+    const w = gaussianKernel(distSq, hSq) * p.robustWeight
+    weightedSum += w * p.z
+    weightSum += w
+  }
+
+  return weightSum > 0.01 ? weightedSum / weightSum : null
+}
+
+/**
  * Fit a smooth surface through scattered 3D data using
- * Nadaraya-Watson kernel regression.
+ * Nadaraya-Watson kernel regression with Huber-style robustness.
  *
- * Performance: O(resolution² × n_points), typically ~35² × 800 ≈ 1M ops.
- * Fast enough for interactive use.
+ * Two-pass approach:
+ *   Pass 1: Standard weighted-mean surface (fast)
+ *   Outlier detection: Compute residuals, find MAD, downweight > 3×MAD
+ *   Pass 2: Recompute surface with adjusted weights
+ *
+ * This resists outliers (e.g. high-B₂O₃ glazes that would otherwise
+ * inflate the surface) without discarding legitimate data.
+ *
+ * Performance: O(2 × resolution² × n_points + n²), typically fine for
+ * ~35² × 8000 ≈ 10M ops total.
  */
 export function fitSurface(
   points: { x: number; y: number; z: number }[],
@@ -133,6 +194,7 @@ export function fitSurface(
       nx: (p.x - xRange[0]) * xScale,
       ny: (p.y - yRange[0]) * yScale,
       z: p.z,
+      robustWeight: 1,  // will be adjusted after pass 1
     }))
 
   if (normPoints.length === 0) {
@@ -144,7 +206,31 @@ export function fitSurface(
     }
   }
 
-  // Kernel regression
+  // ── Pass 1: compute residuals at each data point ──────────────
+  // Use leave-one-out estimates to compute residuals
+  const residuals: number[] = []
+  for (let i = 0; i < normPoints.length; i++) {
+    const est = kernelEstimateAtPoint(i, normPoints, hSq)
+    residuals.push(est != null ? Math.abs(normPoints[i].z - est) : 0)
+  }
+
+  // Compute MAD (median absolute deviation) for robust scale estimate
+  const sortedResiduals = residuals.filter(r => r > 0).sort((a, b) => a - b)
+  const mad = sortedResiduals.length > 0
+    ? sortedResiduals[Math.floor(sortedResiduals.length / 2)] * 1.4826  // scale to match σ
+    : 1
+
+  // ── Huber downweighting: points with |residual| > 3×MAD get reduced weight ──
+  const threshold = 3 * Math.max(mad, 1e-6)
+  let downweighted = 0
+  for (let i = 0; i < normPoints.length; i++) {
+    if (residuals[i] > threshold) {
+      normPoints[i].robustWeight = threshold / residuals[i]
+      downweighted++
+    }
+  }
+
+  // ── Pass 2: final surface with robust weights ─────────────────
   const z: (number | null)[][] = []
   let validCells = 0
   let zMin = Infinity
@@ -157,21 +243,9 @@ export function fitSurface(
 
     for (let i = 0; i < resolution; i++) {
       const nx = (xCoords[i] - xRange[0]) * xScale
+      const val = kernelEstimate(nx, ny, normPoints, hSq, minWeight)
 
-      let weightedSum = 0
-      let weightSum = 0
-
-      for (const p of normPoints) {
-        const dx = nx - p.nx
-        const dy = ny - p.ny
-        const distSq = dx * dx + dy * dy
-        const w = gaussianKernel(distSq, hSq)
-        weightedSum += w * p.z
-        weightSum += w
-      }
-
-      if (weightSum >= minWeight) {
-        const val = weightedSum / weightSum
+      if (val != null) {
         row.push(val)
         validCells++
         if (val < zMin) zMin = val
@@ -182,6 +256,10 @@ export function fitSurface(
       }
     }
     z.push(row)
+  }
+
+  if (downweighted > 0) {
+    console.debug(`[surfaceFit] Robust fit downweighted ${downweighted} of ${normPoints.length} points (MAD=${mad.toFixed(4)}, threshold=${threshold.toFixed(4)})`)
   }
 
   return {

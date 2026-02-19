@@ -314,6 +314,24 @@ export const explorerStyles = `
     text-align: center;
   }
 
+  /* ── Data Count Badge ── */
+  .data-count-badge {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    opacity: 0.6;
+    pointer-events: auto;
+    z-index: 5;
+    transition: opacity 0.15s;
+    &:hover { opacity: 1; }
+  }
+
   /* ── Floating Proximity Card ── */
   .proximity-floating-card {
     position: absolute;
