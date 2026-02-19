@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Development Updates — Stull Atlas</title>
+<style>
+:root {
+  --bg: #07070c; --bg-card: #0f0f18; --bg-hover: #17172a;
+  --border: #1e1e3a; --text: #c8c8d8; --text-dim: #6b6b8a; --text-bright: #e8e8f0;
+  --accent: #818cf8; --accent-dim: #4f46e5;
+  --green: #34d399; --amber: #fbbf24; --rose: #f472b6;
+  --mono: 'SF Mono','Cascadia Code','JetBrains Mono','Fira Code',monospace;
+  --sans: 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); color: var(--text); font-family: var(--sans); }
+body { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; line-height: 1.7; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Header */
+.site-header {
+  background: linear-gradient(135deg, var(--accent-dim), #2d1b69);
+  color: var(--text-bright); font-family: var(--mono); font-size: 0.72rem;
+  padding: 0.35rem 1rem; text-align: center; border-bottom: 1px solid var(--accent);
+  margin: -2rem -1.5rem 2rem; padding: 0.5rem 1rem;
+}
+.site-header .logo { font-family: var(--mono); font-size: 1.1rem; color: var(--text-bright); }
+.site-header .logo .sigil { color: var(--accent); }
+.site-header nav { margin-top: 0.25rem; }
+.site-header nav a { color: var(--text); font-size: 0.8rem; margin: 0 0.5rem; }
+
+/* Page title */
+.page-title {
+  font-family: var(--mono); font-size: 2rem; color: var(--text-bright);
+  margin: 1.5rem 0 0.25rem; letter-spacing: -0.5px;
+}
+.page-subtitle {
+  font-family: var(--mono); font-size: 0.85rem; color: var(--text-dim);
+  margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem;
+}
+
+/* Section headings */
+h2 {
+  font-family: var(--mono); color: var(--accent); font-size: 1.25rem;
+  margin: 2.5rem 0 0.75rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+  letter-spacing: -0.3px;
+}
+h2:first-of-type { border-top: none; padding-top: 0; }
+h3 {
+  font-family: var(--mono); color: var(--text-bright); font-size: 1rem;
+  margin: 1.5rem 0 0.5rem;
+}
+h4 {
+  font-family: var(--mono); color: var(--text-dim); font-size: 0.85rem;
+  margin: 1.25rem 0 0.4rem; text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+p { margin: 0.5rem 0; }
+
+/* Stats banner */
+.stats-banner {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1px; background: var(--border); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden; margin: 1.5rem 0;
+}
+.stat {
+  background: var(--bg-card); padding: 1rem; text-align: center;
+}
+.stat .num {
+  font-family: var(--mono); font-size: 1.5rem; color: var(--accent);
+  font-weight: 700; display: block;
+}
+.stat .label {
+  font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase;
+  letter-spacing: 0.5px; margin-top: 0.25rem; display: block;
+}
+
+/* Tables */
+table {
+  width: 100%; border-collapse: collapse; margin: 1rem 0;
+  font-size: 0.85rem;
+}
+th {
+  text-align: left; font-family: var(--mono); font-size: 0.72rem;
+  color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--border);
+}
+td {
+  padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+tr:hover td { background: var(--bg-hover); }
+td:first-child { font-family: var(--mono); color: var(--text-bright); font-size: 0.82rem; white-space: nowrap; }
+
+/* Tags */
+.tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.65rem;
+  padding: 0.15rem 0.5rem; border-radius: 3px; margin-right: 0.25rem;
+  text-transform: uppercase; letter-spacing: 0.3px;
+}
+.tag-shipped { background: #064e3b; color: var(--green); }
+.tag-live { background: #064e3b; color: var(--green); }
+.tag-planned { background: #1e1b4b; color: var(--accent); }
+.tag-henry { background: #4a1942; color: var(--rose); }
+.tag-vision { background: #2d2006; color: var(--amber); }
+
+/* Code / mono */
+code {
+  font-family: var(--mono); font-size: 0.82em; color: var(--accent);
+  background: var(--bg-card); padding: 0.1rem 0.35rem; border-radius: 3px;
+}
+pre {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px;
+  padding: 1rem; font-family: var(--mono); font-size: 0.78rem; color: var(--text);
+  overflow-x: auto; margin: 1rem 0; line-height: 1.6;
+}
+
+/* Cards */
+.card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1.25rem; margin: 1rem 0;
+}
+.card h3 { margin-top: 0; }
+
+/* Henry section */
+.henry-section {
+  background: linear-gradient(135deg, #1a0a2e, #0f0f18);
+  border: 1px solid #4f46e5; border-radius: 8px;
+  padding: 1.5rem; margin: 2rem 0;
+}
+.henry-section h2 { border-top: none; padding-top: 0; margin-top: 0; color: var(--rose); }
+
+/* Phase grid */
+.phase-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1rem 1.25rem; margin: 0.75rem 0;
+}
+.phase-card h3 {
+  margin: 0 0 0.5rem; display: flex; align-items: center; gap: 0.5rem;
+}
+.phase-label {
+  font-family: var(--mono); font-size: 0.65rem; background: var(--accent-dim);
+  color: var(--text-bright); padding: 0.15rem 0.5rem; border-radius: 3px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  body { padding: 1rem; }
+  .page-title { font-size: 1.5rem; }
+  .stats-banner { grid-template-columns: repeat(2, 1fr); }
+  table { font-size: 0.78rem; }
+  td:first-child { white-space: normal; }
+}
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="logo"><span class="sigil">&#9670;</span> Stull Atlas</div>
+  <nav>
+    <a href="/">Atlas</a>
+    <a href="/community/">Community</a>
+    <a href="/digitalfire/">Digitalfire</a>
+    <a href="/updates/">Updates</a>
+  </nav>
+</div>
+
+<h1 class="page-title">Development Report</h1>
+<p class="page-subtitle">February 17&ndash;19, 2026 &mdash; 37 commits across 2 repositories</p>
+
+<div class="stats-banner">
+  <div class="stat"><span class="num">37</span><span class="label">Commits</span></div>
+  <div class="stat"><span class="num">760</span><span class="label">Files Changed</span></div>
+  <div class="stat"><span class="num">197K</span><span class="label">Lines Added</span></div>
+  <div class="stat"><span class="num">619</span><span class="label">Pages Generated</span></div>
+  <div class="stat"><span class="num">9,712</span><span class="label">Glaze Recipes</span></div>
+  <div class="stat"><span class="num">124</span><span class="label">Z-Axis Options (planned)</span></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2>I. The Main App &mdash; 19 commits</h2>
+<p>63 files changed, +15,953 lines. Source repository: <code>stull-atlas</code></p>
+
+<!-- 17 New Z-Axis Options -->
+<h3>17 New Z-Axis Options (all UMF oxides)</h3>
+<p>Before this sprint, 8 oxides were available as Z-axis choices. Now there are <strong>23 individual oxides</strong>, organized by role in the glaze melt.</p>
+
+<h4>Fluxes &mdash; R&#x2082;O (Alkali)</h4>
+<table>
+  <tr><th>Oxide</th><th>Role in the Glaze</th></tr>
+  <tr><td>Li&#x2082;O <span class="tag tag-live">new</span></td><td>Most powerful flux per mole. Lowers viscosity dramatically. Small amounts shift color response, reduce thermal expansion. From spodumene, petalite, lithium carbonate.</td></tr>
+  <tr><td>Na&#x2082;O</td><td>Primary alkali flux. High expansion (crazing risk). Develops color in cobalt/copper. From soda feldspar, nepheline syenite, soda ash.</td></tr>
+  <tr><td>K&#x2082;O</td><td>Slightly less active than Na&#x2082;O. Lower expansion. Slightly different color development. From potash feldspar.</td></tr>
+</table>
+
+<h4>Fluxes &mdash; RO (Alkaline Earth + Divalent)</h4>
+<table>
+  <tr><th>Oxide</th><th>Role in the Glaze</th></tr>
+  <tr><td>CaO</td><td>Workhorse flux. Glossy at high calcium, dry/matte at high alumina. Promotes color clarity. From whiting, wollastonite, dolomite.</td></tr>
+  <tr><td>MgO</td><td>Buttery mattes. Smooths surfaces. Promotes opacity. From dolomite, talc, magnesium carbonate.</td></tr>
+  <tr><td>SrO <span class="tag tag-live">new</span></td><td>Similar to CaO but wider firing range, different crystal effects. Lead-free alternative for bright colors. From strontium carbonate.</td></tr>
+  <tr><td>BaO</td><td>Satin surfaces, enhances blues. Toxic in soluble form. From barium carbonate.</td></tr>
+  <tr><td>ZnO</td><td>Promotes crystallization (zinc crystals at high %), increases fluidity, reduces thermal expansion. From zinc oxide.</td></tr>
+  <tr><td>PbO <span class="tag tag-live">new</span></td><td>Historical low-fire flux. Brilliant color response, wide firing range. Toxic &mdash; flagged in safety metrics. From lead bisilicate (fritted).</td></tr>
+</table>
+
+<h4>Glass Formers <span class="tag tag-live">all new</span></h4>
+<table>
+  <tr><th>Oxide</th><th>Role in the Glaze</th></tr>
+  <tr><td>TiO&#x2082;</td><td>Promotes crystallization, opacity (rutile). Yellow/cream colors. Breaks up glaze surfaces. From rutile, titanium dioxide.</td></tr>
+  <tr><td>ZrO&#x2082;</td><td>Opacifier. Stiffens melt, promotes whiteness. From zircopax, ultrox, zirconium silicate.</td></tr>
+  <tr><td>SnO&#x2082;</td><td>Classic opacifier (tin glazes). White, opaque. More expensive than zirconium. From tin oxide.</td></tr>
+</table>
+
+<h4>Colorants &amp; Misc <span class="tag tag-live">all new</span></h4>
+<table>
+  <tr><th>Oxide</th><th>Role in the Glaze</th></tr>
+  <tr><td>MnO / MnO&#x2082;</td><td>Browns, purples, plums. Speckle when coarse. Manganese dioxide stronger than monoxide.</td></tr>
+  <tr><td>NiO</td><td>Grays, browns, blue-greens depending on base glaze. Mutes other colorants.</td></tr>
+  <tr><td>CuO / Cu&#x2082;O</td><td>Greens in oxidation, reds in reduction (copper reds). Cu&#x2082;O is the reduced form.</td></tr>
+  <tr><td>CoO</td><td>Strongest colorant &mdash; intense blues at 0.5&ndash;2%. Works in nearly any base.</td></tr>
+  <tr><td>Cr&#x2082;O&#x2083;</td><td>Greens (forest to lime depending on base). Chrome-tin pinks with SnO&#x2082;.</td></tr>
+  <tr><td>P&#x2082;O&#x2085;</td><td>Opalescence, milky blues (chun/jun glazes). Promotes phase separation. From bone ash.</td></tr>
+</table>
+
+<h4>Computed Values <span class="tag tag-live">new</span></h4>
+<table>
+  <tr><th>Axis</th><th>What It Shows</th></tr>
+  <tr><td>Total Flux Moles</td><td>Sum of all flux oxide moles &mdash; a single &ldquo;how much flux?&rdquo; number.</td></tr>
+  <tr><td>Thermal Expansion (COE)</td><td>Appen coefficient of expansion approximation &mdash; predicts crazing/shivering. Uses published coefficients for 11 oxides.</td></tr>
+</table>
+
+<!-- 12 Computed Metrics -->
+<h3>12 Computed Z-Axis Metrics</h3>
+<p>These go beyond individual oxides to compute <em>derived properties</em> from the full UMF, using published ceramic science.</p>
+
+<table>
+  <tr><th>Metric</th><th>Formula Basis</th><th>What a Potter Learns</th></tr>
+  <tr><td>NBO/T</td><td>Mysen &amp; Richet model</td><td>The fundamental measure of glass structure. NBO/T&nbsp;=&nbsp;0 means fully polymerized (hard, durable). NBO/T&nbsp;=&nbsp;4 means completely depolymerized (fluid, run-prone). Most glazes: 0.5&ndash;2.5.</td></tr>
+  <tr><td>Optical Basicity</td><td>Duffy &amp; Ingram, 21 oxides</td><td>Predicts color response. High basicity shifts Fe toward amber/brown, Cu toward blue. Low basicity gives greens. Explains why the same 2% iron looks different in two glazes.</td></tr>
+  <tr><td>Flux Entropy</td><td>Shannon information entropy</td><td>Measures flux diversity. Entropy&nbsp;=&nbsp;0 means one flux dominates. High entropy = many fluxes in balance &mdash; more complex, interesting surfaces.</td></tr>
+  <tr><td>CaO:MgO</td><td>Direct ratio</td><td>CaO-dominant (glossy, color-bright) vs MgO-dominant (buttery matte, opacity).</td></tr>
+  <tr><td>Combined Alkali</td><td>Li&#x2082;O + Na&#x2082;O + K&#x2082;O</td><td>Total soluble flux load. High = glossy, fluid, high expansion. Low = more stable.</td></tr>
+  <tr><td>Na&#x2082;O:K&#x2082;O</td><td>Direct ratio</td><td>Two glazes with same total alkali behave differently if one is sodium-dominant vs potassium-dominant. Different color, expansion, eutectic behavior.</td></tr>
+  <tr><td>Viscosity Index</td><td>Flux-weighted sum / glass formers</td><td>Quick estimate of melt viscosity. High = runny (dripping risk). Low = stiff (crawl risk).</td></tr>
+  <tr><td>Surface Tension</td><td>Dietzel field-strength model</td><td>Predicts crawling and beading. High surface tension melts pull back from edges.</td></tr>
+  <tr><td>Durability</td><td>SiO&#x2082; / (Na&#x2082;O + K&#x2082;O + Li&#x2082;O)</td><td>Chemical resistance. Below ~3.0, the glaze dissolves in dishwater. Above ~5.0, highly durable.</td></tr>
+  <tr><td>Total Colorant</td><td>Sum of transition metals</td><td>Total color load regardless of which oxide. A different perspective than individual oxides.</td></tr>
+  <tr><td>Fe:Ti Ratio</td><td>Fe&#x2082;O&#x2083; / TiO&#x2082;</td><td>High = cleaner iron colors. Low = broken, variegated surfaces (rutile blues, aventurine).</td></tr>
+</table>
+
+<!-- Flux Triaxial -->
+<h3>Flux Triaxial Explorer</h3>
+<p>An interactive ternary diagram where potters visualize the three flux families (R&#x2082;O / RO / B&#x2082;O&#x2083;) and see how their glazes distribute across that space. Clicking a point shows what recipes live in that flux ratio neighborhood.</p>
+
+<!-- Explorer Bridge -->
+<h3>Explorer Bridge &mdash; Shift+Click to Blend</h3>
+<p>While exploring the 2D or 3D Stull chart, shift+click selects glazes (orange borders). Selected glazes appear in a new &ldquo;Blend&rdquo; sidebar tab. Click &ldquo;Line Blend&rdquo; / &ldquo;Triaxial&rdquo; / &ldquo;Quadaxial&rdquo; and it launches the blend calculator pre-filled with those recipes. This bridges the gap between <em>discovering</em> glazes and <em>blending</em> them.</p>
+
+<!-- Data Accuracy -->
+<h3>Data Accuracy Overhaul</h3>
+<p>Three commits fixing edge cases in data representation: z-clamp, fluxRatio, cone range, null-cone handling. 2D colorscale now matches 3D. Robust surface interpolation. Cone labels use full ceramic notation (06 through 13) with a <code>formatCone()</code> utility.</p>
+
+<!-- Glaze Dataset -->
+<h3>Glaze Dataset Upgrade</h3>
+<p>Replaced entire dataset: <strong>9,712 recipes</strong> from a full SQL export, up from 3,214. <strong>3&times; the data.</strong> Every visualization, search, and blend calculation now operates on a significantly richer dataset.</p>
+
+<!-- Database Architecture -->
+<h3>Database Architecture &mdash; 40 Tables</h3>
+<p>Three commits built the full Supabase schema: 40 tables covering glazes, recipes, users, profiles, explorations, materials, kilns, firing schedules, and more. This is the foundation for user profiles, personal recipe databases, and social features.</p>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2>II. Digitalfire Archive &mdash; 8 deploy commits</h2>
+
+<table>
+  <tr><th>Change</th><th>Impact</th></tr>
+  <tr><td>Database delivery</td><td>Switched from 8 parallel chunks (122&nbsp;MB total) to single gzipped file (26&nbsp;MB). <strong>79% smaller download.</strong></td></tr>
+  <tr><td>Search fixed</td><td>Switched to FTS5-enabled sql.js WASM build (1.2&nbsp;MB). Full-text search across entire Digitalfire corpus now works in-browser, no server required.</td></tr>
+  <tr><td>Rich content</td><td>Internal links between articles, markdown rendering, dead-link cleanup.</td></tr>
+  <tr><td>Polish</td><td>Hidden pricing (everything free), hidden stats display, cache-busted all assets, fixed logo linking to <code>/digitalfire/</code>.</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2>III. Community Atlas &mdash; Brand New Section</h2>
+
+<div class="stats-banner">
+  <div class="stat"><span class="num">852</span><span class="label">Nodes</span></div>
+  <div class="stat"><span class="num">1,821</span><span class="label">Connections</span></div>
+  <div class="stat"><span class="num">619</span><span class="label">Individual Pages</span></div>
+  <div class="stat"><span class="num">3</span><span class="label">Explorer Views</span></div>
+</div>
+
+<p>Built from the ceramics-community knowledge graph. Every connected person, school, organization, place, and technique gets their own page showing all connections.</p>
+
+<table>
+  <tr><th>Directory</th><th>Pages</th><th>Contents</th></tr>
+  <tr><td><a href="/community/people/">/community/people/</a></td><td>297</td><td>Individual ceramicists</td></tr>
+  <tr><td><a href="/community/schools/">/community/schools/</a></td><td>193</td><td>Schools, universities, residencies</td></tr>
+  <tr><td><a href="/community/orgs/">/community/orgs/</a></td><td>54</td><td>Organizations, publications, companies</td></tr>
+  <tr><td><a href="/community/places/">/community/places/</a></td><td>44</td><td>Studios, galleries, venues</td></tr>
+  <tr><td><a href="/community/techniques/">/community/techniques/</a></td><td>30</td><td>Firing methods, glaze techniques</td></tr>
+</table>
+
+<p>Three explorer views: <a href="/community/">force-directed graph</a>, geographic map, and 3D globe.</p>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2>IV. The 8 Phases to 120 Z-Axis Options</h2>
+
+<p>Currently live: <strong>40 axes</strong> (23 oxides + 17 computed). The roadmap takes this to <strong>~124 axes</strong> in 8 phases. Each phase adds new lenses to the 3D Stull chart.</p>
+
+<!-- Phase A -->
+<div class="phase-card">
+  <h3><span class="phase-label">Phase A</span> High-Impact Structural Metrics &mdash; 6 axes</h3>
+  <p><em>Straightforward published formulas. Highest practical value.</em></p>
+  <table>
+    <tr><th>Axis</th><th>What It Predicts</th></tr>
+    <tr><td>ASI</td><td><strong>Alumina Saturation Index.</strong> Al&#x2082;O&#x2083;&nbsp;/&nbsp;(Na&#x2082;O&nbsp;+&nbsp;K&#x2082;O&nbsp;+&nbsp;Li&#x2082;O&nbsp;+&nbsp;CaO). ASI&nbsp;&lt;&nbsp;1 = peralkaline (glossy, fluid). ASI&nbsp;&gt;&nbsp;1 = peraluminous (matte, crystallization). Maps directly to the Stull chart&rsquo;s left-right axis.</td></tr>
+    <tr><td>Refractive Index</td><td><strong>Appen model, 7 oxide coefficients.</strong> Observable optical property &mdash; brilliance, luster, depth. Why some glazes look &ldquo;alive&rdquo; and others look flat.</td></tr>
+    <tr><td>Glass Density</td><td><strong>Appen molar volume model.</strong> Physical weight of the glass. Affects application thickness and glaze-body fit.</td></tr>
+    <tr><td>Crawl Risk</td><td>Surface tension &times; flux / glass formers. Flags glazes likely to bead up and crawl.</td></tr>
+    <tr><td>Craze Risk</td><td>COE<sub>glaze</sub> &minus; COE<sub>body</sub>. <strong>The single most practical axis for functional ware.</strong> Positive = crazing. Negative = compression.</td></tr>
+    <tr><td>Fluidity</td><td>Flux-effectiveness-weighted sum. Weights each flux by actual melting power (Li&#x2082;O&nbsp;&times;&nbsp;3.0, Na&#x2082;O&nbsp;&times;&nbsp;2.0, MgO&nbsp;&times;&nbsp;0.6).</td></tr>
+  </table>
+</div>
+
+<!-- Phase B -->
+<div class="phase-card">
+  <h3><span class="phase-label">Phase B</span> Classification &amp; Prediction &mdash; 6 axes</h3>
+  <p><em>Semi-empirical composites. Higher-level questions.</em></p>
+  <table>
+    <tr><th>Axis</th><th>What It Answers</th></tr>
+    <tr><td>Matteness Predictor</td><td>&ldquo;Will this glaze be matte?&rdquo; Combines ASI with mattifying oxides minus glossy alkalis.</td></tr>
+    <tr><td>Boron Ratio</td><td>B&#x2082;O&#x2083;&nbsp;/&nbsp;(B&#x2082;O&#x2083;&nbsp;+&nbsp;SiO&#x2082;). Explains why two Stull-identical glazes look different: boron substituting for silica.</td></tr>
+    <tr><td>Compositional Entropy</td><td>Shannon entropy across ALL oxides. Simple 3-oxide vs complex 10-oxide glazes separate clearly.</td></tr>
+    <tr><td>Excess Alkali</td><td>(R&#x2082;O) &minus; Al&#x2082;O&#x2083;. The &ldquo;free modifier.&rdquo; Positive = glossy, fluid. Negative = peraluminous.</td></tr>
+    <tr><td>KNaO Equivalent</td><td>Unified alkali &ldquo;dose&rdquo; normalized to Na&#x2082;O-equivalent based on ionic radius.</td></tr>
+    <tr><td>Leaching Risk</td><td>(PbO + BaO + CuO) / (SiO&#x2082; / R&#x2082;O). <strong>Food safety flag.</strong></td></tr>
+  </table>
+</div>
+
+<!-- Phase C -->
+<div class="phase-card">
+  <h3><span class="phase-label">Phase C</span> Glass Physics &mdash; 5 axes</h3>
+  <p><em>Published additive models with full coefficient tables. Real material science.</em></p>
+  <table>
+    <tr><th>Axis</th><th>What It Measures</th></tr>
+    <tr><td>Young&rsquo;s Modulus</td><td>Stiffness / scratch resistance. Makishima-Mackenzie 1973.</td></tr>
+    <tr><td>Vickers Hardness</td><td>Practical abrasion resistance. Derived from Young&rsquo;s modulus + Poisson&rsquo;s ratio.</td></tr>
+    <tr><td>Poisson&rsquo;s Ratio</td><td>Low = brittle, high = ductile. Predicts chip resistance.</td></tr>
+    <tr><td>T<sub>g</sub> Estimate</td><td>Glass transition temperature (&deg;C). Where the glaze freezes on cooling. Annealing and thermal shock.</td></tr>
+    <tr><td>Thermal Shock Resistance</td><td>Combines fracture strength, modulus, Poisson, and expansion. <strong>The ovenware metric.</strong></td></tr>
+  </table>
+</div>
+
+<!-- Phase D -->
+<div class="phase-card">
+  <h3><span class="phase-label">Phase D</span> Advanced Glass Science &mdash; 5 axes</h3>
+  <p><em>Topological constraint theory, Q-speciation, thermodynamics. PhD-level physics made into a slider.</em></p>
+  <table>
+    <tr><th>Axis</th><th>What It Reveals</th></tr>
+    <tr><td>Mean Coordination</td><td>Average cation coordination number. 4 = tetrahedral network (strong). 6 = depolymerized (weak).</td></tr>
+    <tr><td>Constraints/Atom</td><td>Phillips-Thorpe-Mauro model. n<sub>c</sub>&nbsp;=&nbsp;3 means &ldquo;isostatic&rdquo; &mdash; the perfect glass (how Corning designed Gorilla Glass).</td></tr>
+    <tr><td>Q&#x2074; Fraction</td><td>Fully cross-linked silica fraction. Correlates with durability and stiffness.</td></tr>
+    <tr><td>Q&sup2; Fraction</td><td>Chain-like structures (metasilicates). High Q&sup2; = tendency to crystallize as wollastonite/enstatite.</td></tr>
+    <tr><td>Liquidus Estimate</td><td>Temperature (&deg;C) where last crystal dissolves. Above this = homogeneous melt. Below = crystals forming.</td></tr>
+  </table>
+</div>
+
+<!-- Phase E -->
+<div class="phase-card">
+  <h3><span class="phase-label">Phase E</span> Exploratory Physical &mdash; 5 axes</h3>
+  <p><em>Semi-quantitative but visually revealing.</em></p>
+  <table>
+    <tr><th>Axis</th><th>What It Shows</th></tr>
+    <tr><td>Devitrification Index</td><td>Predicts crystal mattes, aventurine, willemite. High = crystals likely on slow cooling.</td></tr>
+    <tr><td>Hydration Energy</td><td>Rigorous durability &mdash; accounts for each oxide&rsquo;s water reactivity.</td></tr>
+    <tr><td>Modifier Fraction</td><td>Above the Greaves percolation threshold (~0.16&ndash;0.20), leaching jumps dramatically.</td></tr>
+    <tr><td>Fragility Index</td><td>Strong (m&asymp;20, gradual viscosity change) vs fragile (m&asymp;60+, sudden freeze). Predicts crystallization.</td></tr>
+    <tr><td>Fe Redox Estimate</td><td>Fe&sup3;&#x207A;/Fe&sup2;&#x207A; ratio from optical basicity + temperature. Determines iron color: amber (ox) vs celadon green (red).</td></tr>
+  </table>
+</div>
+
+<!-- Phase F -->
+<div class="phase-card">
+  <h3><span class="phase-label">Phase F</span> Temperature-Dependent &amp; Atmosphere-Aware &mdash; 8 axes</h3>
+  <p><em>Requires cone &rarr; Kelvin via Orton lookup, unlocking true thermodynamic models.</em></p>
+  <table>
+    <tr><th>Axis</th><th>What It Predicts</th></tr>
+    <tr><td>Firing Temperature</td><td>Orton cone &rarr; &deg;C standard conversion. Foundation for all below.</td></tr>
+    <tr><td>GRD Viscosity</td><td>Giordano-Russell-Dingwell 2008 model &mdash; actual viscosity in Pa&middot;s at firing temperature. What glass factories use.</td></tr>
+    <tr><td>Liquidus Overshoot</td><td>T<sub>firing</sub> &minus; T<sub>liquidus</sub>. Positive = fully melted. Negative = crystals survive. <strong>The single most predictive melt indicator.</strong></td></tr>
+    <tr><td>Working Range</td><td>Temperature span where the glaze is workable. Wide = forgiving. Narrow = must nail the temperature.</td></tr>
+    <tr><td>Heatwork Excess</td><td>Over-fired or under-fired relative to chemistry? Over-fired = running. Under-fired = incomplete melt.</td></tr>
+    <tr><td>Volatilization Index</td><td>Predicts mass loss from volatile oxides. The glaze out of the kiln &ne; the glaze you batched.</td></tr>
+    <tr><td>Fe Color (Oxidation)</td><td>Predicted iron color spectrum in oxidation: amber &rarr; brown &rarr; honey.</td></tr>
+    <tr><td>Fe Color (Reduction)</td><td>Predicted iron color spectrum in reduction: celadon green &rarr; blue.</td></tr>
+  </table>
+</div>
+
+<!-- Phase G -->
+<div class="phase-card">
+  <h3><span class="phase-label">Phase G</span> Multi-Modal Data Axes &mdash; 27 axes</h3>
+  <p><em>Beyond UMF chemistry &mdash; recipe, surface labels, statistics, geography, time.</em></p>
+  <table>
+    <tr><th>Category</th><th>Axes</th></tr>
+    <tr><td>Recipe / Ingredient</td><td>Ingredient count, frit %, free silica fraction, clay content, LOI estimate, material diversity</td></tr>
+    <tr><td>Surface / Label</td><td>Surface mismatch (predicted vs labeled), surface probability P(matte), opacity predictor</td></tr>
+    <tr><td>Statistical</td><td>Anomaly score (Mahalanobis distance), feature density (k-NN), percentile rank, nearest surface boundary</td></tr>
+    <tr><td>Limit Formulas</td><td>Limit distance (inside/outside UMF envelope), safety score (composite of all checks)</td></tr>
+    <tr><td>Taxonomy</td><td>Type centroid distance, nearest type boundary, type confidence</td></tr>
+    <tr><td>Temporal</td><td>Recipe age (years), innovation score (distance from all prior recipes at time of creation)</td></tr>
+    <tr><td>Color / Appearance</td><td>Colorant per flux (effective colorant concentration in the melt)</td></tr>
+    <tr><td>Interaction Effects</td><td>Mixed alkali effect (peaks at 50:50 Na:K), boron N&#x2084; fraction (trigonal &rarr; tetrahedral transition)</td></tr>
+    <tr><td>Fitness Composites</td><td>Food safety score, microwave score (low transition metals = safe)</td></tr>
+  </table>
+</div>
+
+<!-- Phase H -->
+<div class="phase-card">
+  <h3><span class="phase-label">Phase H</span> Sensitivity &amp; Robustness &mdash; 3 axes</h3>
+  <p><em>The math of &ldquo;fussy&rdquo; vs &ldquo;forgiving.&rdquo;</em></p>
+  <table>
+    <tr><th>Axis</th><th>What It Reveals</th></tr>
+    <tr><td>Robustness Score</td><td>Max property swing from &pm;0.01 change in any single oxide. Low = forgiving. High = tiny weighing error changes everything.</td></tr>
+    <tr><td>Critical Oxide</td><td>Which single oxide causes the largest swing if mis-measured by &pm;5%? Tells you where to be most careful.</td></tr>
+    <tr><td>Error Width</td><td>Given &pm;2% weighing error on all ingredients, what&rsquo;s the range of possible outcomes? Monte Carlo propagation.</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2>V. Full Version Roadmap</h2>
+
+<table>
+  <tr><th>Version</th><th>Name</th><th>Status</th><th>What It Adds</th></tr>
+  <tr><td>v3.4</td><td>The Compass</td><td><span class="tag tag-shipped">shipped</span></td><td>Weighted similarity search + surface prediction</td></tr>
+  <tr><td>v3.5</td><td>The Gallery</td><td><span class="tag tag-shipped">shipped</span></td><td>Photos in exploration, visual browsing</td></tr>
+  <tr><td>v3.5.1</td><td>The Instruments</td><td><span class="tag tag-planned">planned</span></td><td>120 Z-axis options in 8 phases (A&ndash;H above)</td></tr>
+  <tr><td>v3.6</td><td>The Walk</td><td><span class="tag tag-planned">planned</span></td><td>Recipe interpolation &mdash; &ldquo;how do I get from my glaze to that one?&rdquo;</td></tr>
+  <tr><td>v3.6.3</td><td>Wet Blending</td><td><span class="tag tag-henry">henry</span></td><td>Mix finished glazes by ratio, compute resulting UMF, sweep blend ratios</td></tr>
+  <tr><td>v3.6.4</td><td>Flux Ratio Controls</td><td><span class="tag tag-henry">henry</span></td><td>Per-element flux breakdown as plottable axes, flux triangle</td></tr>
+  <tr><td>v3.7</td><td>The Constellations</td><td><span class="tag tag-planned">planned</span></td><td>Auto-discover and name glaze families; fuzzy grouping <span class="tag tag-henry">henry</span></td></tr>
+  <tr><td>v3.8</td><td>The Knowledge Graph</td><td><span class="tag tag-vision">vision</span></td><td>Visual graph navigation with photos &mdash; glazes as a network</td></tr>
+  <tr><td>v3.9</td><td>The Studio</td><td><span class="tag tag-planned">planned</span></td><td>Material substitution, bidirectional recipe calculation</td></tr>
+  <tr><td>v3.10</td><td>The Time Machine</td><td><span class="tag tag-planned">planned</span></td><td>Historical glaze evolution, animated timeline</td></tr>
+  <tr><td>v3.11</td><td>The Laboratory</td><td><span class="tag tag-planned">planned</span></td><td>17 calculator/prediction engines: fit, viscosity, crawl, defect, color, batch, LOI, comparison, substitution</td></tr>
+  <tr><td>v3.12</td><td>The Kiln</td><td><span class="tag tag-planned">planned</span></td><td>Firing schedule builder, heatwork calculator, test tile notebook, QR tracker</td></tr>
+  <tr><td>v3.13</td><td>The Bench</td><td><span class="tag tag-planned">planned</span></td><td>Glaze application physics, clay body calculator, recipe sheet generator</td></tr>
+  <tr><td>v3.14</td><td>The Map</td><td><span class="tag tag-planned">planned</span></td><td>Phase diagram overlays, glaze layering predictor, historical glaze library</td></tr>
+  <tr><td>v3.15</td><td>The Voice</td><td><span class="tag tag-planned">planned</span></td><td>Plain-English glaze narrative generator</td></tr>
+  <tr><td>v3.16</td><td>The What-If Machine</td><td><span class="tag tag-planned">planned</span></td><td>Dual-mode cockpit: Studio Mode + Science Mode. One slider, everything moves.</td></tr>
+  <tr><td>v3.16.5</td><td>Living Recipe Card</td><td><span class="tag tag-planned">planned</span></td><td>NCECA-ready printable handout with all data</td></tr>
+  <tr><td>v4.0</td><td>The Community</td><td><span class="tag tag-vision">vision</span></td><td>Shared knowledge, social features</td></tr>
+  <tr><td>v4.1.0</td><td>Personal Profiles</td><td><span class="tag tag-henry">henry</span></td><td>Each potter gets their own page and recipe database</td></tr>
+  <tr><td>v4.1.1</td><td>Free Tier</td><td><span class="tag tag-henry">henry</span></td><td>No paywall at launch &mdash; make it useful first</td></tr>
+  <tr><td>v4.2</td><td>The Classroom</td><td><span class="tag tag-vision">vision</span></td><td>Workshop exercises, teaching tools, curriculum modules</td></tr>
+  <tr><td>v4.3</td><td>The Bridge</td><td><span class="tag tag-vision">vision</span></td><td>Universal import: GlazeMaster, Matrix, Insight, OCR, Glazy sync</td></tr>
+</table>
+
+<pre>v3.4 Compass        &rarr; defines &ldquo;similar&rdquo; (distance function)
+v3.5 Gallery        &rarr; shows what &ldquo;similar&rdquo; looks like (photos)
+v3.5.1 Instruments  &rarr; 120 lenses on every glaze (physics, predictions, risk)
+v3.6 Walk           &rarr; shows how to get there (recipe delta, wet blending)
+v3.7 Constellations &rarr; groups become named places (fuzzy boundaries)
+v3.8 Knowledge Graph&rarr; the places become a navigable world
+v3.11 Laboratory    &rarr; 17 prediction engines built on Instruments data
+v3.16 What-If       &rarr; everything moves together when you change one thing
+v4.0 Community      &rarr; other potters&rsquo; explorations enrich the landscape</pre>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="henry-section">
+<h2>Thank You, Henry</h2>
+
+<p>Henry &mdash; five of those roadmap items have your name on them. Not just as feedback items, but as architectural decisions that changed how the whole tool thinks.</p>
+
+<p><strong>Wet blending</strong> &mdash; because you said &ldquo;potters blend at the bucket, not the spreadsheet.&rdquo; That distinction between wet blending (mixing finished glazes by volume) and dry blending (mixing recipes by ingredient) is now two entirely separate calculation paths.</p>
+
+<p><strong>Per-element flux ratios</strong> &mdash; because you said &ldquo;the flux axes should adjust to each other.&rdquo; The lumped R&#x2082;O:RO number hides more than it reveals. Na&#x2082;O:K&#x2082;O, CaO:MgO &mdash; those individual ratios are what you called &ldquo;5 dimensions,&rdquo; and they&rsquo;re now the foundation of 6 computed Z-axes already live and the entire Flux Analysis category planned for Phase B.</p>
+
+<p><strong>Fuzzy grouping</strong> &mdash; because you know that a glaze at the boundary between celadon and tenmoku belongs to both. Gradient boundaries instead of hard edges, with the transition zones highlighted as the interesting spots. That&rsquo;s not a feature request &mdash; that&rsquo;s a philosophical position about how glazes work.</p>
+
+<p><strong>Personal profiles</strong> &mdash; &ldquo;everyone should have their own page and database of stuff.&rdquo; That&rsquo;s v4.1.0, and the 40-table Supabase architecture built this weekend is the foundation for it.</p>
+
+<p><strong>Free tier</strong> &mdash; &ldquo;make it useful first.&rdquo; That&rsquo;s not just pricing strategy, that&rsquo;s the difference between a product that builds community and one that gates it.</p>
+
+<p>Your community connections page is live: <a href="/community/people/henry-crissman.html">stullatlas.app/community/people/henry-crissman.html</a> &mdash; 30 connections from Alfred to the Ceramics School, from the Salty Dog noborigama to the people you&rsquo;ve mentored.</p>
+
+<p>Thank you for thinking out loud with us. The tool is better because of it.</p>
+</div>
+
+<p style="text-align:center; color:var(--text-dim); font-family:var(--mono); font-size:0.72rem; margin-top:3rem; border-top:1px solid var(--border); padding-top:1rem;">
+  &copy; 2026 Stull Atlas &mdash; Built in Detroit
+</p>
+
+</body>
+</html>
