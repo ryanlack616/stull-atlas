@@ -1,0 +1,2276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>People — Ceramics Community Atlas</title>
+<style>
+:root {
+  --bg: #07070c; --bg-card: #0f0f18; --bg-hover: #17172a;
+  --border: #1e1e3a; --text: #c8c8d8; --text-dim: #6b6b8a; --text-bright: #e8e8f0;
+  --accent: #818cf8; --accent-dim: #4f46e5;
+  --rose: #fb7185; --teal: #2dd4bf; --amber: #fbbf24; --emerald: #34d399;
+  --mono: 'SF Mono','Cascadia Code','JetBrains Mono','Fira Code',monospace;
+  --sans: 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); color: var(--text); font-family: var(--sans); }
+body { min-height: 100vh; display: flex; flex-direction: column; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Banner */
+.banner {
+  background: linear-gradient(135deg, var(--accent-dim), #2d1b69);
+  color: var(--text-bright); font-family: var(--mono); font-size: 0.72rem;
+  padding: 0.35rem 1rem; text-align: center; border-bottom: 1px solid var(--accent);
+}
+.banner a { color: var(--amber); }
+
+/* Header */
+.site-header {
+  display: flex; align-items: center; gap: 1rem; padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.site-header .logo { font-family: var(--mono); font-size: 1.1rem; color: var(--text-bright); }
+.site-header .logo .sigil { color: var(--accent); }
+.site-header nav { display: flex; gap: 0.6rem; margin-left: auto; flex-wrap: wrap; }
+.site-header nav a {
+  font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim);
+  padding: 0.3rem 0.6rem; border: 1px solid var(--border); border-radius: 6px;
+  transition: all 0.15s;
+}
+.site-header nav a:hover { color: var(--text-bright); border-color: var(--accent); text-decoration: none; }
+.site-header nav a.active { background: var(--accent-dim); color: var(--text-bright); border-color: var(--accent); }
+
+/* Search */
+.search-wrap { padding: 1rem 2rem; }
+.search-input {
+  width: 100%; max-width: 500px; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.6rem 1rem; color: var(--text-bright);
+  font-family: var(--mono); font-size: 0.85rem; outline: none;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--text-dim); }
+
+/* Main content */
+.content { flex: 1; padding: 1rem 2rem 3rem; max-width: 1200px; width: 100%; margin: 0 auto; }
+
+/* Cards grid */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+.card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.2rem; transition: border-color 0.15s;
+}
+.card:hover { border-color: var(--accent); }
+.card a { text-decoration: none; }
+.card .card-name { font-family: var(--mono); font-size: 0.9rem; color: var(--text-bright); margin-bottom: 0.3rem; }
+.card .card-type {
+  font-family: var(--mono); font-size: 0.62rem; padding: 0.12rem 0.4rem;
+  border-radius: 4px; display: inline-block; margin-bottom: 0.4rem;
+}
+.card .card-notes { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; }
+.card .card-stats { font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim); margin-top: 0.4rem; }
+
+/* Type badge colors */
+.type-person { background: rgba(129,140,248,0.2); color: var(--accent); }
+.type-institution { background: rgba(251,191,36,0.2); color: var(--amber); }
+.type-organization { background: rgba(45,212,191,0.2); color: var(--teal); }
+.type-place { background: rgba(52,211,153,0.2); color: var(--emerald); }
+.type-technique { background: rgba(251,113,133,0.2); color: var(--rose); }
+.type-venue { background: rgba(168,85,247,0.2); color: #a855f7; }
+.type-event { background: rgba(251,113,133,0.2); color: var(--rose); }
+
+/* Detail page */
+.detail-header { margin-bottom: 2rem; }
+.detail-header h1 { font-family: var(--mono); font-size: 1.8rem; color: var(--text-bright); margin-bottom: 0.5rem; }
+.detail-header .meta { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+
+.detail-body { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; }
+@media (max-width: 768px) { .detail-body { grid-template-columns: 1fr; } }
+
+.detail-main {}
+.detail-sidebar {}
+
+.section { margin-bottom: 1.5rem; }
+.section-title {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem;
+  padding-bottom: 0.3rem; border-bottom: 1px solid var(--border);
+}
+.notes-text { font-size: 0.88rem; color: var(--text); line-height: 1.7; }
+
+/* Connection list */
+.conn-group { margin-bottom: 1rem; }
+.conn-group-title { font-family: var(--mono); font-size: 0.68rem; color: var(--amber); margin-bottom: 0.3rem; }
+.conn-item {
+  display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0;
+  font-family: var(--mono); font-size: 0.78rem; border-bottom: 1px solid var(--border);
+}
+.conn-item:last-child { border-bottom: none; }
+.conn-item a { color: var(--text-bright); }
+.conn-item .conn-label { color: var(--text-dim); font-size: 0.65rem; }
+.conn-item .conn-year { color: var(--amber); font-size: 0.62rem; }
+.conn-item .conn-arrow { color: var(--accent); }
+
+/* Stats on landing page */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.stat-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem; text-align: center;
+}
+.stat-card .stat-num { font-family: var(--mono); font-size: 2rem; color: var(--text-bright); }
+.stat-card .stat-label { font-family: var(--mono); font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Ego network SVG */
+.ego-wrap { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 1rem; }
+.ego-wrap svg { width: 100%; height: 280px; display: block; }
+
+/* Update request */
+.update-request {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  padding: 0.8rem 1rem; margin-top: 1rem; font-size: 0.78rem;
+}
+.update-request a { color: var(--amber); }
+
+/* Footer */
+.site-footer {
+  padding: 1.5rem 2rem; border-top: 1px solid var(--border);
+  font-family: var(--mono); font-size: 0.68rem; color: var(--text-dim);
+  text-align: center;
+}
+
+/* Search results (JS filtered) */
+.card.hidden { display: none; }
+.dir-count { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); margin-bottom: 1rem; }
+.alpha-nav { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.alpha-nav a {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim);
+  padding: 0.2rem 0.5rem; border: 1px solid var(--border); border-radius: 4px;
+}
+.alpha-nav a:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="banner">Ceramics Community Atlas · <a href="https://stullatlas.app">Stull Atlas</a> · NCECA 2026 Detroit</div>
+<div class="site-header">
+  <a href="../index.html" class="logo"><span class="sigil">&#9670;</span> Ceramics Community Atlas</a>
+  <nav><a href="../people/index.html" class=" active">People</a>
+<a href="../institutions/index.html" class="">Institutions</a>
+<a href="../techniques/index.html" class="">Techniques</a>
+<a href="../places/index.html" class="">Places</a>
+<a href="../organizations/index.html" class="">Organizations</a>
+<a href="/people/" class="">Explorer</a>
+<a href="/people/map.html" class="">Map</a>
+</nav>
+</div>
+<div style="font-family:var(--mono);font-size:0.7rem;color:var(--text-dim);padding:0.6rem 2rem;border-bottom:1px solid var(--border)"><a href="../index.html">Atlas</a>  /  <span style="color:var(--text-bright)">People</span></div>
+
+        <div class="search-wrap">
+          <input type="text" class="search-input" id="dirSearch" placeholder="Filter by name..." oninput="filterCards()" />
+        </div>
+        <script>
+        function filterCards() {
+          const q = document.getElementById('dirSearch').value.toLowerCase();
+          document.querySelectorAll('.card').forEach(c => {
+            const name = c.getAttribute('data-name') || '';
+            c.classList.toggle('hidden', q.length > 0 && !name.includes(q));
+          });
+          const visible = document.querySelectorAll('.card:not(.hidden)').length;
+          const total = document.querySelectorAll('.card').length;
+          const ct = document.getElementById('dirCount');
+          if (ct) ct.textContent = q ? visible + ' of ' + total : total + ' total';
+        }
+        </script>
+<div class="content">
+
+    <h1 style="font-family:var(--mono);font-size:1.5rem;color:var(--text-bright);margin-bottom:0.5rem">People</h1>
+    <div class="dir-count" id="dirCount">297 total</div>
+    <div class="alpha-nav"><a href="#?">?</a><a href="#A">A</a><a href="#B">B</a><a href="#C">C</a><a href="#D">D</a><a href="#E">E</a><a href="#F">F</a><a href="#G">G</a><a href="#H">H</a><a href="#I">I</a><a href="#J">J</a><a href="#K">K</a><a href="#L">L</a><a href="#M">M</a><a href="#N">N</a><a href="#P">P</a><a href="#Q">Q</a><a href="#R">R</a><a href="#S">S</a><a href="#T">T</a><a href="#V">V</a><a href="#W">W</a><a href="#Y">Y</a><a href="#Z">Z</a></div>
+    <div class="card-grid"><div id="?" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">?</div><div class="card" data-name="? (henry&#x27;s mentee)">
+          <a href="mystery-mentee.html">
+            <div class="card-name">? (Henry&#x27;s Mentee)</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Unknown name — one of Henry Crissman&#x27;s mentees. In photo from Jan 2018 (Samsung SM-J120A). Helped build the Noborigama/Salty Dog at Fortress Studios....</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div id="A" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">A</div><div class="card" data-name="aaron rosa">
+          <a href="aaron-rosa.html">
+            <div class="card-name">Aaron Rosa</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist. WMU connection. Exhibited in Western Drift, Mass Movement (BGSU), Turn Up the Volume. NCECA 2026.</div>
+            <div class="card-stats">24 connections</div>
+          </a>
+        </div><div class="card" data-name="adam chau">
+          <a href="adam-chau.html">
+            <div class="card-name">Adam Chau</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist. MSU connection. Exhibited in Voices Echo and Clay Currents. NCECA 2026.</div>
+            <div class="card-stats">13 connections</div>
+          </a>
+        </div><div class="card" data-name="adebunmi gbadebo">
+          <a href="adebunmi-gbadebo.html">
+            <div class="card-name">Adebunmi Gbadebo</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist, sculptor, and installation artist. BFA Temple University, MFA Cranbrook Academy of Art. Born in Nigeria with time in the Caribbean before...</div>
+            <div class="card-stats">10 connections</div>
+          </a>
+        </div><div class="card" data-name="adero willard">
+          <a href="adero-willard.html">
+            <div class="card-name">Adero Willard</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist born in NYC. BFA Fine Arts at NY State College of Ceramics at Alfred University. MFA from Nova Scotia College of Art and Design...</div>
+            <div class="card-stats">22 connections</div>
+          </a>
+        </div><div class="card" data-name="adrienne spinozzi">
+          <a href="adrienne-spinozzi.html">
+            <div class="card-name">Adrienne Spinozzi</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Annual Exhibition Curator. Curatorial role for &#x27;Volumes&#x27; annual. | Associate Curator, American Wing, The Metropolitan Museum of Art. BA...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="alex thullen">
+          <a href="alex-thullen.html">
+            <div class="card-name">Alex Thullen</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and materials expert at Pewabic Pottery, Detroit. Works on the Endangered Materials Project investigating the changing availability of...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="alison wong">
+          <a href="alison-wong.html">
+            <div class="card-name">Alison Wong</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist. Cranbrook Academy of Art alumni. Curator of Cranbrook Alumni Exhibition at NCECA 2026. NCECA 2026 podcast panelist and active in...</div>
+            <div class="card-stats">10 connections</div>
+          </a>
+        </div><div class="card" data-name="amanda leigh evans">
+          <a href="amanda-leigh-evans.html">
+            <div class="card-name">Amanda Leigh Evans</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Short Form: &#x27;RiverCloud: A Socially-Engaged Rural Collaborative Artwork&#x27;. Prescott, WA. | Presented &quot;RiverCloud: A Socially-Engaged Rural...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="amanda salov">
+          <a href="amanda-salov.html">
+            <div class="card-name">Amanda Salov</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Past Masters presenter (Marge Levy tribute). Also in Next Step Studios exhibition.</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="amy santoferraro">
+          <a href="amy-santoferraro.html">
+            <div class="card-name">Amy Santoferraro</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist known for inventive sculptural work. Exhibited in Vibrations at WMU. NCECA 2026.</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="anders herwald ruhwald">
+          <a href="anders-herwald-ruhwald.html">
+            <div class="card-name">Anders Herwald Ruhwald</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Lecture: &#x27;Fire as Metaphor. Unit 1: 3583 Dubois&#x27;. Immersive Detroit installation. Cranbrook. Full bio: Born 1974 Denmark. Graduated Royal...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="anina major">
+          <a href="anina-major.html">
+            <div class="card-name">Anina Major</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Bahamian ceramic artist working at the intersection of straw weaving and ceramics. BS Graphic Design from Drexel University (2003). MFA from Rhode...</div>
+            <div class="card-stats">10 connections</div>
+          </a>
+        </div><div class="card" data-name="anna burke">
+          <a href="anna-burke.html">
+            <div class="card-name">Anna Burke</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Projects Space: &#x27;Industrial Clay: Automotive Design Studio Experience&#x27;. Ford Design clay modeling team.</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="anne beyers">
+          <a href="anne-beyers.html">
+            <div class="card-name">Anne Beyers</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">22-year-old assistant to Ken Shenstone (as of reporting). Works at the Albion anagama.</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="annie dennis">
+          <a href="annie-dennis.html">
+            <div class="card-name">Annie Dennis</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramics professional at Pewabic Pottery, Detroit. Co-lecturer at NCECA 2026 on The Endangered Materials Project. Also presenting on Mary Stratton...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="april d. felipe">
+          <a href="april-felipe.html">
+            <div class="card-name">April D. Felipe</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist. Exhibited in Turn Up the Volume at The Carr Center. NCECA 2026.</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="austen brantley">
+          <a href="austen-brantley.html">
+            <div class="card-name">Austen Brantley</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Detroit-based figurative ceramic sculptor. Creates powerful busts and figures. Solo show at M Contemporary + &#x27;Body Shop&#x27; group exhibition. Active in...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="austin coudriet">
+          <a href="austin-coudriet.html">
+            <div class="card-name">Austin Coudriet</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">BFA University of Nebraska-Lincoln 2019. Resident artist at Archie Bray Foundation (Helena, MT). 2024 Ceramics Monthly Emerging Artist award...</div>
+            <div class="card-stats">8 connections</div>
+          </a>
+        </div><div class="card" data-name="ayumi horie">
+          <a href="ayumi-horie.html">
+            <div class="card-name">Ayumi Horie</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Functional potter and community organizer based in Portland, Maine. Known for lively painted pottery and advocacy for the ceramic arts community....</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div id="B" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">B</div><div class="card" data-name="ben chamberlain">
+          <a href="ben-chamberlain.html">
+            <div class="card-name">Ben Chamberlain</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Potter and kiln builder. Memorial exhibition at Pewabic during NCECA 2026 in the Education Studio kiln yard. Beloved community figure.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="bennett bean">
+          <a href="bennett-bean.html">
+            <div class="card-name">Bennett Bean</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Legendary ceramic artist based in New Jersey. Known for abstract pit-fired forms with painted surfaces. Pioneer in combining painting and pottery....</div>
+            <div class="card-stats">15 connections</div>
+          </a>
+        </div><div class="card" data-name="bernard leach">
+          <a href="bernard-leach.html">
+            <div class="card-name">Bernard Leach</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Bernard Leach (1887-1979). British studio potter, &#x27;the father of British studio pottery.&#x27; Studied in Japan under Kenzan VI. Founded Leach Pottery in...</div>
+            <div class="card-stats">14 connections</div>
+          </a>
+        </div><div class="card" data-name="beth lo">
+          <a href="beth-lo.html">
+            <div class="card-name">Beth Lo</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist based in Montana. Chinese-American. Professor at University of Montana. Known for painted ceramics exploring Asian-American identity...</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="bianca macpherson">
+          <a href="bianca-macpherson.html">
+            <div class="card-name">Bianca MacPherson</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Emerging Artist. | Exhibited in Color Network: Family Album (with Paul Briggs, Eva Kwong, Malcolm Smith, Lydia Thompson). NCECA 2026...</div>
+            <div class="card-stats">9 connections</div>
+          </a>
+        </div><div class="card" data-name="billy mark">
+          <a href="billy-mark.html">
+            <div class="card-name">Billy Mark</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Clay in Performance: &#x27;The Clay We Speak&#x27;. Detroit-based performance artist and poet. | Detroit-based performance artist and poet....</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="blake j. williams">
+          <a href="blake-j-williams.html">
+            <div class="card-name">Blake J. Williams</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 organizer: &#x27;Voices Echo&#x27; at MSU Detroit Center. Michigan State University ceramics. | Michigan State University ceramics faculty....</div>
+            <div class="card-stats">14 connections</div>
+          </a>
+        </div><div class="card" data-name="bobby scroggins">
+          <a href="bobby-scroggins.html">
+            <div class="card-name">Bobby Scroggins</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist. Panelist at NCECA 2026 &#x27;The Color Network: Building Belonging in Ceramics&#x27; led by Corrin Grooms. Part of the Color Network initiative...</div>
+            <div class="card-stats">16 connections</div>
+          </a>
+        </div><div class="card" data-name="bradford davis">
+          <a href="bradford-davis.html">
+            <div class="card-name">Bradford Davis</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and veteran. Moderator of NCECA 2026 panel on VCAN (Veterans Ceramic Arts Network) - from Combat to Clay. Explores how military...</div>
+            <div class="card-stats">9 connections</div>
+          </a>
+        </div><div class="card" data-name="brett gray">
+          <a href="brett-gray.html">
+            <div class="card-name">Brett Gray</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Connected to Pewabic Pottery. Part of Henry Crissman&#x27;s broader ceramic community network.</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="bri murphy">
+          <a href="bri-murphy.html">
+            <div class="card-name">Bri Murphy</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 co-organizer: &#x27;Fluid State of Land&#x27; at Wayne State. Also exhibiting artist. | Co-organized Fluid State of Land at Wayne State University...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="brian kakas">
+          <a href="brian-kakas.html">
+            <div class="card-name">Brian Kakas</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and educator. Associate Professor of Art at Bowling Green State University (BGSU). Board member of Michigan Ceramic Art Association...</div>
+            <div class="card-stats">17 connections</div>
+          </a>
+        </div><div class="card" data-name="bridget blosser">
+          <a href="bridget-blosser.html">
+            <div class="card-name">Bridget Blosser</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Wife of Charlie Blosser. Took over management of The Potters Market after Charlie&#x27;s death in 2014.</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="brooklin grantz">
+          <a href="brooklin-grantz.html">
+            <div class="card-name">Brooklin Grantz</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 organizer: &#x27;(liquid)&#x27; at Still Life Ceramics. Trans ceramicists exhibition. | Exhibited in Speaking Volumes (27th Letter Books). Organized...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="bruce cochrane">
+          <a href="bruce-cochrane.html">
+            <div class="card-name">Bruce Cochrane</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Major Canadian ceramicist. Former head of ceramics at Sheridan College, Ontario. Known for elegant functional forms. Influential Canadian ceramic...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="bruce dehnert">
+          <a href="bruce-dehnert.html">
+            <div class="card-name">Bruce Dehnert</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist and educator. Head of ceramics at Peters Valley School of Craft. Exhibited in Breeze Over the Lakes. NCECA 2026.</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="bryan czibesz">
+          <a href="bryan-czibesz.html">
+            <div class="card-name">Bryan Czibesz</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist and educator. Exhibited in Underlying Systems. NCECA 2026.</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="bryan hopkins">
+          <a href="bryan-hopkins.html">
+            <div class="card-name">Bryan Hopkins</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 co-organizer: &#x27;Mom&#x27;s Collection&#x27; at N&#x27;Namdi Gallery. Also in multiple exhibitions. | Co-organized Mom&#x27;s Collection at N&#x27;Namdi Gallery...</div>
+            <div class="card-stats">22 connections</div>
+          </a>
+        </div><div id="C" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">C</div><div class="card" data-name="carl milles">
+          <a href="carl-milles.html">
+            <div class="card-name">Carl Milles</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Swedish sculptor (1875-1955). Artist-in-Residence and head of Sculpture at Cranbrook 1931-1951. Faculty colleague of Maija Grotell. Created the...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="caroline baron">
+          <a href="caroline-baron.html">
+            <div class="card-name">Caroline Baron</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 organizer: &#x27;Incantations: Pots That Sing&#x27; at Warda Pâtisserie. | Organized Incantations: Pots That Sing at Warda Pâtisserie. NCECA 2026.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="casey beck">
+          <a href="casey-beck.html">
+            <div class="card-name">casey beck</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Curator and exhibition organizer. Co-organized &quot;Soda, Clay, and Fire: The Legacy of Gail Nichols&quot; at Galerie Camille during NCECA 2026. | BFA...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="chanda zea">
+          <a href="chanda-zea.html">
+            <div class="card-name">Chanda Zea</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Lecture: &#x27;Making More of Making Less&#x27;. Also co-organized &#x27;Materials: Volumetric Reduction&#x27;. | Co-organized Materials: Volumetric Reduction...</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="charles eames">
+          <a href="charles-eames.html">
+            <div class="card-name">Charles Eames</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Architect &amp; furniture designer (1907-1978). Cranbrook Academy &#x27;39. One of the most influential designers of the 20th century. Co-created the Eames...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="charles fergus binns">
+          <a href="charles-binns.html">
+            <div class="card-name">Charles Fergus Binns</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Father of American Ceramics (1857-1934). Founded ceramics education at Alfred University.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="chenlu hou">
+          <a href="chenlu-hou.html">
+            <div class="card-name">Chenlu Hou</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Born in Shandong, China. Providence-based ceramic artist. MFA RISD 2019. Residencies at Museum of Art and Design (NYC), Penland School of Craft,...</div>
+            <div class="card-stats">12 connections</div>
+          </a>
+        </div><div class="card" data-name="chris gustin">
+          <a href="chris-gustin.html">
+            <div class="card-name">Chris Gustin</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and educator (b. 1952, Chicago). Grew up in LA surrounded by family&#x27;s whiteware manufacturing businesses. Managed Wildwood Ceramics...</div>
+            <div class="card-stats">39 connections</div>
+          </a>
+        </div><div class="card" data-name="chris mayse">
+          <a href="chris-mayse.html">
+            <div class="card-name">Chris Mayse</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Pewabic Pottery Designer. Created the hand-sculpted Zodiac Series tile collection.</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="chris salas">
+          <a href="chris-salas.html">
+            <div class="card-name">Chris Salas</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Panel: &#x27;Where the Wild Clays Are&#x27;. Also in Ox-Bow/Popps Packing exhibition.</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="chris staley">
+          <a href="chris-staley.html">
+            <div class="card-name">Chris Staley</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Distinguished Professor of Art at Penn State University. Major functional potter. Work explores simplicity, function, and the relationship between...</div>
+            <div class="card-stats">19 connections</div>
+          </a>
+        </div><div class="card" data-name="claire thibodeau">
+          <a href="claire-thibodeau.html">
+            <div class="card-name">Claire Thibodeau</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 curator: CCS Alumni &#x27;Echoes&#x27; + CCS students &#x27;Emergence&#x27;. College for Creative Studies.</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="clare twomey">
+          <a href="clare-twomey.html">
+            <div class="card-name">Clare Twomey</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">British ceramic artist and Professor at the Royal College of Art, London. Known for large-scale clay installations and performance-based works. Work...</div>
+            <div class="card-stats">8 connections</div>
+          </a>
+        </div><div class="card" data-name="clare verstegen">
+          <a href="clare-verstegen.html">
+            <div class="card-name">Clare Verstegen</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Past Masters presenter (Sandra J. Blain tribute).</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="connor czora">
+          <a href="connor-czora.html">
+            <div class="card-name">Connor Czora</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Emerging Artist.</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="coral patola">
+          <a href="coral-patola.html">
+            <div class="card-name">Coral Patola</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Podcast moderator: &#x27;Artist Residencies Unpacked&#x27;.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="corrin grooms">
+          <a href="corrin-grooms.html">
+            <div class="card-name">Corrin Grooms</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and educator. Moderator of NCECA 2026 panel on The Color Network: Timeline and Volumes. Works to expand representation of artists of...</div>
+            <div class="card-stats">10 connections</div>
+          </a>
+        </div><div id="D" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">D</div><div class="card" data-name="dale chihuly">
+          <a href="dale-chihuly.html">
+            <div class="card-name">Dale Chihuly</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Glass artist (b. 1941). Most recognized name in contemporary glass art worldwide. Pioneered team-based glassblowing at scale. Known for dramatic,...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="daniel luedtke">
+          <a href="daniel-luedtke.html">
+            <div class="card-name">Daniel Luedtke</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Makers Space: &#x27;Ceramic Hydrographics&#x27;. | Presented &quot;Ceramic Hydrographics&quot; Makers Space at NCECA 2026.</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="dara hartman">
+          <a href="dara-hartman.html">
+            <div class="card-name">Dara Hartman</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Full-time studio artist in Salt Lake City, UT. Director of Women Working With Clay Symposium at Hollins University (Roanoke, VA). 2025 NCECA...</div>
+            <div class="card-stats">8 connections</div>
+          </a>
+        </div><div class="card" data-name="david habicht">
+          <a href="david-habicht.html">
+            <div class="card-name">David Habicht</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Built 4,000 sq ft studio with Ken Shenstone at 29005 Albion Rd.</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="david morrison">
+          <a href="david-morrison.html">
+            <div class="card-name">David Morrison</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist. Exhibited in The Car Show (Popps Packing) and Clay Currents (Hatch Art). NCECA 2026.</div>
+            <div class="card-stats">8 connections</div>
+          </a>
+        </div><div class="card" data-name="david nasca">
+          <a href="david-nasca.html">
+            <div class="card-name">David Nasca</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Clay Fab Lab: &#x27;Accessible Digital Molding for Ancient Materials&#x27;. Egyptian paste. | Presented &quot;Accessible Digital Molding for Ancient...</div>
+            <div class="card-stats">8 connections</div>
+          </a>
+        </div><div class="card" data-name="david nelson">
+          <a href="david-nelson.html">
+            <div class="card-name">David Nelson</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">From Manchester, MI. Collaborator with Ken Shenstone at the Albion anagama.</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="david r. macdonald">
+          <a href="david-r-macdonald.html">
+            <div class="card-name">David R. MacDonald</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and educator. Professor Emeritus at Syracuse University. Connected to the Everson Museum of Art, Syracuse. Decades of influential...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="del harrow">
+          <a href="del-harrow.html">
+            <div class="card-name">Del Harrow</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026: David Klein Gallery &#x27;In Series&#x27;. Also in Underlying Systems + Ox-Bow exhibitions.</div>
+            <div class="card-stats">21 connections</div>
+          </a>
+        </div><div class="card" data-name="denny gerwin">
+          <a href="denny-gerwin.html">
+            <div class="card-name">Denny Gerwin</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 organizer: &#x27;Mass Movement&#x27; at Vander. BGSU 30-year retrospective. | Organized Mass Movement at Vander - 30-year BGSU ceramics...</div>
+            <div class="card-stats">15 connections</div>
+          </a>
+        </div><div class="card" data-name="dick lehman">
+          <a href="dick-lehman.html">
+            <div class="card-name">Dick Lehman</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Master potter and wood-fire specialist based in Goshen, Indiana. Known for saggar-firing, pit-firing, and raku techniques. Workshop instructor at...</div>
+            <div class="card-stats">15 connections</div>
+          </a>
+        </div><div class="card" data-name="dominick labino">
+          <a href="dominick-labino.html">
+            <div class="card-name">Dominick Labino</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Glass scientist &amp; artist (1910-1987). Vice president of Johns-Manville Fiber Glass. Co-led the 1962 Toledo Museum of Art workshops with Harvey...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="doug peltzman">
+          <a href="doug-peltzman.html">
+            <div class="card-name">Doug Peltzman</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">New York-based functional potter known for precise geometric pottery forms. Exhibiting in &#x27;Mom&#x27;s Collection&#x27; at N&#x27;Namdi Gallery, NCECA 2026.</div>
+            <div class="card-stats">15 connections</div>
+          </a>
+        </div><div class="card" data-name="dove hornbuckle">
+          <a href="dove-hornbuckle.html">
+            <div class="card-name">Dove Hornbuckle</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 co-organizer: &#x27;Majestic Nexus&#x27; at Huntington Place. | Co-organized Majestic Nexus at Huntington Place with Israel Davis (Eva Kwong,...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="dr. charlie blosser">
+          <a href="dr-charlie-blosser.html">
+            <div class="card-name">Dr. Charlie Blosser</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">PhD, OCC Royal Oak ceramics instructor. Founded The Potters Market in 1975 as an OCC class sale in a church basement. Died 2014 at age 82.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="drew ollero">
+          <a href="drew-ollero.html">
+            <div class="card-name">Drew Ollero</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Clay Conversation: &#x27;Filipino Potters: Community Within the Diaspora&#x27;.</div>
+            <div class="card-stats">10 connections</div>
+          </a>
+        </div><div id="E" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">E</div><div class="card" data-name="ebitenyefa baralaye">
+          <a href="ebitenyefa-baralaye.html">
+            <div class="card-name">Ebitenyefa Baralaye</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026: Cranbrook alumni exhibition + David Klein Gallery &#x27;In Series&#x27;. Cranbrook alum. Full bio: Ceramicist, sculptor, designer, educator. Born...</div>
+            <div class="card-stats">15 connections</div>
+          </a>
+        </div><div class="card" data-name="eero saarinen">
+          <a href="eero-saarinen.html">
+            <div class="card-name">Eero Saarinen</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Architect &amp; industrial designer (1910-1961). Son of Eliel Saarinen, grew up on Cranbrook campus. Designed the Gateway Arch (St. Louis), TWA Terminal...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="ehren tool">
+          <a href="ehren-tool.html">
+            <div class="card-name">Ehren Tool</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and Marine Corps veteran. Lecturer at UC Berkeley. MFA University of Iowa. Known for creating thousands of cups depicting war imagery,...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="eli zemper">
+          <a href="eli-zemper.html">
+            <div class="card-name">Eli Zemper</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Short Form: &#x27;#ThisABILITY to Create Community Through Clay&#x27;. | Presented &quot;#ThisABILITY to Create Community Through Clay&quot; at NCECA 2026...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="eliel saarinen">
+          <a href="eliel-saarinen.html">
+            <div class="card-name">Eliel Saarinen</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Architect, designer. Born 1873 Rantasalmi, Finland. Died 1950. Designed Cranbrook campus and buildings. First president of Cranbrook Academy. Invited...</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="ellie stanislav">
+          <a href="ellie-stanislav.html">
+            <div class="card-name">Ellie Stanislav</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist. Michigan-based. Exhibited in MCAA Biennial and Voices Echo (MSU). NCECA 2026.</div>
+            <div class="card-stats">16 connections</div>
+          </a>
+        </div><div class="card" data-name="em irvin">
+          <a href="em-irvin.html">
+            <div class="card-name">em irvin</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Clay in Performance: &#x27;Ceramics Love Letters&#x27;. Also Co-Lecture: &#x27;Ceramic Snap&#x27;. | Performed &quot;Ceramics Love Letters: Wandering Performance...</div>
+            <div class="card-stats">9 connections</div>
+          </a>
+        </div><div class="card" data-name="eva kwong">
+          <a href="eva-kwong.html">
+            <div class="card-name">Eva Kwong</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Juror. Professor Emeritus, Kent State University. Influential ceramic artist and educator.</div>
+            <div class="card-stats">29 connections</div>
+          </a>
+        </div><div id="F" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">F</div><div class="card" data-name="florence knoll">
+          <a href="florence-knoll.html">
+            <div class="card-name">Florence Knoll</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Architect &amp; furniture designer (1917-2019). Cranbrook alumna. After her parents died, Eliel Saarinen became her guardian. Founded Knoll Inc with Hans...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="frances senska">
+          <a href="frances-senska.html">
+            <div class="card-name">Frances Senska</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist &amp; educator (1914-2009). Instrumental in founding Archie Bray Foundation.</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div id="G" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">G</div><div class="card" data-name="gail nichols">
+          <a href="gail-nichols.html">
+            <div class="card-name">Gail Nichols</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Australian-born ceramicist and pioneer of soda firing techniques. Author of &#x27;Soda, Clay, and Fire&#x27; - the definitive guide to soda glazing. Legacy...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="garth johnson">
+          <a href="garth-johnson.html">
+            <div class="card-name">Garth Johnson</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist, curator, and educator. Curator of Ceramics at the Everson Museum of Art, Syracuse, NY. Former Curator at Arizona State University...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="gary schneider">
+          <a href="gary-schneider.html">
+            <div class="card-name">Gary Schneider</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Juror. | Also known as Gary Garrido Schneider. Co-juror with Eva Kwong for NCECA 2026 Juried Student Exhibition at CCS. | BFA Parsons...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="george e. ohr">
+          <a href="george-ohr.html">
+            <div class="card-name">George E. Ohr</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">George Edgar Ohr (1857-1918), the &#x27;Mad Potter of Biloxi.&#x27; Born in Biloxi, Mississippi. Self-taught eccentric genius — built his own wheel, kiln, and...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="george gough booth">
+          <a href="george-gough-booth.html">
+            <div class="card-name">George Gough Booth</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Newspaper publisher and philanthropist. Born 1864 Toronto. Died 1949. Co-founded Cranbrook Educational Community with wife Ellen Scripps Booth. Hired...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="george landino">
+          <a href="george-landino.html">
+            <div class="card-name">George Landino</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Art teacher, Groves High School, Birmingham MI. Jan Sadowski&#x27;s first ceramics teacher. Grew up in family of 18. Practicing clay artist, Orchard Lake...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="george rodriguez">
+          <a href="george-rodriguez.html">
+            <div class="card-name">George Rodriguez</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and educator. MCAA Biennial juror. Exhibiting in &#x27;Vibrations&#x27; at WMU Richmond Center, NCECA 2026.</div>
+            <div class="card-stats">10 connections</div>
+          </a>
+        </div><div class="card" data-name="gerald a. brown">
+          <a href="gerald-a-brown.html">
+            <div class="card-name">Gerald A. Brown</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and podcast host. Moderator of NCECA 2026 live podcast &quot;Converging Tides&quot; exploring concurrent histories reshaping American ceramics...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="gerit grimm">
+          <a href="gerit-grimm.html">
+            <div class="card-name">Gerit Grimm</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">German-born ceramic sculptor. Known for large-scale narrative ceramic works. Exhibiting in &#x27;A Human Experience&#x27; at Henry Ford College, NCECA 2026.</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="gh wood">
+          <a href="gh-wood.html">
+            <div class="card-name">GH Wood</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist. Co-presenting with Paul S. Briggs at NCECA 2026 on Hand Turning Equals Wheel Turning. | Chinese-American ceramic artist. BA St. Olaf...</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="grace han">
+          <a href="grace-han.html">
+            <div class="card-name">Grace Han</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and NCECA Director at Large. Presenter at NCECA 2026 Special Session &#x27;The Future in the Field&#x27; addressing emerging directions and...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="guangzhen zhou">
+          <a href="guangzhen-zhou.html">
+            <div class="card-name">Guangzhen Zhou</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Lecture: &#x27;Global Adventures for Ceramic Cultural Heritage&#x27;. Researching 120+ countries. | Presented &quot;Global Adventures for Ceramic...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div id="H" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">H</div><div class="card" data-name="hamilton poe">
+          <a href="hamilton-poe.html">
+            <div class="card-name">Hamilton Poe</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Artist and longtime collaborator of Henry Crissman. Multiple collaborative exhibitions at Trinosophes in Detroit&#x27;s Eastern Market. Active in...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="hank willis thomas">
+          <a href="hank-willis-thomas.html">
+            <div class="card-name">Hank Willis Thomas</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Conceptual artist working in photography, sculpture, and public art. BFA NYU Tisch, MFA/MA California College of the Arts. MacArthur Fellow (2024)....</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="hannah niswonger">
+          <a href="hannah-niswonger.html">
+            <div class="card-name">Hannah Niswonger</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 organizer: &#x27;POW! Protest Cup Fellowship&#x27; at Huntington Place.</div>
+            <div class="card-stats">17 connections</div>
+          </a>
+        </div><div class="card" data-name="harry bertoia">
+          <a href="harry-bertoia.html">
+            <div class="card-name">Harry Bertoia</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Italian-born artist, sculptor &amp; modern furniture designer (1915-1978). Cranbrook Academy alumnus. Created the iconic Diamond Chair for Knoll. Later...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="harvey littleton">
+          <a href="harvey-littleton.html">
+            <div class="card-name">Harvey Littleton</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Founder of the American studio glass movement. Born 1922 Corning NY. Died 2013. Studied ceramics under Maija Grotell at Cranbrook. Taught glass at...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="henry crissman">
+          <a href="henry-crissman.html">
+            <div class="card-name">Henry Crissman</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Henry James Haver Crissman — ceramicist, educator, co-founder of Ceramics School (Hamtramck). Born in Midland, MI. Lives at 2692 Carpenter Ave,...</div>
+            <div class="card-stats">31 connections</div>
+          </a>
+        </div><div class="card" data-name="horace caulkins">
+          <a href="horace-caulkins.html">
+            <div class="card-name">Horace Caulkins</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Co-founder of Pewabic Pottery (1903) with Mary Chase Perry Stratton. Dental supply manufacturer who provided kilns.</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="howard kottler">
+          <a href="howard-kottler.html">
+            <div class="card-name">Howard Kottler</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Experimental ceramicist and pop-art provocateur. Born 1930 Cleveland OH. Died 1989. Studied under Maija Grotell at Cranbrook (MFA 1957). Taught at...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div id="I" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">I</div><div class="card" data-name="ian mcdonald">
+          <a href="ian-mcdonald.html">
+            <div class="card-name">Ian McDonald</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist. Former Artist-in-Residence at Cranbrook Academy of Art. Known for refined sculptural vessels. Exhibited internationally; featured in...</div>
+            <div class="card-stats">8 connections</div>
+          </a>
+        </div><div class="card" data-name="ibrahim said">
+          <a href="ibrahim-said.html">
+            <div class="card-name">Ibrahim Said</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Egyptian-born potter trained in traditional Cairo pottery. Based in upstate New York. Known for exquisitely thrown forms with carved decoration...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="irén tété">
+          <a href="iren-tete.html">
+            <div class="card-name">Irén Tété</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Emerging Artist.</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="israel davis">
+          <a href="israel-davis.html">
+            <div class="card-name">Israel Davis</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 co-organizer: &#x27;Majestic Nexus&#x27; at Huntington Place.</div>
+            <div class="card-stats">19 connections</div>
+          </a>
+        </div><div id="J" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">J</div><div class="card" data-name="jack troy">
+          <a href="jack-troy.html">
+            <div class="card-name">Jack Troy</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Professor Emeritus of Art at Juniata College, Huntingdon, PA. Master wood-fire potter. Author of &#x27;Wood-Fired Stoneware and Porcelain&#x27; - seminal text...</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="jacob sussman">
+          <a href="jacob-sussman.html">
+            <div class="card-name">Jacob Sussman</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Short Form: &#x27;Revisiting Egyptian Paste&#x27;. 2025 Environmental Sustainability Fellow. | Presented &quot;Revisiting Egyptian Paste: Process and...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="jai sallay-carrington">
+          <a href="jai-sallay-carrington.html">
+            <div class="card-name">Jai Sallay-Carrington</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Clay Conversation: Trans Ceramics Community (TiCC). Also in Canadian Favours.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="jan sadowski">
+          <a href="jan-sadowski.html">
+            <div class="card-name">Jan Sadowski</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Potter, Howell MI. Terrestrial Forms. 60+ years in Michigan ceramics. Groves HS under Landino → Plum Tree Pottery with Glick → Wayne State → Head of...</div>
+            <div class="card-stats">15 connections</div>
+          </a>
+        </div><div class="card" data-name="jane white">
+          <a href="jane-white.html">
+            <div class="card-name">Jane White</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">BFA Eastern Michigan University, MFA Indiana University. 30+ year ceramics career. Worked at Pewabic Pottery 10+ years as Fabrication Director, Kiln...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="jared tso">
+          <a href="jared-tso.html">
+            <div class="card-name">Jared Tso</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist. Panelist at NCECA 2026 on Where the &quot;Wild&quot; Clays Are. Explores indigenous perspectives on clay, questioning the lexicon of &quot;wild&quot;...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="jasmine baetz">
+          <a href="jasmine-baetz.html">
+            <div class="card-name">Jasmine Baetz</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Podcast + Co-Lecture: &#x27;Ceramic Snap&#x27;. Also in Color Network exhibition.</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="javier espinoza momox">
+          <a href="javier-espinoza-momox.html">
+            <div class="card-name">Javier Espinoza Momox</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist focused on community engagement. Co-presented &#x27;Community Engaged Work in Ceramics&#x27; podcast with Vanessa Alvarado at NCECA 2026. Work...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="jeanine hill">
+          <a href="jeanine-hill.html">
+            <div class="card-name">Jeanine Hill</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and studio founder. Moderator of NCECA 2026 panel on Starting Your Own Pottery Studio. Focuses on building artist-run spaces that...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="jenneva kayser">
+          <a href="jenneva-kayser.html">
+            <div class="card-name">Jenneva Kayser</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Residency director. Panelist on NCECA 2026 podcast &#x27;Artist Residencies Unpacked&#x27; with Coral Patola. Connected to Ann Arbor Art Center. Advocates for...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="jenni sorkin">
+          <a href="jenni-sorkin.html">
+            <div class="card-name">Jenni Sorkin</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Art historian, author, and ceramics scholar. Professor &amp; Chair of History of Art &amp; Architecture at UC Santa Barbara. PhD Yale University, MA Bard...</div>
+            <div class="card-stats">10 connections</div>
+          </a>
+        </div><div class="card" data-name="jennifer allen">
+          <a href="jennifer-allen.html">
+            <div class="card-name">Jennifer Allen</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Established studio potter. BGSU alumna. Exhibited in Mom&#x27;s Collection and Mass Movement. NCECA 2026.</div>
+            <div class="card-stats">28 connections</div>
+          </a>
+        </div><div class="card" data-name="jennifer ling datchuk">
+          <a href="jennifer-ling-datchuk.html">
+            <div class="card-name">Jennifer Ling Datchuk</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Chinese-Slovak American artist based in San Antonio, TX. Work combines ceramics, textiles, and hair to explore beauty standards, identity, and...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="jerry berta">
+          <a href="jerry-berta.html">
+            <div class="card-name">Jerry Berta</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Co-Lecture: &#x27;Made in Detroit - 100 Years of Clay&#x27;. Detroit native, fell in love at Pewabic.</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="jess riva cooper">
+          <a href="jess-riva-cooper.html">
+            <div class="card-name">Jess Riva Cooper</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 organizer: &#x27;Canadian Small Favours&#x27; at Huntington Place. parkdalepottery.ca.</div>
+            <div class="card-stats">12 connections</div>
+          </a>
+        </div><div class="card" data-name="jesse albrecht">
+          <a href="jesse-albrecht.html">
+            <div class="card-name">Jesse Albrecht</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and veteran. Panelist at NCECA 2026 on VCAN - from Combat to Clay. Explores healing, identity, and transformation through clay after...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="jessica brandl">
+          <a href="jessica-brandl.html">
+            <div class="card-name">Jessica Brandl</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Assistant Professor of Ceramics at WMU Gwen Frostic School of Art, Kalamazoo, MI. | WMU Frostic School faculty. NCECA 2026: exhibited in Western...</div>
+            <div class="card-stats">13 connections</div>
+          </a>
+        </div><div class="card" data-name="jessika edgar">
+          <a href="jessika-edgar.html">
+            <div class="card-name">Jessika Edgar</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and educator. Faculty at Wayne State University, Detroit. MFA from Cranbrook Academy of Art. Active in Michigan ceramics community....</div>
+            <div class="card-stats">20 connections</div>
+          </a>
+        </div><div class="card" data-name="jim schatz">
+          <a href="jim-schatz.html">
+            <div class="card-name">Jim Schatz</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Studio potter and designer. J Schatz Studio. Organized &#x27;Radical Presence&#x27; exhibition at NCECA 2026 with Peter Souza collaboration. Known for...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="joe pintz">
+          <a href="joe-pintz.html">
+            <div class="card-name">Joe Pintz</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist. BGSU connection. Exhibited in Mass Movement. NCECA 2026.</div>
+            <div class="card-stats">14 connections</div>
+          </a>
+        </div><div class="card" data-name="joey quiñones">
+          <a href="joey-quinones.html">
+            <div class="card-name">Joey Quiñones</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 co-organizer: &#x27;Turn Up the Volume!&#x27; at The Carr Center. Latine artists exhibition.</div>
+            <div class="card-stats">19 connections</div>
+          </a>
+        </div><div class="card" data-name="john balistreri">
+          <a href="john-balistreri.html">
+            <div class="card-name">John Balistreri</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Demonstrating Artist. Large-scale wood-fired ceramics. Professor at Bowling Green State University.</div>
+            <div class="card-stats">25 connections</div>
+          </a>
+        </div><div class="card" data-name="john gill">
+          <a href="john-gill.html">
+            <div class="card-name">John Gill</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Major ceramic artist. ACC College of Fellows (2014). Known for sculptural ceramic work blending function with abstraction. Exhibiting in &#x27;Volume...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="john glick">
+          <a href="john-glick.html">
+            <div class="card-name">John Glick</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Renowned potter, Plum Tree Pottery, Farmington Hills (1964-2016). Born 1938 Detroit. Wayne State BFA 1960, Cranbrook MFA 1962 under Grotell. 33+...</div>
+            <div class="card-stats">18 connections</div>
+          </a>
+        </div><div class="card" data-name="john rupp">
+          <a href="john-rupp.html">
+            <div class="card-name">John Rupp</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and educator. Moderator of NCECA 2026 panel &#x27;Silica Hazards: A Call to Action&#x27; with Ken Rosenman. Advocates for ceramic studio safety...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="john stephenson">
+          <a href="john-stephenson.html">
+            <div class="card-name">John Stephenson</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">U of Michigan ceramics professor 1959–1995 (1929–2015). Cranbrook MFA 1958.</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="jon geiger">
+          <a href="jon-geiger.html">
+            <div class="card-name">Jon Geiger</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Makers Space: &#x27;Seatbelts to Peanuts: Packing your Ceramics&#x27;. | Presented &quot;Seatbelts to Peanuts: Packing your Ceramics&quot; Makers Space at...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="jonathan christensen-caballero">
+          <a href="jonathan-christensen-caballero.html">
+            <div class="card-name">Jonathan Christensen-Caballero</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist. Exhibited in Turn Up the Volume at The Carr Center. NCECA 2026.</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="jonathan kaplan">
+          <a href="jonathan-kaplan.html">
+            <div class="card-name">Jonathan Kaplan</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist and entrepreneur with 56+ years in ceramics. Founder of Plinth Gallery, Denver, CO. Creator of Ceramic Design Group. Known as &#x27;The Mold...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="jordan blankenship">
+          <a href="jordan-blankenship.html">
+            <div class="card-name">Jordan Blankenship</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Clay Fab Lab: &#x27;Soft Meets Solid: Turning Cork&#x27;. | Presented &quot;Soft Meets Solid: Turning Cork&quot; Clay Fab Lab at NCECA 2026.</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="josephine larsen">
+          <a href="josephine-larsen.html">
+            <div class="card-name">Josephine Larsen</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist. Michigan-based. Exhibited in MCAA Biennial and Thresholds (Detroit Artist Market). NCECA 2026.</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="joshua wong">
+          <a href="joshua-wong.html">
+            <div class="card-name">Joshua Wong</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist. Panelist at NCECA 2026 on Apprenticeship In The Modern Age.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="judith schwartz">
+          <a href="judith-schwartz.html">
+            <div class="card-name">Judith Schwartz</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Professor Emerita at New York University. Author of &#x27;Confrontational Ceramics&#x27; - influential study of politically and socially engaged ceramic art....</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="julia galloway">
+          <a href="julia-galloway.html">
+            <div class="card-name">Julia Galloway</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Panel: &#x27;Can Art Make a Difference?&#x27; Endangered Species Project. Also in Mom&#x27;s Collection.</div>
+            <div class="card-stats">35 connections</div>
+          </a>
+        </div><div class="card" data-name="julia walther">
+          <a href="julia-walther.html">
+            <div class="card-name">Julia Walther</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">35th and final artist-in-residence at Plum Tree Pottery (2012-2014). Two-year residency. Helped Jo Lauria select works for Glick&#x27;s retrospective &#x27;A...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="jun kaneko">
+          <a href="jun-kaneko.html">
+            <div class="card-name">Jun Kaneko</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Japanese-American ceramic sculptor known for large-scale ceramic works exploring &quot;ma&quot; (the space between). Subject of Nancy Servis lecture at NCECA...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="justin rothshank">
+          <a href="justin-rothshank.html">
+            <div class="card-name">Justin Rothshank</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Studio potter working in Goshen, Indiana since 2009. BA Ceramics &amp; Sculpture from Goshen College (2000). Author of &quot;Low Fire Soda&quot; (2020). Creator of...</div>
+            <div class="card-stats">14 connections</div>
+          </a>
+        </div><div id="K" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">K</div><div class="card" data-name="kaci handlery">
+          <a href="kaci-handlery.html">
+            <div class="card-name">Kaci Handlery</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic educator focused on accessibility and inclusion. Moderator of NCECA 2026 panel &#x27;Clay Without Barriers: Inclusive Ceramics Experiences&#x27; with...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="kaiser suidan">
+          <a href="kaiser-suidan.html">
+            <div class="card-name">Kaiser Suidan</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Detroit-based ceramic artist. Known for intricate geometric ceramic sculptures. Exhibited in Underlying Systems. NCECA 2026.</div>
+            <div class="card-stats">8 connections</div>
+          </a>
+        </div><div class="card" data-name="karina yanes">
+          <a href="karina-yanes.html">
+            <div class="card-name">Karina Yanes</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 co-organizer: &#x27;Palestine: Grief and Connection Through Clay&#x27; at Arab American National Museum. | Exhibited in NCECA Annual &quot;Absence Takes...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="katie shulman">
+          <a href="katie-shulman.html">
+            <div class="card-name">Katie Shulman</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Fiber artist. Co-organizing &#x27;Ceramics x Fiber&#x27; collaborative exhibition with Jessika Edgar during NCECA 2026 at Boyer Campbell Building, Detroit....</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="kawai kanjirō">
+          <a href="kawai-kanjiro.html">
+            <div class="card-name">Kawai Kanjirō</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Japanese potter &amp; mingei co-founder (1890–1966). Master of glazes.</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="keaton wynn">
+          <a href="keaton-wynn.html">
+            <div class="card-name">Keaton Wynn</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic scholar and educator. Co-lecturer at NCECA 2026 on The Ceramics of K.K. Broni Bridging Worlds. | Professor of Art (Ceramics and Art History),...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="keiko nakajima">
+          <a href="keiko-nakajima.html">
+            <div class="card-name">Keiko Nakajima</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 curator: &#x27;Breeze Over the Lakes&#x27; + &#x27;Clay and Cuisine&#x27; at Soraya. Shigaraki connection. | Curated Breeze Over the Lakes at Detroit Public...</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="kelly docter">
+          <a href="kelly-docter.html">
+            <div class="card-name">Kelly Docter</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and community organizer. Moderator of NCECA 2026 panel on The State of Clay: Statewide Organizations. Connected to Michigan clay...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="ken ferguson">
+          <a href="ken-ferguson.html">
+            <div class="card-name">Ken Ferguson</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ken Ferguson (1928-2004). Influential ceramic artist and educator. Head of ceramics at Kansas City Art Institute for 32 years. Known for large-scale...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="ken rosenman">
+          <a href="ken-rosenman.html">
+            <div class="card-name">Ken Rosenman</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Occupational physician specializing in silica hazards. Panelist at NCECA 2026 on Silica Hazards: A Call to Action. | M.D., Michigan State University....</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="ken shenstone">
+          <a href="ken-shenstone.html">
+            <div class="card-name">Ken Shenstone</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist in Albion, MI. Albion College grad. Built the largest anagama in North America: 55 ft x 14 ft, 1000 cu ft, first fired 1987. Annual...</div>
+            <div class="card-stats">9 connections</div>
+          </a>
+        </div><div class="card" data-name="kevin kwiatkowski">
+          <a href="kevin-kwiatkowski.html">
+            <div class="card-name">Kevin Kwiatkowski</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Connected to Pewabic Pottery and Henry Crissman&#x27;s circle. Part of the Detroit ceramics network Ryan connected to. Fires with Ken Shenstone at the...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="kevin lehman">
+          <a href="kevin-lehman.html">
+            <div class="card-name">Kevin Lehman</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Lecture: &#x27;Demystifying Wood Firing&#x27;. | Presented &quot;Demystifying Wood Firing: Investigating Multiple Variables&quot; at NCECA 2026. | Related to...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="kiara matos">
+          <a href="kiara-matos.html">
+            <div class="card-name">Kiara Matos</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Projects Space: &#x27;Sourcing Waste as Ceramic Resource&#x27;.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="kiichi takeuchi">
+          <a href="kiichi-takeuchi.html">
+            <div class="card-name">Kiichi Takeuchi</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Short Form: &#x27;3D Scans of Anagama Kilns Worldwide&#x27;. 25+ wood kilns scanned. | Presented &quot;3-D Scans of Anagama Kilns Worldwide&quot; at NCECA...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="kim dickey">
+          <a href="kim-dickey.html">
+            <div class="card-name">Kim Dickey</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic sculptor and educator. Professor at University of Colorado Boulder. Known for large-scale garden-inspired ceramic installations encrusted...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="kimberly harty-scott">
+          <a href="kimberly-harty-scott.html">
+            <div class="card-name">Kimberly Harty-Scott</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">College for Creative Studies faculty member in Ceramics/Craft &amp; Materials Studies. NCECA 2026 Local Host Committee faculty. Active in Detroit...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="kimberly lavonne">
+          <a href="kimberly-lavonne.html">
+            <div class="card-name">Kimberly LaVonne</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 curator: &#x27;Centerpoint: Mapping Detroit&#x27;s Ceramic Legacy&#x27; at Detroit Historical Museum. Also Annual juried artist. | Curated Centerpoint:...</div>
+            <div class="card-stats">17 connections</div>
+          </a>
+        </div><div class="card" data-name="kofi adjei">
+          <a href="kofi-adjei.html">
+            <div class="card-name">Kofi Adjei</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic scholar connected to Ghanaian ceramics tradition. Co-lecturer at NCECA 2026 on K.K. Broni. | Senior Lecturer, KNUST (Kwame Nkrumah University...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="kourtenay plummer">
+          <a href="kourtenay-plummer.html">
+            <div class="card-name">Kourtenay Plummer</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Artist and studio founder from Minneapolis. Panelist at NCECA 2026 on Starting Your Own Pottery Studio.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="kyle triplett">
+          <a href="kyle-triplett.html">
+            <div class="card-name">Kyle Triplett</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Morean Associate Professor, Graduate and Area Co-Coordinator of Ceramics at WMU Gwen Frostic School of Art, Kalamazoo, MI. | WMU Frostic School...</div>
+            <div class="card-stats">19 connections</div>
+          </a>
+        </div><div class="card" data-name="kyungmin park">
+          <a href="kyungmin-park.html">
+            <div class="card-name">Kyungmin Park</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Nationally acclaimed ceramic artist. Michigan Mud 2025 keynote speaker (MCAA conference).</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div id="L" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">L</div><div class="card" data-name="laith karmo">
+          <a href="laith-karmo.html">
+            <div class="card-name">Laith Karmo</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist. Cranbrook Academy of Art connection. In 2 NCECA 2026 exhibitions: Cranbrook Alumni and &#x27;Volume Rediscovery&#x27; at Paul Kotula Projects.</div>
+            <div class="card-stats">9 connections</div>
+          </a>
+        </div><div class="card" data-name="laura souyoultzis">
+          <a href="laura-souyoultzis.html">
+            <div class="card-name">Laura Souyoultzis</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Panel: &#x27;The State of Clay&#x27;. Washington statewide clay organization.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="lauren kalman">
+          <a href="lauren-kalman.html">
+            <div class="card-name">Lauren Kalman</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Interdisciplinary artist working across ceramics, metalsmithing, photography, and video. Faculty at Wayne State University, Detroit. In 3 NCECA 2026...</div>
+            <div class="card-stats">8 connections</div>
+          </a>
+        </div><div class="card" data-name="leslie ferrin">
+          <a href="leslie-ferrin.html">
+            <div class="card-name">Leslie Ferrin</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Gallerist and ceramics advocate. Founder of Ferrin Contemporary gallery, North Adams, MA. Major dealer in contemporary ceramics for over three...</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="leticia lowry-garcilazo">
+          <a href="leticia-lowry-garcilazo.html">
+            <div class="card-name">Leticia Lowry-Garcilazo</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Clay in Performance: &#x27;The Wound of The Malinches&#x27;.</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="linda christianson">
+          <a href="linda-christianson.html">
+            <div class="card-name">Linda Christianson</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Independent studio potter in rural Minnesota (b. 1952). Studied at Hamline University (St. Paul, MN) and Banff Centre School of Fine Arts (Alberta,...</div>
+            <div class="card-stats">19 connections</div>
+          </a>
+        </div><div class="card" data-name="lindsay oesterritter">
+          <a href="lindsay-oesterritter.html">
+            <div class="card-name">Lindsay Oesterritter</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Past Masters presenter (John Neely tribute).</div>
+            <div class="card-stats">9 connections</div>
+          </a>
+        </div><div class="card" data-name="lisa chan">
+          <a href="lisa-chan.html">
+            <div class="card-name">Lisa Chan</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 organizer: &#x27;Shaping City&#x27; at Still Life Ceramics. Metro Detroit artists. | Organized Shaping City exhibition at Still Life Ceramics,...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="liz vukelich">
+          <a href="liz-vukelich.html">
+            <div class="card-name">Liz Vukelich</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Clay in Performance: &#x27;Cups For Drinking Together&#x27;. | Performed &quot;Cups For Drinking Together&quot; at NCECA 2026 Clay in Performance (Thursday...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="lloyd vandenbrink">
+          <a href="lloyd-vandenbrink.html">
+            <div class="card-name">Lloyd VandenBrink</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Lecture: &#x27;Automotive Clay Modeling: Purpose and Process&#x27;. Industrial clay modeler. | Presented &quot;Automotive Clay Modeling: Purpose and...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="louis reilly">
+          <a href="louis-reilly.html">
+            <div class="card-name">Louis Reilly</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Curator and exhibition organizer. Co-organized &quot;Soda, Clay, and Fire: The Legacy of Gail Nichols&quot; at Galerie Camille during NCECA 2026. | BFA...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="lucas pacuraru">
+          <a href="lucas-pacuraru.html">
+            <div class="card-name">Lucas Pacuraru</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist. Co-presented &quot;He&#x27;s My Left Hand: Tandem Throwing&quot; Makers Space at NCECA 2026 with Tina Gebhart.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="lucas pincer-flynn">
+          <a href="lucas-pincer-flynn.html">
+            <div class="card-name">Lucas Pincer-Flynn</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 organizer: &#x27;Speaking Volumes&#x27; at 27th Letter Books. Trans ceramic artists exhibition. | Organized Speaking Volumes at 27th Letter Books -...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="lucie rie">
+          <a href="lucie-rie.html">
+            <div class="card-name">Lucie Rie</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Dame Lucie Rie (1902-1995). Austrian-born British studio potter. Known for exquisite thin-walled vessels, distinctive glazes with volcanic textures,...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="lydia c. thompson">
+          <a href="lydia-c-thompson.html">
+            <div class="card-name">Lydia C. Thompson</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 co-organizer: &#x27;Remix to Motown 45&#x27; at The Carr Center. Also Color Network.</div>
+            <div class="card-stats">10 connections</div>
+          </a>
+        </div><div id="M" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">M</div><div class="card" data-name="madeline kaczmarczyk">
+          <a href="madeline-kaczmarczyk.html">
+            <div class="card-name">Madeline Kaczmarczyk</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Co-Lecture: &#x27;Made in Detroit - 100 Years of Clay&#x27;. Detroit native, Pewabic connection.</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="magdolene dykstra">
+          <a href="magdolene-dykstra.html">
+            <div class="card-name">Magdolene Dykstra</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist. Exhibited in Fluid State of Land at Wayne State. NCECA 2026.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="maija grotell">
+          <a href="maija-grotell.html">
+            <div class="card-name">Maija Grotell</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Historic: Finnish-American ceramist, head of Cranbrook ceramics 1938-1966. In Detroit Historical Museum exhibition.</div>
+            <div class="card-stats">18 connections</div>
+          </a>
+        </div><div class="card" data-name="malcolm davis">
+          <a href="malcolm-davis.html">
+            <div class="card-name">Malcolm Davis</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Malcolm Davis (1937-2011). Internationally recognized ceramic artist based in Upshur County, West Virginia for 25+ years. Pioneer of Carbon Trap...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="malcolm mobutu smith">
+          <a href="malcolm-mobutu-smith.html">
+            <div class="card-name">Malcolm Mobutu Smith</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist, educator, and advocate for equity in ceramics. Panelist on NCECA 2026 &#x27;Converging Tides&#x27; podcast reflecting on equitable initiatives...</div>
+            <div class="card-stats">27 connections</div>
+          </a>
+        </div><div class="card" data-name="mapó kinnord">
+          <a href="mapo-kinnord.html">
+            <div class="card-name">MaPó Kinnord</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist. Member of The Color Network. Exhibited in Color Network: Family Album. NCECA 2026.</div>
+            <div class="card-stats">10 connections</div>
+          </a>
+        </div><div class="card" data-name="margarita paz-pedro">
+          <a href="margarita-paz-pedro.html">
+            <div class="card-name">Margarita Paz-Pedro</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist. Co-presented &quot;Community Engaged Work in Ceramics&quot; podcast at NCECA 2026. | Mexican-American, Laguna Pueblo &amp; Santa Clara Pueblo. BFA...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="margeaux claude">
+          <a href="margeaux-claude.html">
+            <div class="card-name">Margeaux Claude</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 curator: &#x27;Detroit Dialogues&#x27; at EMU. Also in 12x12 exhibition. | Affiliated with Eastern Michigan University. Curated Detroit Dialogues:...</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="maria salazar">
+          <a href="maria-salazar.html">
+            <div class="card-name">Maria Salazar</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and veteran. Panelist at NCECA 2026 on VCAN - from Combat to Clay.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="maria white">
+          <a href="maria-white.html">
+            <div class="card-name">Maria White</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Lecture: &#x27;Mugs for Moms: Crafting Community&#x27;. Charleston, SC. | Presented &quot;Mugs for Moms: Crafting Community&quot; at NCECA 2026. Founded Mugs...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="mariah tso">
+          <a href="mariah-tso.html">
+            <div class="card-name">Mariah Tso</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist. Moderator of NCECA 2026 panel on Where the &quot;Wild&quot; Clays Are. Explores indigenous perspectives on clay and the language we use to...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="mark chatterley">
+          <a href="mark-chatterley.html">
+            <div class="card-name">Mark Chatterley</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Sculptor and ceramicist. Michigan-based. Known for large-scale ceramic sculptures. Exhibited in Underlying Systems. NCECA 2026. | Ryan owns one of...</div>
+            <div class="card-stats">8 connections</div>
+          </a>
+        </div><div class="card" data-name="mark meier">
+          <a href="mark-meier.html">
+            <div class="card-name">Mark Meier</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Clay Fab Lab: &#x27;Innovative Forms Through Rotary Axis Printing&#x27;. | Presented &quot;Innovative Forms Through Rotary Axis Printing&quot; Clay Fab Lab at...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="mark shapiro">
+          <a href="mark-shapiro.html">
+            <div class="card-name">Mark Shapiro</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Potter at Stonepool Pottery in Worthington, MA since 1986. Born NYC 1955. BA Anthropology from Amherst College (1978). Studied at Penland with...</div>
+            <div class="card-stats">11 connections</div>
+          </a>
+        </div><div class="card" data-name="mark stafford">
+          <a href="mark-stafford.html">
+            <div class="card-name">Mark Stafford</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Clay Fab Lab: &#x27;Digital Mold Design&#x27; - ZBrush techniques. | Presented &quot;Digital Mold Design&quot; Clay Fab Lab at NCECA 2026, demonstrating...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="martin schapiro">
+          <a href="martin-schapiro.html">
+            <div class="card-name">Martin Schapiro</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 organizer: Cranbrook x SAIC Exchange (10th annual). Cranbrook student. | MFA candidate, Cranbrook Academy of Art. Organized 10th Annual...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="mary chase perry stratton">
+          <a href="mary-chase-perry-stratton.html">
+            <div class="card-name">Mary Chase Perry Stratton</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Co-founder of Pewabic Pottery (1903). Pioneer in iridescent glazes. Pewabic is her lasting legacy — a National Historic Landmark on East Jefferson...</div>
+            <div class="card-stats">9 connections</div>
+          </a>
+        </div><div class="card" data-name="mathew meunier">
+          <a href="mathew-meunier.html">
+            <div class="card-name">Mathew Meunier</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist specializing in low-temperature soda firing techniques. Panelist at NCECA 2026 on Atmospheric Alternative: Low-temperature Soda Firing.</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="matt kelleher">
+          <a href="matt-kelleher.html">
+            <div class="card-name">Matt Kelleher</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Functional potter connected to the Alfred University ceramics tradition. MFA Alfred University. Based in the Northeast. Known for robust thrown forms...</div>
+            <div class="card-stats">20 connections</div>
+          </a>
+        </div><div class="card" data-name="max trumpower">
+          <a href="max-trumpower.html">
+            <div class="card-name">Max Trumpower</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026: TiCC conversation, juried student exhibition, Speaking Volumes, (liquid) exhibitions.</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="maxwell henderson">
+          <a href="maxwell-henderson.html">
+            <div class="card-name">Maxwell Henderson</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Emerging Artist.</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="megan thomas">
+          <a href="megan-thomas.html">
+            <div class="card-name">Megan Thomas</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist. BGSU connection. Exhibited in Mass Movement. NCECA 2026.</div>
+            <div class="card-stats">14 connections</div>
+          </a>
+        </div><div class="card" data-name="melissa felderman">
+          <a href="melissa-felderman.html">
+            <div class="card-name">Melissa Felderman</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Clay Fab Lab: &#x27;Sculpting Pixels: 3D Modeling for Potters&#x27;. | Presented &quot;Sculpting Pixels: 3-D Modeling for Potters&quot; Clay Fab Lab at NCECA...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="meredith habermann">
+          <a href="meredith-habermann.html">
+            <div class="card-name">Meredith Habermann</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and educator. Panelist at NCECA 2026 on Apprenticeship In The Modern Age.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="micah lewis-văn sweezie">
+          <a href="micah-lewis-van-sweezie.html">
+            <div class="card-name">Micah Lewis-Văn Sweezie</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Podcast: &#x27;Converging Tides&#x27;. Also curated The Car Show, multiple exhibitions. From Kalamazoo, Michigan. BFA from School of the Art...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="michael takahata">
+          <a href="michael-takahata.html">
+            <div class="card-name">Michael Takahata</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 curator: &#x27;Clay Currents&#x27; at Hatch Art. Also BBAC and Beyond the Garden exhibitions. | Curated Clay Currents at Hatch Art, Hamtramck. Also...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="michelle solorzano">
+          <a href="michelle-solorzano.html">
+            <div class="card-name">Michelle Solorzano</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Figurative ceramic sculptor originally from the Dominican Republic. BFA in Painting and Ceramics from SUNY Potsdam. MFA in Ceramics from Indiana...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="mick kennedy">
+          <a href="mick-kennedy.html">
+            <div class="card-name">Mick Kennedy</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Architectural ceramics researcher. NCECA 2026 Lecture: &#x27;Clay Tile Vaulting: Barcelona to Detroit&#x27; exploring Guastavino tile vaulting at Michigan...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="monica juarez">
+          <a href="monica-juarez.html">
+            <div class="card-name">Monica Juarez</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Clay in Performance: &#x27;Earthquake&#x27;. | Performed &quot;Earthquake&quot; at NCECA 2026 Clay in Performance.</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div id="N" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">N</div><div class="card" data-name="nancy servis">
+          <a href="nancy-servis.html">
+            <div class="card-name">Nancy Servis</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic art historian and curator. Lecturer at NCECA 2026 on &quot;Jun Kaneko: The Engagement of Space.&quot; Expert on Japanese-American ceramic sculptor Jun...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="natalia arbelaez">
+          <a href="natalia-arbelaez.html">
+            <div class="card-name">Natalia Arbelaez</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Colombian-American ceramic artist. BFA Kansas City Art Institute, MFA Ohio State University. Work explores identity, cultural heritage, and the...</div>
+            <div class="card-stats">25 connections</div>
+          </a>
+        </div><div class="card" data-name="natsu oyobe">
+          <a href="natsu-oyobe.html">
+            <div class="card-name">Natsu Oyobe</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Curator at the University of Michigan Museum of Art (UMMA). NCECA 2026 Lecturer on &#x27;Japanese Yakishime Wares and Michigan Artists&#x27; exploring...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div id="P" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">P</div><div class="card" data-name="paul andrew wandless">
+          <a href="paul-andrew-wandless.html">
+            <div class="card-name">Paul Andrew Wandless</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Panel: &#x27;The Color Network&#x27;. Past/present Color Network organizer.</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="paul greenhalgh">
+          <a href="paul-greenhalgh.html">
+            <div class="card-name">Paul Greenhalgh</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic art historian. Co-presented &quot;The History of Ceramics: Three Courses&quot; podcast at NCECA 2026 with Stephanie Rozene.</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="paul kotula">
+          <a href="paul-kotula.html">
+            <div class="card-name">Paul Kotula</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Associate Professor of Ceramics at Michigan State University (since 2009). BFA Wayne State 1981, MFA Alfred 1989. Former Gallery Director at Pewabic...</div>
+            <div class="card-stats">20 connections</div>
+          </a>
+        </div><div class="card" data-name="paul s. briggs">
+          <a href="paul-s-briggs.html">
+            <div class="card-name">Paul S. Briggs</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and educator born in Beacon, NY. BA Education/Ceramics from City College of New York (1986). MS.Ed Education/Ceramics from Alfred...</div>
+            <div class="card-stats">42 connections</div>
+          </a>
+        </div><div class="card" data-name="paul soldner">
+          <a href="paul-soldner.html">
+            <div class="card-name">Paul Soldner</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Voulkos&#x27;s first graduate student (1921–2011). Inventor of American raku.</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="pete pinnell">
+          <a href="pete-pinnell.html">
+            <div class="card-name">Pete Pinnell</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Glaze specialist, educator. BA Music Columbia College (MO), BFA Alfred University, MFA University of Colorado. Professor of Ceramics at University of...</div>
+            <div class="card-stats">12 connections</div>
+          </a>
+        </div><div class="card" data-name="peter pincus">
+          <a href="peter-pincus.html">
+            <div class="card-name">Peter Pincus</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist known for nerikomi (colored clay) techniques creating intricate geometric patterns. BFA Kansas City Art Institute, MFA Alfred...</div>
+            <div class="card-stats">33 connections</div>
+          </a>
+        </div><div class="card" data-name="peter voulkos">
+          <a href="peter-voulkos.html">
+            <div class="card-name">Peter Voulkos</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Peter Voulkos (1924-2002). Greek-American ceramicist who revolutionized ceramics as fine art. Founder of ceramics program at Otis Art Institute....</div>
+            <div class="card-stats">9 connections</div>
+          </a>
+        </div><div id="Q" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">Q</div><div class="card" data-name="quinn alexandria hunter">
+          <a href="quinn-alexandria-hunter.html">
+            <div class="card-name">Quinn Alexandria Hunter</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Clay in Performance: &#x27;Foundations&#x27;. Also organized &#x27;Fluid State of Land&#x27;, Annual juried artist. | Performed &quot;Foundations&quot; at NCECA 2026...</div>
+            <div class="card-stats">8 connections</div>
+          </a>
+        </div><div id="R" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">R</div><div class="card" data-name="raheleh filsoofi">
+          <a href="raheleh-filsoofi.html">
+            <div class="card-name">Raheleh Filsoofi</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Iranian-American interdisciplinary artist combining ceramics, sound, and installation. MFA Alfred University. Faculty at Florida International...</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="randy johnston">
+          <a href="randy-johnston.html">
+            <div class="card-name">Randy Johnston</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Randy Johnston. American wood-fire potter based in River Falls, Wisconsin. Studied in Japan with Shimaoka Tatsuzo. Known for powerful wood-fired...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="raven halfmoon">
+          <a href="raven-halfmoon.html">
+            <div class="card-name">Raven Halfmoon</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Caddo Nation ceramic artist creating large-scale figurative ceramic sculptures. Rising star in contemporary ceramics. BFA U of Arkansas, MFA...</div>
+            <div class="card-stats">9 connections</div>
+          </a>
+        </div><div class="card" data-name="ray eames">
+          <a href="ray-eames.html">
+            <div class="card-name">Ray Eames</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Abstract artist &amp; furniture designer (1912-1988). née Kaiser. Cranbrook alumna, married Charles Eames in 1941. Collaborated on virtually all Eames...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="rebekah bogard">
+          <a href="rebekah-bogard.html">
+            <div class="card-name">Rebekah Bogard</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Lecture: &#x27;Engineering Your Ceramic Sculpture for Survival&#x27;. | Presented &quot;Engineering Your Ceramic Sculpture for Survival&quot; at NCECA 2026.</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="reginald green">
+          <a href="reginald-green.html">
+            <div class="card-name">Reginald Green</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and veteran. Panelist at NCECA 2026 on VCAN - from Combat to Clay.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="renata cassiano alvarez">
+          <a href="renata-cassiano-alvarez.html">
+            <div class="card-name">Renata Cassiano Alvarez</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist. Juror for NCECA 2026 Multicultural Fellowship Exhibition. | Mexican-Italian artist from Mexico City. Visiting Assistant Professor of Art...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="reniel r. del rosario">
+          <a href="reniel-r-del-rosario.html">
+            <div class="card-name">Reniel R. Del Rosario</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Clay Conversation: &#x27;Filipino Potters: Community Within the Diaspora&#x27;. | Born in Iba, Philippines. BA Art Practice, UC Berkeley. AMOCA...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="richard devore">
+          <a href="richard-devore.html">
+            <div class="card-name">Richard DeVore</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Influential ceramic vessel artist. Born 1933 Toledo OH. Died 2006. Studied under Maija Grotell at Cranbrook (MFA 1957). Taught at Cranbrook...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="richard hesketh">
+          <a href="richard-hesketh.html">
+            <div class="card-name">Richard Hesketh</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Projects Space: &#x27;Industrial Clay&#x27;. Ford Design clay modeling team.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="richard notkin">
+          <a href="richard-notkin.html">
+            <div class="card-name">Richard Notkin</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Panel moderator: &#x27;Can Art Make a Difference?&#x27; 56 years as ceramic artist. Also Mold Doctors co-lecture.</div>
+            <div class="card-stats">17 connections</div>
+          </a>
+        </div><div class="card" data-name="robert arneson">
+          <a href="robert-arneson.html">
+            <div class="card-name">Robert Arneson</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Father of ceramic Funk art (1930–1992). UC Davis professor.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="robert harrison">
+          <a href="robert-harrison.html">
+            <div class="card-name">Robert Harrison</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist. MFA Cranbrook Academy of Art. Michigan-based ceramicist. NCECA 2026 Past Masters presenter (Ulla Viotti tribute). Exhibited in...</div>
+            <div class="card-stats">19 connections</div>
+          </a>
+        </div><div class="card" data-name="roberto lugo">
+          <a href="roberto-lugo.html">
+            <div class="card-name">Roberto Lugo</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Panel: &#x27;Can Art Make a Difference?&#x27; Known for socially engaged ceramics.</div>
+            <div class="card-stats">25 connections</div>
+          </a>
+        </div><div class="card" data-name="robyn gibson">
+          <a href="robyn-gibson.html">
+            <div class="card-name">Robyn Gibson</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 organizer: &#x27;A Table of Our Own&#x27; at DBCFSN. Also Multicultural Fellowship, Color Network. | Exhibited in NCECA Multicultural Fellowship...</div>
+            <div class="card-stats">11 connections</div>
+          </a>
+        </div><div class="card" data-name="rostislav eismont">
+          <a href="rostislav-eismont.html">
+            <div class="card-name">Rostislav Eismont</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">One of John Glick&#x27;s early apprentices at Plum Tree Pottery (1972-73). Supported by Louis Comfort Tiffany Grant in Apprentice Assistance Program....</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="rudy autio">
+          <a href="rudy-autio.html">
+            <div class="card-name">Rudy Autio</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Montana ceramicist &amp; sculptor (1926-2007). Co-founding resident at Archie Bray with Voulkos.</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="ryan">
+          <a href="ryan.html">
+            <div class="card-name">Ryan</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Potter in Howell, MI. Cone 10 gas reduction, raku, glow glazes. Built Stull Atlas. My Clay Corner Studio. Got into clay through a friend, restored a...</div>
+            <div class="card-stats">18 connections</div>
+          </a>
+        </div><div class="card" data-name="ryan forrey">
+          <a href="ryan-forrey.html">
+            <div class="card-name">Ryan Forrey</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Projects Space: &#x27;GM Design Clay and Digital Sculpting&#x27;. General Motors Design. | NCECA 2026 Projects Space: &quot;GM Design Clay and Digital...</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div id="S" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">S</div><div class="card" data-name="salvador jimenez-flores">
+          <a href="salvador-jimenez-flores.html">
+            <div class="card-name">Salvador Jimenez-Flores</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Mexican-American ceramic artist exploring identity, immigration, and cultural heritage. Work combines traditional pottery forms with narrative...</div>
+            <div class="card-stats">11 connections</div>
+          </a>
+        </div><div class="card" data-name="sam chung">
+          <a href="sam-chung.html">
+            <div class="card-name">Sam Chung</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Juror. Ceramic artist known for architectural vessel forms.</div>
+            <div class="card-stats">21 connections</div>
+          </a>
+        </div><div class="card" data-name="sana musasama">
+          <a href="sana-musasama.html">
+            <div class="card-name">Sana Musasama</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Clay artist, humanitarian, global trotter. BA City College of New York 1973. MFA Alfred University 1988. Received 2018 NCECA Achievement Award for...</div>
+            <div class="card-stats">9 connections</div>
+          </a>
+        </div><div class="card" data-name="sara clark">
+          <a href="sara-clark.html">
+            <div class="card-name">Sara Clark</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 organizer: &#x27;SVSU Alumni and Friends&#x27; at The War Memorial. Saginaw Valley State. | Saginaw Valley State University. Organized SVSU Alumni...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="sara nishikawa">
+          <a href="sara-nishikawa.html">
+            <div class="card-name">Sara Nishikawa</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026: &#x27;Snack Time!&#x27; solo exhibition at Always Tomorrow. Detroit-based artist. | Detroit-based ceramicist. First solo exhibition &quot;Snack Time!&quot;...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="sarah didomenico">
+          <a href="sarah-didomenico.html">
+            <div class="card-name">Sarah DiDomenico</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Lecture: &#x27;Ergonomics: Working Smarter, Not Harder&#x27;. Occupational therapist. | Presented &quot;Ergonomics: Working Smarter, Not Harder&quot; at NCECA...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="sayge carroll">
+          <a href="sayge-carroll.html">
+            <div class="card-name">Sayge Carroll</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Panel: &#x27;Starting Your Own Pottery Studio&#x27;. Minneapolis studio founder.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="sean vandenbrink">
+          <a href="sean-vandenbrink.html">
+            <div class="card-name">Sean VandenBrink</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Projects Space: &#x27;Industrial Clay&#x27;. Ford Design team. Also exhibiting at multiple venues.</div>
+            <div class="card-stats">14 connections</div>
+          </a>
+        </div><div class="card" data-name="seth green">
+          <a href="seth-green.html">
+            <div class="card-name">Seth Green</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Panel: &#x27;The State of Clay: Statewide Organizations&#x27;. Indiana clay org.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="shalya marsh">
+          <a href="shalya-marsh.html">
+            <div class="card-name">Shalya Marsh</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Makers Space: &#x27;Form and Surface: Templates that Transform&#x27;. | Presented &quot;Form and Surface: Templates that Transform&quot; Makers Space at NCECA...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="sharon louden">
+          <a href="sharon-louden.html">
+            <div class="card-name">Sharon Louden</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Artist, educator, and arts advocate. BFA School of the Art Institute of Chicago, MFA Yale University. Faculty at School of Visual Arts (SVA), NYC....</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="shikha joshi">
+          <a href="shikha-joshi.html">
+            <div class="card-name">Shikha Joshi</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Lecture: &#x27;Re-imagining Outcomes From an Electric Kiln&#x27;. | Presented &quot;Re-imagining Outcomes From an Electric Kiln&quot; at NCECA 2026.</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="shoji hamada">
+          <a href="shoji-hamada.html">
+            <div class="card-name">Shoji Hamada</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Shoji Hamada (1894-1978). Japanese potter, one of the founders of the mingei (folk craft) movement alongside Yanagi Soetsu. Living National Treasure...</div>
+            <div class="card-stats">14 connections</div>
+          </a>
+        </div><div class="card" data-name="signe fensholt">
+          <a href="signe-fensholt.html">
+            <div class="card-name">Signe Fensholt</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Projects Space: &#x27;Sourcing Waste as Ceramic Resource&#x27;.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="simon levin">
+          <a href="simon-levin.html">
+            <div class="card-name">Simon Levin</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Wood-fire potter based in Gresham, Wisconsin. BA Grinnell College (1990), MA/MFA Ceramics University of Iowa (1997/1998). Full-time studio potter...</div>
+            <div class="card-stats">22 connections</div>
+          </a>
+        </div><div class="card" data-name="simone desousa">
+          <a href="simone-desousa.html">
+            <div class="card-name">Simone DeSousa</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 curator: Cranbrook x SAIC Exchange. Detroit gallerist. | Detroit gallerist. Curated 10th Annual Cranbrook x SAIC Exchange at Always...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="sorrel stone">
+          <a href="sorrel-stone.html">
+            <div class="card-name">Sorrel Stone</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026: TiCC conversation, Speaking Volumes, Outpour, Toledo exhibitions.</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="stephanie pizza">
+          <a href="stephanie-pizza.html">
+            <div class="card-name">Stephanie Pizza</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic educator. Panelist at NCECA 2026 &#x27;Clay Without Barriers: Inclusive Ceramics Experiences&#x27; with Kaci Handlery. Advocates for accessible...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="stephanie rozene">
+          <a href="stephanie-rozene.html">
+            <div class="card-name">Stephanie Rozene</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Podcast: &#x27;The History of Ceramics: Three Courses&#x27;. Also in BGSU Mass Movement show.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="steve glazer">
+          <a href="steve-glazer.html">
+            <div class="card-name">Steve Glazer</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 organizer: &#x27;12x12: Small Works That Speak Volumes&#x27; at The Voyeur Bordello. | Organized 12x12: Small Works That Speak Volumes at The Voyeur...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="steve mcbride">
+          <a href="steve-mcbride.html">
+            <div class="card-name">Steve McBride</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Pewabic Pottery Executive Director (10+ years, retiring Sept 2025). Former studio potter. Oversaw Frankel Tile Studio expansion, QLINE tiles, Little...</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="steve théberge">
+          <a href="steve-theberge.html">
+            <div class="card-name">Steve Théberge</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and apprenticeship organizer. Moderator of NCECA 2026 panel &#x27;Apprenticeship: Conversations Between&#x27; exploring the master-apprentice...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="steven johnson">
+          <a href="steven-johnson.html">
+            <div class="card-name">Steven Johnson</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Runs Rovin Ceramics in Ann Arbor. Where Ryan ran into Henry Feb 10, 2026.</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="sunyoung park">
+          <a href="sunyoung-park.html">
+            <div class="card-name">SunYoung Park</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Emerging Artist.</div>
+            <div class="card-stats">11 connections</div>
+          </a>
+        </div><div class="card" data-name="susan beiner">
+          <a href="susan-beiner.html">
+            <div class="card-name">Susan Beiner</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and educator. Professor at Arizona State University. BFA Alfred University. Creates large-scale ecological ceramic installations...</div>
+            <div class="card-stats">9 connections</div>
+          </a>
+        </div><div class="card" data-name="susan laporte">
+          <a href="susan-laporte.html">
+            <div class="card-name">Susan LaPorte</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">CCS faculty. MFA Western Michigan University (Frostic School), BFA Michigan State University. Cross-links to three Michigan institutions.</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="susanne stephenson">
+          <a href="susanne-stephenson.html">
+            <div class="card-name">Susanne Stephenson</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and educator. Professor of Art at Eastern Michigan University for many years. Known for sculptural ceramic work blending vessel and...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div id="T" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">T</div><div class="card" data-name="taiyaba ahmed">
+          <a href="taiyaba-ahmed.html">
+            <div class="card-name">Taiyaba Ahmed</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and community organizer. Founder of South Asian Clay Collective. NCECA 2026 Lecture: &#x27;Building Bridges Through Clay&#x27; on creating...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="taty hernandez">
+          <a href="taty-hernandez.html">
+            <div class="card-name">Taty Hernandez</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Panel: &#x27;Starting Your Own Pottery Studio&#x27;. Los Angeles studio founder.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="taylor sijan">
+          <a href="taylor-sijan.html">
+            <div class="card-name">Taylor Sijan</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist. Panelist at NCECA 2026 on Apprenticeship In The Modern Age.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="teresa pietsch">
+          <a href="teresa-pietsch.html">
+            <div class="card-name">Teresa Pietsch</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Panel: &#x27;Low-temperature Soda Firing&#x27;.</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="tessa peters">
+          <a href="tessa-peters.html">
+            <div class="card-name">Tessa Peters</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Lecture: &#x27;Future Ecologies of Clay&#x27;. UK-based researcher. | Presented &quot;Future Ecologies of Clay&quot; at NCECA 2026, about UK research on...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="thora finnsdottir">
+          <a href="thora-finnsdottir.html">
+            <div class="card-name">Thora Finnsdottir</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Projects Space: &#x27;Sourcing Waste as Ceramic Resource&#x27; with NCECA Green Task Force.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="tia santana">
+          <a href="tia-santana.html">
+            <div class="card-name">Tia Santana</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Clay in Performance: &#x27;Braiding Memory: A Ritual Mapping&#x27;. Also Annual Exhibition juried artist. | Performed &quot;Braiding Memory: A Ritual...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="tiffany thomas">
+          <a href="tiffany-thomas.html">
+            <div class="card-name">Tiffany Thomas</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Projects Space: &#x27;The Love Project&#x27; - participatory installation exploring love through clay. | NCECA 2026 Projects Space: &quot;The Love...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="tina gebhart">
+          <a href="tina-gebhart.html">
+            <div class="card-name">Tina Gebhart</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Makers Space: &#x27;Tandem Throwing&#x27;. Also in Flower City Imbibition exhibition.</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="tip toland">
+          <a href="tip-toland.html">
+            <div class="card-name">Tip Toland</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Figurative ceramic sculptor (b. 1950, Pottstown, PA). BFA Ceramics UC Boulder, MFA Ceramics Montana State University. Known for hyper-realistic...</div>
+            <div class="card-stats">11 connections</div>
+          </a>
+        </div><div class="card" data-name="tom phardel">
+          <a href="tom-phardel.html">
+            <div class="card-name">Tom Phardel</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Tom Phardel (b. 1950), American sculptor and ceramist born in Detroit to Sicilian immigrants. BFA Eastern Michigan University (Ypsilanti), MFA...</div>
+            <div class="card-stats">8 connections</div>
+          </a>
+        </div><div class="card" data-name="tommy lomeli">
+          <a href="tommy-lomeli.html">
+            <div class="card-name">Tommy Lomeli</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Emerging Artist. | Exhibited in The Car Show at Popps Packing (with Jessica Brandl, Vincent Frimpong, David Morrison). NCECA 2026 emerging...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="tony clennell">
+          <a href="tony-clennell.html">
+            <div class="card-name">Tony Clennell</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Canadian wood-fire potter. Known for atmospheric fired pottery. Influential figure in Canadian wood-firing community. Exhibiting in &#x27;Canadian...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="toshiko takaezu">
+          <a href="toshiko-takaezu.html">
+            <div class="card-name">Toshiko Takaezu</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Pioneering ceramic artist known for closed &#x27;moon&#x27; forms. Born 1922 Pepeekeo, Hawaii. Died 2011. Studied under Maija Grotell at Cranbrook (MFA 1951)....</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="tracey priska">
+          <a href="tracey-priska.html">
+            <div class="card-name">Tracey Priska</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Short Form: &#x27;Honoring the Legacy of Empty Bowls&#x27;. Also organized Empty Bowls Detroit. | Presented &quot;Honoring the Legacy of Empty Bowls&quot; at...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div id="V" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">V</div><div class="card" data-name="val cushing">
+          <a href="val-cushing.html">
+            <div class="card-name">Val Cushing</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Val Cushing (1931-2013). Legendary ceramic educator at Alfred University for 40+ years. Master of high-fire glazes. Val Cushing&#x27;s glaze notebooks are...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="vanessa alvarado">
+          <a href="vanessa-alvarado.html">
+            <div class="card-name">Vanessa Alvarado</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Podcast: &#x27;Community Engaged Work in Ceramics&#x27;.</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="vianney lopez">
+          <a href="vianney-lopez.html">
+            <div class="card-name">Vianney Lopez</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramic artist and performer. Performing &quot;Earth&#x27;s Instruments: Clay, Sound, Ancestral Memory&quot; at NCECA 2026. Creates hand-formed ceramic instruments...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="vincent (sniper) frimpong">
+          <a href="vincent-frimpong.html">
+            <div class="card-name">Vincent (Sniper) Frimpong</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Born in Accra, Ghana. MFA University of Arkansas. Faculty at Talladega College. Creates work exploring African diaspora and cultural connections...</div>
+            <div class="card-stats">11 connections</div>
+          </a>
+        </div><div class="card" data-name="virginia torrence">
+          <a href="virginia-torrence.html">
+            <div class="card-name">Virginia Torrence</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Henry&#x27;s wife. Co-founded Ceramics School in 2019. $35,595 Kickstarter. Renovated storefront attached to their house in Hamtramck with artist...</div>
+            <div class="card-stats">11 connections</div>
+          </a>
+        </div><div id="W" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">W</div><div class="card" data-name="wade macdonald">
+          <a href="wade-macdonald.html">
+            <div class="card-name">Wade MacDonald</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 co-organizer: &#x27;Afterlight&#x27; at Playground Detroit. Also MSU &#x27;Voices Echo&#x27;. | Michigan State University. Co-organized Afterlight with Kyle...</div>
+            <div class="card-stats">21 connections</div>
+          </a>
+        </div><div class="card" data-name="wansoo kim">
+          <a href="wansoo-kim.html">
+            <div class="card-name">Wansoo Kim</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist. Exhibited in NCECA Annual Absence Takes Form and Body Shop at Scarab Club. NCECA 2026.</div>
+            <div class="card-stats">8 connections</div>
+          </a>
+        </div><div class="card" data-name="warren mackenzie">
+          <a href="warren-mackenzie.html">
+            <div class="card-name">Warren MacKenzie</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Warren MacKenzie (1924-2018). American functional potter. Studied with Bernard Leach and Shoji Hamada in St Ives. Professor at University of...</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div id="Y" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">Y</div><div class="card" data-name="yanagi sōetsu">
+          <a href="yanagi-soetsu.html">
+            <div class="card-name">Yanagi Sōetsu</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Japanese philosopher &amp; art critic (1889-1961). Founded the mingei (folk craft) movement in 1920s Japan. Wrote &#x27;The Unknown Craftsman.&#x27; Central tenet:...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="yaqi cai">
+          <a href="yaqi-cai.html">
+            <div class="card-name">Yaqi Cai</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Clay Fab Lab: &#x27;Cut, Etch, Sinter: Laser Cutting + Clay&#x27;. SMFA Digital Fabrication. | Presented &quot;Cut, Etch, Sinter: Laser Cutting + Clay&quot;...</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="yeesookyung">
+          <a href="yeesookyung.html">
+            <div class="card-name">Yeesookyung</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Korean sculptor known for &#x27;Translated Vase&#x27; series - reassembling deliberately broken moon jars with gold leaf. BFA and MFA Seoul National...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="yeonsoo kim">
+          <a href="yeonsoo-kim.html">
+            <div class="card-name">Yeonsoo Kim</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Makers Space: &#x27;Breathing Volume: Traditional Onggi&#x27;. Korean pottery. Also Mom&#x27;s Collection. | Presented &quot;Breathing Volume: Traditional...</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="yve holtzclaw">
+          <a href="yve-holtzclaw.html">
+            <div class="card-name">Yve Holtzclaw</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Clay Conversation: Trans Ceramics Community (TiCC).</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div id="Z" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">Z</div><div class="card" data-name="zach tate">
+          <a href="zach-tate.html">
+            <div class="card-name">Zach Tate</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 Lecture: &#x27;Rice Ash and Amorphous Silica&#x27;. Northeast Arkansas research. | Presented &quot;Rice Ash and Amorphous Silica&quot; at NCECA 2026, from 3...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="zena segre">
+          <a href="zena-segre.html">
+            <div class="card-name">Zena Segre</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">NCECA 2026 curator: &#x27;Fractals and Familiar Things&#x27; at Popps Packing. Ox-Bow School connection. | Affiliated with Ox-Bow School of Art. Curated...</div>
+            <div class="card-stats">8 connections</div>
+          </a>
+        </div><div class="card" data-name="zimra beiner">
+          <a href="zimra-beiner.html">
+            <div class="card-name">Zimra Beiner</div>
+            <span class="card-type type-person">person</span>
+            <div class="card-notes">Ceramicist. BGSU connection. Exhibited in Mass Movement. NCECA 2026.</div>
+            <div class="card-stats">14 connections</div>
+          </a>
+        </div></div>
+    
+</div>
+<div class="site-footer">
+  Ceramics Community Atlas · Data from the Ceramics Community Graph · <a href="https://stullatlas.app">stullatlas.app</a>
+</div>
+</body>
+</html>
