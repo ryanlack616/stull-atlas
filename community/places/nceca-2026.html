@@ -1,0 +1,2249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NCECA 2026 — Ceramics Community Atlas</title>
+<style>
+:root {
+  --bg: #07070c; --bg-card: #0f0f18; --bg-hover: #17172a;
+  --border: #1e1e3a; --text: #c8c8d8; --text-dim: #6b6b8a; --text-bright: #e8e8f0;
+  --accent: #818cf8; --accent-dim: #4f46e5;
+  --rose: #fb7185; --teal: #2dd4bf; --amber: #fbbf24; --emerald: #34d399;
+  --mono: 'SF Mono','Cascadia Code','JetBrains Mono','Fira Code',monospace;
+  --sans: 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); color: var(--text); font-family: var(--sans); }
+body { min-height: 100vh; display: flex; flex-direction: column; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Banner */
+.banner {
+  background: linear-gradient(135deg, var(--accent-dim), #2d1b69);
+  color: var(--text-bright); font-family: var(--mono); font-size: 0.72rem;
+  padding: 0.35rem 1rem; text-align: center; border-bottom: 1px solid var(--accent);
+}
+.banner a { color: var(--amber); }
+
+/* Header */
+.site-header {
+  display: flex; align-items: center; gap: 1rem; padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.site-header .logo { font-family: var(--mono); font-size: 1.1rem; color: var(--text-bright); }
+.site-header .logo .sigil { color: var(--accent); }
+.site-header nav { display: flex; gap: 0.6rem; margin-left: auto; flex-wrap: wrap; }
+.site-header nav a {
+  font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim);
+  padding: 0.3rem 0.6rem; border: 1px solid var(--border); border-radius: 6px;
+  transition: all 0.15s;
+}
+.site-header nav a:hover { color: var(--text-bright); border-color: var(--accent); text-decoration: none; }
+.site-header nav a.active { background: var(--accent-dim); color: var(--text-bright); border-color: var(--accent); }
+
+/* Search */
+.search-wrap { padding: 1rem 2rem; }
+.search-input {
+  width: 100%; max-width: 500px; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.6rem 1rem; color: var(--text-bright);
+  font-family: var(--mono); font-size: 0.85rem; outline: none;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--text-dim); }
+
+/* Main content */
+.content { flex: 1; padding: 1rem 2rem 3rem; max-width: 1200px; width: 100%; margin: 0 auto; }
+
+/* Cards grid */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+.card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.2rem; transition: border-color 0.15s;
+}
+.card:hover { border-color: var(--accent); }
+.card a { text-decoration: none; }
+.card .card-name { font-family: var(--mono); font-size: 0.9rem; color: var(--text-bright); margin-bottom: 0.3rem; }
+.card .card-type {
+  font-family: var(--mono); font-size: 0.62rem; padding: 0.12rem 0.4rem;
+  border-radius: 4px; display: inline-block; margin-bottom: 0.4rem;
+}
+.card .card-notes { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; }
+.card .card-stats { font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim); margin-top: 0.4rem; }
+
+/* Type badge colors */
+.type-person { background: rgba(129,140,248,0.2); color: var(--accent); }
+.type-institution { background: rgba(251,191,36,0.2); color: var(--amber); }
+.type-organization { background: rgba(45,212,191,0.2); color: var(--teal); }
+.type-place { background: rgba(52,211,153,0.2); color: var(--emerald); }
+.type-technique { background: rgba(251,113,133,0.2); color: var(--rose); }
+.type-venue { background: rgba(168,85,247,0.2); color: #a855f7; }
+.type-event { background: rgba(251,113,133,0.2); color: var(--rose); }
+
+/* Detail page */
+.detail-header { margin-bottom: 2rem; }
+.detail-header h1 { font-family: var(--mono); font-size: 1.8rem; color: var(--text-bright); margin-bottom: 0.5rem; }
+.detail-header .meta { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+
+.detail-body { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; }
+@media (max-width: 768px) { .detail-body { grid-template-columns: 1fr; } }
+
+.detail-main {}
+.detail-sidebar {}
+
+.section { margin-bottom: 1.5rem; }
+.section-title {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem;
+  padding-bottom: 0.3rem; border-bottom: 1px solid var(--border);
+}
+.notes-text { font-size: 0.88rem; color: var(--text); line-height: 1.7; }
+
+/* Connection list */
+.conn-group { margin-bottom: 1rem; }
+.conn-group-title { font-family: var(--mono); font-size: 0.68rem; color: var(--amber); margin-bottom: 0.3rem; }
+.conn-item {
+  display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0;
+  font-family: var(--mono); font-size: 0.78rem; border-bottom: 1px solid var(--border);
+}
+.conn-item:last-child { border-bottom: none; }
+.conn-item a { color: var(--text-bright); }
+.conn-item .conn-label { color: var(--text-dim); font-size: 0.65rem; }
+.conn-item .conn-year { color: var(--amber); font-size: 0.62rem; }
+.conn-item .conn-arrow { color: var(--accent); }
+
+/* Stats on landing page */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.stat-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem; text-align: center;
+}
+.stat-card .stat-num { font-family: var(--mono); font-size: 2rem; color: var(--text-bright); }
+.stat-card .stat-label { font-family: var(--mono); font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Ego network SVG */
+.ego-wrap { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 1rem; }
+.ego-wrap svg { width: 100%; height: 280px; display: block; }
+
+/* Update request */
+.update-request {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  padding: 0.8rem 1rem; margin-top: 1rem; font-size: 0.78rem;
+}
+.update-request a { color: var(--amber); }
+
+/* Footer */
+.site-footer {
+  padding: 1.5rem 2rem; border-top: 1px solid var(--border);
+  font-family: var(--mono); font-size: 0.68rem; color: var(--text-dim);
+  text-align: center;
+}
+
+/* Search results (JS filtered) */
+.card.hidden { display: none; }
+.dir-count { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); margin-bottom: 1rem; }
+.alpha-nav { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.alpha-nav a {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim);
+  padding: 0.2rem 0.5rem; border: 1px solid var(--border); border-radius: 4px;
+}
+.alpha-nav a:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="banner">Ceramics Community Atlas · <a href="https://stullatlas.app">Stull Atlas</a> · NCECA 2026 Detroit</div>
+<div class="site-header">
+  <a href="../index.html" class="logo"><span class="sigil">&#9670;</span> Ceramics Community Atlas</a>
+  <nav><a href="../people/index.html" class="">People</a>
+<a href="../schools/index.html" class="">Schools</a>
+<a href="../techniques/index.html" class="">Techniques</a>
+<a href="../places/index.html" class=" active">Places</a>
+<a href="../orgs/index.html" class="">Orgs</a>
+<a href="/community/" class="">Explorer</a>
+<a href="/community/map.html" class="">Map</a>
+</nav>
+</div>
+<div style="font-family:var(--mono);font-size:0.7rem;color:var(--text-dim);padding:0.6rem 2rem;border-bottom:1px solid var(--border)"><a href="../index.html">Atlas</a>  /  <a href="index.html">Events</a>  /  <span style="color:var(--text-bright)">NCECA 2026</span></div>
+
+<div class="content">
+
+    <div class="detail-header">
+      <h1>NCECA 2026 <span style="font-size:0.62rem;padding:0.12rem 0.4rem;border-radius:4px;background:rgba(251,113,133,0.2);color:var(--rose)">NCECA 2026</span></h1>
+      <div class="meta">
+        <span class="card-type type-event">event</span>
+        <span>398 connections</span>
+        
+      </div>
+    </div>
+
+    <div class="detail-body">
+      <div class="detail-main">
+        <div class="section">
+          <div class="section-title">About</div>
+          <div class="notes-text">60th annual conference &#x27;Volumes&#x27; — March 25-28, 2026, Huntington Place Convention Center, Detroit. Ryan planning to demo Stull Atlas. Henry is a previous NCECA presenter (2014 Milwaukee).</div>
+        </div>
+        <div class="section">
+          <div class="section-title">Connections</div>
+          <div class="conn-group">
+          <div class="conn-group-title">Affiliated with (8)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/cranbrook-academy.html">Cranbrook Academy of Art</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">Cranbrook near Detroit NCECA 2026 venue</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/dia.html">Detroit Institute of Arts</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">Detroit&#x27;s major art museum near NCECA 2026 venue</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/eastern-michigan-university.html">Eastern Michigan University</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">Ypsilanti MI, 35 min from NCECA 2026 Detroit</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/greenwich-house.html">Greenwich House Pottery</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NYC pottery center connected to NCECA community</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../places/huntington-place.html">Huntington Place Convention Center</a>
+              <span class="card-type type-place">place</span>
+               <span class="conn-label">NCECA 2026 main venue</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/mcaa.html">Michigan Ceramic Art Association</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">MCAA is Michigan&#x27;s primary ceramics organization; many members attend NCECA</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/museum-of-contemporary-art-detroit.html">Museum of Contemporary Art Detroit</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">Near NCECA 2026 venue in Midtown</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/wayne-state-university.html">Wayne State University</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">Detroit university near NCECA 2026 venue</span> <span class="conn-year">2026</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Exhibiting at (196)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/3dpotter.html">3DPotter</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../places/akar-gallery.html">AKAR</a>
+              <span class="card-type type-place">place</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/amaco-brent.html">AMACO/Brent</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/aaron-rosa.html">Aaron Rosa</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/access-arts.html">Access Arts</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/adam-chau.html">Adam Chau</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/alfred-ceramic-art-museum.html">Alfred Ceramic Art Museum</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/alfred-university.html">Alfred University School of Art and Design</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/amy-santoferraro.html">Amy Santoferraro</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/anderson-ranch.html">Anderson Ranch Arts Center</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/april-felipe.html">April D. Felipe</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/arrowmont.html">Arrowmont School of Arts and Crafts</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/art-gallery-burlington.html">Art Gallery of Burlington</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/artaxis.html">Artaxis Organization</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/austen-brantley.html">Austen Brantley</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/ayumi-horie.html">Ayumi Horie</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/bailey-pottery.html">Bailey Pottery</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/baltimore-clayworks.html">Baltimore Clayworks</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/bennett-bean.html">Bennett Bean</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/beth-lo.html">Beth Lo</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/blaauw-kilns.html">Blaauw Kilns &amp; Dryers</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/blake-j-williams.html">Blake J. Williams</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organizer: Voices Echo at MSU</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/bri-murphy.html">Bri Murphy</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organizer: Fluid State of Land</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/brockway-center.html">Brockway Center for Arts and Technology</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/brooklin-grantz.html">Brooklin Grantz</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organizer: (liquid)</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/bruce-cochrane.html">Bruce Cochrane</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/bruce-dehnert.html">Bruce Dehnert</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/bryan-czibesz.html">Bryan Czibesz</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/bryan-hopkins.html">Bryan Hopkins</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Co-organizer: Mom&#x27;s Collection</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/cerf-plus.html">CERF+ (Craft Emergency Relief Fund)</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/carbondale-clay-center.html">Carbondale Clay Center</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">Gallery Expo</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/caroline-baron.html">Caroline Baron</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organizer: Incantations</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/ceramics-monthly.html">Ceramics Monthly / PMI</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/ceramics-school.html">Ceramics School</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">Exhibition venue: Ceramaganza!</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../places/charlie-cummings-gallery.html">Charlie Cummings Gallery</a>
+              <span class="card-type type-place">place</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/chris-gustin.html">Chris Gustin</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/chris-staley.html">Chris Staley</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/claire-thibodeau.html">Claire Thibodeau</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Curator: CCS Echoes + Emergence</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/clay-art-center.html">Clay Art Center</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/cohorts-art.html">Cohorts.Art</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../places/companion-gallery.html">Companion Gallery</a>
+              <span class="card-type type-place">place</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/coyote-clay.html">Coyote Clay &amp; Color</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/craigardan.html">Craigardan</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/cranbrook-academy.html">Cranbrook Academy of Art</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/david-morrison.html">David Morrison</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/del-harrow.html">Del Harrow</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">David Klein + Next Step + Ox-Bow</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/denny-gerwin.html">Denny Gerwin</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organizer: Mass Movement BGSU</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/diamondcore-tools.html">DiamondCore Tools</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/doug-peltzman.html">Doug Peltzman</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/dove-hornbuckle.html">Dove Hornbuckle</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Co-organizer: Majestic Nexus</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/ebitenyefa-baralaye.html">Ebitenyefa Baralaye</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Cranbrook alumni + David Klein Gallery</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/ellie-stanislav.html">Ellie Stanislav</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../places/eutectic-gallery.html">Eutectic Gallery</a>
+              <span class="card-type type-place">place</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/florida-atlantic-university.html">Florida Atlantic University</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/gail-nichols.html">Gail Nichols</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/garth-johnson.html">Garth Johnson</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Curator: Imbibition</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/george-rodriguez.html">George Rodriguez</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/georgia-state-university.html">Georgia State University</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/gerit-grimm.html">Gerit Grimm</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/hannah-niswonger.html">Hannah Niswonger</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organizer: POW! Protest Cup</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/harvard-ceramics.html">Harvard Ceramics</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/henry-ford-college.html">Henry Ford College</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">Exhibition: A Human Experience</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/herron-school.html">Herron School of Art and Design</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/idyllwild-arts.html">Idyllwild Arts</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/icf-mino.html">International Ceramics Festival Mino</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/iowa-ceramics-center.html">Iowa Ceramics Center and Glass Studio</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/israel-davis.html">Israel Davis</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Co-organizer: Majestic Nexus</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jack-troy.html">Jack Troy</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jennifer-allen.html">Jennifer Allen</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jennifer-ling-datchuk.html">Jennifer Ling Datchuk</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jess-riva-cooper.html">Jess Riva Cooper</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organizer: Canadian Favours</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jim-schatz.html">Jim Schatz</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organizer: Radical Presence</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/joe-pintz.html">Joe Pintz</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/joey-quinones.html">Joey Quiñones</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Co-organizer: Turn Up the Volume</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/john-gill.html">John Gill</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jonathan-christensen-caballero.html">Jonathan Christensen-Caballero</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/josephine-larsen.html">Josephine Larsen</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/kc-clay-guild.html">KC Clay Guild</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/kaiser-suidan.html">Kaiser Suidan</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/kcai.html">Kansas City Art Institute</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/karina-yanes.html">Karina Yanes</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Co-organizer: Palestine exhibition</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/katie-shulman.html">Katie Shulman</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Co-organizer: Ceramics x Fiber</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/keiko-nakajima.html">Keiko Nakajima</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Curator: Breeze Over the Lakes</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/kent-state.html">Kent State University</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/kimberly-lavonne.html">Kimberly LaVonne</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Curator: Centerpoint at Detroit Historical Museum</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/kintsugi-village.html">Kintsugi Village</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">Exhibition venue: MCAA Biennial</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/kiwi-underglaze.html">Kiwi Underglaze</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/kutztown-university.html">Kutztown University</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/ll-kiln-manufacturing.html">L&amp;L Kiln Manufacturing</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/lux-center-arts.html">LUX Center for the Arts</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../places/lacoste-gallery.html">Lacoste Gallery</a>
+              <span class="card-type type-place">place</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/laguna-clay.html">Laguna Clay Company</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/laith-karmo.html">Laith Karmo</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/lauren-kalman.html">Lauren Kalman</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/lillstreet-art-center.html">Lillstreet Art Center</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/linda-christianson.html">Linda Christianson</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/lisa-chan.html">Lisa Chan</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organizer: Shaping City</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/lucas-pincer-flynn.html">Lucas Pincer-Flynn</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organizer: Speaking Volumes</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/lydia-c-thompson.html">Lydia C. Thompson</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Co-organizer: Remix to Motown</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/mapo-kinnord.html">MaPó Kinnord</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/magdolene-dykstra.html">Magdolene Dykstra</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/maija-grotell.html">Maija Grotell</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">In Detroit Historical Museum exhibition</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/margeaux-claude.html">Margeaux Claude</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Curator: Detroit Dialogues at EMU</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/mark-chatterley.html">Mark Chatterley</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/martin-schapiro.html">Martin Schapiro</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organizer: Cranbrook x SAIC</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/mica.html">Maryland Institute College of Art</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/massart.html">Massachusetts College of Art and Design</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/matt-kelleher.html">Matt Kelleher</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/mayco-colors.html">Mayco Colors</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/medalta.html">Medalta</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/megan-thomas.html">Megan Thomas</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/michael-takahata.html">Michael Takahata</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Curator: Clay Currents</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/mcaa.html">Michigan Ceramic Art Association</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/michigan-state.html">Michigan State University</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">Exhibition: Voices Echo</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/monkey-stuff.html">Monkey Stuff</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/morean-center.html">Morean Center for Clay</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/mudflat-studio.html">Mudflat Studio</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/mudtools.html">Mudtools</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/nabertherm.html">Nabertherm GmbH</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/shimpo.html">Nidec-Shimpo</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/northern-clay-center.html">Northern Clay Center</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/nica.html">Northern Indiana Clay Alliance</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/northern-michigan.html">Northern Michigan University</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/ohio-state.html">Ohio State University</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/olympic-kilns.html">Olympic Kilns</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/orton.html">Orton Ceramic Foundation</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/ox-bow.html">Ox-Bow School of Art</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/paul-kotula.html">Paul Kotula</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Curator: Volume Rediscovery</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/penland.html">Penland School of Craft</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/pennwest-edinboro.html">PennWest University - Edinboro</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/peter-pincus.html">Peter Pincus</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/peter-pugger.html">Peter Pugger Mfg.</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/peters-valley.html">Peters Valley School of Craft</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/pocosin-arts.html">Pocosin Arts - School of Fine Craft</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/pottery-lane.html">Pottery Lane</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/pottery-northwest.html">Pottery Northwest</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/powerhouse-arts.html">Powerhouse Arts</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/queens-college-cuny.html">Queens College, CUNY</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/raven-halfmoon.html">Raven Halfmoon</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/risd.html">Rhode Island School of Design</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/robyn-gibson.html">Robyn Gibson</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organizer: A Table of Our Own</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../places/rovin-ceramics.html">Rovin Ceramics</a>
+              <span class="card-type type-place">place</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/runyan-pottery-supply.html">Runyan Pottery Supply</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/starworks.html">STARworks Ceramics</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/suny-new-paltz.html">SUNY New Paltz</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/salvador-jimenez-flores.html">Salvador Jimenez-Flores</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/sara-clark.html">Sara Clark</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organizer: SVSU Alumni</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/sara-nishikawa.html">Sara Nishikawa</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Solo show: Snack Time!</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/saratoga-clay-arts.html">Saratoga Clay Arts Center</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/sawtooth-school.html">Sawtooth School For Visual Art</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../places/schaller-gallery.html">Schaller Gallery</a>
+              <span class="card-type type-place">place</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/saic.html">School of the Art Institute of Chicago</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/smfa-tufts.html">School of the Museum of Fine Arts at Tufts</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/simon-levin.html">Simon Levin</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/simone-desousa.html">Simone DeSousa</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Curator: Cranbrook x SAIC</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/skutt-ceramic-products.html">Skutt Ceramic Products</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/siue.html">Southern Illinois University Edwardsville</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/spectrum-glazes.html">Spectrum Glazes</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/speedball-art.html">Speedball Art Products</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/steve-glazer.html">Steve Glazer</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organizer: 12x12</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/sugar-hill-clay.html">Sugar Hill Clay</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">Exhibition venue</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/susan-beiner.html">Susan Beiner</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organizer: Underlying Systems</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/syracuse.html">Syracuse University</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/the-ceramic-shop.html">The Ceramic Shop</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/the-clay-studio.html">The Clay Studio</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">Gallery Expo</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/clay-studio-missoula.html">The Clay Studio of Missoula</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/the-marks-project.html">The Marks Project</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/studio-potter-journal.html">The Studio Potter Journal</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/tip-toland.html">Tip Toland</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/tony-clennell.html">Tony Clennell</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/touchstone-crafts.html">Touchstone Center For Crafts</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/umich-stamps.html">U of M Stamps School of Art &amp; Design</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/u-of-alabama.html">University of Alabama</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/u-of-florida.html">University of Florida</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/u-of-iowa.html">University of Iowa</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/u-of-kansas.html">University of Kansas</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/u-of-miami.html">University of Miami</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/u-of-missouri.html">University of Missouri</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/u-of-north-texas.html">University of North Texas</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/u-of-toledo.html">University of Toledo</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 concurrent exhibition</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/u-of-washington.html">University of Washington</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/u-of-wisconsin-madison.html">University of Wisconsin, Madison</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/utah-state.html">Utah State University</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/utah-tech.html">Utah Tech University</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/wmu-frostic-school.html">WMU Gwen Frostic School of Art</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/wade-macdonald.html">Wade MacDonald</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Co-organizer: Afterlight</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/wansoo-kim.html">Wansoo Kim</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/watershed.html">Watershed Center for Ceramic Arts</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/wayne-state-university.html">Wayne State University</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/western-carolina.html">Western Carolina University</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/wichita-state.html">Wichita State University</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/worcester-crafts.html">Worcester Center For Crafts</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/workhouse-arts.html">Workhouse Arts Foundation</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/yourist-studio-gallery.html">Yourist Studio Gallery</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 Resource Hall exhibitor</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/zena-segre.html">Zena Segre</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Curator: Fractals and Familiar Things</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/zimra-beiner.html">Zimra Beiner</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Exhibiting artist</span> <span class="conn-year">2026</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Presenting at (133)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/alex-thullen.html">Alex Thullen</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Co-Lecture: Endangered Materials</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/alison-wong.html">Alison Wong</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Podcast + Cranbrook Alumni curator</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/amanda-leigh-evans.html">Amanda Leigh Evans</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Short Form: RiverCloud</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/amanda-salov.html">Amanda Salov</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Past Masters presenter</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/anders-herwald-ruhwald.html">Anders Herwald Ruhwald</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Lecture: Fire as Metaphor + installations</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/anna-burke.html">Anna Burke</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Projects Space - Ford Design</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/annie-dennis.html">Annie Dennis</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Lectures: Endangered Materials + Pewabic</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/billy-mark.html">Billy Mark</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Performance: The Clay We Speak</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/bobby-scroggins.html">Bobby Scroggins</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: Color Network</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/bradford-davis.html">Bradford Davis</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Veterans Meetup + VCAN panel moderator</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/brian-kakas.html">Brian Kakas</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: State of Clay</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/brooklin-grantz.html">Brooklin Grantz</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organized (liquid) exhibition</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/bryan-hopkins.html">Bryan Hopkins</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Co-organized Mom&#x27;s Collection</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/caroline-baron.html">Caroline Baron</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organized Incantations exhibition</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/chanda-zea.html">Chanda Zea</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Lecture: Making More of Making Less</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/chris-salas.html">Chris Salas</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: Where the Wild Clays Are</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/clare-verstegen.html">Clare Verstegen</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Past Masters presenter</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/coral-patola.html">Coral Patola</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Podcast: Artist Residencies</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/corrin-grooms.html">Corrin Grooms</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel moderator: Color Network</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/daniel-luedtke.html">Daniel Luedtke</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Makers Space: Hydrographics</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/david-nasca.html">David Nasca</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Clay Fab Lab: Digital Molding</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/dick-lehman.html">Dick Lehman</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Past Masters presenter</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/drew-ollero.html">Drew Ollero</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Clay Conversation presenter</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/ehren-tool.html">Ehren Tool</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: Can Art Make a Difference</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/eli-zemper.html">Eli Zemper</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Short Form: #ThisABILITY</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/gh-wood.html">GH Wood</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/gerald-a-brown.html">Gerald A. Brown</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Podcast: Converging Tides</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/grace-han.html">Grace Han</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA Director at Large</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/guangzhen-zhou.html">Guangzhen Zhou</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Lecture: Global Adventures</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/henry-crissman.html">Henry Crissman</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">prev. presenter</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jacob-sussman.html">Jacob Sussman</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Short Form: Egyptian Paste</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jai-sallay-carrington.html">Jai Sallay-Carrington</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">TiCC conversation</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jared-tso.html">Jared Tso</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: Where the Wild Clays Are</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jasmine-baetz.html">Jasmine Baetz</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Podcast + Co-Lecture: Ceramic Snap</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/javier-espinoza-momox.html">Javier Espinoza Momox</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jeanine-hill.html">Jeanine Hill</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: Starting Pottery Studio</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jenneva-kayser.html">Jenneva Kayser</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Podcast: Artist Residencies</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jerry-berta.html">Jerry Berta</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Co-Lecture: Made in Detroit</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jesse-albrecht.html">Jesse Albrecht</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Veterans Meetup + VCAN panel</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jim-schatz.html">Jim Schatz</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organized Radical Presence</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/john-rupp.html">John Rupp</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: Silica Hazards</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jon-geiger.html">Jon Geiger</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Makers Space: Packing Ceramics</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jonathan-kaplan.html">Jonathan Kaplan</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Clay Fab Lab: Mold Doctors</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jordan-blankenship.html">Jordan Blankenship</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Clay Fab Lab: Turning Cork</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/joshua-wong.html">Joshua Wong</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/judith-schwartz.html">Judith Schwartz</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Lecture: Preserving Heritage Sites</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/julia-galloway.html">Julia Galloway</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: Can Art Make a Difference</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/justin-rothshank.html">Justin Rothshank</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: Low-temp Soda Firing</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/kaci-handlery.html">Kaci Handlery</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/karina-yanes.html">Karina Yanes</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Co-organized Palestine: Grief and Connection exhibition</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/keaton-wynn.html">Keaton Wynn</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/keiko-nakajima.html">Keiko Nakajima</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Curated Breeze Over the Lakes exhibition</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/kelly-docter.html">Kelly Docter</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel moderator: State of Clay</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/ken-rosenman.html">Ken Rosenman</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/kevin-lehman.html">Kevin Lehman</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Lecture: Demystifying Wood Firing</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/kiara-matos.html">Kiara Matos</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Projects Space presenter</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/kiichi-takeuchi.html">Kiichi Takeuchi</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Short Form: 3D Scans</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/kofi-adjei.html">Kofi Adjei</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/kourtenay-plummer.html">Kourtenay Plummer</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/laura-souyoultzis.html">Laura Souyoultzis</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: State of Clay</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/leslie-ferrin.html">Leslie Ferrin</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Past Masters presenter</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/leticia-lowry-garcilazo.html">Leticia Lowry-Garcilazo</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Performance: Wound of Malinches</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/lindsay-oesterritter.html">Lindsay Oesterritter</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Past Masters presenter</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/lisa-chan.html">Lisa Chan</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organized Shaping City exhibition</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/liz-vukelich.html">Liz Vukelich</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Performance: Cups For Drinking Together</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/lloyd-vandenbrink.html">Lloyd VandenBrink</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Lecture: Automotive Clay Modeling</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/louis-reilly.html">Louis Reilly</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/lucas-pacuraru.html">Lucas Pacuraru</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/madeline-kaczmarczyk.html">Madeline Kaczmarczyk</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Co-Lecture: Made in Detroit</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/malcolm-mobutu-smith.html">Malcolm Mobutu Smith</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Podcast: Converging Tides</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/margarita-paz-pedro.html">Margarita Paz-Pedro</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/maria-salazar.html">Maria Salazar</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/maria-white.html">Maria White</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Lecture: Mugs for Moms</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/mariah-tso.html">Mariah Tso</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: Where the Wild Clays Are</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/mark-meier.html">Mark Meier</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Clay Fab Lab: Rotary Axis Printing</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/mark-shapiro.html">Mark Shapiro</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: Low-temp Soda Firing</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/mark-stafford.html">Mark Stafford</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Clay Fab Lab: Digital Mold Design</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/mathew-meunier.html">Mathew Meunier</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/max-trumpower.html">Max Trumpower</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">TiCC conversation</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/melissa-felderman.html">Melissa Felderman</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Clay Fab Lab: 3D Modeling</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/meredith-habermann.html">Meredith Habermann</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/micah-lewis-van-sweezie.html">Micah Lewis-Văn Sweezie</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Podcast + Car Show curator</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/michael-takahata.html">Michael Takahata</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Curated Clay Currents exhibition</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/mick-kennedy.html">Mick Kennedy</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Lecture: Clay Tile Vaulting</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/monica-juarez.html">Monica Juarez</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Performance: Earthquake</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/nancy-servis.html">Nancy Servis</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Lecture: Jun Kaneko</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/natsu-oyobe.html">Natsu Oyobe</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Lecture: Yakishime Wares</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/paul-andrew-wandless.html">Paul Andrew Wandless</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: Color Network</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/paul-greenhalgh.html">Paul Greenhalgh</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/quinn-alexandria-hunter.html">Quinn Alexandria Hunter</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Performance + exhibition organizer</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/rebekah-bogard.html">Rebekah Bogard</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Lecture: Engineering Sculpture</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/reginald-green.html">Reginald Green</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/reniel-r-del-rosario.html">Reniel R. Del Rosario</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Clay Conversation presenter</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/richard-hesketh.html">Richard Hesketh</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Projects Space - Ford Design</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/richard-notkin.html">Richard Notkin</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: Can Art Make a Difference + Mold Doctors</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/robert-harrison.html">Robert Harrison</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Past Masters presenter</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/roberto-lugo.html">Roberto Lugo</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: Can Art Make a Difference</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/robyn-gibson.html">Robyn Gibson</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organized A Table of Our Own exhibition</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/ryan.html">Ryan</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">demoing Stull Atlas</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/ryan-forrey.html">Ryan Forrey</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Projects Space - GM Design</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/sara-clark.html">Sara Clark</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organized SVSU Alumni and Friends exhibition</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/sarah-didomenico.html">Sarah DiDomenico</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Lecture: Ergonomics</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/sayge-carroll.html">Sayge Carroll</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: Starting Pottery Studio</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/sean-vandenbrink.html">Sean VandenBrink</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Projects Space - Ford Design</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/seth-green.html">Seth Green</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: State of Clay</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/shalya-marsh.html">Shalya Marsh</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Makers Space: Templates</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/sharon-louden.html">Sharon Louden</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Podcast: Living Creative Life</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/shikha-joshi.html">Shikha Joshi</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Lecture: Electric Kiln Outcomes</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/signe-fensholt.html">Signe Fensholt</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Projects Space presenter</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/simone-desousa.html">Simone DeSousa</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Curated Cranbrook x SAIC Exchange</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/sorrel-stone.html">Sorrel Stone</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">TiCC conversation</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/stephanie-pizza.html">Stephanie Pizza</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/stephanie-rozene.html">Stephanie Rozene</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Podcast: History of Ceramics</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/steve-glazer.html">Steve Glazer</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Organized 12x12 exhibition</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/steve-theberge.html">Steve Théberge</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: Apprenticeship</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/taiyaba-ahmed.html">Taiyaba Ahmed</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Lecture: Building Bridges Through Clay</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/taty-hernandez.html">Taty Hernandez</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: Starting Pottery Studio</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/taylor-sijan.html">Taylor Sijan</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/teresa-pietsch.html">Teresa Pietsch</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Panel: Low-temp Soda Firing</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/tessa-peters.html">Tessa Peters</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Lecture: Future Ecologies of Clay</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/thora-finnsdottir.html">Thora Finnsdottir</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Projects Space presenter</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/tia-santana.html">Tia Santana</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Performance: Braiding Memory</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/tiffany-thomas.html">Tiffany Thomas</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Projects Space presenter</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/tina-gebhart.html">Tina Gebhart</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Makers Space: Tandem Throwing</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/tracey-priska.html">Tracey Priska</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Short Form: Empty Bowls</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/vanessa-alvarado.html">Vanessa Alvarado</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Podcast: Community Engaged Work</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/vianney-lopez.html">Vianney Lopez</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Performance: Earth&#x27;s Instruments</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/yaqi-cai.html">Yaqi Cai</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Clay Fab Lab: Laser Cutting</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/yeonsoo-kim.html">Yeonsoo Kim</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Makers Space: Traditional Onggi</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/yve-holtzclaw.html">Yve Holtzclaw</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">TiCC conversation</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/zach-tate.html">Zach Tate</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Lecture: Rice Ash</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/casey-beck.html">casey beck</a>
+              <span class="card-type type-person">person</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/em-irvin.html">em irvin</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Performance + Co-Lecture: Ceramic Snap</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Headliner (2)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/hank-willis-thomas.html">Hank Willis Thomas</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Headliner</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jenni-sorkin.html">Jenni Sorkin</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Headliner</span> <span class="conn-year">2026</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Demonstrator (2)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/adero-willard.html">Adero Willard</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Demonstrating Artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/john-balistreri.html">John Balistreri</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Demonstrating Artist</span> <span class="conn-year">2026</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Emerging Artist (6)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/bianca-macpherson.html">Bianca MacPherson</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Emerging Artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/connor-czora.html">Connor Czora</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Emerging Artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/iren-tete.html">Irén Tété</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Emerging Artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/maxwell-henderson.html">Maxwell Henderson</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Emerging Artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/sunyoung-park.html">SunYoung Park</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Emerging Artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/tommy-lomeli.html">Tommy Lomeli</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Emerging Artist</span> <span class="conn-year">2026</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Curator (3)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/adrienne-spinozzi.html">Adrienne Spinozzi</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Annual Curator</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/caroline-baron.html">Caroline Baron</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Curated Incantations: Pots That Sing</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/raheleh-filsoofi.html">Raheleh Filsoofi</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Performance Curator</span> <span class="conn-year">2026</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Invited Artist (7)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/adebunmi-gbadebo.html">Adebunmi Gbadebo</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Annual Invited Artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/anina-major.html">Anina Major</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Annual Invited Artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/david-r-macdonald.html">David R. MacDonald</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Annual Invited Artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/ibrahim-said.html">Ibrahim Said</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Annual Invited Artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/iren-tete.html">Irén Tété</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA Annual: Absence Takes Form</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/natalia-arbelaez.html">Natalia Arbelaez</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Annual Invited Artist</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/yeesookyung.html">Yeesookyung</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Annual Invited Artist</span> <span class="conn-year">2026</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Juror (5)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/clare-twomey.html">Clare Twomey</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Juror</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/eva-kwong.html">Eva Kwong</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Juror</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/gary-schneider.html">Gary Schneider</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Juror</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/renata-cassiano-alvarez.html">Renata Cassiano Alvarez</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Multicultural Fellowship Exhibition juror</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/sam-chung.html">Sam Chung</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2026 Juror</span> <span class="conn-year">2026</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Exhibition Venue (8)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../places/boyer-campbell-building.html">Boyer Campbell Building</a>
+              <span class="card-type type-place">place</span>
+               <span class="conn-label">Ceramics x Fiber exhibition + other events during NCECA 2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../places/david-klein-gallery.html">David Klein Gallery</a>
+              <span class="card-type type-place">place</span>
+               <span class="conn-label">Exhibition venue during NCECA 2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../places/detroit-historical-museum.html">Detroit Historical Museum</a>
+              <span class="card-type type-place">place</span>
+               <span class="conn-label">Hosting &#x27;Centerpoint&#x27; exhibition curated by Kimberly LaVonne</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/henry-ford-college.html">Henry Ford College</a>
+              <span class="card-type type-organization">organization</span>
+              
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/pewabic.html">Pewabic Pottery</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 exhibition shuttle stop, Independent Artist Gallery, Ben Chamberlain memorial</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../places/pewabic-pottery-museum.html">Pewabic Pottery Museum &amp; Gallery</a>
+              <span class="card-type type-place">place</span>
+               <span class="conn-label">NCECA 2026 Featured Exhibition venue</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../schools/toledo-museum-of-art.html">Toledo Museum of Art</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">NCECA 2026 concurrent exhibition featuring Toledo + U of Toledo artists</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../places/wasserman-projects.html">Wasserman Projects</a>
+              <span class="card-type type-place">place</span>
+               <span class="conn-label">NCECA 2026 exhibition venue</span> <span class="conn-year">2026</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Presenter (1)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jessika-edgar.html">Jessika Edgar</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">NCECA 2019 Annual Exhibition: &#x27;The Form Will Find Its Way&#x27;</span> <span class="conn-year">2019</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Sponsors (8)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/amaco-brent.html">AMACO/Brent</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">Medium Sponsor</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/arrowmont.html">Arrowmont School of Arts and Crafts</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">Medium Sponsor</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/bailey-pottery.html">Bailey Pottery</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">Diamond/Large Sponsor</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/ll-kilns.html">L&amp;L Kilns</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">Diamond/Large Sponsor</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/mayco-colors.html">Mayco Colors</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">Medium Sponsor</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/mudtools.html">Mudtools</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">Diamond/Large Sponsor</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/skutt-kilns.html">Skutt Kilns</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">Medium Sponsor</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/the-ceramic-shop.html">The Ceramic Shop</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">Small Sponsor</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Connected to (14)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/austin-coudriet.html">Austin Coudriet</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">2025 NCECA Emerging Artist</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/chenlu-hou.html">Chenlu Hou</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">2025 NCECA Emerging Artist</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/dara-hartman.html">Dara Hartman</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">2025 Exhibitions Committee Chair</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/javier-espinoza-momox.html">Javier Espinoza Momox</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Community Engaged Work in Ceramics podcast</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/john-rupp.html">John Rupp</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Silica Hazards advocacy</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/kaci-handlery.html">Kaci Handlery</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Clay Without Barriers</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/kim-dickey.html">Kim Dickey</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">2025 Formation keynote co-presenter</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/michelle-solorzano.html">Michelle Solorzano</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">2025 NCECA Emerging Artist</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/pow-pots-on-wheels.html">POW! Pots on Wheels!</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">Community ceramics outreach</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/sana-musasama.html">Sana Musasama</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">2018 Achievement Award winner; 2025 Formation keynote</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/stephanie-pizza.html">Stephanie Pizza</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Clay Without Barriers</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/the-color-network.html">The Color Network</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">Panel discussion at NCECA 2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../orgs/vcan.html">Veterans Ceramic Arts Network</a>
+              <span class="card-type type-organization">organization</span>
+               <span class="conn-label">Panel discussion at NCECA 2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/vincent-frimpong.html">Vincent (Sniper) Frimpong</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">2025 NCECA Emerging Artist</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Exhibited at (2)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jun-kaneko.html">Jun Kaneko</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Subject of lecture</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../places/lawrence-street-gallery.html">Lawrence Street Gallery</a>
+              <span class="card-type type-place">place</span>
+               <span class="conn-label">Saints, Sinners, and Potters ceramic invitational March 4-27, 2026</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Keynote (1)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jenni-sorkin.html">Jenni Sorkin</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Closing Lecture: It Was Women Ceramists Who Modeled the Values We Need Now</span> <span class="conn-year">2026</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Fellow (1)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/jacob-sussman.html">Jacob Sussman</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">2025 Environmental Sustainability Fellow</span> <span class="conn-year">2025</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Local Host Faculty (1)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/kimberly-harty-scott.html">Kimberly Harty-Scott</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Detroit host institution faculty</span> <span class="conn-year">2026</span>
+            </div>
+        </div>
+        </div>
+      </div>
+
+      <div class="detail-sidebar">
+        <div class="ego-wrap"><svg viewBox="0 0 340 280" xmlns="http://www.w3.org/2000/svg">
+      <line x1="170" y1="140" x2="170" y2="25" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="194" y2="28" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="217" y2="35" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="238" y2="47" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="255" y2="63" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="270" y2="82" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="279" y2="104" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="284" y2="128" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="284" y2="152" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="279" y2="176" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="270" y2="197" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="255" y2="217" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="238" y2="233" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="217" y2="245" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="194" y2="252" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="170" y2="255" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="146" y2="252" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="123" y2="245" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="102" y2="233" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="85" y2="217" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="70" y2="198" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="61" y2="176" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="56" y2="152" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="56" y2="128" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="61" y2="104" stroke="#34d399" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="70" y2="82" stroke="#34d399" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="85" y2="63" stroke="#fbbf24" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="102" y2="47" stroke="#fbbf24" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="123" y2="35" stroke="#fbbf24" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="146" y2="28" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/>
+      <circle cx="170" cy="25" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="194" cy="28" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="217" cy="35" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="238" cy="47" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="255" cy="63" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="270" cy="82" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="279" cy="104" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="284" cy="128" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="284" cy="152" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="279" cy="176" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="270" cy="197" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="255" cy="217" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="238" cy="233" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="217" cy="245" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="194" cy="252" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="170" cy="255" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="146" cy="252" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="123" cy="245" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="102" cy="233" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="85" cy="217" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="70" cy="198" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="61" cy="176" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="56" cy="152" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="56" cy="128" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="61" cy="104" r="8" fill="#34d399" stroke="#34d399" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="70" cy="82" r="8" fill="#34d399" stroke="#34d399" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="85" cy="63" r="8" fill="#fbbf24" stroke="#fbbf24" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="102" cy="47" r="8" fill="#fbbf24" stroke="#fbbf24" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="123" cy="35" r="8" fill="#fbbf24" stroke="#fbbf24" stroke-opacity="0.5" stroke-width="1.5"/><circle cx="146" cy="28" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/>
+      <circle cx="170" cy="140" r="18" fill="#fb7185" stroke="#fb7185" stroke-opacity="0.6" stroke-width="2.5"/>
+      <text x="170" y="172" text-anchor="middle" fill="#e8e8f0" font-family="monospace" font-size="10" font-weight="bold">NCECA 2026</text>
+    </svg></div>
+        
+      </div>
+    </div>
+    
+</div>
+<div class="site-footer">
+  Ceramics Community Atlas · Data from the Ceramics Community Graph · <a href="https://stullatlas.app">stullatlas.app</a>
+</div>
+</body>
+</html>

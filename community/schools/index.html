@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schools — Ceramics Community Atlas</title>
+<style>
+:root {
+  --bg: #07070c; --bg-card: #0f0f18; --bg-hover: #17172a;
+  --border: #1e1e3a; --text: #c8c8d8; --text-dim: #6b6b8a; --text-bright: #e8e8f0;
+  --accent: #818cf8; --accent-dim: #4f46e5;
+  --rose: #fb7185; --teal: #2dd4bf; --amber: #fbbf24; --emerald: #34d399;
+  --mono: 'SF Mono','Cascadia Code','JetBrains Mono','Fira Code',monospace;
+  --sans: 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); color: var(--text); font-family: var(--sans); }
+body { min-height: 100vh; display: flex; flex-direction: column; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Banner */
+.banner {
+  background: linear-gradient(135deg, var(--accent-dim), #2d1b69);
+  color: var(--text-bright); font-family: var(--mono); font-size: 0.72rem;
+  padding: 0.35rem 1rem; text-align: center; border-bottom: 1px solid var(--accent);
+}
+.banner a { color: var(--amber); }
+
+/* Header */
+.site-header {
+  display: flex; align-items: center; gap: 1rem; padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.site-header .logo { font-family: var(--mono); font-size: 1.1rem; color: var(--text-bright); }
+.site-header .logo .sigil { color: var(--accent); }
+.site-header nav { display: flex; gap: 0.6rem; margin-left: auto; flex-wrap: wrap; }
+.site-header nav a {
+  font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim);
+  padding: 0.3rem 0.6rem; border: 1px solid var(--border); border-radius: 6px;
+  transition: all 0.15s;
+}
+.site-header nav a:hover { color: var(--text-bright); border-color: var(--accent); text-decoration: none; }
+.site-header nav a.active { background: var(--accent-dim); color: var(--text-bright); border-color: var(--accent); }
+
+/* Search */
+.search-wrap { padding: 1rem 2rem; }
+.search-input {
+  width: 100%; max-width: 500px; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.6rem 1rem; color: var(--text-bright);
+  font-family: var(--mono); font-size: 0.85rem; outline: none;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--text-dim); }
+
+/* Main content */
+.content { flex: 1; padding: 1rem 2rem 3rem; max-width: 1200px; width: 100%; margin: 0 auto; }
+
+/* Cards grid */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+.card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.2rem; transition: border-color 0.15s;
+}
+.card:hover { border-color: var(--accent); }
+.card a { text-decoration: none; }
+.card .card-name { font-family: var(--mono); font-size: 0.9rem; color: var(--text-bright); margin-bottom: 0.3rem; }
+.card .card-type {
+  font-family: var(--mono); font-size: 0.62rem; padding: 0.12rem 0.4rem;
+  border-radius: 4px; display: inline-block; margin-bottom: 0.4rem;
+}
+.card .card-notes { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; }
+.card .card-stats { font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim); margin-top: 0.4rem; }
+
+/* Type badge colors */
+.type-person { background: rgba(129,140,248,0.2); color: var(--accent); }
+.type-institution { background: rgba(251,191,36,0.2); color: var(--amber); }
+.type-organization { background: rgba(45,212,191,0.2); color: var(--teal); }
+.type-place { background: rgba(52,211,153,0.2); color: var(--emerald); }
+.type-technique { background: rgba(251,113,133,0.2); color: var(--rose); }
+.type-venue { background: rgba(168,85,247,0.2); color: #a855f7; }
+.type-event { background: rgba(251,113,133,0.2); color: var(--rose); }
+
+/* Detail page */
+.detail-header { margin-bottom: 2rem; }
+.detail-header h1 { font-family: var(--mono); font-size: 1.8rem; color: var(--text-bright); margin-bottom: 0.5rem; }
+.detail-header .meta { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+
+.detail-body { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; }
+@media (max-width: 768px) { .detail-body { grid-template-columns: 1fr; } }
+
+.detail-main {}
+.detail-sidebar {}
+
+.section { margin-bottom: 1.5rem; }
+.section-title {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem;
+  padding-bottom: 0.3rem; border-bottom: 1px solid var(--border);
+}
+.notes-text { font-size: 0.88rem; color: var(--text); line-height: 1.7; }
+
+/* Connection list */
+.conn-group { margin-bottom: 1rem; }
+.conn-group-title { font-family: var(--mono); font-size: 0.68rem; color: var(--amber); margin-bottom: 0.3rem; }
+.conn-item {
+  display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0;
+  font-family: var(--mono); font-size: 0.78rem; border-bottom: 1px solid var(--border);
+}
+.conn-item:last-child { border-bottom: none; }
+.conn-item a { color: var(--text-bright); }
+.conn-item .conn-label { color: var(--text-dim); font-size: 0.65rem; }
+.conn-item .conn-year { color: var(--amber); font-size: 0.62rem; }
+.conn-item .conn-arrow { color: var(--accent); }
+
+/* Stats on landing page */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.stat-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem; text-align: center;
+}
+.stat-card .stat-num { font-family: var(--mono); font-size: 2rem; color: var(--text-bright); }
+.stat-card .stat-label { font-family: var(--mono); font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Ego network SVG */
+.ego-wrap { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 1rem; }
+.ego-wrap svg { width: 100%; height: 280px; display: block; }
+
+/* Update request */
+.update-request {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  padding: 0.8rem 1rem; margin-top: 1rem; font-size: 0.78rem;
+}
+.update-request a { color: var(--amber); }
+
+/* Footer */
+.site-footer {
+  padding: 1.5rem 2rem; border-top: 1px solid var(--border);
+  font-family: var(--mono); font-size: 0.68rem; color: var(--text-dim);
+  text-align: center;
+}
+
+/* Search results (JS filtered) */
+.card.hidden { display: none; }
+.dir-count { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); margin-bottom: 1rem; }
+.alpha-nav { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.alpha-nav a {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim);
+  padding: 0.2rem 0.5rem; border: 1px solid var(--border); border-radius: 4px;
+}
+.alpha-nav a:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="banner">Ceramics Community Atlas · <a href="https://stullatlas.app">Stull Atlas</a> · NCECA 2026 Detroit</div>
+<div class="site-header">
+  <a href="../index.html" class="logo"><span class="sigil">&#9670;</span> Ceramics Community Atlas</a>
+  <nav><a href="../people/index.html" class="">People</a>
+<a href="../schools/index.html" class=" active">Schools</a>
+<a href="../techniques/index.html" class="">Techniques</a>
+<a href="../places/index.html" class="">Places</a>
+<a href="../orgs/index.html" class="">Orgs</a>
+<a href="/community/" class="">Explorer</a>
+<a href="/community/map.html" class="">Map</a>
+</nav>
+</div>
+<div style="font-family:var(--mono);font-size:0.7rem;color:var(--text-dim);padding:0.6rem 2rem;border-bottom:1px solid var(--border)"><a href="../index.html">Atlas</a>  /  <span style="color:var(--text-bright)">Schools</span></div>
+
+        <div class="search-wrap">
+          <input type="text" class="search-input" id="dirSearch" placeholder="Filter by name..." oninput="filterCards()" />
+        </div>
+        <script>
+        function filterCards() {
+          const q = document.getElementById('dirSearch').value.toLowerCase();
+          document.querySelectorAll('.card').forEach(c => {
+            const name = c.getAttribute('data-name') || '';
+            c.classList.toggle('hidden', q.length > 0 && !name.includes(q));
+          });
+          const visible = document.querySelectorAll('.card:not(.hidden)').length;
+          const total = document.querySelectorAll('.card').length;
+          const ct = document.getElementById('dirCount');
+          if (ct) ct.textContent = q ? visible + ' of ' + total : total + ' total';
+        }
+        </script>
+<div class="content">
+
+    <h1 style="font-family:var(--mono);font-size:1.5rem;color:var(--text-bright);margin-bottom:0.5rem">Schools</h1>
+    <div class="dir-count" id="dirCount">193 total</div>
+    <div class="alpha-nav"><a href="#A">A</a><a href="#B">B</a><a href="#C">C</a><a href="#D">D</a><a href="#E">E</a><a href="#F">F</a><a href="#G">G</a><a href="#H">H</a><a href="#I">I</a><a href="#J">J</a><a href="#K">K</a><a href="#L">L</a><a href="#M">M</a><a href="#N">N</a><a href="#O">O</a><a href="#P">P</a><a href="#Q">Q</a><a href="#R">R</a><a href="#S">S</a><a href="#T">T</a><a href="#U">U</a><a href="#V">V</a><a href="#W">W</a><a href="#Y">Y</a></div>
+    <div class="card-grid"><div id="A" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">A</div><div class="card" data-name="access arts">
+          <a href="access-arts.html">
+            <div class="card-name">Access Arts</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Community arts center. NCECA 2026 Resource Table T28. schoolofservice.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="alfred ceramic art museum">
+          <a href="alfred-ceramic-art-museum.html">
+            <div class="card-name">Alfred Ceramic Art Museum</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Alfred, NY. Museum dedicated to ceramic art at Alfred University. NCECA 2026 Resource Table T13. ceramicsmuseum.alfred.edu</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="alfred university">
+          <a href="alfred.html">
+            <div class="card-name">Alfred University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Alfred University, NY. Henry Crissman MFA 2015. Paul Kotula MFA 1989. One of the top ceramics MFA programs.</div>
+            <div class="card-stats">17 connections</div>
+          </a>
+        </div><div class="card" data-name="alfred university school of art and design">
+          <a href="alfred-university.html">
+            <div class="card-name">Alfred University School of Art and Design</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Alfred, NY. Historic ceramics program — Alfred University New York State College of Ceramics. NCECA 2026 Resource Table T14. alfred.edu</div>
+            <div class="card-stats">12 connections</div>
+          </a>
+        </div><div class="card" data-name="american academy in rome">
+          <a href="american-academy-rome.html">
+            <div class="card-name">American Academy in Rome</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Lugo Rome Prize 2019-20</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="american museum of ceramic art">
+          <a href="amoca.html">
+            <div class="card-name">American Museum of Ceramic Art</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">399 N Garey Ave, Pomona, CA 91767. Dedicated ceramics museum. Houses major ceramic art collection. AMOCA. amoca.org</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="amherst college">
+          <a href="amherst-college.html">
+            <div class="card-name">Amherst College</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Private liberal arts college in Amherst, Massachusetts. Founded 1821.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="anderson ranch arts center">
+          <a href="anderson-ranch.html">
+            <div class="card-name">Anderson Ranch Arts Center</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Residency in Snowmass Village CO</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="ann arbor art center">
+          <a href="ann-arbor-art-center.html">
+            <div class="card-name">Ann Arbor Art Center</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">117 W Liberty, Ann Arbor, MI 48104. Art center with gallery featuring ceramics. Near Ann Arbor Potters Guild. annarborartcenter.org</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="ann arbor potters guild">
+          <a href="ann-arbor-potters-guild.html">
+            <div class="card-name">Ann Arbor Potters Guild</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">201 Hill St, Ann Arbor, MI. 50+ member cooperative. Part of Ann Arbor Street Art Fair since 1959. Sales in June and December. Members include former...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="ann arbor street art fair">
+          <a href="aa-street-art-fair.html">
+            <div class="card-name">Ann Arbor Street Art Fair</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Oldest juried street art fair in the nation, founded 1960. Potters Guild involved from the beginning. Jan was original exhibitor while working with...</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="archie bray foundation">
+          <a href="archie-bray.html">
+            <div class="card-name">Archie Bray Foundation</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Premier ceramics residency, Helena MT. Hub: Notkin, Kwong, Chung, Galloway, Harrow, Cooper, Niswonger</div>
+            <div class="card-stats">13 connections</div>
+          </a>
+        </div><div class="card" data-name="arizona state university">
+          <a href="asu.html">
+            <div class="card-name">Arizona State University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Ceramics program &amp; research center. Hub: Chung, Beiner, M. Tso, J. Tso</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="art gallery of burlington">
+          <a href="art-gallery-burlington.html">
+            <div class="card-name">Art Gallery of Burlington</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Burlington, Ontario, Canada. Gallery. NCECA 2026 Resource Table T90. agb.life</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="B" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">B</div><div class="card" data-name="banff centre for arts — ceramics">
+          <a href="banff-centre-ceramics.html">
+            <div class="card-name">Banff Centre for Arts — Ceramics</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Canadian mountain arts residency. Banff, Alberta, Canada</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="bard college">
+          <a href="bard-college.html">
+            <div class="card-name">Bard College</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Bard College, Annandale-on-Hudson, NY. Center for Curatorial Studies (CCS Bard).</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="bard graduate center">
+          <a href="bard-graduate-center.html">
+            <div class="card-name">Bard Graduate Center</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Graduate center in NYC for decorative arts, design history, and material culture.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="belger arts center">
+          <a href="belger-arts-center.html">
+            <div class="card-name">Belger Arts Center</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">2100 Walnut St, Kansas City, MO 64108. Major ceramics exhibition space. Non-profit gallery. belgerarts.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="biola university">
+          <a href="biola-university.html">
+            <div class="card-name">Biola University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">La Mirada, CA. Private Christian university.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="birmingham bloomfield art association">
+          <a href="bbaa.html">
+            <div class="card-name">Birmingham Bloomfield Art Association</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Also known as BBAC (Birmingham Bloomfield Art Center). Non-profit arts center est. 1957 in Birmingham MI. Jan Sadowski was head of ceramics 20+...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="boston university">
+          <a href="boston-university.html">
+            <div class="card-name">Boston University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Boston University. Home to the Program in Artisanry (ceramics, 1980-85) before it moved to Swain School of Design / UMass Dartmouth.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="bowling green state university">
+          <a href="bgsu.html">
+            <div class="card-name">Bowling Green State University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Balistreri teaches here. Ceramics area.</div>
+            <div class="card-stats">10 connections</div>
+          </a>
+        </div><div class="card" data-name="brockway center for arts and technology">
+          <a href="brockway-center.html">
+            <div class="card-name">Brockway Center for Arts and Technology</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">NCECA 2026 Resource Table T85. brockwaycatart.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="C" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">C</div><div class="card" data-name="cal state sacramento">
+          <a href="csu-sacramento.html">
+            <div class="card-name">Cal State Sacramento</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Willard current faculty</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="california college of the arts">
+          <a href="cca.html">
+            <div class="card-name">California College of the Arts</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Hank Willis Thomas MFA | CCA. Private art college in San Francisco/Oakland, CA.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="ceramic review">
+          <a href="ceramic-review-uk.html">
+            <div class="card-name">Ceramic Review</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">UK ceramics magazine, est. 1970. London, England, United Kingdom</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="ceramics school">
+          <a href="ceramics-school.html">
+            <div class="card-name">Ceramics School</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Ceramics School LLC, 2692 Carpenter Ave, Hamtramck MI 48212. Co-founded by Henry Crissman and Virginia Torrence in 2019. Originally pop-up at Popps...</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="cherry hill potters guild">
+          <a href="cherry-hill-potters-guild.html">
+            <div class="card-name">Cherry Hill Potters Guild</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">50755 Cherry Hill Rd, Canton, MI 48188. 501(c)(3) nonprofit. Classes have 1-2 year wait list (high demand). Near Central Clay Studio in Plymouth.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="chouinard art institute">
+          <a href="chouinard-art-institute.html">
+            <div class="card-name">Chouinard Art Institute</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Historic LA art school (1921-1972), became CalArts.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="city college of new york">
+          <a href="city-college-ny.html">
+            <div class="card-name">City College of New York</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">City College of New York. Sana Musasama earned BA here (1973).</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="collect art fair">
+          <a href="collect-fair.html">
+            <div class="card-name">COLLECT Art Fair</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">International craft &amp; ceramics fair at V&amp;A. London, England, United Kingdom</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="college for creative studies">
+          <a href="ccs.html">
+            <div class="card-name">College for Creative Studies</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">CCS in Detroit. Henry Crissman BFA 2012, now adjunct faculty (Craft &amp; Materials Studies).</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="colorado state university">
+          <a href="colorado-state.html">
+            <div class="card-name">Colorado State University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Harrow teaches ceramics here</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="columbia college chicago">
+          <a href="columbia-chicago.html">
+            <div class="card-name">Columbia College Chicago</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Wandless adjunct</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="connecticut college">
+          <a href="connecticut-college.html">
+            <div class="card-name">Connecticut College</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Connecticut College, New London. Chenlu Hou serves as Visiting Assistant Professor.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="craft alliance">
+          <a href="craft-alliance.html">
+            <div class="card-name">Craft Alliance</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">6640 Delmar Blvd, St Louis, MO 63130. Non-profit gallery and education center for craft including ceramics. craftalliance.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="craft contemporary">
+          <a href="craft-contemporary.html">
+            <div class="card-name">Craft Contemporary</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">5814 Wilshire Blvd, Los Angeles, CA 90036. Museum dedicated to craft and design including ceramics. Formerly Craft and Folk Art Museum....</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="craigardan">
+          <a href="craigardan.html">
+            <div class="card-name">Craigardan</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Artist residency and retreat center. NCECA 2026 Resource Table T2. craigardan.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="cranbrook academy of art">
+          <a href="cranbrook-academy.html">
+            <div class="card-name">Cranbrook Academy of Art</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Graduate-only MFA in Bloomfield Hills, MI (25 min from Detroit). Curriculum-free, studio-based. Ceramics program has Dutch Blaauw gas kilns, 3D clay...</div>
+            <div class="card-stats">41 connections</div>
+          </a>
+        </div><div id="D" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">D</div><div class="card" data-name="daum museum of contemporary art">
+          <a href="daum-museum.html">
+            <div class="card-name">Daum Museum of Contemporary Art</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">3201 W 16th St, Sedalia, MO 65301. Museum with significant ceramics collection. daummuseum.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="detroit institute of arts">
+          <a href="dia.html">
+            <div class="card-name">Detroit Institute of Arts</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">5200 Woodward Ave, Detroit. One of the largest art museums in the US. Significant ceramics collection including ancient and contemporary works....</div>
+            <div class="card-stats">6 connections</div>
+          </a>
+        </div><div class="card" data-name="drexel university">
+          <a href="drexel.html">
+            <div class="card-name">Drexel University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Major BS in Philadelphia</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="E" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">E</div><div class="card" data-name="east fork pottery">
+          <a href="east-fork-pottery.html">
+            <div class="card-name">East Fork Pottery</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Contemporary pottery studio &amp; brand. Asheville, North Carolina, United States</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="eastern michigan university">
+          <a href="eastern-michigan-university.html">
+            <div class="card-name">Eastern Michigan University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">School of Art &amp; Design, 114 Ford Hall, Ypsilanti MI 48197. Offers BFA and 60-credit MFA in Studio Art with ceramics concentration. Director: Sandra...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="european ceramic work centre (ekwc)">
+          <a href="european-ceramic-work-centre.html">
+            <div class="card-name">European Ceramic Work Centre (EKWC)</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">International ceramic residency. Oisterwijk, Netherlands</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="everson museum of art">
+          <a href="everson.html">
+            <div class="card-name">Everson Museum of Art</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Syracuse NY. Garth Johnson is ceramics curator</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div id="F" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">F</div><div class="card" data-name="flint institute of arts">
+          <a href="flint-institute-of-arts.html">
+            <div class="card-name">Flint Institute of Arts</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">1120 E Kearsley St, Flint, MI. Second-largest community-supported art museum in the US. Art School offers ceramics courses. Part of Flint Cultural...</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="florida atlantic university">
+          <a href="florida-atlantic-university.html">
+            <div class="card-name">Florida Atlantic University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Visual Arts and Art History department. NCECA 2026 Resource Table T21. fau.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="florida international university">
+          <a href="fiu.html">
+            <div class="card-name">Florida International University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Filsoofi teaches here</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="fuller craft museum">
+          <a href="fuller-craft-museum.html">
+            <div class="card-name">Fuller Craft Museum</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">455 Oak St, Brockton, MA 02301. Museum dedicated to contemporary craft including ceramics. fullercraft.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="G" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">G</div><div class="card" data-name="georgia southwestern state university">
+          <a href="georgia-southwestern-state-university.html">
+            <div class="card-name">Georgia Southwestern State University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">GSW. Americus, GA.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="georgia state university">
+          <a href="georgia-state-university.html">
+            <div class="card-name">Georgia State University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Art and Design department. NCECA 2026 Resource Table T69. artdesign.gsu.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="goshen college">
+          <a href="goshen-college.html">
+            <div class="card-name">Goshen College</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Rothshank studied here</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="grand rapids art museum">
+          <a href="grand-rapids-art-museum.html">
+            <div class="card-name">Grand Rapids Art Museum</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">101 Monroe Center St NW, Grand Rapids, MI (GRAM). Modern and contemporary art collection. Near West Michigan Potters Guild.</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="grinnell college">
+          <a href="grinnell-college.html">
+            <div class="card-name">Grinnell College</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Liberal arts college in Grinnell, Iowa. Alumni include wood-fire potter Simon Levin (BA 1990).</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="grounds for sculpture">
+          <a href="grounds-for-sculpture.html">
+            <div class="card-name">Grounds For Sculpture</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Hamilton, NJ. Sculpture park and museum.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="groves high school">
+          <a href="groves-hs.html">
+            <div class="card-name">Groves High School</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Birmingham MI public high school. George Landino taught art/ceramics here 1960s. Jan Sadowski attended early 1960s, discovered clay.</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div id="H" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">H</div><div class="card" data-name="hamline university">
+          <a href="hamline-university.html">
+            <div class="card-name">Hamline University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">University in St. Paul, Minnesota. Alumni include potter Linda Christianson.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="hartwick college">
+          <a href="hartwick-college.html">
+            <div class="card-name">Hartwick College</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Private liberal arts college in Oneonta, NY. Notable ceramics alumni include Adrienne Spinozzi.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="harvard ceramics">
+          <a href="harvard-ceramics.html">
+            <div class="card-name">Harvard Ceramics</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Harvard University Office for the Arts ceramics program. NCECA 2026 Resource Table T45. ofa.fas.harvard.edu/ceramics | Cambridge, MA....</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="harvard university">
+          <a href="harvard.html">
+            <div class="card-name">Harvard University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Harvard University, Cambridge, MA. Office for the Arts ceramics program.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="haystack mountain school of crafts">
+          <a href="haystack.html">
+            <div class="card-name">Haystack Mountain School of Crafts</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Craft school in Deer Isle, Maine. Founded 1950. Offers workshops in ceramics, fiber, glass, metals, wood, and more. Important center for American...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="herron school of art and design">
+          <a href="herron-school.html">
+            <div class="card-name">Herron School of Art and Design</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">IUPUI, Indianapolis. NCECA 2026 Resource Table T89. herron.iupui.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="hollins university">
+          <a href="hollins-university.html">
+            <div class="card-name">Hollins University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">University in Roanoke, VA. Home of the Women Working With Clay Symposium, directed by Dara Hartman. Frances Niederer Artist-in-Residence program....</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="houston center for contemporary craft">
+          <a href="houston-center-craft.html">
+            <div class="card-name">Houston Center for Contemporary Craft</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Houston Center for Contemporary Craft, TX. Chenlu Hou held residency here.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="I" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">I</div><div class="card" data-name="idyllwild arts">
+          <a href="idyllwild-arts.html">
+            <div class="card-name">Idyllwild Arts</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Idyllwild, CA. Summer arts programs and academy. NCECA 2026 Resource Table T23. idyllwildarts.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="indiana university">
+          <a href="iu.html">
+            <div class="card-name">Indiana University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Rothshank MFA</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="institute of american indian arts">
+          <a href="institute-of-american-indian-arts.html">
+            <div class="card-name">Institute of American Indian Arts</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">IAIA. Santa Fe, NM.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="international academy of ceramics (iac)">
+          <a href="iac.html">
+            <div class="card-name">International Academy of Ceramics (IAC)</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">UNESCO-affiliated global ceramics organization. Geneva, Switzerland</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="iowa ceramics center and glass studio">
+          <a href="iowa-ceramics-center.html">
+            <div class="card-name">Iowa Ceramics Center and Glass Studio</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Community ceramics and glass studio in Iowa. NCECA 2026 Resource Table T62. iowaceramicscenter.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="iu southeast">
+          <a href="iu-southeast.html">
+            <div class="card-name">IU Southeast</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Indiana University Southeast. Post-baccalaureate ceramics.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="J" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">J</div><div class="card" data-name="jingdezhen ceramic institute">
+          <a href="jingdezhen.html">
+            <div class="card-name">Jingdezhen Ceramic Institute</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Historic ceramics center in Jingdezhen, China — the &#x27;Porcelain Capital&#x27; of the world. International artist residency program. Dara Hartman was...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="jingdezhen ceramic museum">
+          <a href="jingdezhen-ceramic-museum.html">
+            <div class="card-name">Jingdezhen Ceramic Museum</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Chinese porcelain heritage museum. Jingdezhen, Jiangxi, China</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="jingdezhen ceramic university">
+          <a href="jingdezhen-ceramic-university.html">
+            <div class="card-name">Jingdezhen Ceramic University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">China&#x27;s premier ceramic arts university. Jingdezhen, Jiangxi, China</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="john michael kohler arts center">
+          <a href="kohler.html">
+            <div class="card-name">John Michael Kohler Arts Center</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Arts/Industry residency, Sheboygan WI</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="juniata college">
+          <a href="juniata-college.html">
+            <div class="card-name">Juniata College</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Small liberal arts college in Huntingdon, PA. Jack Troy was longtime ceramics professor.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="K" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">K</div><div class="card" data-name="kalamazoo institute of arts">
+          <a href="kia.html">
+            <div class="card-name">Kalamazoo Institute of Arts</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">314 S Park St, Kalamazoo, MI. Art museum and school. Kirk Newman Art School offers ceramics classes. Near WMU Frostic School of Art. Permanent...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="kansas city art institute">
+          <a href="kcai.html">
+            <div class="card-name">Kansas City Art Institute</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Major ceramics program. Hub: Lugo, Notkin, Balistreri, Arbelaez, Davis, Quiñones | KCAI. Private art college in Kansas City, MO. Strong ceramics...</div>
+            <div class="card-stats">10 connections</div>
+          </a>
+        </div><div class="card" data-name="kent state university">
+          <a href="kent-state.html">
+            <div class="card-name">Kent State University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Ceramics program. Hub: Kwong, Balistreri</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="kutztown university">
+          <a href="kutztown-university.html">
+            <div class="card-name">Kutztown University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Pennsylvania. Ceramics program. NCECA 2026 Resource Table T31. kutztown.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="kwame nkrumah university of science and technology">
+          <a href="kwame-nkrumah-university-of-science-and-technology.html">
+            <div class="card-name">Kwame Nkrumah University of Science and Technology</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">KNUST. Kumasi, Ghana. Ceramics research.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="L" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">L</div><div class="card" data-name="leach pottery">
+          <a href="leach-pottery.html">
+            <div class="card-name">Leach Pottery</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Founded by Bernard Leach 1920, birthplace of studio pottery. St Ives, Cornwall, England, United Kingdom</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="lillstreet art center">
+          <a href="lillstreet-art-center.html">
+            <div class="card-name">Lillstreet Art Center</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Chicago, IL. Community art center with ceramics studios. NCECA 2026 Resource Table T74. lillstreet.com</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="lux center for the arts">
+          <a href="lux-center-arts.html">
+            <div class="card-name">LUX Center for the Arts</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Lincoln, NE. Community arts center. NCECA 2026 Resource Table T19. luxcenter.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="M" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">M</div><div class="card" data-name="maryland institute college of art">
+          <a href="mica.html">
+            <div class="card-name">Maryland Institute College of Art</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">MICA, Baltimore, MD. Major art school with ceramics program. NCECA 2026 Resource Table T78. mica.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="massachusetts college of art and design">
+          <a href="massart.html">
+            <div class="card-name">Massachusetts College of Art and Design</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Public art college in Boston, MA. One of the nation&#x27;s only independent public colleges of art and design. MFA ceramics program. | MassArt. Boston,...</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="medalta">
+          <a href="medalta.html">
+            <div class="card-name">Medalta</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Residency in Medicine Hat AB Canada</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="memorial art gallery">
+          <a href="memorial-art-gallery.html">
+            <div class="card-name">Memorial Art Gallery</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">500 University Ave, Rochester, NY 14607. University of Rochester museum with ceramics collection. mag.rochester.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="mesa contemporary arts museum">
+          <a href="mesa-contemporary-arts.html">
+            <div class="card-name">Mesa Contemporary Arts Museum</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">1 E Main St, Mesa, AZ 85201. Five galleries at Mesa Arts Center. Features ceramic exhibitions. Part of Mesa Arts Center.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="metropolitan museum of art">
+          <a href="met-museum.html">
+            <div class="card-name">Metropolitan Museum of Art</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">The Met. American Wing houses extensive ceramics collection including Robert A. Ellison Jr. Collection.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="michigan ceramic art association">
+          <a href="mcaa.html">
+            <div class="card-name">Michigan Ceramic Art Association</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">MCAA (michclay.com). Est. 1958 as Michigan Potters&#x27; Association. 300+ members statewide: studio artists, educators, galleries, guilds, students,...</div>
+            <div class="card-stats">23 connections</div>
+          </a>
+        </div><div class="card" data-name="michigan state university">
+          <a href="michigan-state.html">
+            <div class="card-name">Michigan State University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Michigan State University in East Lansing. MSU Detroit Center hosts exhibitions including Voices Echo at NCECA 2026. Ceramics program. | East...</div>
+            <div class="card-stats">9 connections</div>
+          </a>
+        </div><div class="card" data-name="montana state university">
+          <a href="montana-state.html">
+            <div class="card-name">Montana State University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Montana State University, Bozeman. Dara Hartman earned MFA here. Henry Crissman&#x27;s Mobile Anagama toured here.</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="morean center for clay">
+          <a href="morean-center.html">
+            <div class="card-name">Morean Center for Clay</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">St. Petersburg, FL. Major ceramics center — studios, residencies, exhibitions. Connection to WMU Morean Graduate Fellows program. NCECA 2026 Resource...</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="mudflat studio">
+          <a href="mudflat-studio.html">
+            <div class="card-name">Mudflat Studio</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Somerville, MA. Community ceramics studio and gallery. NCECA 2026 Resource Table T44. mudflat.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="museum of arts and design">
+          <a href="museum-art-design-nyc.html">
+            <div class="card-name">Museum of Arts and Design</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Museum of Arts and Design (MAD), New York City. Collections include Sana Musasama&#x27;s work from &#x27;The Unspeakable Series.&#x27; Chenlu Hou held residency...</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="museum of contemporary art detroit">
+          <a href="museum-of-contemporary-art-detroit.html">
+            <div class="card-name">Museum of Contemporary Art Detroit</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">MOCAD, 4454 Woodward Ave, Detroit. Contemporary art space in Midtown. Near NCECA 2026 venue area.</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="museum of craft and design">
+          <a href="museum-of-craft-and-design.html">
+            <div class="card-name">Museum of Craft and Design</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">2569 Third St, San Francisco, CA 94107. Exhibitions featuring ceramics and craft. sfmcd.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="N" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">N</div><div class="card" data-name="new york university">
+          <a href="nyu.html">
+            <div class="card-name">New York University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Art &amp; Art Professions dept. Schwartz, Galloway connections</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="north carolina pottery center">
+          <a href="nc-pottery-center.html">
+            <div class="card-name">North Carolina Pottery Center</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">233 East Avenue, Seagrove, NC 27341. Museum and gallery dedicated to NC&#x27;s pottery heritage. Seagrove is a major pottery region. ncpotterycenter.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="northern illinois university">
+          <a href="niu.html">
+            <div class="card-name">Northern Illinois University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Wandless MFA</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="northern michigan university">
+          <a href="northern-michigan.html">
+            <div class="card-name">Northern Michigan University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Chung former faculty</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="nova scotia college of art and design">
+          <a href="nscad.html">
+            <div class="card-name">Nova Scotia College of Art and Design</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Willard &amp; Cooper alumni</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="nyu tisch school of the arts">
+          <a href="nyu-tisch-school-of-the-arts.html">
+            <div class="card-name">NYU Tisch School of the Arts</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">New York University&#x27;s arts school.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="O" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">O</div><div class="card" data-name="oakland community college — royal oak">
+          <a href="occ-royal-oak.html">
+            <div class="card-name">Oakland Community College — Royal Oak</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Royal Oak campus. Charlie Blosser taught ceramics here. Jan Sadowski also teaches pottery here. Seeded The Potters Market.</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="ohio craft museum">
+          <a href="ohio-craft-museum.html">
+            <div class="card-name">Ohio Craft Museum</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">1665 W Fifth Ave, Columbus, OH 43212. Features Ohio ceramic art. ohiocraft.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="ohio state university">
+          <a href="ohio-state.html">
+            <div class="card-name">Ohio State University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Ceramics MFA. Hub: Arbelaez, Quiñones, Niswonger, Kwong | Columbus, OH. Major ceramics program.</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="ohr-o&#x27;keefe museum of art">
+          <a href="ohr-okeefe-museum.html">
+            <div class="card-name">Ohr-O&#x27;Keefe Museum of Art</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Museum in Biloxi, Mississippi dedicated to George Ohr&#x27;s ceramics. Designed by architect Frank Gehry. Opened 2010. America&#x27;s first museum dedicated to...</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="ox-bow school of art">
+          <a href="ox-bow.html">
+            <div class="card-name">Ox-Bow School of Art</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Ox-Bow School of Art and Artists&#x27; Residency, Saugatuck, MI. Connected to SAIC. Del Harrow exhibition connection during NCECA 2026.</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div id="P" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">P</div><div class="card" data-name="parsons school of design">
+          <a href="parsons.html">
+            <div class="card-name">Parsons School of Design</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Parsons School of Design, New York. Part of The New School. | Art and design school, part of The New School, NYC.</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="penland school of craft">
+          <a href="penland.html">
+            <div class="card-name">Penland School of Craft</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Craft school in NC. Lehman workshops</div>
+            <div class="card-stats">8 connections</div>
+          </a>
+        </div><div class="card" data-name="penn state university">
+          <a href="penn-state.html">
+            <div class="card-name">Penn State University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Pennsylvania State University. School of Visual Arts, ceramics program. Notable alumni include Roberto Lugo (MFA) and Paul S. Briggs (PhD Art...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="pennwest university - edinboro">
+          <a href="pennwest-edinboro.html">
+            <div class="card-name">PennWest University - Edinboro</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Edinboro, PA. Ceramics program. NCECA 2026 Resource Table T66. pennwest.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="peters valley school of craft">
+          <a href="peters-valley.html">
+            <div class="card-name">Peters Valley School of Craft</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Layton, NJ. Craft school with ceramics workshops. NCECA 2026 Resource Table T58. petersvalley.org</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="pewabic pottery">
+          <a href="pewabic.html">
+            <div class="card-name">Pewabic Pottery</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Historic ceramics institution in Detroit, founded 1903. Henry taught 2016-2018, Paul Kotula was Gallery Director 1985-87. Carol Sauvion produced...</div>
+            <div class="card-stats">31 connections</div>
+          </a>
+        </div><div class="card" data-name="plum tree pottery">
+          <a href="plum-tree-pottery.html">
+            <div class="card-name">Plum Tree Pottery</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">John Glick&#x27;s pottery studio, Farmington Hills MI (1964-2016). 33+ artist-in-residence over 50 years. Jan Sadowski worked here ~1964-68. Closed after...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="pocosin arts - school of fine craft">
+          <a href="pocosin-arts.html">
+            <div class="card-name">Pocosin Arts - School of Fine Craft</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Columbia, NC. Craft school. NCECA 2026 Resource Table T51. pocosinarts.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="portland state university">
+          <a href="portland-state-university.html">
+            <div class="card-name">Portland State University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Portland, OR. MFA Art and Social Practice.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="pottery northwest">
+          <a href="pottery-northwest.html">
+            <div class="card-name">Pottery Northwest</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Seattle, WA. Nonprofit ceramics center — classes, studios, gallery. NCECA 2026 Resource Table T11. potterynorthwest.org</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="powerhouse arts">
+          <a href="powerhouse-arts.html">
+            <div class="card-name">Powerhouse Arts</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Brooklyn, NY. Art-making facility. NCECA 2026 Resource Table T53. powerhousearts.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="pucker gallery">
+          <a href="pucker-gallery.html">
+            <div class="card-name">Pucker Gallery</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">240 Newbury St, Boston, MA 02116. Represents major ceramic artists including Brother Thomas (Bezanson). puckergallery.com</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div id="Q" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">Q</div><div class="card" data-name="queens college, cuny">
+          <a href="queens-college-cuny.html">
+            <div class="card-name">Queens College, CUNY</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Flushing, NY. City University of New York. NCECA 2026 Resource Table T83. qc.cuny.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="R" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">R</div><div class="card" data-name="red lodge clay center">
+          <a href="red-lodge.html">
+            <div class="card-name">Red Lodge Clay Center</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Residency in Red Lodge MT | Red Lodge, MT. Ceramics residency and education.</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="rhode island school of design">
+          <a href="risd.html">
+            <div class="card-name">Rhode Island School of Design</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Top ceramics MFA. Hub: Kwong, Major, Cooper</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="royal college of art">
+          <a href="rca.html">
+            <div class="card-name">Royal College of Art</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">London. Twomey heads Ceramics &amp; Glass</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="rutgers — mason gross school of arts">
+          <a href="rutgers-mason-gross.html">
+            <div class="card-name">Rutgers — Mason Gross School of Arts</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">MFA ceramics program. New Brunswick, New Jersey, United States</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="S" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">S</div><div class="card" data-name="saginaw valley state university">
+          <a href="svsu.html">
+            <div class="card-name">Saginaw Valley State University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Public university in Michigan. Ceramics program.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="san angelo museum of fine arts">
+          <a href="san-angelo-museum.html">
+            <div class="card-name">San Angelo Museum of Fine Arts</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">1 Love St, San Angelo, TX 76903. Hosts International Ceramics Competition. Major ceramics exhibition program. samfa.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="saratoga clay arts center">
+          <a href="saratoga-clay-arts.html">
+            <div class="card-name">Saratoga Clay Arts Center</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Schuylerville, NY. Community ceramics center — classes, residencies, exhibitions. NCECA 2026 Resource Table T15. saratogaclayarts.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="sawtooth school for visual art">
+          <a href="sawtooth-school.html">
+            <div class="card-name">Sawtooth School For Visual Art</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Winston-Salem, NC. Community art school. NCECA 2026 Resource Table T30. sawtooth.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="school of the art institute of chicago">
+          <a href="saic.html">
+            <div class="card-name">School of the Art Institute of Chicago</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Major art school</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="school of the museum of fine arts at tufts">
+          <a href="smfa-tufts.html">
+            <div class="card-name">School of the Museum of Fine Arts at Tufts</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">SMFA at Tufts University. Home of Digital Fabrication Club.</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="scripps college">
+          <a href="scripps-college.html">
+            <div class="card-name">Scripps College</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Women&#x27;s college in Claremont, CA. Annual ceramics exhibition since 1943.</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="seoul national university">
+          <a href="seoul-national.html">
+            <div class="card-name">Seoul National University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Yeesookyung studied here | South Korea&#x27;s top national university.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="sheridan college">
+          <a href="sheridan-college.html">
+            <div class="card-name">Sheridan College</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Sheridan College in Ontario, Canada. Renowned ceramics program. Bruce Cochrane led ceramics.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="shigaraki ceramic cultural park">
+          <a href="shigaraki-ceramic-cultural-park.html">
+            <div class="card-name">Shigaraki Ceramic Cultural Park</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Japanese ceramic art center &amp; museum. Shigaraki, Shiga, Japan</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="skowhegan school of painting and sculpture">
+          <a href="skowhegan-school-of-painting-and-sculpture.html">
+            <div class="card-name">Skowhegan School of Painting and Sculpture</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Skowhegan, ME. Summer residency.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="sofa chicago">
+          <a href="sofa-chicago.html">
+            <div class="card-name">SOFA Chicago</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Sculpture Objects Functional Art &amp; Design fair. Chicago, Illinois, United States</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="southern illinois university edwardsville">
+          <a href="siue.html">
+            <div class="card-name">Southern Illinois University Edwardsville</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Art and Design department. NCECA 2026 Resource Table T29. siue.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="southwest school of art">
+          <a href="sw-school-of-art.html">
+            <div class="card-name">Southwest School of Art</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Southwest School of Art in San Antonio, TX. Now part of UTSA. Jennifer Ling Datchuk taught here.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="st olaf college">
+          <a href="st-olaf-college.html">
+            <div class="card-name">St Olaf College</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Northfield, MN. Liberal arts college.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="starworks ceramics">
+          <a href="starworks.html">
+            <div class="card-name">STARworks Ceramics</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Star, NC. Ceramics center — residencies, native clay harvesting, material innovation. NCECA 2026 Resource Table T41. starworksnc.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="stonepool pottery">
+          <a href="stonepool-pottery.html">
+            <div class="card-name">Stonepool Pottery</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Studio pottery of Mark Shapiro in Worthington, MA. Operating since 1986. Hub of local and national ceramic culture. Has trained numerous apprentices....</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="suny new paltz">
+          <a href="suny-new-paltz.html">
+            <div class="card-name">SUNY New Paltz</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">New Paltz, NY. Ceramics program in Fine Art. NCECA 2026 Resource Table T57. newpaltz.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="suny potsdam">
+          <a href="suny-potsdam.html">
+            <div class="card-name">SUNY Potsdam</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">State University of New York at Potsdam. Michelle Solorzano earned BFA in Painting and Ceramics there.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="syracuse university">
+          <a href="syracuse.html">
+            <div class="card-name">Syracuse University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">MacDonald professor emeritus of ceramics</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div id="T" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">T</div><div class="card" data-name="terrestrial forms">
+          <a href="terrestrial-forms.html">
+            <div class="card-name">Terrestrial Forms</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Jan Sadowski&#x27;s home studio and pottery business, Howell MI. Four kilns. High-fired functional stoneware. terrforms@yahoo.com</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="the clay studio">
+          <a href="clay-studio-philadelphia.html">
+            <div class="card-name">The Clay Studio</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Philadelphia ceramic art center &amp; residency. Philadelphia, Pennsylvania, United States</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="the clay studio of missoula">
+          <a href="clay-studio-missoula.html">
+            <div class="card-name">The Clay Studio of Missoula</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Missoula, MT. Community ceramics studio. NCECA 2026 Resource Table T64. theclaystudioofmissoula.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="the dairy barn arts center">
+          <a href="dairy-barn-arts-center.html">
+            <div class="card-name">The Dairy Barn Arts Center</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">8000 Dairy Lane, Athens, OH 45701. Hosts Ceramics National exhibitions. Major ceramics venue. dairybarn.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="the potters market">
+          <a href="potters-market.html">
+            <div class="card-name">The Potters Market</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Largest pottery-only art fair in the US. Founded 1975 by Charlie Blosser. Held Southfield Pavilion, 17000 sq ft, 100-140 artists. Annual sales...</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="toledo museum of art">
+          <a href="toledo-museum-of-art.html">
+            <div class="card-name">Toledo Museum of Art</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">2445 Monroe St, Toledo, OH. Major glass and ceramics collection. Glass Pavilion gallery. NCECA 2026 exhibition listing mentions Toledo artists...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="touchstone center for crafts">
+          <a href="touchstone-crafts.html">
+            <div class="card-name">Touchstone Center For Crafts</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Farmington, PA. Craft school — ceramics, glass, metals, wood. NCECA 2026 Resource Table T42. touchstonecrafts.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="trenton city museum at ellarslie">
+          <a href="trenton-city-museum.html">
+            <div class="card-name">Trenton City Museum at Ellarslie</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Cadwalader Park, Trenton, NJ. Museum celebrating Trenton&#x27;s pottery heritage. Features historic and contemporary ceramics. ellarslie.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="tyler school of art (temple university)">
+          <a href="temple-tyler.html">
+            <div class="card-name">Tyler School of Art (Temple University)</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Ceramics program in Philadelphia. Lugo, Kwong, Gbadebo</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div id="U" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">U</div><div class="card" data-name="u of m stamps school of art &amp; design">
+          <a href="umich-stamps.html">
+            <div class="card-name">U of M Stamps School of Art &amp; Design</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Penny W. Stamps School of Art &amp; Design, University of Michigan, Ann Arbor. Undergraduate and graduate degree programs. Close proximity to Rovin...</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="uc berkeley">
+          <a href="uc-berkeley.html">
+            <div class="card-name">UC Berkeley</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Tool is studio manager/lecturer here | UC Berkeley. BA Art Practice.</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="uc davis">
+          <a href="uc-davis.html">
+            <div class="card-name">UC Davis</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Notkin MFA 1973, studied under Robert Arneson</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="university of alabama">
+          <a href="u-of-alabama.html">
+            <div class="card-name">University of Alabama</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Tuscaloosa, AL. Art and Art History department. NCECA 2026 Resource Table T43. art.ua.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="university of arkansas">
+          <a href="u-arkansas.html">
+            <div class="card-name">University of Arkansas</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">University of Arkansas. Vincent (Sniper) Frimpong earned MFA here. | Fayetteville, AR. School of Art, ceramics.</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="university of california, santa barbara">
+          <a href="ucsb.html">
+            <div class="card-name">University of California, Santa Barbara</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">UC Santa Barbara. History of Art &amp; Architecture department. Major research university in Southern California.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="university of colorado boulder">
+          <a href="u-colorado.html">
+            <div class="card-name">University of Colorado Boulder</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Israel Davis MFA | Boulder, CO. MFA Art Practices.</div>
+            <div class="card-stats">5 connections</div>
+          </a>
+        </div><div class="card" data-name="university of florida">
+          <a href="u-of-florida.html">
+            <div class="card-name">University of Florida</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">College of the Arts. NCECA 2026 Resource Table T59. arts.ufl.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="university of iowa">
+          <a href="u-of-iowa.html">
+            <div class="card-name">University of Iowa</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Tool MFA</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="university of kansas">
+          <a href="u-of-kansas.html">
+            <div class="card-name">University of Kansas</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Art department. NCECA 2026 Resource Table T3. art.ku.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="university of massachusetts dartmouth">
+          <a href="umass-dartmouth.html">
+            <div class="card-name">University of Massachusetts Dartmouth</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">UMass Dartmouth. Ceramics program was based at former Swain School of Design. Chris Gustin was head of ceramics.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="university of miami">
+          <a href="u-of-miami.html">
+            <div class="card-name">University of Miami</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Coral Gables, FL. NCECA 2026 Resource Table T48. miami.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="university of missouri">
+          <a href="u-of-missouri.html">
+            <div class="card-name">University of Missouri</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Visual Studies department. NCECA 2026 Resource Table T67. visualstudies.missouri.edu</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="university of montana">
+          <a href="u-montana.html">
+            <div class="card-name">University of Montana</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Galloway teaches ceramics here</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="university of nebraska-lincoln">
+          <a href="u-nebraska-lincoln.html">
+            <div class="card-name">University of Nebraska-Lincoln</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">University of Nebraska-Lincoln. Austin Coudriet earned BFA here (2019). Pete Pinnell was Professor of Ceramics here 1995-2025 (retired May 2025). |...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="university of new mexico">
+          <a href="university-of-new-mexico.html">
+            <div class="card-name">University of New Mexico</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Albuquerque, NM.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="university of north texas">
+          <a href="u-of-north-texas.html">
+            <div class="card-name">University of North Texas</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">College of Visual Arts and Design. NCECA 2026 Resource Table T73. cvad.unt.edu</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="university of oklahoma">
+          <a href="u-oklahoma.html">
+            <div class="card-name">University of Oklahoma</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">University of Oklahoma. MFA Ceramics program.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="university of toledo">
+          <a href="u-of-toledo.html">
+            <div class="card-name">University of Toledo</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Toledo, OH. Ceramics program. Featured in NCECA 2026 exhibition alongside Toledo Museum of Art.</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="university of washington">
+          <a href="u-of-washington.html">
+            <div class="card-name">University of Washington</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Art department, Seattle. NCECA 2026 Resource Table T22. art.washington.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="university of wisconsin, madison">
+          <a href="u-of-wisconsin-madison.html">
+            <div class="card-name">University of Wisconsin, Madison</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Art department. NCECA 2026 Resource Table T17. art.wisc.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="university of wisconsin-river falls">
+          <a href="university-of-wisconsin-river-falls.html">
+            <div class="card-name">University of Wisconsin-River Falls</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">River Falls, WI.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="utah state university">
+          <a href="utah-state.html">
+            <div class="card-name">Utah State University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Oesterritter MFA | Logan, UT. Ceramics program.</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="utah tech university">
+          <a href="utah-tech.html">
+            <div class="card-name">Utah Tech University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">NCECA 2026 Resource Table T56. art.utahtech.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="V" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">V</div><div class="card" data-name="vermont studio center">
+          <a href="vermont-studio-center.html">
+            <div class="card-name">Vermont Studio Center</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">80 Pearl St, Johnson, VT 05656. Artists residency program with gallery. Ceramics studios available. vermontstudiocenter.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="village potters guild">
+          <a href="village-potters-guild.html">
+            <div class="card-name">Village Potters Guild</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">326 N. Main St, Plymouth, MI 48170. Offers classes for beginners and intermediate potters.</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="virginia tech">
+          <a href="virginia-tech.html">
+            <div class="card-name">Virginia Tech</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Virginia Polytechnic Institute and State University. Dara Hartman earned BFA here.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="W" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">W</div><div class="card" data-name="watershed center for ceramic arts">
+          <a href="watershed.html">
+            <div class="card-name">Watershed Center for Ceramic Arts</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Residency in Newcastle ME</div>
+            <div class="card-stats">8 connections</div>
+          </a>
+        </div><div class="card" data-name="wayne state university">
+          <a href="wayne-state-university.html">
+            <div class="card-name">Wayne State University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Detroit public university. Dept of Art, Art History, and Design in College of Fine, Performing and Communication Arts. Ceramics program has 6 studios...</div>
+            <div class="card-stats">7 connections</div>
+          </a>
+        </div><div class="card" data-name="west michigan potters guild">
+          <a href="west-michigan-potters-guild.html">
+            <div class="card-name">West Michigan Potters Guild</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Grand Rapids area, est. 1983. 80+ members. Bi-annual sales, workshops. Serves western Michigan ceramics community.</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="western carolina university">
+          <a href="western-carolina.html">
+            <div class="card-name">Western Carolina University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Cullowhee, NC. NCECA 2026 Resource Table T33. wcu.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="western kentucky university">
+          <a href="wku.html">
+            <div class="card-name">Western Kentucky University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Oesterritter taught ceramics</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="wichita state university">
+          <a href="wichita-state.html">
+            <div class="card-name">Wichita State University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Wichita, KS. NCECA 2026 Resource Table T40. wichita.edu</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="wmu gwen frostic school of art">
+          <a href="wmu-frostic-school.html">
+            <div class="card-name">WMU Gwen Frostic School of Art</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Western Michigan University, Kalamazoo. 89,000 sq ft of creative spaces, 4 exhibition galleries, 33 faculty. Strong ceramics program with Morean...</div>
+            <div class="card-stats">11 connections</div>
+          </a>
+        </div><div class="card" data-name="worcester center for crafts">
+          <a href="worcester-crafts.html">
+            <div class="card-name">Worcester Center For Crafts</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Worcester, MA. Craft center. NCECA 2026 Resource Table T60. worcestercraftcenter.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="workhouse arts foundation">
+          <a href="workhouse-arts.html">
+            <div class="card-name">Workhouse Arts Foundation</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Lorton, VA. Community arts center. NCECA 2026 Resource Table T8. workhousearts.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="Y" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">Y</div><div class="card" data-name="yale university">
+          <a href="yale.html">
+            <div class="card-name">Yale University</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Yale University, New Haven, CT. School of Art MFA program. Jenni Sorkin (PhD Yale) is among notable graduates in the ceramics/art history field. Yale...</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="yourist studio gallery">
+          <a href="yourist-studio-gallery.html">
+            <div class="card-name">Yourist Studio Gallery</div>
+            <span class="card-type type-institution">institution</span>
+            <div class="card-notes">Ceramics studio and gallery. NCECA 2026 Resource Table T68. youristpottery.com</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div></div>
+    
+</div>
+<div class="site-footer">
+  Ceramics Community Atlas · Data from the Ceramics Community Graph · <a href="https://stullatlas.app">stullatlas.app</a>
+</div>
+</body>
+</html>

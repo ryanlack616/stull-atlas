@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Places — Ceramics Community Atlas</title>
+<style>
+:root {
+  --bg: #07070c; --bg-card: #0f0f18; --bg-hover: #17172a;
+  --border: #1e1e3a; --text: #c8c8d8; --text-dim: #6b6b8a; --text-bright: #e8e8f0;
+  --accent: #818cf8; --accent-dim: #4f46e5;
+  --rose: #fb7185; --teal: #2dd4bf; --amber: #fbbf24; --emerald: #34d399;
+  --mono: 'SF Mono','Cascadia Code','JetBrains Mono','Fira Code',monospace;
+  --sans: 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); color: var(--text); font-family: var(--sans); }
+body { min-height: 100vh; display: flex; flex-direction: column; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Banner */
+.banner {
+  background: linear-gradient(135deg, var(--accent-dim), #2d1b69);
+  color: var(--text-bright); font-family: var(--mono); font-size: 0.72rem;
+  padding: 0.35rem 1rem; text-align: center; border-bottom: 1px solid var(--accent);
+}
+.banner a { color: var(--amber); }
+
+/* Header */
+.site-header {
+  display: flex; align-items: center; gap: 1rem; padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.site-header .logo { font-family: var(--mono); font-size: 1.1rem; color: var(--text-bright); }
+.site-header .logo .sigil { color: var(--accent); }
+.site-header nav { display: flex; gap: 0.6rem; margin-left: auto; flex-wrap: wrap; }
+.site-header nav a {
+  font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim);
+  padding: 0.3rem 0.6rem; border: 1px solid var(--border); border-radius: 6px;
+  transition: all 0.15s;
+}
+.site-header nav a:hover { color: var(--text-bright); border-color: var(--accent); text-decoration: none; }
+.site-header nav a.active { background: var(--accent-dim); color: var(--text-bright); border-color: var(--accent); }
+
+/* Search */
+.search-wrap { padding: 1rem 2rem; }
+.search-input {
+  width: 100%; max-width: 500px; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.6rem 1rem; color: var(--text-bright);
+  font-family: var(--mono); font-size: 0.85rem; outline: none;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--text-dim); }
+
+/* Main content */
+.content { flex: 1; padding: 1rem 2rem 3rem; max-width: 1200px; width: 100%; margin: 0 auto; }
+
+/* Cards grid */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+.card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.2rem; transition: border-color 0.15s;
+}
+.card:hover { border-color: var(--accent); }
+.card a { text-decoration: none; }
+.card .card-name { font-family: var(--mono); font-size: 0.9rem; color: var(--text-bright); margin-bottom: 0.3rem; }
+.card .card-type {
+  font-family: var(--mono); font-size: 0.62rem; padding: 0.12rem 0.4rem;
+  border-radius: 4px; display: inline-block; margin-bottom: 0.4rem;
+}
+.card .card-notes { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; }
+.card .card-stats { font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim); margin-top: 0.4rem; }
+
+/* Type badge colors */
+.type-person { background: rgba(129,140,248,0.2); color: var(--accent); }
+.type-institution { background: rgba(251,191,36,0.2); color: var(--amber); }
+.type-organization { background: rgba(45,212,191,0.2); color: var(--teal); }
+.type-place { background: rgba(52,211,153,0.2); color: var(--emerald); }
+.type-technique { background: rgba(251,113,133,0.2); color: var(--rose); }
+.type-venue { background: rgba(168,85,247,0.2); color: #a855f7; }
+.type-event { background: rgba(251,113,133,0.2); color: var(--rose); }
+
+/* Detail page */
+.detail-header { margin-bottom: 2rem; }
+.detail-header h1 { font-family: var(--mono); font-size: 1.8rem; color: var(--text-bright); margin-bottom: 0.5rem; }
+.detail-header .meta { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+
+.detail-body { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; }
+@media (max-width: 768px) { .detail-body { grid-template-columns: 1fr; } }
+
+.detail-main {}
+.detail-sidebar {}
+
+.section { margin-bottom: 1.5rem; }
+.section-title {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem;
+  padding-bottom: 0.3rem; border-bottom: 1px solid var(--border);
+}
+.notes-text { font-size: 0.88rem; color: var(--text); line-height: 1.7; }
+
+/* Connection list */
+.conn-group { margin-bottom: 1rem; }
+.conn-group-title { font-family: var(--mono); font-size: 0.68rem; color: var(--amber); margin-bottom: 0.3rem; }
+.conn-item {
+  display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0;
+  font-family: var(--mono); font-size: 0.78rem; border-bottom: 1px solid var(--border);
+}
+.conn-item:last-child { border-bottom: none; }
+.conn-item a { color: var(--text-bright); }
+.conn-item .conn-label { color: var(--text-dim); font-size: 0.65rem; }
+.conn-item .conn-year { color: var(--amber); font-size: 0.62rem; }
+.conn-item .conn-arrow { color: var(--accent); }
+
+/* Stats on landing page */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.stat-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem; text-align: center;
+}
+.stat-card .stat-num { font-family: var(--mono); font-size: 2rem; color: var(--text-bright); }
+.stat-card .stat-label { font-family: var(--mono); font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Ego network SVG */
+.ego-wrap { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 1rem; }
+.ego-wrap svg { width: 100%; height: 280px; display: block; }
+
+/* Update request */
+.update-request {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  padding: 0.8rem 1rem; margin-top: 1rem; font-size: 0.78rem;
+}
+.update-request a { color: var(--amber); }
+
+/* Footer */
+.site-footer {
+  padding: 1.5rem 2rem; border-top: 1px solid var(--border);
+  font-family: var(--mono); font-size: 0.68rem; color: var(--text-dim);
+  text-align: center;
+}
+
+/* Search results (JS filtered) */
+.card.hidden { display: none; }
+.dir-count { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); margin-bottom: 1rem; }
+.alpha-nav { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.alpha-nav a {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim);
+  padding: 0.2rem 0.5rem; border: 1px solid var(--border); border-radius: 4px;
+}
+.alpha-nav a:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="banner">Ceramics Community Atlas · <a href="https://stullatlas.app">Stull Atlas</a> · NCECA 2026 Detroit</div>
+<div class="site-header">
+  <a href="../index.html" class="logo"><span class="sigil">&#9670;</span> Ceramics Community Atlas</a>
+  <nav><a href="../people/index.html" class="">People</a>
+<a href="../schools/index.html" class="">Schools</a>
+<a href="../techniques/index.html" class="">Techniques</a>
+<a href="../places/index.html" class=" active">Places</a>
+<a href="../orgs/index.html" class="">Orgs</a>
+<a href="/community/" class="">Explorer</a>
+<a href="/community/map.html" class="">Map</a>
+</nav>
+</div>
+<div style="font-family:var(--mono);font-size:0.7rem;color:var(--text-dim);padding:0.6rem 2rem;border-bottom:1px solid var(--border)"><a href="../index.html">Atlas</a>  /  <span style="color:var(--text-bright)">Places</span></div>
+
+        <div class="search-wrap">
+          <input type="text" class="search-input" id="dirSearch" placeholder="Filter by name..." oninput="filterCards()" />
+        </div>
+        <script>
+        function filterCards() {
+          const q = document.getElementById('dirSearch').value.toLowerCase();
+          document.querySelectorAll('.card').forEach(c => {
+            const name = c.getAttribute('data-name') || '';
+            c.classList.toggle('hidden', q.length > 0 && !name.includes(q));
+          });
+          const visible = document.querySelectorAll('.card:not(.hidden)').length;
+          const total = document.querySelectorAll('.card').length;
+          const ct = document.getElementById('dirCount');
+          if (ct) ct.textContent = q ? visible + ' of ' + total : total + ' total';
+        }
+        </script>
+<div class="content">
+
+    <h1 style="font-family:var(--mono);font-size:1.5rem;color:var(--text-bright);margin-bottom:0.5rem">Places</h1>
+    <div class="dir-count" id="dirCount">44 total</div>
+    <div class="alpha-nav"><a href="#A">A</a><a href="#B">B</a><a href="#C">C</a><a href="#D">D</a><a href="#E">E</a><a href="#F">F</a><a href="#G">G</a><a href="#H">H</a><a href="#I">I</a><a href="#J">J</a><a href="#K">K</a><a href="#L">L</a><a href="#M">M</a><a href="#N">N</a><a href="#P">P</a><a href="#R">R</a><a href="#S">S</a><a href="#T">T</a><a href="#W">W</a></div>
+    <div class="card-grid"><div id="A" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">A</div><div class="card" data-name="akar">
+          <a href="akar-gallery.html">
+            <div class="card-name">AKAR</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">257 East Iowa Ave, Iowa City, IA 52240. Premier ceramics gallery — online and brick-and-mortar. Features functional and sculptural pottery....</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="art-stream nomadic gallery">
+          <a href="art-stream-gallery.html">
+            <div class="card-name">Art-Stream Nomadic Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">525 Buggy Circle, Carbondale, CO 81623. Nomadic gallery featuring ceramics and art. art-stream.com</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="B" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">B</div><div class="card" data-name="bentley gallery">
+          <a href="bentley-gallery.html">
+            <div class="card-name">Bentley Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">215 East Grant St, Phoenix, AZ 85004. Contemporary gallery featuring ceramic art and sculpture. bentleygallery.com</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="blue spiral 1">
+          <a href="blue-spiral-gallery.html">
+            <div class="card-name">Blue Spiral 1</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">38 Biltmore Ave, Asheville, NC 28801. Three-level contemporary gallery featuring ceramics and craft. bluespiral1.com</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="boyer campbell building">
+          <a href="boyer-campbell-building.html">
+            <div class="card-name">Boyer Campbell Building</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">Historic industrial building in Detroit, designed by Albert Kahn-trained architect C.F.J. Barnes. Located in the Detroit Design District. Venue for...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div id="C" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">C</div><div class="card" data-name="central clay studio">
+          <a href="central-clay-studio.html">
+            <div class="card-name">Central Clay Studio</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">Downtown Plymouth, MI. Community ceramics studio offering single-session projects, workshops, and 6-week classes for beginning to experienced potters...</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="charlie cummings gallery">
+          <a href="charlie-cummings-gallery.html">
+            <div class="card-name">Charlie Cummings Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">819 SW 5th Ave, Gainesville, FL 32601. Gallery specializing in contemporary ceramics. Near UF ceramics program. charliecummingsgallery.com</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="companion gallery">
+          <a href="companion-gallery.html">
+            <div class="card-name">Companion Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">3638 East Mitchell St (Hwy 152), Humboldt, TN 38343. Gallery specializing in contemporary ceramics and functional pottery. Run by potters....</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="cranbrook art museum">
+          <a href="cranbrook-art-museum.html">
+            <div class="card-name">Cranbrook Art Museum</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">39221 Woodward Ave, Bloomfield Hills, MI. Exhibition space associated with Cranbrook Academy of Art. Hosts Open Studios events.</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div id="D" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">D</div><div class="card" data-name="david klein gallery">
+          <a href="david-klein-gallery.html">
+            <div class="card-name">David Klein Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">Gallery in Detroit. Exhibiting Ebitenyefa Baralaye and Del Harrow during NCECA 2026. Represents innovative contemporary art with a strong Michigan...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="detroit historical museum">
+          <a href="detroit-historical-museum.html">
+            <div class="card-name">Detroit Historical Museum</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">Detroit Historical Museum. Hosting NCECA 2026 exhibition &#x27;Centerpoint&#x27; curated by Kimberly LaVonne. Features Maija Grotell work in connection with...</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="duane reed gallery">
+          <a href="duane-reed-gallery.html">
+            <div class="card-name">Duane Reed Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">4729 McPherson Ave, St Louis, MO 63108. Major gallery for contemporary ceramics and glass. duanereedgallery.com</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="E" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">E</div><div class="card" data-name="eastern market">
+          <a href="eastern-market.html">
+            <div class="card-name">Eastern Market</div>
+            <span class="card-type type-venue">venue</span>
+            <div class="card-notes">Eastern Market Shed 3, 2810 Russell St, Detroit. Hosted Empty Bowls Detroit during NCECA 2026.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="eutectic gallery">
+          <a href="eutectic-gallery.html">
+            <div class="card-name">Eutectic Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">1930 NE Oregon St, Portland, OR 97232. Gallery specializing in contemporary ceramics. Major West Coast ceramics gallery. eutecticgallery.com</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div id="F" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">F</div><div class="card" data-name="fortress studios">
+          <a href="fortress-studios.html">
+            <div class="card-name">Fortress Studios</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">Location of the Salty Dog / Noborigama kiln that Ryan, Henry&#x27;s mentee, and others helped build.</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="foster/white gallery">
+          <a href="foster-white-gallery.html">
+            <div class="card-name">Foster/White Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">Seattle, WA. Contemporary gallery featuring ceramics. fosterwhite.com</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="freehand gallery">
+          <a href="freehand-gallery.html">
+            <div class="card-name">Freehand Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">8413 West Third St, Los Angeles, CA 90048. Ceramics and craft gallery. freehand.com</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="G" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">G</div><div class="card" data-name="galerie camille">
+          <a href="galerie-camille.html">
+            <div class="card-name">Galerie Camille</div>
+            <span class="card-type type-venue">venue</span>
+            <div class="card-notes">Gallery at 4130 Cass Ave., Suite C, Detroit. Hosted multiple exhibitions during NCECA 2026.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="H" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">H</div><div class="card" data-name="hawk galleries">
+          <a href="hawk-galleries.html">
+            <div class="card-name">Hawk Galleries</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">153 East Main St, Columbus, OH 43215. Gallery featuring contemporary ceramics. hawkgalleries.com</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="holding house">
+          <a href="holding-house.html">
+            <div class="card-name">Holding House</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">Detroit gallery/exhibition space. Hosted exhibitions during Michigan Mud events. Contemporary ceramics exhibition venue.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="huntington place convention center">
+          <a href="huntington-place.html">
+            <div class="card-name">Huntington Place Convention Center</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">NCECA 2026 main venue. Downtown Detroit convention center (formerly TCF Center / Cobo Hall).</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="I" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">I</div><div class="card" data-name="indiana clay conference">
+          <a href="indiana-clay-conference.html">
+            <div class="card-name">Indiana Clay Conference</div>
+            <span class="card-type type-event">event</span>
+            <div class="card-notes">Annual ceramics conference in Indiana. Co-founded by Justin Rothshank. Brings together potters from across the state.</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="J" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">J</div><div class="card" data-name="john natsoulas center for the arts">
+          <a href="john-natsoulas-gallery.html">
+            <div class="card-name">John Natsoulas Center for the Arts</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">521 1st St, Davis, CA 95616. Gallery featuring ceramic art. Near UC Davis ceramics program. natsoulas.com</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="K" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">K</div><div class="card" data-name="ken&#x27;s studio (albion)">
+          <a href="ken-studio.html">
+            <div class="card-name">Ken&#x27;s Studio (Albion)</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">29005 Albion Rd, Albion MI. Largest anagama in North America. Annual 10-day wood firings. Gas kiln too. Chickens took refuge during ice storm....</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="L" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">L</div><div class="card" data-name="lacoste gallery">
+          <a href="lacoste-gallery.html">
+            <div class="card-name">Lacoste Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">25 Main St, Concord, MA 01742. Major ceramics gallery. Represents top ceramic artists nationally. lacostegallery.com / lucylacoste.com</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="lawrence street gallery">
+          <a href="lawrence-street-gallery.html">
+            <div class="card-name">Lawrence Street Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">Art gallery in Ferndale, MI (12 minutes north of Detroit). Hosting &#x27;Saints, Sinners, and Potters&#x27; ceramic invitational March 2026, celebrating NCECA....</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="M" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">M</div><div class="card" data-name="michigan central station">
+          <a href="michigan-central-station.html">
+            <div class="card-name">Michigan Central Station</div>
+            <span class="card-type type-venue">venue</span>
+            <div class="card-notes">Historic Detroit train station featuring Guastavino clay tile vaulting. Subject of Mick Kennedy&#x27;s NCECA 2026 lecture on Barcelona-to-Detroit...</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="mobilia gallery">
+          <a href="mobilia-gallery.html">
+            <div class="card-name">Mobilia Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">359 Huron Ave, Cambridge, MA 02138. Contemporary ceramics and craft gallery. mobilia-gallery.com</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="my clay corner">
+          <a href="my-clay-corner.html">
+            <div class="card-name">My Clay Corner</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">Ryan&#x27;s studio in Howell, MI. Barn with open doors facing green countryside. Multiple wheels, gas kiln, raku kiln, glaze mixing room....</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="N" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">N</div><div class="card" data-name="nceca 2026">
+          <a href="nceca-2026.html">
+            <div class="card-name">NCECA 2026</div>
+            <span class="card-type type-event">event</span>
+            <div class="card-notes">60th annual conference &#x27;Volumes&#x27; — March 25-28, 2026, Huntington Place Convention Center, Detroit. Ryan planning to demo Stull Atlas. Henry is a...</div>
+            <div class="card-stats">398 connections</div>
+          </a>
+        </div><div class="card" data-name="new morning gallery">
+          <a href="new-morning-gallery.html">
+            <div class="card-name">New Morning Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">7 Boston Way, Asheville, NC 28803. Major craft gallery featuring ceramics. In arts district. newmorninggallerync.com</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="P" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">P</div><div class="card" data-name="penland gallery">
+          <a href="penland-gallery.html">
+            <div class="card-name">Penland Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">67 Doras Trail, Penland, NC 28765. Gallery associated with Penland School of Craft. Features ceramics by residents and alumni. penland.org</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="pewabic pottery museum &amp; gallery">
+          <a href="pewabic-pottery-museum.html">
+            <div class="card-name">Pewabic Pottery Museum &amp; Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">10125 E Jefferson Ave, Detroit. Exhibition gallery at Pewabic Pottery. Hosts rotating exhibitions of contemporary ceramics. NCECA 2026 Featured...</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div class="card" data-name="popps packing">
+          <a href="popps-packing.html">
+            <div class="card-name">Popps Packing</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">Creative reuse / community space in Hamtramck. Where Ceramics School started as a pop-up before getting the storefront.</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div id="R" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">R</div><div class="card" data-name="rovin ceramics">
+          <a href="rovin-ceramics.html">
+            <div class="card-name">Rovin Ceramics</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">Steven Johnson&#x27;s place in Ann Arbor. Where Ryan ran into Henry Feb 10, 2026. Diamond/Large Sponsor of NCECA 2026! Steven Johnson&#x27;s ceramics supply in...</div>
+            <div class="card-stats">4 connections</div>
+          </a>
+        </div><div class="card" data-name="russell industrial center">
+          <a href="russell-industrial.html">
+            <div class="card-name">Russell Industrial Center</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">Massive artist/creative workspace in Detroit. Feb 2017 safety code violations forced ~70% of 150 tenants out. Paul Kotula had studio there. Ryan...</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div><div id="S" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">S</div><div class="card" data-name="scarab club">
+          <a href="scarab-club.html">
+            <div class="card-name">Scarab Club</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">217 Farnsworth St, Detroit. Historic artists&#x27; club (est. 1907) near DIA. Exhibition space for Detroit art community. Potential NCECA 2026 Clay Around...</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="schaller gallery">
+          <a href="schaller-gallery.html">
+            <div class="card-name">Schaller Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">St Joseph, MI. Online and physical gallery specializing in contemporary ceramics. One of the most prominent ceramics galleries in the US. Represents...</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div class="card" data-name="sherry leedy contemporary art">
+          <a href="sherry-leedy-gallery.html">
+            <div class="card-name">Sherry Leedy Contemporary Art</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">2004 Baltimore Ave, Kansas City, MO 64112. Gallery featuring contemporary ceramics. sherryleedy.com</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="shigaraki">
+          <a href="shigaraki-japan.html">
+            <div class="card-name">Shigaraki</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">One of Japan&#x27;s Six Ancient Kilns, UNESCO heritage. Shigaraki, Shiga, Japan</div>
+            <div class="card-stats">3 connections</div>
+          </a>
+        </div><div id="T" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">T</div><div class="card" data-name="traver gallery">
+          <a href="traver-gallery.html">
+            <div class="card-name">Traver Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">110 Union St Suite 200, Seattle, WA 98101. Major gallery for ceramics, glass, and sculpture. Represents Jun Kaneko, Akio Takamori. Also Tacoma...</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="trax gallery">
+          <a href="trax-gallery.html">
+            <div class="card-name">Trax Gallery</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">1812 Fifth St, Berkeley, CA 94710. Contemporary ceramics gallery. traxgallery.com</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div class="card" data-name="trinosophes">
+          <a href="trinosophes.html">
+            <div class="card-name">Trinosophes</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">Art space, cafe, and venue in Detroit&#x27;s Eastern Market area. Hosts exhibitions, performances, and experimental art. Multiple exhibitions by Henry...</div>
+            <div class="card-stats">1 connections</div>
+          </a>
+        </div><div id="W" style="grid-column:1/-1;font-family:var(--mono);font-size:1.2rem;color:var(--text-dim);margin-top:1rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)">W</div><div class="card" data-name="wasserman projects">
+          <a href="wasserman-projects.html">
+            <div class="card-name">Wasserman Projects</div>
+            <span class="card-type type-place">place</span>
+            <div class="card-notes">Detroit contemporary art gallery. NCECA 2026 exhibition venue.</div>
+            <div class="card-stats">2 connections</div>
+          </a>
+        </div></div>
+    
+</div>
+<div class="site-footer">
+  Ceramics Community Atlas · Data from the Ceramics Community Graph · <a href="https://stullatlas.app">stullatlas.app</a>
+</div>
+</body>
+</html>

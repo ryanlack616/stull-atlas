@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stephanie Rozene — Ceramics Community Atlas</title>
+<style>
+:root {
+  --bg: #07070c; --bg-card: #0f0f18; --bg-hover: #17172a;
+  --border: #1e1e3a; --text: #c8c8d8; --text-dim: #6b6b8a; --text-bright: #e8e8f0;
+  --accent: #818cf8; --accent-dim: #4f46e5;
+  --rose: #fb7185; --teal: #2dd4bf; --amber: #fbbf24; --emerald: #34d399;
+  --mono: 'SF Mono','Cascadia Code','JetBrains Mono','Fira Code',monospace;
+  --sans: 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); color: var(--text); font-family: var(--sans); }
+body { min-height: 100vh; display: flex; flex-direction: column; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Banner */
+.banner {
+  background: linear-gradient(135deg, var(--accent-dim), #2d1b69);
+  color: var(--text-bright); font-family: var(--mono); font-size: 0.72rem;
+  padding: 0.35rem 1rem; text-align: center; border-bottom: 1px solid var(--accent);
+}
+.banner a { color: var(--amber); }
+
+/* Header */
+.site-header {
+  display: flex; align-items: center; gap: 1rem; padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.site-header .logo { font-family: var(--mono); font-size: 1.1rem; color: var(--text-bright); }
+.site-header .logo .sigil { color: var(--accent); }
+.site-header nav { display: flex; gap: 0.6rem; margin-left: auto; flex-wrap: wrap; }
+.site-header nav a {
+  font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim);
+  padding: 0.3rem 0.6rem; border: 1px solid var(--border); border-radius: 6px;
+  transition: all 0.15s;
+}
+.site-header nav a:hover { color: var(--text-bright); border-color: var(--accent); text-decoration: none; }
+.site-header nav a.active { background: var(--accent-dim); color: var(--text-bright); border-color: var(--accent); }
+
+/* Search */
+.search-wrap { padding: 1rem 2rem; }
+.search-input {
+  width: 100%; max-width: 500px; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.6rem 1rem; color: var(--text-bright);
+  font-family: var(--mono); font-size: 0.85rem; outline: none;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--text-dim); }
+
+/* Main content */
+.content { flex: 1; padding: 1rem 2rem 3rem; max-width: 1200px; width: 100%; margin: 0 auto; }
+
+/* Cards grid */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+.card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.2rem; transition: border-color 0.15s;
+}
+.card:hover { border-color: var(--accent); }
+.card a { text-decoration: none; }
+.card .card-name { font-family: var(--mono); font-size: 0.9rem; color: var(--text-bright); margin-bottom: 0.3rem; }
+.card .card-type {
+  font-family: var(--mono); font-size: 0.62rem; padding: 0.12rem 0.4rem;
+  border-radius: 4px; display: inline-block; margin-bottom: 0.4rem;
+}
+.card .card-notes { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; }
+.card .card-stats { font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim); margin-top: 0.4rem; }
+
+/* Type badge colors */
+.type-person { background: rgba(129,140,248,0.2); color: var(--accent); }
+.type-institution { background: rgba(251,191,36,0.2); color: var(--amber); }
+.type-organization { background: rgba(45,212,191,0.2); color: var(--teal); }
+.type-place { background: rgba(52,211,153,0.2); color: var(--emerald); }
+.type-technique { background: rgba(251,113,133,0.2); color: var(--rose); }
+.type-venue { background: rgba(168,85,247,0.2); color: #a855f7; }
+.type-event { background: rgba(251,113,133,0.2); color: var(--rose); }
+
+/* Detail page */
+.detail-header { margin-bottom: 2rem; }
+.detail-header h1 { font-family: var(--mono); font-size: 1.8rem; color: var(--text-bright); margin-bottom: 0.5rem; }
+.detail-header .meta { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+
+.detail-body { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; }
+@media (max-width: 768px) { .detail-body { grid-template-columns: 1fr; } }
+
+.detail-main {}
+.detail-sidebar {}
+
+.section { margin-bottom: 1.5rem; }
+.section-title {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem;
+  padding-bottom: 0.3rem; border-bottom: 1px solid var(--border);
+}
+.notes-text { font-size: 0.88rem; color: var(--text); line-height: 1.7; }
+
+/* Connection list */
+.conn-group { margin-bottom: 1rem; }
+.conn-group-title { font-family: var(--mono); font-size: 0.68rem; color: var(--amber); margin-bottom: 0.3rem; }
+.conn-item {
+  display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0;
+  font-family: var(--mono); font-size: 0.78rem; border-bottom: 1px solid var(--border);
+}
+.conn-item:last-child { border-bottom: none; }
+.conn-item a { color: var(--text-bright); }
+.conn-item .conn-label { color: var(--text-dim); font-size: 0.65rem; }
+.conn-item .conn-year { color: var(--amber); font-size: 0.62rem; }
+.conn-item .conn-arrow { color: var(--accent); }
+
+/* Stats on landing page */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.stat-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem; text-align: center;
+}
+.stat-card .stat-num { font-family: var(--mono); font-size: 2rem; color: var(--text-bright); }
+.stat-card .stat-label { font-family: var(--mono); font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Ego network SVG */
+.ego-wrap { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 1rem; }
+.ego-wrap svg { width: 100%; height: 280px; display: block; }
+
+/* Update request */
+.update-request {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  padding: 0.8rem 1rem; margin-top: 1rem; font-size: 0.78rem;
+}
+.update-request a { color: var(--amber); }
+
+/* Footer */
+.site-footer {
+  padding: 1.5rem 2rem; border-top: 1px solid var(--border);
+  font-family: var(--mono); font-size: 0.68rem; color: var(--text-dim);
+  text-align: center;
+}
+
+/* Search results (JS filtered) */
+.card.hidden { display: none; }
+.dir-count { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); margin-bottom: 1rem; }
+.alpha-nav { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.alpha-nav a {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim);
+  padding: 0.2rem 0.5rem; border: 1px solid var(--border); border-radius: 4px;
+}
+.alpha-nav a:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="banner">Ceramics Community Atlas · <a href="https://stullatlas.app">Stull Atlas</a> · NCECA 2026 Detroit</div>
+<div class="site-header">
+  <a href="../index.html" class="logo"><span class="sigil">&#9670;</span> Ceramics Community Atlas</a>
+  <nav><a href="../people/index.html" class=" active">People</a>
+<a href="../schools/index.html" class="">Schools</a>
+<a href="../techniques/index.html" class="">Techniques</a>
+<a href="../places/index.html" class="">Places</a>
+<a href="../orgs/index.html" class="">Orgs</a>
+<a href="/community/" class="">Explorer</a>
+<a href="/community/map.html" class="">Map</a>
+</nav>
+</div>
+<div style="font-family:var(--mono);font-size:0.7rem;color:var(--text-dim);padding:0.6rem 2rem;border-bottom:1px solid var(--border)"><a href="../index.html">Atlas</a>  /  <a href="index.html">People</a>  /  <span style="color:var(--text-bright)">Stephanie Rozene</span></div>
+
+<div class="content">
+
+    <div class="detail-header">
+      <h1>Stephanie Rozene <span style="font-size:0.62rem;padding:0.12rem 0.4rem;border-radius:4px;background:rgba(251,113,133,0.2);color:var(--rose)">NCECA 2026</span></h1>
+      <div class="meta">
+        <span class="card-type type-person">person</span>
+        <span>4 connections</span>
+        
+      </div>
+    </div>
+
+    <div class="detail-body">
+      <div class="detail-main">
+        <div class="section">
+          <div class="section-title">About</div>
+          <div class="notes-text">NCECA 2026 Podcast: &#x27;The History of Ceramics: Three Courses&#x27;. Also in BGSU Mass Movement show.</div>
+        </div>
+        <div class="section">
+          <div class="section-title">Connections</div>
+          <div class="conn-group">
+          <div class="conn-group-title">Affiliated with (1)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">→</span>
+              <a href="../schools/bgsu.html">Bowling Green State University</a>
+              <span class="card-type type-institution">institution</span>
+               <span class="conn-label">BGSU alumni/exhibitor</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Presenting at (1)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">→</span>
+              <a href="../places/nceca-2026.html">NCECA 2026</a>
+              <span class="card-type type-event">event</span>
+               <span class="conn-label">Podcast: History of Ceramics</span>
+            </div>
+        </div><div class="conn-group">
+          <div class="conn-group-title">Co-presented with (2)</div>
+          <div class="conn-item">
+              <span class="conn-arrow">→</span>
+              <a href="../people/paul-greenhalgh.html">Paul Greenhalgh</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Ceramics history podcast</span> <span class="conn-year">2026</span>
+            </div><div class="conn-item">
+              <span class="conn-arrow">←</span>
+              <a href="../people/paul-greenhalgh.html">Paul Greenhalgh</a>
+              <span class="card-type type-person">person</span>
+               <span class="conn-label">Ceramics history podcast</span> <span class="conn-year">2026</span>
+            </div>
+        </div>
+        </div>
+      </div>
+
+      <div class="detail-sidebar">
+        <div class="ego-wrap"><svg viewBox="0 0 340 280" xmlns="http://www.w3.org/2000/svg">
+      <line x1="170" y1="140" x2="170" y2="40" stroke="#fb7185" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="270" y2="140" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="170" y2="240" stroke="#818cf8" stroke-opacity="0.3" stroke-width="1"/><line x1="170" y1="140" x2="70" y2="140" stroke="#fbbf24" stroke-opacity="0.3" stroke-width="1"/>
+      <circle cx="170" cy="40" r="8" fill="#fb7185" stroke="#fb7185" stroke-opacity="0.5" stroke-width="1.5"/><text x="170" y="20" text-anchor="middle" fill="#c8c8d8" font-family="monospace" font-size="8" dominant-baseline="central">NCECA 2026</text><circle cx="270" cy="140" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><text x="290" y="140" text-anchor="start" fill="#c8c8d8" font-family="monospace" font-size="8" dominant-baseline="central">Paul Greenhalgh</text><circle cx="170" cy="240" r="8" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.5" stroke-width="1.5"/><text x="170" y="260" text-anchor="middle" fill="#c8c8d8" font-family="monospace" font-size="8" dominant-baseline="central">Paul Greenhalgh</text><circle cx="70" cy="140" r="8" fill="#fbbf24" stroke="#fbbf24" stroke-opacity="0.5" stroke-width="1.5"/><text x="50" y="140" text-anchor="end" fill="#c8c8d8" font-family="monospace" font-size="8" dominant-baseline="central">Bowling Green..</text>
+      <circle cx="170" cy="140" r="18" fill="#818cf8" stroke="#818cf8" stroke-opacity="0.6" stroke-width="2.5"/>
+      <text x="170" y="172" text-anchor="middle" fill="#e8e8f0" font-family="monospace" font-size="10" font-weight="bold">Stephanie Rozene</text>
+    </svg></div>
+        
+      </div>
+    </div>
+    
+</div>
+<div class="site-footer">
+  Ceramics Community Atlas · Data from the Ceramics Community Graph · <a href="https://stullatlas.app">stullatlas.app</a>
+</div>
+</body>
+</html>

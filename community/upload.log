@@ -1,0 +1,295 @@
+. 2026-02-12 11:48:45.734 --------------------------------------------------------------------------
+. 2026-02-12 11:48:45.735 WinSCP Version 6.5.5 (Build 16453 2025-11-19) (OS 10.0.19045 – Windows 10 Pro)
+. 2026-02-12 11:48:45.735 Configuration: HKCU\Software\Martin Prikryl\WinSCP 2\
+. 2026-02-12 11:48:45.735 Log level: Normal
+. 2026-02-12 11:48:45.735 Local account: DESKTOP-083Q3R6\PC
+. 2026-02-12 11:48:45.735 Working directory: C:\rje\dev\ceramics-community
+. 2026-02-12 11:48:45.735 Process ID: 18860
+. 2026-02-12 11:48:45.751 Ancestor processes: WinSCP, winscp.com, pwsh, Code, Code, explorer, ...
+. 2026-02-12 11:48:45.752 Command-line: "c:\program files (x86)\winscp\winscp.exe" /console=6.5.5 /consoleinstance=_25208_941 "/script=C:\rje\dev\ceramics-community\deploy-people\upload.txt" "/log=C:\rje\dev\ceramics-community\deploy-people\upload.log" 
+. 2026-02-12 11:48:45.752 Time zone: Current: GMT-5, Standard: GMT-5 (Eastern Standard Time), DST: GMT-4 (Eastern Daylight Time), DST Start: 3/8/2026, DST End: 11/1/2026
+. 2026-02-12 11:48:45.752 Login time: Thursday, February 12, 2026 11:48:45 AM
+. 2026-02-12 11:48:45.752 --------------------------------------------------------------------------
+. 2026-02-12 11:48:45.752 Script: Retrospectively logging previous script records:
+> 2026-02-12 11:48:45.752 Script: option batch abort
+< 2026-02-12 11:48:45.752 Script: batch           abort     
+> 2026-02-12 11:48:45.752 Script: option confirm off
+< 2026-02-12 11:48:45.752 Script: confirm         off       
+> 2026-02-12 11:48:45.752 Script: open ftp://stullatlas.app:***@pixie-ss1-ftp.porkbun.com/ -passive=on -timeout=120 -rawsettings FtpForcePasvIp2=0 FtpUseMlsd=0
+. 2026-02-12 11:48:45.752 --------------------------------------------------------------------------
+. 2026-02-12 11:48:45.752 Session name: stullatlas.app@pixie-ss1-ftp.porkbun.com (Ad-Hoc site)
+. 2026-02-12 11:48:45.752 Host name: pixie-ss1-ftp.porkbun.com (Port: 21)
+. 2026-02-12 11:48:45.752 User name: stullatlas.app (Password: Yes, Key file: No, Passphrase: No)
+. 2026-02-12 11:48:45.752 Transfer Protocol: FTP
+. 2026-02-12 11:48:45.752 Ping type: Dummy, Ping interval: 30 sec; Timeout: 120 sec
+. 2026-02-12 11:48:45.752 Disable Nagle: No
+. 2026-02-12 11:48:45.752 Proxy: None
+. 2026-02-12 11:48:45.752 Send buffer: 262144
+. 2026-02-12 11:48:45.752 UTF: Auto
+. 2026-02-12 11:48:45.752 FTPS: None [Client certificate: No]
+. 2026-02-12 11:48:45.752 FTP: Passive: Yes [Force IP: On]; MLSD: On [List all: Auto]; HOST: Auto
+. 2026-02-12 11:48:45.752 Local directory: default, Remote directory: home, Update: Yes, Cache: Yes
+. 2026-02-12 11:48:45.752 Cache directory changes: Yes, Permanent: Yes
+. 2026-02-12 11:48:45.752 Recycle bin: Delete to: No, Overwritten to: No, Bin path: 
+. 2026-02-12 11:48:45.752 Timezone offset: 0h 0m
+. 2026-02-12 11:48:45.752 --------------------------------------------------------------------------
+< 2026-02-12 11:48:45.780 Script: Connecting to pixie-ss1-ftp.porkbun.com ...
+. 2026-02-12 11:48:45.780 Connecting to pixie-ss1-ftp.porkbun.com ...
+. 2026-02-12 11:48:45.935 Connected with pixie-ss1-ftp.porkbun.com. Waiting for welcome message...
+< 2026-02-12 11:48:46.011 220 (vsFTPd 3.0.5)
+> 2026-02-12 11:48:46.011 USER stullatlas.app
+< 2026-02-12 11:48:46.124 331 Please specify the password.
+> 2026-02-12 11:48:46.124 PASS **********************
+< 2026-02-12 11:48:46.273 230 Login successful.
+> 2026-02-12 11:48:46.274 SYST
+< 2026-02-12 11:48:46.347 215 UNIX Type: L8
+> 2026-02-12 11:48:46.347 FEAT
+< 2026-02-12 11:48:46.422 211-Features:
+< 2026-02-12 11:48:46.422  AUTH TLS
+< 2026-02-12 11:48:46.422  EPRT
+< 2026-02-12 11:48:46.422  EPSV
+< 2026-02-12 11:48:46.422  MDTM
+< 2026-02-12 11:48:46.422  PASV
+< 2026-02-12 11:48:46.422  PBSZ
+< 2026-02-12 11:48:46.422  PROT
+< 2026-02-12 11:48:46.422  REST STREAM
+< 2026-02-12 11:48:46.422  SIZE
+< 2026-02-12 11:48:46.422  TVFS
+< 2026-02-12 11:48:46.422  UTF8
+< 2026-02-12 11:48:46.422 211 End
+> 2026-02-12 11:48:46.422 OPTS UTF8 ON
+< 2026-02-12 11:48:46.495 200 Always in UTF8 mode.
+< 2026-02-12 11:48:46.495 Script: Connected
+. 2026-02-12 11:48:46.495 Connected
+. 2026-02-12 11:48:46.495 --------------------------------------------------------------------------
+. 2026-02-12 11:48:46.495 Using FTP protocol.
+. 2026-02-12 11:48:46.496 Doing startup conversation with host.
+< 2026-02-12 11:48:46.496 Script: Starting the session...
+> 2026-02-12 11:48:46.496 PWD
+< 2026-02-12 11:48:46.570 257 "/" is the current directory
+. 2026-02-12 11:48:46.570 Getting current directory name.
+. 2026-02-12 11:48:46.570 Startup conversation with host finished.
+< 2026-02-12 11:48:46.570 Script: Session started.
+< 2026-02-12 11:48:46.570 Script: Active session: [1] stullatlas.app@pixie-ss1-ftp.porkbun.com
+> 2026-02-12 11:48:46.570 Script: cd /people
+. 2026-02-12 11:48:46.570 Changing directory to "/people".
+> 2026-02-12 11:48:46.570 CWD /people
+< 2026-02-12 11:48:46.644 250 Directory successfully changed.
+. 2026-02-12 11:48:46.644 Getting current directory name.
+> 2026-02-12 11:48:46.644 PWD
+< 2026-02-12 11:48:46.718 257 "/people" is the current directory
+< 2026-02-12 11:48:46.718 Script: /people
+> 2026-02-12 11:48:46.718 Script: put C:\rje\dev\ceramics-community\deploy-people\index.html
+. 2026-02-12 11:48:46.719 Copying 1 files/directories to remote directory "/people" - total size: 551,340
+. 2026-02-12 11:48:46.719   PrTime: Yes; PrRO: No; Rght: rw-r--r--; PrR: No (No); FnCs: N; RIC: 0001; Resume: S (102400); CalcS: No; Mask: 
+. 2026-02-12 11:48:46.719   TM: B; ClAr: No; RemEOF: No; RemBOM: No; CPS: 0; NewerOnly: No; EncryptNewFiles: Yes; ExcludeHiddenFiles: No; ExcludeEmptyDirectories: No; InclM: ; ResumeL: 0
+. 2026-02-12 11:48:46.719   AscM: *.*html; *.htm; *.txt; *.php; *.php3; *.cgi; *.c; *.cpp; *.h; *.pas; *.bas; *.tex; *.pl; *.js; .htaccess; *.xtml; *.css; *.cfg; *.ini; *.sh; *.xml
+. 2026-02-12 11:48:46.719 File: 'C:\rje\dev\ceramics-community\deploy-people\index.html' [2026-02-12T16:47:28.337Z] [551340]
+. 2026-02-12 11:48:46.719 Copying "C:\rje\dev\ceramics-community\deploy-people\index.html" to remote directory started.
+. 2026-02-12 11:48:46.719 Binary transfer mode selected.
+. 2026-02-12 11:48:46.719 Starting upload of C:\rje\dev\ceramics-community\deploy-people\index.html
+> 2026-02-12 11:48:46.719 TYPE I
+< 2026-02-12 11:48:46.793 200 Switching to Binary mode.
+> 2026-02-12 11:48:46.793 PASV
+. 2026-02-12 17:53:12.842 --------------------------------------------------------------------------
+. 2026-02-12 17:53:12.842 WinSCP Version 6.5.5 (Build 16453 2025-11-19) (OS 10.0.19045 – Windows 10 Pro)
+. 2026-02-12 17:53:12.842 Configuration: HKCU\Software\Martin Prikryl\WinSCP 2\
+. 2026-02-12 17:53:12.842 Log level: Normal
+. 2026-02-12 17:53:12.842 Local account: DESKTOP-083Q3R6\PC
+. 2026-02-12 17:53:12.842 Working directory: C:\rje\dev\ceramics-community
+. 2026-02-12 17:53:12.842 Process ID: 17428
+. 2026-02-12 17:53:12.863 Ancestor processes: WinSCP, pwsh, Code, Code, explorer, ...
+. 2026-02-12 17:53:12.864 Command-line: "C:\program files (x86)\winscp\winscp.exe" /console=6.5.5 /consoleinstance=_27148_656 "/script=deploy-people\upload.txt" "/log=deploy-people\upload.log" 
+. 2026-02-12 17:53:12.864 Time zone: Current: GMT-5, Standard: GMT-5 (Eastern Standard Time), DST: GMT-4 (Eastern Daylight Time), DST Start: 3/8/2026, DST End: 11/1/2026
+. 2026-02-12 17:53:12.864 Login time: Thursday, February 12, 2026 5:53:12 PM
+. 2026-02-12 17:53:12.864 --------------------------------------------------------------------------
+. 2026-02-12 17:53:12.864 Script: Retrospectively logging previous script records:
+> 2026-02-12 17:53:12.864 Script: option batch abort
+< 2026-02-12 17:53:12.864 Script: batch           abort     
+> 2026-02-12 17:53:12.864 Script: option confirm off
+< 2026-02-12 17:53:12.864 Script: confirm         off       
+> 2026-02-12 17:53:12.864 Script: open ftp://stullatlas.app:***@pixie-ss1-ftp.porkbun.com/ -passive=on -timeout=120 -rawsettings FtpForcePasvIp2=0 FtpUseMlsd=0
+. 2026-02-12 17:53:12.864 --------------------------------------------------------------------------
+. 2026-02-12 17:53:12.864 Session name: stullatlas.app@pixie-ss1-ftp.porkbun.com (Ad-Hoc site)
+. 2026-02-12 17:53:12.864 Host name: pixie-ss1-ftp.porkbun.com (Port: 21)
+. 2026-02-12 17:53:12.864 User name: stullatlas.app (Password: Yes, Key file: No, Passphrase: No)
+. 2026-02-12 17:53:12.864 Transfer Protocol: FTP
+. 2026-02-12 17:53:12.864 Ping type: Dummy, Ping interval: 30 sec; Timeout: 120 sec
+. 2026-02-12 17:53:12.864 Disable Nagle: No
+. 2026-02-12 17:53:12.864 Proxy: None
+. 2026-02-12 17:53:12.864 Send buffer: 262144
+. 2026-02-12 17:53:12.864 UTF: Auto
+. 2026-02-12 17:53:12.864 FTPS: None [Client certificate: No]
+. 2026-02-12 17:53:12.864 FTP: Passive: Yes [Force IP: On]; MLSD: On [List all: Auto]; HOST: Auto
+. 2026-02-12 17:53:12.864 Local directory: default, Remote directory: home, Update: Yes, Cache: Yes
+. 2026-02-12 17:53:12.864 Cache directory changes: Yes, Permanent: Yes
+. 2026-02-12 17:53:12.864 Recycle bin: Delete to: No, Overwritten to: No, Bin path: 
+. 2026-02-12 17:53:12.864 Timezone offset: 0h 0m
+. 2026-02-12 17:53:12.864 --------------------------------------------------------------------------
+< 2026-02-12 17:53:12.884 Script: Connecting to pixie-ss1-ftp.porkbun.com ...
+. 2026-02-12 17:53:12.884 Connecting to pixie-ss1-ftp.porkbun.com ...
+. 2026-02-12 17:53:12.997 Connected with pixie-ss1-ftp.porkbun.com. Waiting for welcome message...
+< 2026-02-12 17:53:13.073 220 (vsFTPd 3.0.5)
+> 2026-02-12 17:53:13.073 USER stullatlas.app
+< 2026-02-12 17:53:13.155 331 Please specify the password.
+> 2026-02-12 17:53:13.155 PASS **********************
+< 2026-02-12 17:53:13.498 230 Login successful.
+> 2026-02-12 17:53:13.498 SYST
+< 2026-02-12 17:53:13.604 215 UNIX Type: L8
+> 2026-02-12 17:53:13.604 FEAT
+< 2026-02-12 17:53:13.694 211-Features:
+< 2026-02-12 17:53:13.694  AUTH TLS
+< 2026-02-12 17:53:13.694  EPRT
+< 2026-02-12 17:53:13.694  EPSV
+< 2026-02-12 17:53:13.694  MDTM
+< 2026-02-12 17:53:13.694  PASV
+< 2026-02-12 17:53:13.694  PBSZ
+< 2026-02-12 17:53:13.694  PROT
+< 2026-02-12 17:53:13.694  REST STREAM
+< 2026-02-12 17:53:13.694  SIZE
+< 2026-02-12 17:53:13.694  TVFS
+< 2026-02-12 17:53:13.694  UTF8
+< 2026-02-12 17:53:13.694 211 End
+> 2026-02-12 17:53:13.694 OPTS UTF8 ON
+< 2026-02-12 17:53:13.769 200 Always in UTF8 mode.
+< 2026-02-12 17:53:13.769 Script: Connected
+. 2026-02-12 17:53:13.770 Connected
+. 2026-02-12 17:53:13.770 --------------------------------------------------------------------------
+. 2026-02-12 17:53:13.770 Using FTP protocol.
+. 2026-02-12 17:53:13.770 Doing startup conversation with host.
+< 2026-02-12 17:53:13.770 Script: Starting the session...
+> 2026-02-12 17:53:13.770 PWD
+< 2026-02-12 17:53:13.843 257 "/" is the current directory
+. 2026-02-12 17:53:13.843 Getting current directory name.
+. 2026-02-12 17:53:13.843 Startup conversation with host finished.
+< 2026-02-12 17:53:13.843 Script: Session started.
+< 2026-02-12 17:53:13.843 Script: Active session: [1] stullatlas.app@pixie-ss1-ftp.porkbun.com
+> 2026-02-12 17:53:13.844 Script: cd /people
+. 2026-02-12 17:53:13.844 Changing directory to "/people".
+> 2026-02-12 17:53:13.844 CWD /people
+< 2026-02-12 17:53:13.916 250 Directory successfully changed.
+. 2026-02-12 17:53:13.916 Getting current directory name.
+> 2026-02-12 17:53:13.916 PWD
+< 2026-02-12 17:53:13.988 257 "/people" is the current directory
+< 2026-02-12 17:53:13.988 Script: /people
+> 2026-02-12 17:53:13.989 Script: put C:\rje\dev\ceramics-community\deploy-people\index.html
+. 2026-02-12 17:53:13.989 Copying 1 files/directories to remote directory "/people" - total size: 868,578
+. 2026-02-12 17:53:13.989   PrTime: Yes; PrRO: No; Rght: rw-r--r--; PrR: No (No); FnCs: N; RIC: 0001; Resume: S (102400); CalcS: No; Mask: 
+. 2026-02-12 17:53:13.989   TM: B; ClAr: No; RemEOF: No; RemBOM: No; CPS: 0; NewerOnly: No; EncryptNewFiles: Yes; ExcludeHiddenFiles: No; ExcludeEmptyDirectories: No; InclM: ; ResumeL: 0
+. 2026-02-12 17:53:13.989   AscM: *.*html; *.htm; *.txt; *.php; *.php3; *.cgi; *.c; *.cpp; *.h; *.pas; *.bas; *.tex; *.pl; *.js; .htaccess; *.xtml; *.css; *.cfg; *.ini; *.sh; *.xml
+. 2026-02-12 17:53:13.989 File: 'C:\rje\dev\ceramics-community\deploy-people\index.html' [2026-02-12T22:52:58.337Z] [868578]
+. 2026-02-12 17:53:13.990 Copying "C:\rje\dev\ceramics-community\deploy-people\index.html" to remote directory started.
+. 2026-02-12 17:53:13.990 Binary transfer mode selected.
+. 2026-02-12 17:53:13.990 Starting upload of C:\rje\dev\ceramics-community\deploy-people\index.html
+> 2026-02-12 17:53:13.990 TYPE I
+< 2026-02-12 17:53:14.062 200 Switching to Binary mode.
+> 2026-02-12 17:53:14.062 PASV
+. 2026-02-12 17:55:14.178 Timeout detected. (control connection)
+. 2026-02-12 17:55:14.178 Copying files to remote side failed.
+. 2026-02-12 17:55:14.180 Retry interval expired, will not retry transfer
+< 2026-02-12 17:55:14.180 Script: Terminated by user.
+< 2026-02-12 17:55:14.181 Script: Lost connection.
+< 2026-02-12 17:55:14.181 Timeout detected. (control connection)
+< 2026-02-12 17:55:14.181 Copying files to remote side failed.
+< 2026-02-12 17:55:14.181 Copying files to remote side failed.
+. 2026-02-12 17:55:34.769 --------------------------------------------------------------------------
+. 2026-02-12 17:55:34.769 WinSCP Version 6.5.5 (Build 16453 2025-11-19) (OS 10.0.19045 – Windows 10 Pro)
+. 2026-02-12 17:55:34.769 Configuration: HKCU\Software\Martin Prikryl\WinSCP 2\
+. 2026-02-12 17:55:34.770 Log level: Normal
+. 2026-02-12 17:55:34.770 Local account: DESKTOP-083Q3R6\PC
+. 2026-02-12 17:55:34.770 Working directory: C:\rje\dev\ceramics-community
+. 2026-02-12 17:55:34.770 Process ID: 31108
+. 2026-02-12 17:55:34.792 Ancestor processes: WinSCP, pwsh, Code, Code, explorer, ...
+. 2026-02-12 17:55:34.792 Command-line: "C:\program files (x86)\winscp\winscp.exe" /console=6.5.5 /consoleinstance=_36212_884 "/script=deploy-people\upload.txt" "/log=deploy-people\upload.log" 
+. 2026-02-12 17:55:34.792 Time zone: Current: GMT-5, Standard: GMT-5 (Eastern Standard Time), DST: GMT-4 (Eastern Daylight Time), DST Start: 3/8/2026, DST End: 11/1/2026
+. 2026-02-12 17:55:34.792 Login time: Thursday, February 12, 2026 5:55:34 PM
+. 2026-02-12 17:55:34.792 --------------------------------------------------------------------------
+. 2026-02-12 17:55:34.792 Script: Retrospectively logging previous script records:
+> 2026-02-12 17:55:34.792 Script: option batch abort
+< 2026-02-12 17:55:34.792 Script: batch           abort     
+> 2026-02-12 17:55:34.792 Script: option confirm off
+< 2026-02-12 17:55:34.792 Script: confirm         off       
+> 2026-02-12 17:55:34.792 Script: open ftp://stullatlas.app:***@pixie-ss1-ftp.porkbun.com/ -passive=on -timeout=300 -rawsettings FtpForcePasvIp2=1 FtpUseMlsd=0
+. 2026-02-12 17:55:34.792 --------------------------------------------------------------------------
+. 2026-02-12 17:55:34.792 Session name: stullatlas.app@pixie-ss1-ftp.porkbun.com (Ad-Hoc site)
+. 2026-02-12 17:55:34.792 Host name: pixie-ss1-ftp.porkbun.com (Port: 21)
+. 2026-02-12 17:55:34.792 User name: stullatlas.app (Password: Yes, Key file: No, Passphrase: No)
+. 2026-02-12 17:55:34.792 Transfer Protocol: FTP
+. 2026-02-12 17:55:34.792 Ping type: Dummy, Ping interval: 30 sec; Timeout: 300 sec
+. 2026-02-12 17:55:34.792 Disable Nagle: No
+. 2026-02-12 17:55:34.793 Proxy: None
+. 2026-02-12 17:55:34.793 Send buffer: 262144
+. 2026-02-12 17:55:34.793 UTF: Auto
+. 2026-02-12 17:55:34.793 FTPS: None [Client certificate: No]
+. 2026-02-12 17:55:34.793 FTP: Passive: Yes [Force IP: Off]; MLSD: On [List all: Auto]; HOST: Auto
+. 2026-02-12 17:55:34.793 Local directory: default, Remote directory: home, Update: Yes, Cache: Yes
+. 2026-02-12 17:55:34.793 Cache directory changes: Yes, Permanent: Yes
+. 2026-02-12 17:55:34.793 Recycle bin: Delete to: No, Overwritten to: No, Bin path: 
+. 2026-02-12 17:55:34.793 Timezone offset: 0h 0m
+. 2026-02-12 17:55:34.793 --------------------------------------------------------------------------
+< 2026-02-12 17:55:34.810 Script: Connecting to pixie-ss1-ftp.porkbun.com ...
+. 2026-02-12 17:55:34.810 Connecting to pixie-ss1-ftp.porkbun.com ...
+. 2026-02-12 17:55:34.980 Connected with pixie-ss1-ftp.porkbun.com. Waiting for welcome message...
+< 2026-02-12 17:55:35.094 220 (vsFTPd 3.0.5)
+> 2026-02-12 17:55:35.094 USER stullatlas.app
+< 2026-02-12 17:55:35.166 331 Please specify the password.
+> 2026-02-12 17:55:35.166 PASS **********************
+< 2026-02-12 17:55:35.285 230 Login successful.
+> 2026-02-12 17:55:35.285 SYST
+< 2026-02-12 17:55:35.359 215 UNIX Type: L8
+> 2026-02-12 17:55:35.359 FEAT
+< 2026-02-12 17:55:35.437 211-Features:
+< 2026-02-12 17:55:35.437  AUTH TLS
+< 2026-02-12 17:55:35.437  EPRT
+< 2026-02-12 17:55:35.437  EPSV
+< 2026-02-12 17:55:35.437  MDTM
+< 2026-02-12 17:55:35.437  PASV
+< 2026-02-12 17:55:35.437  PBSZ
+< 2026-02-12 17:55:35.455  PROT
+< 2026-02-12 17:55:35.455  REST STREAM
+< 2026-02-12 17:55:35.455  SIZE
+< 2026-02-12 17:55:35.455  TVFS
+< 2026-02-12 17:55:35.455  UTF8
+< 2026-02-12 17:55:35.455 211 End
+> 2026-02-12 17:55:35.455 OPTS UTF8 ON
+< 2026-02-12 17:55:35.529 200 Always in UTF8 mode.
+< 2026-02-12 17:55:35.529 Script: Connected
+. 2026-02-12 17:55:35.529 Connected
+. 2026-02-12 17:55:35.529 --------------------------------------------------------------------------
+. 2026-02-12 17:55:35.529 Using FTP protocol.
+. 2026-02-12 17:55:35.529 Doing startup conversation with host.
+< 2026-02-12 17:55:35.529 Script: Starting the session...
+> 2026-02-12 17:55:35.530 PWD
+< 2026-02-12 17:55:35.603 257 "/" is the current directory
+. 2026-02-12 17:55:35.603 Getting current directory name.
+. 2026-02-12 17:55:35.603 Startup conversation with host finished.
+< 2026-02-12 17:55:35.603 Script: Session started.
+< 2026-02-12 17:55:35.603 Script: Active session: [1] stullatlas.app@pixie-ss1-ftp.porkbun.com
+> 2026-02-12 17:55:35.603 Script: cd /people
+. 2026-02-12 17:55:35.603 Cached directory change via "/people" to "/people".
+. 2026-02-12 17:55:35.603 Getting current directory name.
+< 2026-02-12 17:55:35.603 Script: /people
+> 2026-02-12 17:55:35.603 Script: put C:\rje\dev\ceramics-community\deploy-people\index.html
+. 2026-02-12 17:55:35.604 Copying 1 files/directories to remote directory "/people" - total size: 868,578
+. 2026-02-12 17:55:35.604   PrTime: Yes; PrRO: No; Rght: rw-r--r--; PrR: No (No); FnCs: N; RIC: 0001; Resume: S (102400); CalcS: No; Mask: 
+. 2026-02-12 17:55:35.604   TM: B; ClAr: No; RemEOF: No; RemBOM: No; CPS: 0; NewerOnly: No; EncryptNewFiles: Yes; ExcludeHiddenFiles: No; ExcludeEmptyDirectories: No; InclM: ; ResumeL: 0
+. 2026-02-12 17:55:35.604   AscM: *.*html; *.htm; *.txt; *.php; *.php3; *.cgi; *.c; *.cpp; *.h; *.pas; *.bas; *.tex; *.pl; *.js; .htaccess; *.xtml; *.css; *.cfg; *.ini; *.sh; *.xml
+. 2026-02-12 17:55:35.604 File: 'C:\rje\dev\ceramics-community\deploy-people\index.html' [2026-02-12T22:52:58.337Z] [868578]
+. 2026-02-12 17:55:35.604 Copying "C:\rje\dev\ceramics-community\deploy-people\index.html" to remote directory started.
+. 2026-02-12 17:55:35.604 Binary transfer mode selected.
+. 2026-02-12 17:55:35.604 Starting upload of C:\rje\dev\ceramics-community\deploy-people\index.html
+> 2026-02-12 17:55:35.604 CWD /people
+< 2026-02-12 17:55:35.677 250 Directory successfully changed.
+> 2026-02-12 17:55:35.677 PWD
+< 2026-02-12 17:55:35.750 257 "/people" is the current directory
+> 2026-02-12 17:55:35.752 TYPE I
+< 2026-02-12 17:55:35.827 200 Switching to Binary mode.
+> 2026-02-12 17:55:35.827 PASV
+. 2026-02-12 18:00:35.574 Timeout detected. (control connection)
+. 2026-02-12 18:00:35.574 Copying files to remote side failed.
+. 2026-02-12 18:00:35.576 Retry interval expired, will not retry transfer
+< 2026-02-12 18:00:35.576 Script: Terminated by user.
+< 2026-02-12 18:00:35.578 Script: Lost connection.
+< 2026-02-12 18:00:35.578 Timeout detected. (control connection)
+< 2026-02-12 18:00:35.578 Copying files to remote side failed.
+< 2026-02-12 18:00:35.578 Copying files to remote side failed.

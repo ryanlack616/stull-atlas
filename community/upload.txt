@@ -1,0 +1,6 @@
+option batch abort
+option confirm off
+open ftp://stullatlas.app:ffVWTXGIpS%5EZSqRwFd7jcS@pixie-ss1-ftp.porkbun.com/ -passive=on -timeout=120 -rawsettings FtpForcePasvIp2=0 FtpUseMlsd=0
+cd /people
+put C:\rje\dev\ceramics-community\deploy-people\index.html
+exit
