@@ -685,6 +685,8 @@ export function StullPlot3D({
   const selectedGlaze = useSelectionStore(s => s.selectedGlaze)
   const setSelectedGlaze = useSelectionStore(s => s.setSelectedGlaze)
   const setHoveredPoint = useSelectionStore(s => s.setHoveredPoint)
+  const addToBlendSelection = useSelectionStore(s => s.addToBlendSelection)
+  const setSidebarTab = useSelectionStore(s => s.setSidebarTab)
   const blendResults = useRecipeStore(s => s.blendResults)
   const theme = useThemeStore(s => s.theme)
 
@@ -1594,9 +1596,17 @@ export function StullPlot3D({
     // Only select from scatter traces (not surface/mesh/region traces)
     if (point?.customdata && point?.data?.type === 'scatter3d' && point?.data?.mode === 'markers') {
       const glaze = useGlazeStore.getState().glazes.get(point.customdata)
-      if (glaze) setSelectedGlaze(glaze)
+      if (glaze) {
+        const nativeEvent = event.event as MouseEvent | undefined
+        if (nativeEvent?.shiftKey) {
+          addToBlendSelection(glaze)
+          setSidebarTab('blend')
+        } else {
+          setSelectedGlaze(glaze)
+        }
+      }
     }
-  }, [setSelectedGlaze])
+  }, [setSelectedGlaze, addToBlendSelection, setSidebarTab])
 
   const handleHover = useCallback((event: any) => {
     const point = event.points?.[0]

@@ -5,7 +5,7 @@
  * The classic 10-step line blend test.
  */
 
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RecipeInput } from '@/components/RecipeInput'
 import { GlazeRecipe, SimplexPoint } from '@/types'
@@ -25,9 +25,17 @@ export function LineBlendPage() {
   const [divisions, setDivisions] = useState(10)
   const [results, setResults] = useState<SimplexPoint[] | null>(null)
   const [errors, setErrors] = useState<string[]>([])
-  const { setBlendResults } = useRecipeStore()
+  const { setBlendResults, blendRecipes, clearBlendRecipes } = useRecipeStore()
   const navigate = useNavigate()
   const pointCount = simplexPointCount(2, divisions)
+
+  // Pre-fill from explorer blend selection
+  useEffect(() => {
+    if (blendRecipes.length >= 2) {
+      setRecipes(blendRecipes.slice(0, 2))
+      clearBlendRecipes()
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateRecipe = useCallback((index: number, recipe: GlazeRecipe) => {
     setRecipes(prev => {

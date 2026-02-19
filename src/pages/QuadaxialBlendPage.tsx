@@ -5,7 +5,7 @@
  * Four-component systematic exploration.
  */
 
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RecipeInput } from '@/components/RecipeInput'
 import { GlazeRecipe, SimplexPoint, UMF } from '@/types'
@@ -26,10 +26,18 @@ export function QuadaxialBlendPage() {
   const [divisions, setDivisions] = useState(4)
   const [results, setResults] = useState<SimplexPoint[] | null>(null)
   const [errors, setErrors] = useState<string[]>([])
-  const { setBlendResults } = useRecipeStore()
+  const { setBlendResults, blendRecipes, clearBlendRecipes } = useRecipeStore()
   const navigate = useNavigate()
 
   const pointCount = simplexPointCount(4, divisions)
+
+  // Pre-fill from explorer blend selection
+  useEffect(() => {
+    if (blendRecipes.length >= 4) {
+      setRecipes(blendRecipes.slice(0, 4))
+      clearBlendRecipes()
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateRecipe = useCallback((index: number, recipe: GlazeRecipe) => {
     setRecipes(prev => {

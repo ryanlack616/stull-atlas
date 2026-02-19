@@ -27,6 +27,7 @@ import { features } from '@/featureFlags'
 // Lazy-load heavy components that aren't always visible
 const StullPlot3D = lazy(() => import('./StullPlot3D').then(m => ({ default: m.StullPlot3D })))
 const ComparePanel = lazy(() => import('./ComparePanel').then(m => ({ default: m.ComparePanel })))
+const BlendLauncher = lazy(() => import('./BlendLauncher').then(m => ({ default: m.BlendLauncher })))
 const AnalysisPanel = lazy(() => import('@/components/AnalysisPanel').then(m => ({ default: m.AnalysisPanel })))
 const DigitalfirePanel = lazy(() => import('@/components/DigitalfirePanel').then(m => ({ default: m.DigitalfirePanel })))
 
@@ -267,6 +268,9 @@ export function StullAtlas() {
   const compareGlazes = useSelectionStore(s => s.compareGlazes)
   const removeFromCompare = useSelectionStore(s => s.removeFromCompare)
   const clearCompare = useSelectionStore(s => s.clearCompare)
+  const selectedForBlend = useSelectionStore(s => s.selectedForBlend)
+  const removeFromBlendSelection = useSelectionStore(s => s.removeFromBlendSelection)
+  const clearBlendSelection = useSelectionStore(s => s.clearBlendSelection)
   // Use selectors for frequently-changing state to avoid re-rendering the whole tree
   const glazes = useGlazeStore(s => s.glazes)
   const glazeStats = useGlazeStore(s => s.stats)
@@ -1032,6 +1036,14 @@ export function StullAtlas() {
                 Compare{compareGlazes.length > 0 ? ` (${compareGlazes.length})` : ''}
               </button>
               <button 
+                className={`sidebar-tab ${sidebarTab === 'blend' ? 'active' : ''}`}
+                onClick={() => setSidebarTab('blend')}
+                role="tab"
+                aria-selected={sidebarTab === 'blend'}
+              >
+                Blend{selectedForBlend.length > 0 ? ` (${selectedForBlend.length})` : ''}
+              </button>
+              <button 
                 className={`sidebar-tab ${sidebarTab === 'analysis' ? 'active' : ''}`}
                 onClick={() => setSidebarTab('analysis')}
                 role="tab"
@@ -1281,6 +1293,17 @@ export function StullAtlas() {
                   glazes={compareGlazes}
                   onRemove={removeFromCompare}
                   onClear={clearCompare}
+                  onSelect={setSelectedGlaze}
+                />
+              </Suspense>
+            )}
+            
+            {sidebarTab === 'blend' && (
+              <Suspense fallback={<div style={{ padding: 16, fontSize: 13, color: 'var(--text-secondary)' }}>Loading blend...</div>}>
+                <BlendLauncher
+                  glazes={selectedForBlend}
+                  onRemove={removeFromBlendSelection}
+                  onClear={clearBlendSelection}
                   onSelect={setSelectedGlaze}
                 />
               </Suspense>

@@ -5,7 +5,7 @@
  * Classic ceramic triaxial test tile layout.
  */
 
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RecipeInput } from '@/components/RecipeInput'
 import { GlazeRecipe, SimplexPoint, UMF } from '@/types'
@@ -26,10 +26,18 @@ export function TriaxialBlendPage() {
   const [divisions, setDivisions] = useState(5)
   const [results, setResults] = useState<SimplexPoint[] | null>(null)
   const [errors, setErrors] = useState<string[]>([])
-  const { setBlendResults } = useRecipeStore()
+  const { setBlendResults, blendRecipes, clearBlendRecipes } = useRecipeStore()
   const navigate = useNavigate()
 
   const pointCount = simplexPointCount(3, divisions)
+
+  // Pre-fill from explorer blend selection
+  useEffect(() => {
+    if (blendRecipes.length >= 3) {
+      setRecipes(blendRecipes.slice(0, 3))
+      clearBlendRecipes()
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateRecipe = useCallback((index: number, recipe: GlazeRecipe) => {
     setRecipes(prev => {

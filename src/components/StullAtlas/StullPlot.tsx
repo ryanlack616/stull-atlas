@@ -189,6 +189,8 @@ export function StullPlot({
   const setSelectedGlaze = useSelectionStore(s => s.setSelectedGlaze)
   const setHoveredPoint = useSelectionStore(s => s.setHoveredPoint)
   const selectedForBlend = useSelectionStore(s => s.selectedForBlend)
+  const addToBlendSelection = useSelectionStore(s => s.addToBlendSelection)
+  const setSidebarTab = useSelectionStore(s => s.setSidebarTab)
   const blendResults = useRecipeStore(s => s.blendResults)
   const theme = useThemeStore(s => s.theme)
   
@@ -549,17 +551,23 @@ export function StullPlot({
     ]
   }), [xAxis, yAxis, xHalfSpan, yHalfSpan, circleShape, plotColors, limitOverlay])
   
-  // Click handler
+  // Click handler — shift+click adds to blend selection
   const handleClick = useCallback((event: any) => {
     const point = event.points?.[0]
     if (point?.customdata) {
       const glazeStore = useGlazeStore.getState()
       const glaze = glazeStore.glazes.get(point.customdata)
       if (glaze) {
-        setSelectedGlaze(glaze)
+        const nativeEvent = event.event as MouseEvent | undefined
+        if (nativeEvent?.shiftKey) {
+          addToBlendSelection(glaze)
+          setSidebarTab('blend')
+        } else {
+          setSelectedGlaze(glaze)
+        }
       }
     }
-  }, [setSelectedGlaze])
+  }, [setSelectedGlaze, addToBlendSelection, setSidebarTab])
   
   // Hover handler
   const handleHover = useCallback((event: any) => {

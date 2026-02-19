@@ -44,6 +44,7 @@ function deserializeRecipe(raw: any): GlazeRecipe {
 interface RecipeState {
   recipes: GlazeRecipe[]
   blendResults: SimplexPoint[]  // results from calculators, for plotting on explorer
+  blendRecipes: GlazeRecipe[]   // pre-selected glazes to send to blend calculator pages
   _syncUserId: string | null    // non-null when signed in — enables cloud sync
 }
 
@@ -57,6 +58,10 @@ interface RecipeActions {
   // Blend results bridge to explorer
   setBlendResults: (points: SimplexPoint[]) => void
   clearBlendResults: () => void
+
+  // Pre-fill blend calculator recipes from explorer
+  setBlendRecipes: (recipes: GlazeRecipe[]) => void
+  clearBlendRecipes: () => void
 
   // Cloud sync
   syncFromCloud: (userId: string) => Promise<void>
@@ -120,6 +125,7 @@ function saveBlendResults(points: SimplexPoint[]) {
 export const useRecipeStore = create<RecipeState & RecipeActions>((set, get) => ({
   recipes: loadFromStorage(),
   blendResults: loadBlendResults(),
+  blendRecipes: [],
   _syncUserId: null,
 
   saveRecipe: (recipe) => set((state) => {
@@ -177,6 +183,9 @@ export const useRecipeStore = create<RecipeState & RecipeActions>((set, get) => 
     localStorage.removeItem(BLEND_RESULTS_KEY)
     set({ blendResults: [] })
   },
+
+  setBlendRecipes: (recipes) => set({ blendRecipes: recipes }),
+  clearBlendRecipes: () => set({ blendRecipes: [] }),
 
   // ── Cloud sync ──────────────────────────────────────────────────
   setSyncUserId: (userId) => set({ _syncUserId: userId }),
