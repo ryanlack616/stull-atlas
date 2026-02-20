@@ -6,38 +6,34 @@
 <title>Stull Atlas — Flux & Flux Ratio Report</title>
 <script>
 window.MathJax = {
-  loader: { load: ['[tex]/mhchem', '[tex]/cancel', '[tex]/boldsymbol'] },
   tex: {
     inlineMath: [['$','$']],
     displayMath: [['\\[','\\]']],
     processEscapes: true,
-    tags: 'ams',
-    packages: { '[+]': ['mhchem', 'cancel', 'boldsymbol'] },
     macros: {
       SiO: '\\text{SiO}_2',
       AlO: '\\text{Al}_2\\text{O}_3',
       NaO: '\\text{Na}_2\\text{O}',
-      KO: '\\text{K}_2\\text{O}',
-      CaOx: '\\text{CaO}',
-      MgOx: '\\text{MgO}',
-      BO: '\\text{B}_2\\text{O}_3',
+      KO:  '\\text{K}_2\\text{O}',
+      CaOx:'\\text{CaO}',
+      MgOx:'\\text{MgO}',
+      BO:  '\\text{B}_2\\text{O}_3',
       FeO: '\\text{Fe}_2\\text{O}_3',
       LiO: '\\text{Li}_2\\text{O}',
-      ZnOx: '\\text{ZnO}',
-      BaOx: '\\text{BaO}',
-      SrOx: '\\text{SrO}',
-      PbOx: '\\text{PbO}',
+      ZnOx:'\\text{ZnO}',
+      BaOx:'\\text{BaO}',
+      SrOx:'\\text{SrO}',
+      PbOx:'\\text{PbO}',
       TiO: '\\text{TiO}_2',
       ZrO: '\\text{ZrO}_2',
       SnO: '\\text{SnO}_2',
-      CoOx: '\\text{CoO}',
-      CuOx: '\\text{CuO}',
-      MnOx: '\\text{MnO}',
-      NiOx: '\\text{NiO}',
+      CoOx:'\\text{CoO}',
+      CuOx:'\\text{CuO}',
+      MnOx:'\\text{MnO}',
+      NiOx:'\\text{NiO}',
       CrO: '\\text{Cr}_2\\text{O}_3',
-      PO: '\\text{P}_2\\text{O}_5',
-      arraystretch: '1.3',
-      bm: ['\\boldsymbol{#1}', 1],
+      PO:  '\\text{P}_2\\text{O}_5',
+      bm:  ['\\boldsymbol{#1}', 1],
     }
   },
   options: { skipHtmlTags: ['script','noscript','style','textarea','code'] }
@@ -57,184 +53,236 @@ window.MathJax = {
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  background: var(--bg); color: var(--text);
-  line-height: 1.75; font-size: 16px;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.75;
+  font-size: 16px;
 }
+
+/* Nav */
 .top-nav {
-  background: var(--surface); border-bottom: 1px solid var(--border);
-  padding: 12px 24px; position: sticky; top: 0; z-index: 100;
-  display: flex; flex-wrap: wrap; gap: 8px; backdrop-filter: blur(10px);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  backdrop-filter: blur(10px);
 }
 .nav-link {
-  color: var(--text-muted); text-decoration: none; font-size: 13px;
-  padding: 4px 10px; border-radius: 4px; transition: all .2s;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  transition: all .2s;
 }
 .nav-link:hover { color: var(--accent); background: rgba(255,255,255,.05); }
+
+/* Layout */
 .page-container {
-  display: grid; grid-template-columns: 260px 1fr;
-  max-width: 1400px; margin: 0 auto; min-height: 100vh;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 100vh;
 }
 @media (max-width: 900px) {
   .page-container { grid-template-columns: 1fr; }
   .toc { display: none; }
 }
+
+/* TOC sidebar */
 .toc {
-  position: sticky; top: 60px; height: calc(100vh - 60px);
-  overflow-y: auto; padding: 24px 16px;
-  border-right: 1px solid var(--border); font-size: 13px;
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  padding: 24px 16px;
+  border-right: 1px solid var(--border);
+  font-size: 13px;
 }
 .toc h2 {
-  font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px;
-  color: var(--text-muted); margin-bottom: 16px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
 }
 .toc ul { list-style: none; }
 .toc li { margin-bottom: 3px; }
 .toc a {
-  color: var(--text-muted); text-decoration: none; display: block;
-  padding: 3px 8px; border-radius: 4px; transition: all .2s; line-height: 1.4;
+  color: var(--text-muted);
+  text-decoration: none;
+  display: block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  transition: all .2s;
+  line-height: 1.4;
 }
 .toc a:hover { color: var(--accent); background: rgba(255,255,255,.04); }
 .toc-h3 { padding-left: 14px; }
 .toc-h3 a { font-size: 12px; }
-.content { padding: 40px 52px 100px; max-width: 880px; }
+
+/* Content */
+.content {
+  padding: 40px 52px 100px;
+  max-width: 880px;
+}
+
+/* Title page */
 .title-page {
-  text-align: center; padding: 56px 20px 36px; margin-bottom: 44px;
+  text-align: center;
+  padding: 56px 20px 36px;
+  margin-bottom: 44px;
   border-bottom: 1px solid var(--border);
 }
 .main-title {
-  font-size: 2.6em; font-weight: 800; color: var(--accent);
-  margin-bottom: 8px; letter-spacing: -0.5px;
+  font-size: 2.6em;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
 }
-.subtitle { font-size: 1.3em; color: var(--text-muted); margin-bottom: 14px; }
-.title-desc { color: var(--text-muted); font-size: 0.95em; max-width: 600px; margin: 6px auto; }
+.subtitle {
+  font-size: 1.3em;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+.title-desc {
+  color: var(--text-muted);
+  font-size: 0.95em;
+  max-width: 600px;
+  margin: 6px auto;
+}
+
+/* Abstract */
 .abstract {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 8px; padding: 24px 28px; margin-bottom: 40px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px 28px;
+  margin-bottom: 40px;
 }
 .abstract h2 { color: var(--accent); font-size: 1.1em; margin-bottom: 12px; }
 .abstract p { color: var(--text-muted); font-size: 0.95em; line-height: 1.7; }
-.part-header { margin: 48px 0 24px; }
+
+/* Headings */
 .part-title {
-  font-size: 2.2em; color: var(--accent); text-align: center;
-  padding: 40px 0 20px; border-top: 2px solid var(--accent);
+  font-size: 2.2em;
+  color: var(--accent);
+  text-align: center;
+  padding: 40px 0 20px;
+  margin: 48px 0 24px;
+  border-top: 2px solid var(--accent);
   border-bottom: 2px solid var(--accent);
 }
 h2.section-title {
-  font-size: 1.55em; color: var(--accent); margin: 52px 0 18px;
-  padding-bottom: 10px; border-bottom: 2px solid var(--accent);
+  font-size: 1.55em;
+  color: var(--accent);
+  margin: 52px 0 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--accent);
 }
 h3.subsection-title {
-  font-size: 1.2em; color: var(--text); margin: 36px 0 14px; font-weight: 600;
+  font-size: 1.2em;
+  color: var(--text);
+  margin: 36px 0 14px;
+  font-weight: 600;
 }
 h4.subsubsection-title {
-  font-size: 1.02em; color: var(--text-muted); font-style: italic; margin: 26px 0 10px;
+  font-size: 1.02em;
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 26px 0 10px;
 }
-.styled-box {
-  background: var(--surface); border: 1px solid var(--border);
-  border-left: 4px solid var(--accent); border-radius: 6px;
-  padding: 22px 26px; margin: 24px 0;
-}
-.box-title { font-weight: 700; font-size: 1.05em; margin-bottom: 12px; }
-.box-content { color: var(--text); line-height: 1.75; }
-.box-content p { margin-bottom: 10px; }
-.equationbox { background: rgba(245, 158, 11, .04); border-color: rgba(255,255,255,.1); border-left-color: #F59E0B; }
-.infobox { background: rgba(59, 130, 246, .04); border-color: rgba(255,255,255,.1); border-left-color: #3B82F6; }
-.warnbox { background: rgba(239, 68, 68, .04); border-color: rgba(255,255,255,.1); border-left-color: #EF4444; }
-.examplebox { background: rgba(34, 197, 94, .04); border-color: rgba(255,255,255,.1); border-left-color: #22C55E; }
-.deepbox { background: rgba(124, 58, 237, .04); border-color: rgba(255,255,255,.1); border-left-color: #7C3AED; }
-.crystalbox { background: rgba(13, 148, 136, .04); border-color: rgba(255,255,255,.1); border-left-color: #0D9488; }
-.cobaltbox { background: rgba(30, 58, 138, .06); border-color: rgba(255,255,255,.1); border-left-color: #1E3A8A; }
-.copperbox { background: rgba(184, 115, 51, .04); border-color: rgba(255,255,255,.1); border-left-color: #B87333; }
-.ironbox { background: rgba(139, 69, 19, .04); border-color: rgba(255,255,255,.1); border-left-color: #8B4513; }
-.histbox { background: rgba(13, 148, 136, .04); border-color: rgba(255,255,255,.1); border-left-color: #0D9488; }
-.safebox { background: rgba(71, 85, 105, .06); border-color: rgba(255,255,255,.1); border-left-color: #475569; }
 
+/* Boxes */
+.styled-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 22px 26px;
+  margin: 24px 0;
+}
+.box-title {
+  font-weight: 700;
+  font-size: 1.05em;
+  margin-bottom: 12px;
+}
+.box-content {
+  color: var(--text);
+  line-height: 1.75;
+}
+.box-content p { margin-bottom: 10px; }
+.equation-box { background: rgba(245, 158, 11, .04); border-color: rgba(245, 158, 11, .25); }
+.info-box { background: rgba(59, 130, 246, .04); border-color: rgba(59, 130, 246, .25); }
+.warn-box { background: rgba(239, 68, 68, .04); border-color: rgba(239, 68, 68, .25); }
+.example-box { background: rgba(34, 197, 94, .04); border-color: rgba(34, 197, 94, .25); }
+.deep-box { background: rgba(124, 58, 237, .04); border-color: rgba(124, 58, 237, .25); }
+.crystal-box { background: rgba(13, 148, 136, .04); border-color: rgba(13, 148, 136, .25); }
+.cobalt-box { background: rgba(30, 58, 138, .06); border-color: rgba(30, 58, 138, .35); }
+.copper-box { background: rgba(184, 115, 51, .04); border-color: rgba(184, 115, 51, .25); }
+.iron-box { background: rgba(139, 69, 19, .04); border-color: rgba(139, 69, 19, .25); }
+.hist-box { background: rgba(13, 148, 136, .04); border-color: rgba(13, 148, 136, .25); }
+.safe-box { background: rgba(71, 85, 105, .06); border-color: rgba(71, 85, 105, .35); }
+
+/* Tables */
 .table-wrapper { overflow-x: auto; margin: 18px 0; }
 .styled-table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
 .styled-table th {
-  background: var(--surface2); color: var(--accent); font-weight: 600;
-  text-align: left; padding: 10px 14px; border-bottom: 2px solid var(--accent);
+  background: var(--surface2);
+  color: var(--accent);
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 2px solid var(--accent);
 }
 .styled-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
 .styled-table tr:hover td { background: rgba(255,255,255,.02); }
+
+/* Lists */
 ul, ol { margin: 14px 0; padding-left: 26px; }
 li { margin-bottom: 7px; line-height: 1.65; }
 dl.description-list { margin: 18px 0; }
-dl.description-list dt {
-  color: var(--accent); font-size: 1.05em; margin-top: 20px; padding-bottom: 4px;
-}
+dl.description-list dt { color: var(--accent); font-size: 1.05em; margin-top: 20px; padding-bottom: 4px; }
 dl.description-list dd { margin: 0 0 14px 0; padding-left: 22px; line-height: 1.75; }
+
+/* Math */
 .math-display { overflow-x: auto; padding: 14px 0; }
+
+/* Misc */
 p { margin-bottom: 14px; }
 code {
-  background: var(--surface2); padding: 2px 6px; border-radius: 3px;
-  font-size: 0.9em; color: #e879f9; font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  background: var(--surface2);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.9em;
+  color: #e879f9;
 }
 .centered { text-align: center; margin: 18px 0; }
 .small-caps { font-variant: small-caps; }
 .fbox { border: 1px solid var(--border); padding: 4px 8px; border-radius: 3px; }
-.footnote-ref a { color: var(--accent); text-decoration: none; font-size: 0.8em; }
-.footnotes { margin-top: 60px; font-size: 0.9em; color: var(--text-muted); }
-.footnotes hr { border: none; border-top: 1px solid var(--border); margin-bottom: 16px; }
-.footnotes-title { font-size: 1.1em; color: var(--accent); margin-bottom: 12px; }
-.footnote-list { padding-left: 20px; }
-.footnote-list li { margin-bottom: 8px; line-height: 1.6; }
-.footnote-backref { text-decoration: none; color: var(--accent); margin-left: 4px; }
+.footnote { font-size: 0.85em; color: var(--text-muted); }
 .caption { font-size: 0.9em; color: var(--text-muted); text-align: center; margin: 8px 0; }
 strong { color: #fff; }
 a { color: var(--accent); }
-/* Figures */
-.figure { text-align: center; margin: 24px 0; }
-.responsive-img { max-width: 100%; height: auto; border-radius: 6px; }
-/* Code blocks */
-pre { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 16px 20px; overflow-x: auto; margin: 18px 0; }
-pre code { background: none; padding: 0; color: var(--text); font-size: 0.88em; }
-/* Theorem blocks */
-.theorem-block { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 6px; padding: 18px 22px; margin: 22px 0; }
-.theorem-heading { font-weight: 700; font-size: 1.02em; margin-bottom: 8px; }
-.theorem-body { line-height: 1.75; }
-.proof-block { border-left-style: dashed; }
-.qed { text-align: right; font-size: 1.1em; margin-top: 4px; color: var(--text-muted); }
-/* Bibliography */
-.bibliography { margin: 40px 0; padding-top: 20px; border-top: 2px solid var(--border); }
-.bib-list { padding-left: 26px; }
-.bib-list li { margin-bottom: 10px; font-size: 0.92em; }
-/* Cross-ref links */
-.ref-link { color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); }
-.ref-link:hover { border-bottom-style: solid; }
-/* Paragraph/subparagraph */
-h5.paragraph-title { font-size: 0.98em; font-weight: 700; margin: 20px 0 6px; color: var(--text); }
-h6.subparagraph-title { font-size: 0.92em; font-weight: 600; margin: 16px 0 4px; color: var(--text-muted); }
-/* Placeholders */
-.placeholder { background: var(--surface2); border: 1px dashed var(--border); border-radius: 6px; padding: 20px; text-align: center; color: var(--text-muted); font-style: italic; margin: 18px 0; }
-/* Dark/light toggle */
-.theme-toggle { cursor: pointer; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); font-size: 13px; padding: 4px 10px; margin-left: auto; }
-.theme-toggle:hover { color: var(--accent); }
-/* TOC scroll-spy */
-.toc a.active { color: var(--accent); background: rgba(99,102,241,.08); font-weight: 600; }
+
+/* Scrollbar */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #555; }
-/* Light theme */
-body.light { --bg: #fafafa; --surface: #fff; --surface2: #f3f4f6; --text: #1f2937; --text-muted: #6b7280; --border: #e5e7eb; }
-body.light strong { color: #111827; }
-/* Print */
-@media print {
-  body { background: #fff !important; color: #000 !important; font-size: 11pt; }
-  .top-nav, .toc, .theme-toggle { display: none !important; }
-  .page-container { display: block !important; }
-  .content { max-width: 100% !important; padding: 0 !important; }
-  a { color: #000 !important; text-decoration: underline; }
-  .styled-box, .theorem-block { break-inside: avoid; border-color: #999 !important; }
-  pre { border-color: #ccc !important; }
-}
 </style>
 </head>
 <body>
-<nav class="top-nav"><a href="index.html" class="nav-link">← Home</a> <a href="stull-atlas-report.html" class="nav-link">Comprehensive Report</a> <a href="stull-atlas-equations-report.html" class="nav-link">Equations Deep Dive</a> <a href="stull-atlas-flux-report.html" class="nav-link">Flux & Flux Ratio Report</a> <a href="stull-atlas-colorant-report.html" class="nav-link">Colorant & Crystal Field Theory</a> <a href="stull-atlas-crystallisation-report.html" class="nav-link">Crystallisation & Phase Equilibria</a> <a href="stull-atlas-analysis-compendium.html" class="nav-link">Advanced Analysis Compendium</a><button class="theme-toggle" onclick="document.body.classList.toggle('light')">☀/☾</button></nav>
+<nav class="top-nav"><a href="index.html" class="nav-link">← Home</a> <a href="stull-atlas-report.html" class="nav-link">Comprehensive Report</a> <a href="stull-atlas-equations-report.html" class="nav-link">Equations Deep Dive</a> <a href="stull-atlas-flux-report.html" class="nav-link">Flux & Flux Ratio Report</a> <a href="stull-atlas-colorant-report.html" class="nav-link">Colorant & Crystal Field Theory</a> <a href="stull-atlas-crystallisation-report.html" class="nav-link">Crystallisation & Phase Equilibria</a> <a href="stull-atlas-analysis-compendium.html" class="nav-link">Advanced Analysis Compendium</a></nav>
 <div class="page-container">
-<nav class="toc"><h2>Contents</h2><ul><li class="toc-h2"><a href="#what-is-a-flux">What Is a Flux?</a></li><li class="toc-h3"><a href="#the-network-model-of-glass">The Network Model of Glass</a></li><li class="toc-h3"><a href="#the-ten-flux-oxides">The Ten Flux Oxides</a></li><li class="toc-h3"><a href="#why-flux-identity-matters">Why Flux Identity Matters</a></li><li class="toc-h2"><a href="#the-flux-oxides-individual-profiles">The Flux Oxides — Individual Profiles</a></li><li class="toc-h3"><a href="#na2o-soda">Na2O — Soda</a></li><li class="toc-h3"><a href="#k2o-potash">K2O — Potash</a></li><li class="toc-h3"><a href="#li2o-lithia">Li2O — Lithia</a></li><li class="toc-h3"><a href="#cao-calcia">CaO — Calcia</a></li><li class="toc-h3"><a href="#mgo-magnesia">MgO — Magnesia</a></li><li class="toc-h3"><a href="#zno-zinc-oxide">ZnO — Zinc Oxide</a></li><li class="toc-h3"><a href="#bao-baria">BaO — Baria</a></li><li class="toc-h3"><a href="#sro-strontia">SrO — Strontia</a></li><li class="toc-h3"><a href="#pbo-lead-oxide">PbO — Lead Oxide</a></li><li class="toc-h2"><a href="#historical-amp-regional-flux-traditions">Historical &amp; Regional Flux Traditions</a></li><li class="toc-h3"><a href="#the-ancient-world-lead-amp-alkali">The Ancient World: Lead &amp; Alkali</a></li><li class="toc-h3"><a href="#east-asia-the-calcium-feldspar-revolution">East Asia: The Calcium-Feldspar Revolution</a></li><li class="toc-h3"><a href="#the-islamic-world-extreme-alkalis">The Islamic World: Extreme Alkalis</a></li><li class="toc-h3"><a href="#europe-lead-tin-and-the-march-to-industry">Europe: Lead, Tin, and the March to Industry</a></li><li class="toc-h3"><a href="#what-history-teaches-about-flux-design">What History Teaches About Flux Design</a></li><li class="toc-h2"><a href="#flux-ratios-what-the-atlas-currently-does">Flux Ratios — What the Atlas Currently Does</a></li><li class="toc-h3"><a href="#the-7-flux-analysis-z-axes">The 7 Flux Analysis Z-Axes</a></li><li class="toc-h3"><a href="#flux-ratio-r-text-flux-deep-dive">Flux Ratio ($R_{\text{flux}}$) — Deep Dive</a></li><li class="toc-h3"><a href="#r2o-ro-ratio-the-alkali-earth-balance">R2O:RO Ratio — The Alkali-Earth Balance</a></li><li class="toc-h3"><a href="#shannon-entropy-flux-diversity">Shannon Entropy — Flux Diversity</a></li><li class="toc-h3"><a href="#total-fluidity-effectiveness-weighted-flux">Total Fluidity — Effectiveness-Weighted Flux</a></li><li class="toc-h3"><a href="#mean-field-strength-amp-mixed-alkali-effect">Mean Field Strength &amp; Mixed Alkali Effect</a></li><li class="toc-h2"><a href="#flux-dependent-properties-across-the-atlas">Flux-Dependent Properties Across the Atlas</a></li><li class="toc-h3"><a href="#flux-sensitivity-matrix">Flux Sensitivity Matrix</a></li><li class="toc-h3"><a href="#the-five-most-flux-sensitive-properties">The Five Most Flux-Sensitive Properties</a></li><li class="toc-h3"><a href="#flux-effects-not-captured-by-any-single-metric">Flux Effects Not Captured by Any Single Metric</a></li><li class="toc-h2"><a href="#flux-colorant-interactions">Flux-Colorant Interactions</a></li><li class="toc-h3"><a href="#the-ligand-field-mechanism">The Ligand Field Mechanism</a></li><li class="toc-h3"><a href="#the-flux-colour-matrix">The Flux-Colour Matrix</a></li><li class="toc-h3"><a href="#critical-flux-colour-interactions">Critical Flux-Colour Interactions</a></li><li class="toc-h3"><a href="#proposed-flux-colour-prediction-engine">Proposed: Flux-Colour Prediction Engine</a></li><li class="toc-h2"><a href="#what-you-should-be-able-to-do-proposed-flux-features">What You Should Be Able to Do — Proposed Flux Features</a></li><li class="toc-h3"><a href="#tier-1-interactive-flux-ratio-controls-v3-6-4">Tier 1: Interactive Flux Ratio Controls (v3.6.4)</a></li><li class="toc-h3"><a href="#tier-2-flux-substitution-paths">Tier 2: Flux Substitution Paths</a></li><li class="toc-h3"><a href="#tier-3-flux-fingerprinting">Tier 3: Flux Fingerprinting</a></li><li class="toc-h3"><a href="#tier-4-flux-interaction-map">Tier 4: Flux Interaction Map</a></li><li class="toc-h3"><a href="#tier-5-flux-aware-recipe-optimisation">Tier 5: Flux-Aware Recipe Optimisation</a></li><li class="toc-h3"><a href="#tier-6-volatilisation-corrected-flux">Tier 6: Volatilisation-Corrected Flux</a></li><li class="toc-h2"><a href="#flux-ratio-design-patterns">Flux Ratio Design Patterns</a></li><li class="toc-h3"><a href="#pattern-1-the-craze-fix">Pattern 1: The Craze Fix</a></li><li class="toc-h3"><a href="#pattern-2-the-matte-transition">Pattern 2: The Matte Transition</a></li><li class="toc-h3"><a href="#pattern-3-the-eutectic-seeker">Pattern 3: The Eutectic Seeker</a></li><li class="toc-h3"><a href="#pattern-4-the-durability-bridge">Pattern 4: The Durability Bridge</a></li><li class="toc-h3"><a href="#pattern-5-the-crystal-trigger">Pattern 5: The Crystal Trigger</a></li><li class="toc-h2"><a href="#raw-materials-amp-flux-delivery-constraints">Raw Materials &amp; Flux Delivery Constraints</a></li><li class="toc-h3"><a href="#the-delivery-problem">The Delivery Problem</a></li><li class="toc-h3"><a href="#implications-for-flux-ratio-design">Implications for Flux Ratio Design</a></li><li class="toc-h3"><a href="#proposed-material-aware-flux-optimiser">Proposed: Material-Aware Flux Optimiser</a></li><li class="toc-h2"><a href="#flux-operating-windows-by-cone-range">Flux Operating Windows by Cone Range</a></li><li class="toc-h3"><a href="#low-fire-cone-06-to-cone-02-999-nbsp-c-1101-nbsp-c">Low Fire: Cone 06 to Cone 02 (∼999&nbsp;°C–1101&nbsp;°C)</a></li><li class="toc-h3"><a href="#mid-fire-cone-4-to-cone-7-1186-nbsp-c-1240-nbsp-c">Mid Fire: Cone 4 to Cone 7 (∼1186&nbsp;°C–1240&nbsp;°C)</a></li><li class="toc-h3"><a href="#high-fire-cone-8-to-cone-12-1263-nbsp-c-1326-nbsp-c">High Fire: Cone 8 to Cone 12 (∼1263&nbsp;°C–1326&nbsp;°C)</a></li><li class="toc-h3"><a href="#the-temperature-flux-phase-diagram">The Temperature-Flux Phase Diagram</a></li><li class="toc-h2"><a href="#defect-diagnosis-amp-flux-based-fixes">Defect Diagnosis &amp; Flux-Based Fixes</a></li><li class="toc-h3"><a href="#the-defect-flux-cause-flux-fix-table">The Defect → Flux Cause → Flux Fix Table</a></li><li class="toc-h3"><a href="#the-defect-triangle">The Defect Triangle</a></li><li class="toc-h2"><a href="#famous-glazes-dissected">Famous Glazes Dissected</a></li><li class="toc-h3"><a href="#celadon-chinese-amp-korean">Celadon (Chinese &amp; Korean)</a></li><li class="toc-h3"><a href="#tenmoku-chinese-hare-s-fur-oil-spot">Tenmoku (Chinese “Hare's Fur” / “Oil Spot”)</a></li><li class="toc-h3"><a href="#shino-japanese">Shino (Japanese)</a></li><li class="toc-h3"><a href="#crystal-glaze-zinc-willemite">Crystal Glaze (Zinc-Willemite)</a></li><li class="toc-h3"><a href="#ch-n-jun-blue-song-dynasty">Chün / Jun Blue (Song Dynasty)</a></li><li class="toc-h3"><a href="#wood-ash-iga-shigaraki-style">Wood Ash (Iga / Shigaraki Style)</a></li><li class="toc-h2"><a href="#the-flux-simplex-a-mathematical-perspective">The Flux Simplex — A Mathematical Perspective</a></li><li class="toc-h3"><a href="#compositional-data-on-the-simplex">Compositional Data on the Simplex</a></li><li class="toc-h3"><a href="#why-this-matters-for-the-atlas">Why This Matters for the Atlas</a></li><li class="toc-h2"><a href="#advanced-flux-topics">Advanced Flux Topics</a></li><li class="toc-h3"><a href="#the-boron-problem">The Boron Problem</a></li><li class="toc-h3"><a href="#flux-effectiveness-at-different-temperatures">Flux Effectiveness at Different Temperatures</a></li><li class="toc-h3"><a href="#flux-competition-for-alumina-charge-compensation">Flux Competition for Alumina Charge Compensation</a></li><li class="toc-h2"><a href="#phase-separation-amp-immiscibility">Phase Separation &amp; Immiscibility</a></li><li class="toc-h3"><a href="#the-thermodynamic-basis">The Thermodynamic Basis</a></li><li class="toc-h3"><a href="#flux-systems-that-phase-separate">Flux Systems That Phase-Separate</a></li><li class="toc-h3"><a href="#the-jun-blue-mechanism-in-detail">The Jun Blue Mechanism in Detail</a></li><li class="toc-h3"><a href="#the-barium-matte-mechanism">The Barium Matte Mechanism</a></li><li class="toc-h3"><a href="#implications-for-the-atlas">Implications for the Atlas</a></li><li class="toc-h2"><a href="#glaze-body-interface-amp-flux-migration">Glaze–Body Interface &amp; Flux Migration</a></li><li class="toc-h3"><a href="#the-diffusion-mechanism">The Diffusion Mechanism</a></li><li class="toc-h3"><a href="#what-happens-at-the-interface">What Happens at the Interface</a></li><li class="toc-h3"><a href="#flux-migration-profiles">Flux Migration Profiles</a></li><li class="toc-h3"><a href="#reverse-migration-body-glaze">Reverse Migration: Body → Glaze</a></li><li class="toc-h3"><a href="#practical-consequences-for-flux-design">Practical Consequences for Flux Design</a></li><li class="toc-h3"><a href="#proposed-atlas-features-for-interface-analysis">Proposed Atlas Features for Interface Analysis</a></li><li class="toc-h2"><a href="#multi-objective-optimisation-amp-pareto-frontiers">Multi-Objective Optimisation &amp; Pareto Frontiers</a></li><li class="toc-h3"><a href="#the-pareto-frontier-concept">The Pareto Frontier Concept</a></li><li class="toc-h3"><a href="#pareto-frontiers-in-flux-space">Pareto Frontiers in Flux Space</a></li><li class="toc-h3"><a href="#computing-the-frontier">Computing the Frontier</a></li><li class="toc-h3"><a href="#proposed-pareto-visualisation">Proposed Pareto Visualisation</a></li><li class="toc-h3"><a href="#beyond-two-objectives-desirability-functions">Beyond Two Objectives: Desirability Functions</a></li><li class="toc-h2"><a href="#proposed-new-z-axis-properties">Proposed New Z-Axis Properties</a></li><li class="toc-h2"><a href="#summary-amp-recommendations">Summary &amp; Recommendations</a></li><li class="toc-h3"><a href="#what-exists-today">What Exists Today</a></li><li class="toc-h3"><a href="#what-should-be-built">What Should Be Built</a></li><li class="toc-h3"><a href="#the-vision">The Vision</a></li></ul></nav>
+<nav class="toc"><h2>Contents</h2><ul><li class="toc-h2"><a href="#what-is-a-flux">What Is a Flux?</a></li><li class="toc-h3"><a href="#the-network-model-of-glass">The Network Model of Glass</a></li><li class="toc-h3"><a href="#the-ten-flux-oxides">The Ten Flux Oxides</a></li><li class="toc-h3"><a href="#why-flux-identity-matters">Why Flux Identity Matters</a></li><li class="toc-h2"><a href="#the-flux-oxides-individual-profiles">The Flux Oxides — Individual Profiles</a></li><li class="toc-h3"><a href="#na2o-soda">Na2O — Soda</a></li><li class="toc-h3"><a href="#k2o-potash">K2O — Potash</a></li><li class="toc-h3"><a href="#li2o-lithia">Li2O — Lithia</a></li><li class="toc-h3"><a href="#cao-calcia">CaO — Calcia</a></li><li class="toc-h3"><a href="#mgo-magnesia">MgO — Magnesia</a></li><li class="toc-h3"><a href="#zno-zinc-oxide">ZnO — Zinc Oxide</a></li><li class="toc-h3"><a href="#bao-baria">BaO — Baria</a></li><li class="toc-h3"><a href="#sro-strontia">SrO — Strontia</a></li><li class="toc-h3"><a href="#pbo-lead-oxide">PbO — Lead Oxide</a></li><li class="toc-h2"><a href="#historical-amp-regional-flux-traditions">Historical &amp; Regional Flux Traditions</a></li><li class="toc-h3"><a href="#the-ancient-world-lead-amp-alkali">The Ancient World: Lead &amp; Alkali</a></li><li class="toc-h3"><a href="#east-asia-the-calcium-feldspar-revolution">East Asia: The Calcium-Feldspar Revolution</a></li><li class="toc-h3"><a href="#the-islamic-world-extreme-alkalis">The Islamic World: Extreme Alkalis</a></li><li class="toc-h3"><a href="#europe-lead-tin-and-the-march-to-industry">Europe: Lead, Tin, and the March to Industry</a></li><li class="toc-h3"><a href="#what-history-teaches-about-flux-design">What History Teaches About Flux Design</a></li><li class="toc-h2"><a href="#flux-ratios-what-the-atlas-currently-does">Flux Ratios — What the Atlas Currently Does</a></li><li class="toc-h3"><a href="#the-7-flux-analysis-z-axes">The 7 Flux Analysis Z-Axes</a></li><li class="toc-h3"><a href="#r2o-ro-ratio-the-alkali-earth-balance">R2O:RO Ratio — The Alkali-Earth Balance</a></li><li class="toc-h3"><a href="#shannon-entropy-flux-diversity">Shannon Entropy — Flux Diversity</a></li><li class="toc-h3"><a href="#total-fluidity-effectiveness-weighted-flux">Total Fluidity — Effectiveness-Weighted Flux</a></li><li class="toc-h3"><a href="#mean-field-strength-amp-mixed-alkali-effect">Mean Field Strength &amp; Mixed Alkali Effect</a></li><li class="toc-h2"><a href="#flux-dependent-properties-across-the-atlas">Flux-Dependent Properties Across the Atlas</a></li><li class="toc-h3"><a href="#flux-sensitivity-matrix">Flux Sensitivity Matrix</a></li><li class="toc-h3"><a href="#the-five-most-flux-sensitive-properties">The Five Most Flux-Sensitive Properties</a></li><li class="toc-h3"><a href="#flux-effects-not-captured-by-any-single-metric">Flux Effects Not Captured by Any Single Metric</a></li><li class="toc-h2"><a href="#flux-colorant-interactions">Flux-Colorant Interactions</a></li><li class="toc-h3"><a href="#the-ligand-field-mechanism">The Ligand Field Mechanism</a></li><li class="toc-h3"><a href="#the-flux-colour-matrix">The Flux-Colour Matrix</a></li><li class="toc-h3"><a href="#critical-flux-colour-interactions">Critical Flux-Colour Interactions</a></li><li class="toc-h3"><a href="#proposed-flux-colour-prediction-engine">Proposed: Flux-Colour Prediction Engine</a></li><li class="toc-h2"><a href="#what-you-should-be-able-to-do-proposed-flux-features">What You Should Be Able to Do — Proposed Flux Features</a></li><li class="toc-h3"><a href="#tier-1-interactive-flux-ratio-controls-v3-6-4">Tier 1: Interactive Flux Ratio Controls (v3.6.4)</a></li><li class="toc-h3"><a href="#tier-2-flux-substitution-paths">Tier 2: Flux Substitution Paths</a></li><li class="toc-h3"><a href="#tier-3-flux-fingerprinting">Tier 3: Flux Fingerprinting</a></li><li class="toc-h3"><a href="#tier-4-flux-interaction-map">Tier 4: Flux Interaction Map</a></li><li class="toc-h3"><a href="#tier-5-flux-aware-recipe-optimisation">Tier 5: Flux-Aware Recipe Optimisation</a></li><li class="toc-h3"><a href="#tier-6-volatilisation-corrected-flux">Tier 6: Volatilisation-Corrected Flux</a></li><li class="toc-h2"><a href="#flux-ratio-design-patterns">Flux Ratio Design Patterns</a></li><li class="toc-h3"><a href="#pattern-1-the-craze-fix">Pattern 1: The Craze Fix</a></li><li class="toc-h3"><a href="#pattern-2-the-matte-transition">Pattern 2: The Matte Transition</a></li><li class="toc-h3"><a href="#pattern-3-the-eutectic-seeker">Pattern 3: The Eutectic Seeker</a></li><li class="toc-h3"><a href="#pattern-4-the-durability-bridge">Pattern 4: The Durability Bridge</a></li><li class="toc-h3"><a href="#pattern-5-the-crystal-trigger">Pattern 5: The Crystal Trigger</a></li><li class="toc-h2"><a href="#raw-materials-amp-flux-delivery-constraints">Raw Materials &amp; Flux Delivery Constraints</a></li><li class="toc-h3"><a href="#the-delivery-problem">The Delivery Problem</a></li><li class="toc-h3"><a href="#implications-for-flux-ratio-design">Implications for Flux Ratio Design</a></li><li class="toc-h3"><a href="#proposed-material-aware-flux-optimiser">Proposed: Material-Aware Flux Optimiser</a></li><li class="toc-h2"><a href="#flux-operating-windows-by-cone-range">Flux Operating Windows by Cone Range</a></li><li class="toc-h3"><a href="#low-fire-cone-06-to-cone-02-999-nbsp-c-1101-nbsp-c">Low Fire: Cone 06 to Cone 02 (∼999&nbsp;°C–1101&nbsp;°C)</a></li><li class="toc-h3"><a href="#mid-fire-cone-4-to-cone-7-1186-nbsp-c-1240-nbsp-c">Mid Fire: Cone 4 to Cone 7 (∼1186&nbsp;°C–1240&nbsp;°C)</a></li><li class="toc-h3"><a href="#high-fire-cone-8-to-cone-12-1263-nbsp-c-1326-nbsp-c">High Fire: Cone 8 to Cone 12 (∼1263&nbsp;°C–1326&nbsp;°C)</a></li><li class="toc-h3"><a href="#the-temperature-flux-phase-diagram">The Temperature-Flux Phase Diagram</a></li><li class="toc-h2"><a href="#defect-diagnosis-amp-flux-based-fixes">Defect Diagnosis &amp; Flux-Based Fixes</a></li><li class="toc-h3"><a href="#the-defect-flux-cause-flux-fix-table">The Defect → Flux Cause → Flux Fix Table</a></li><li class="toc-h3"><a href="#the-defect-triangle">The Defect Triangle</a></li><li class="toc-h2"><a href="#famous-glazes-dissected">Famous Glazes Dissected</a></li><li class="toc-h3"><a href="#celadon-chinese-amp-korean">Celadon (Chinese &amp; Korean)</a></li><li class="toc-h3"><a href="#tenmoku-chinese-hare-s-fur-oil-spot">Tenmoku (Chinese “Hare's Fur” / “Oil Spot”)</a></li><li class="toc-h3"><a href="#shino-japanese">Shino (Japanese)</a></li><li class="toc-h3"><a href="#crystal-glaze-zinc-willemite">Crystal Glaze (Zinc-Willemite)</a></li><li class="toc-h3"><a href="#ch-n-jun-blue-song-dynasty">Chün / Jun Blue (Song Dynasty)</a></li><li class="toc-h3"><a href="#wood-ash-iga-shigaraki-style">Wood Ash (Iga / Shigaraki Style)</a></li><li class="toc-h2"><a href="#the-flux-simplex-a-mathematical-perspective">The Flux Simplex — A Mathematical Perspective</a></li><li class="toc-h3"><a href="#compositional-data-on-the-simplex">Compositional Data on the Simplex</a></li><li class="toc-h3"><a href="#why-this-matters-for-the-atlas">Why This Matters for the Atlas</a></li><li class="toc-h2"><a href="#advanced-flux-topics">Advanced Flux Topics</a></li><li class="toc-h3"><a href="#the-boron-problem">The Boron Problem</a></li><li class="toc-h3"><a href="#flux-effectiveness-at-different-temperatures">Flux Effectiveness at Different Temperatures</a></li><li class="toc-h3"><a href="#flux-competition-for-alumina-charge-compensation">Flux Competition for Alumina Charge Compensation</a></li><li class="toc-h2"><a href="#phase-separation-amp-immiscibility">Phase Separation &amp; Immiscibility</a></li><li class="toc-h3"><a href="#the-thermodynamic-basis">The Thermodynamic Basis</a></li><li class="toc-h3"><a href="#flux-systems-that-phase-separate">Flux Systems That Phase-Separate</a></li><li class="toc-h3"><a href="#the-jun-blue-mechanism-in-detail">The Jun Blue Mechanism in Detail</a></li><li class="toc-h3"><a href="#the-barium-matte-mechanism">The Barium Matte Mechanism</a></li><li class="toc-h3"><a href="#implications-for-the-atlas">Implications for the Atlas</a></li><li class="toc-h2"><a href="#glaze-body-interface-amp-flux-migration">Glaze–Body Interface &amp; Flux Migration</a></li><li class="toc-h3"><a href="#the-diffusion-mechanism">The Diffusion Mechanism</a></li><li class="toc-h3"><a href="#what-happens-at-the-interface">What Happens at the Interface</a></li><li class="toc-h3"><a href="#flux-migration-profiles">Flux Migration Profiles</a></li><li class="toc-h3"><a href="#reverse-migration-body-glaze">Reverse Migration: Body → Glaze</a></li><li class="toc-h3"><a href="#practical-consequences-for-flux-design">Practical Consequences for Flux Design</a></li><li class="toc-h3"><a href="#proposed-atlas-features-for-interface-analysis">Proposed Atlas Features for Interface Analysis</a></li><li class="toc-h2"><a href="#multi-objective-optimisation-amp-pareto-frontiers">Multi-Objective Optimisation &amp; Pareto Frontiers</a></li><li class="toc-h3"><a href="#the-pareto-frontier-concept">The Pareto Frontier Concept</a></li><li class="toc-h3"><a href="#pareto-frontiers-in-flux-space">Pareto Frontiers in Flux Space</a></li><li class="toc-h3"><a href="#computing-the-frontier">Computing the Frontier</a></li><li class="toc-h3"><a href="#proposed-pareto-visualisation">Proposed Pareto Visualisation</a></li><li class="toc-h3"><a href="#beyond-two-objectives-desirability-functions">Beyond Two Objectives: Desirability Functions</a></li><li class="toc-h2"><a href="#proposed-new-z-axis-properties">Proposed New Z-Axis Properties</a></li><li class="toc-h2"><a href="#summary-amp-recommendations">Summary &amp; Recommendations</a></li><li class="toc-h3"><a href="#what-exists-today">What Exists Today</a></li><li class="toc-h3"><a href="#what-should-be-built">What Should Be Built</a></li><li class="toc-h3"><a href="#the-vision">The Vision</a></li></ul></nav>
 <main class="content">
 <div class="title-page">
 <h1 class="main-title">Flux</h1>
@@ -247,7 +295,6 @@ and What More It Should Do</p>
 <div class="abstract"><h2>Abstract</h2><p>In ceramic glaze chemistry, <em>fluxes</em> are the oxides that break apart the glass network, lower the melting temperature, and control nearly every property a potter cares about: whether a glaze flows or sits, crazes or compresses, leaches or resists, shines or goes matte. Yet fluxes are overwhelmingly discussed as a single lump—“total flux”—when the identity, ratio, and diversity of individual flux species matter enormously. This report provides a deep examination of flux chemistry as it exists in the Stull Atlas today (7 dedicated Z-axes plus flux-dependent properties throughout the 133-axis system), then maps out what a full flux analysis toolkit <em>should</em> include: interactive ratio controls, substitution path modelling, flux fingerprinting, eutectic mapping, and flux-aware optimisation. The intended audience is the developer extending the atlas, and the technically minded potter or glaze technician seeking a quantitative understanding of how fluxes shape fired results.</p></div>
 
 <h2 id="what-is-a-flux" class="section-title">What Is a Flux?</h2>
-<a id="label-sec-what-is-flux"></a>
 
 <h3 id="the-network-model-of-glass" class="subsection-title">The Network Model of Glass</h3>
 
@@ -257,7 +304,7 @@ and What More It Should Do</p>
 
 <p><strong>Fluxes</strong> are the oxides that break this network. When a flux oxide like Na<sub>2</sub>O dissolves into the silica melt, each Na<sup>+</sup> ion positions itself near a bridging oxygen (an oxygen shared between two tetrahedra) and <em>severs</em> the Si–O–Si bond, converting the bridging oxygen into a <em>non-bridging oxygen</em> (NBO) bonded to only one silicon. The result is a weaker, more compliant, lower-melting glass.</p>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ The Fundamental Reaction</div><div class="box-content">
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ The Fundamental Reaction</div><div class="box-content">
 The introduction of a flux oxide into the silica network can be written schematically:
 <div class="math-display">\[\equiv\text{Si--O--Si}\equiv \;+\; \text{Na}_2\text{O} \;\longrightarrow\; 2 \times (\equiv\text{Si--O}^- \;\text{Na}^+)\]</div>
 Each mole of Na<sub>2</sub>O breaks one bridging oxygen and creates two non-bridging oxygens. The NBO/T ratio (non-bridging oxygens per tetrahedron) quantifies the cumulative damage to the network. A fully connected network has $\text{NBO/T} = 0$ (pure SiO<sub>2</sub>); a fully depolymerised melt has $\text{NBO/T} = 4$ (isolated SiO<sub>2</sub> tetrahedra floating in a sea of modifier cations).
@@ -278,13 +325,12 @@ Each mole of Na<sub>2</sub>O breaks one bridging oxygen and creates two non-brid
 <ol><li><strong>Size</strong> (ionic radius): Li<sup>+</sup> = 0.76&nbsp;Å, Na<sup>+</sup> = 1.02&nbsp;Å, K<sup>+</sup> = 1.38&nbsp;Å, Ba<sup>2+</sup> = 1.35&nbsp;Å. Larger ions disrupt the network differently and occupy different interstitial volumes.</li><li><strong>Charge density</strong> (field strength): Ca<sup>2+</sup> ($F = 0.33$) exerts twice the electrostatic pull on oxygen as Na<sup>+</sup> ($F = 0.19$), even though both create one NBO per cation equivalent. This affects viscosity, durability, and crystallisation.</li><li><strong>Thermal expansion contribution</strong>: Appen expansion factors span a 100× range: $\alpha_{\text{Na}_2\text{O}} = 39.5$, $\alpha_{\text{K}_2\text{O}} = 28.3$, $\alpha_{\text{CaO}} = 13.0$, $\alpha_{\text{MgO}} = 0.45$, $\alpha_{\text{Li}_2\text{O}} = 10.0$ (all $\times 10^{-7}\;/{}^\circ\text{C}$). A glaze with 0.5 moles Na<sub>2</sub>O will craze on stoneware; a glaze with 0.5 moles MgO will not.</li><li><strong>Melting power</strong>: Eppler &amp; Eppler (2000) assigned fluxing effectiveness values normalised to Na<sub>2</sub>O = 1.0: Li<sub>2</sub>O $\approx 5.0$, PbO $\approx 2.0$, CaO $\approx 1.0$, MgO $\approx 0.4$, Al<sub>2</sub>O<sub>3</sub> $\approx -1.0$ (anti-flux). A mole of lithia generates five times the melting power of a mole of soda.</li><li><strong>Surface effects</strong>: MgO promotes matte surfaces via microcrystallisation (diopside, forsterite). BaO produces classic satin textures. ZnO promotes willemite crystal growth. CaO at high levels drives wollastonite crystallisation. PbO produces the distinctive brilliance and depth of historical low-fire glazes.</li><li><strong>Toxicity and safety</strong>: PbO and BaO are toxic if leachable. Li<sub>2</sub>O is expensive and supply-constrained (lithium mining). These practical constraints shape which flux combinations are viable.</li></ol>
 
 <h2 id="the-flux-oxides-individual-profiles" class="section-title">The Flux Oxides — Individual Profiles</h2>
-<a id="label-sec-profiles"></a>
 
 <p>Each flux oxide has a distinct personality. This section profiles them individually, covering their glass-science behaviour, practical effects, typical UMF ranges, and interactions with other oxides.</p>
 
 <h3 id="na2o-soda" class="subsection-title">Na<sub>2</sub>O — Soda</h3>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Soda at a Glance</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Soda at a Glance</div><div class="box-content">
 <div class="table-wrapper"><table class="styled-table"><tr><th><strong>Cation:</strong> Na<sup>+</sup></th><th><strong>Valence:</strong> $+1$</th></tr><tr><td><strong>Ionic Radius:</strong> 1.02&nbsp;Å</td><td><strong>Field Strength:</strong> 0.19</td></tr><tr><td><strong>Appen COE Factor:</strong> 39.5 ($\times 10^{-7}\;/{}^\circ\text{C}$)</td><td><strong>Eppler Effectiveness:</strong> 1.0 (reference)</td></tr><tr><td><strong>Common Sources:</strong> Soda feldspar (albite), nepheline syenite, soda ash, Gerstley borate, frits</td></tr><tr><td><strong>Typical UMF Range:</strong> 0.05–0.40</td><td><strong>Danger Threshold:</strong> $\gt  0.35$ (craze risk)</td></tr></table></div>
 </div></div>
 
@@ -295,11 +341,11 @@ Each mole of Na<sub>2</sub>O breaks one bridging oxygen and creates two non-brid
 <p><strong>Key interactions:</strong>
 <ul><li><strong>With K<sub>2</sub>O (Mixed Alkali Effect):</strong> Partially replacing soda with potash suppresses thermal expansion below the linear average and dramatically reduces ionic conductivity. The MAE ($= 4 x_{\text{Na}} x_{\text{K}}$) peaks at 50:50 ratio. This is one of the most powerful tools for managing crazing.</li><li><strong>With CaO:</strong> Calcia provides network-tightening through Ca<sup>2+</sup>'s higher field strength, partially compensating for soda's network-loosening. The Na<sub>2</sub>O–CaO–SiO<sub>2</sub> ternary is the basis of window glass (soda-lime glass), the most produced glass in human history.</li><li><strong>With SiO<sub>2</sub>:</strong> More silica = lower expansion, but also higher viscosity. The classic craze fix is “add silica, reduce soda.”</li></ul></p>
 
-<p><strong>Atlas properties most affected:</strong> COE (α), glaze stress (σ), VFT viscosity (lower $B$, lower viscosity), ionic conductivity (highest), mixed alkali effect, food-safety leach risk (alkali glasses leach more easily).</p>
+<p><strong>Atlas properties most affected:</strong> COE ($\alpha$), glaze stress ($\sigma$), VFT viscosity (lower $B$, lower viscosity), ionic conductivity (highest), mixed alkali effect, food-safety leach risk (alkali glasses leach more easily).</p>
 
 <h3 id="k2o-potash" class="subsection-title">K<sub>2</sub>O — Potash</h3>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Potash at a Glance</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Potash at a Glance</div><div class="box-content">
 <div class="table-wrapper"><table class="styled-table"><tr><th><strong>Cation:</strong> K<sup>+</sup></th><th><strong>Valence:</strong> $+1$</th></tr><tr><td><strong>Ionic Radius:</strong> 1.38&nbsp;Å</td><td><strong>Field Strength:</strong> 0.13</td></tr><tr><td><strong>Appen COE Factor:</strong> 28.3</td><td><strong>Eppler Effectiveness:</strong> 0.9</td></tr><tr><td><strong>Common Sources:</strong> Potash feldspar (orthoclase), Cornwall stone, wood ash</td></tr><tr><td><strong>Typical UMF Range:</strong> 0.05–0.30</td><td></td></tr></table></div>
 </div></div>
 
@@ -311,7 +357,7 @@ Each mole of Na<sub>2</sub>O breaks one bridging oxygen and creates two non-brid
 
 <h3 id="li2o-lithia" class="subsection-title">Li<sub>2</sub>O — Lithia</h3>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Lithia at a Glance</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Lithia at a Glance</div><div class="box-content">
 <div class="table-wrapper"><table class="styled-table"><tr><th><strong>Cation:</strong> Li<sup>+</sup></th><th><strong>Valence:</strong> $+1$</th></tr><tr><td><strong>Ionic Radius:</strong> 0.76&nbsp;Å</td><td><strong>Field Strength:</strong> 0.23</td></tr><tr><td><strong>Appen COE Factor:</strong> 10.0</td><td><strong>Eppler Effectiveness:</strong> ∼5.0</td></tr><tr><td><strong>Common Sources:</strong> Spodumene, petalite, lithium carbonate, lepidolite</td></tr><tr><td><strong>Typical UMF Range:</strong> 0.00–0.15</td><td></td></tr></table></div>
 </div></div>
 
@@ -323,7 +369,7 @@ Each mole of Na<sub>2</sub>O breaks one bridging oxygen and creates two non-brid
 
 <h3 id="cao-calcia" class="subsection-title">CaO — Calcia</h3>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Calcia at a Glance</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Calcia at a Glance</div><div class="box-content">
 <div class="table-wrapper"><table class="styled-table"><tr><th><strong>Cation:</strong> Ca<sup>2+</sup></th><th><strong>Valence:</strong> $+2$</th></tr><tr><td><strong>Ionic Radius:</strong> 1.00&nbsp;Å</td><td><strong>Field Strength:</strong> 0.33</td></tr><tr><td><strong>Appen COE Factor:</strong> 13.0</td><td><strong>Eppler Effectiveness:</strong> 1.0</td></tr><tr><td><strong>Common Sources:</strong> Whiting (CaCO<sub>3</sub>), wollastonite, dolomite, wood ash, bone ash</td></tr><tr><td><strong>Typical UMF Range:</strong> 0.20–0.70</td><td></td></tr></table></div>
 </div></div>
 
@@ -340,7 +386,7 @@ Each mole of Na<sub>2</sub>O breaks one bridging oxygen and creates two non-brid
 
 <h3 id="mgo-magnesia" class="subsection-title">MgO — Magnesia</h3>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Magnesia at a Glance</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Magnesia at a Glance</div><div class="box-content">
 <div class="table-wrapper"><table class="styled-table"><tr><th><strong>Cation:</strong> Mg<sup>2+</sup></th><th><strong>Valence:</strong> $+2$</th></tr><tr><td><strong>Ionic Radius:</strong> 0.72&nbsp;Å</td><td><strong>Field Strength:</strong> 0.45</td></tr><tr><td><strong>Appen COE Factor:</strong> 0.45</td><td><strong>Eppler Effectiveness:</strong> 0.4</td></tr><tr><td><strong>Common Sources:</strong> Talc, dolomite, magnesium carbonate</td></tr><tr><td><strong>Typical UMF Range:</strong> 0.00–0.35</td><td></td></tr></table></div>
 </div></div>
 
@@ -354,7 +400,7 @@ Each mole of Na<sub>2</sub>O breaks one bridging oxygen and creates two non-brid
 
 <h3 id="zno-zinc-oxide" class="subsection-title">ZnO — Zinc Oxide</h3>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Zinc Oxide at a Glance</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Zinc Oxide at a Glance</div><div class="box-content">
 <div class="table-wrapper"><table class="styled-table"><tr><th><strong>Cation:</strong> Zn<sup>2+</sup></th><th><strong>Valence:</strong> $+2$</th></tr><tr><td><strong>Ionic Radius:</strong> 0.74&nbsp;Å</td><td><strong>Field Strength:</strong> 0.43</td></tr><tr><td><strong>Appen COE Factor:</strong> 7.0</td><td><strong>Eppler Effectiveness:</strong> 0.7</td></tr><tr><td><strong>Common Sources:</strong> Zinc oxide (industrial grade)</td></tr><tr><td><strong>Typical UMF Range:</strong> 0.00–0.25</td><td></td></tr></table></div>
 </div></div>
 
@@ -366,7 +412,7 @@ Each mole of Na<sub>2</sub>O breaks one bridging oxygen and creates two non-brid
 
 <h3 id="bao-baria" class="subsection-title">BaO — Baria</h3>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Baria at a Glance</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Baria at a Glance</div><div class="box-content">
 <div class="table-wrapper"><table class="styled-table"><tr><th><strong>Cation:</strong> Ba<sup>2+</sup></th><th><strong>Valence:</strong> $+2$</th></tr><tr><td><strong>Ionic Radius:</strong> 1.35&nbsp;Å</td><td><strong>Field Strength:</strong> 0.24</td></tr><tr><td><strong>Appen COE Factor:</strong> 17.0</td><td><strong>Eppler Effectiveness:</strong> 0.6</td></tr><tr><td><strong>Common Sources:</strong> Barium carbonate</td></tr><tr><td><strong>Typical UMF Range:</strong> 0.00–0.25</td><td><strong>Safety:</strong> Toxic if raw or leachable</td></tr></table></div>
 </div></div>
 
@@ -376,17 +422,17 @@ Each mole of Na<sub>2</sub>O breaks one bridging oxygen and creates two non-brid
 
 <h3 id="sro-strontia" class="subsection-title">SrO — Strontia</h3>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Strontia at a Glance</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Strontia at a Glance</div><div class="box-content">
 <div class="table-wrapper"><table class="styled-table"><tr><th><strong>Cation:</strong> Sr<sup>2+</sup></th><th><strong>Valence:</strong> $+2$</th></tr><tr><td><strong>Ionic Radius:</strong> 1.18&nbsp;Å</td><td><strong>Field Strength:</strong> 0.28</td></tr><tr><td><strong>Appen COE Factor:</strong> 11.0</td><td><strong>Eppler Effectiveness:</strong> 0.7</td></tr><tr><td><strong>Common Sources:</strong> Strontium carbonate</td></tr><tr><td><strong>Typical UMF Range:</strong> 0.00–0.25</td><td></td></tr></table></div>
 </div></div>
 
-<p>Strontia is the “safe baria”—it produces similar satin surfaces to BaO without the toxicity concerns. Strontium compounds are non-toxic and strontium glazes do not pose leach-safety issues. Its ionic radius (1.18&nbsp;Å) is intermediate between calcium (1.00&nbsp;Å) and barium (1.35&nbsp;Å), and its glass-forming behaviour similarly sits between the two.</p>
+<p>Strontia is the “safe baria”—it produces similar satin surfaces to BaO without the toxicity concerns. Strontium compounds are non-toxic and strontium glazes do not pose leach-safety issues. Its ionic radius (1.18&nbsp;\AA) is intermediate between calcium (1.00&nbsp;\AA) and barium (1.35&nbsp;\AA), and its glass-forming behaviour similarly sits between the two.</p>
 
 <p><strong>Practical use:</strong> Strontia is increasingly popular as a 1:1 molar replacement for baria in educational and food-safe studio settings. The substitution is not exact (expansion and surface texture differ slightly), but it captures most of the aesthetic character without safety risk.</p>
 
 <h3 id="pbo-lead-oxide" class="subsection-title">PbO — Lead Oxide</h3>
 
-<div class="styled-box warnbox" style="border-left-color:#EF4444"><div class="box-title" style="color:#EF4444">⚠️ Lead Oxide — Toxic</div><div class="box-content">
+<div class="styled-box warn-box" style="border-left-color:#EF4444"><div class="box-title" style="color:#EF4444">⚠️ Lead Oxide — Toxic</div><div class="box-content">
 Lead oxide is the historical low-fire flux that dominated ceramic technology for millennia. It produces unmatched brilliance, depth, and color quality at low temperatures (cone&nbsp;06 to cone&nbsp;02). However, lead is acutely toxic and chronically poisonous. Lead glazes on food-contact surfaces are banned or heavily regulated in most countries. Lead-free alternatives (frits, boron, lithia) have replaced lead in virtually all modern functional pottery.
 
 <p>The Stull Atlas includes lead in its oxide system for historical completeness and for analysis of antique ceramics, but its use in new functional ware is strongly discouraged.</p>
@@ -399,7 +445,6 @@ Lead oxide is the historical low-fire flux that dominated ceramic technology for
 <p><strong>Why lead works so well:</strong> Pb<sup>2+</sup> has a “lone pair” of electrons ($6s^2$) that creates an asymmetric coordination environment, producing a very fluid, very optically dense glass with unusually wide melting ranges. No other flux replicates this combination of properties.</p>
 
 <h2 id="historical-amp-regional-flux-traditions" class="section-title">Historical &amp; Regional Flux Traditions</h2>
-<a id="label-sec-history"></a>
 
 <p>Every ceramic culture in history solved the same fundamental problem—“how do I melt silica at a temperature my kiln can reach?”—and each arrived at a different flux solution shaped by local geology, available fuels, kiln technology, and aesthetic preference. The result is a global map of flux traditions that doubles as a tour of the flux simplex.</p>
 
@@ -415,8 +460,8 @@ Lead oxide is the historical low-fire flux that dominated ceramic technology for
 
 <p>Flux fingerprint (Longquan celadon): $\text{CaO} \approx 0.55–0.65$, $\text{K}_2\text{O} \approx 0.15–0.25$, $\text{MgO} \approx 0.05–0.10$, $\text{Na}_2\text{O} \approx 0.05$.</p>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Jun (Chün) Blue — Phase Separation in Action</div><div class="box-content">
-The celebrated Jun blue glaze of the Song dynasty (∼1100 CE) is not coloured by a pigment—it is an <em>optical effect</em> caused by liquid-liquid phase separation (see §<a href="#label-sec-phase-sep" class="ref-link">sec:phase_sep</a>). The high-lime, low-alumina, phosphorus-bearing composition undergoes spinodal decomposition on cooling, creating nanoscale droplets that scatter short wavelengths (Rayleigh scattering). The flux system is critical: high CaO ($\sim 0.55$) provides the thermodynamic driving force for immiscibility; trace P<sub>2</sub>O<sub>5</sub> from bone ash seeds the phase boundary. No other flux combination produces this effect.
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Jun (Chün) Blue — Phase Separation in Action</div><div class="box-content">
+The celebrated Jun blue glaze of the Song dynasty (∼1100 CE) is not coloured by a pigment—it is an <em>optical effect</em> caused by liquid-liquid phase separation (see §[sec:phase_sep]). The high-lime, low-alumina, phosphorus-bearing composition undergoes spinodal decomposition on cooling, creating nanoscale droplets that scatter short wavelengths (Rayleigh scattering). The flux system is critical: high CaO ($\sim 0.55$) provides the thermodynamic driving force for immiscibility; trace P<sub>2</sub>O<sub>5</sub> from bone ash seeds the phase boundary. No other flux combination produces this effect.
 </div></div>
 
 <p><strong>Japanese traditions:</strong>
@@ -440,12 +485,11 @@ The celebrated Jun blue glaze of the Song dynasty (∼1100 CE) is not coloured b
 
 <h3 id="what-history-teaches-about-flux-design" class="subsection-title">What History Teaches About Flux Design</h3>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Lessons from 5,000 Years</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Lessons from 5,000 Years</div><div class="box-content">
 <ol><li><strong>Geology determines flux:</strong> Every tradition's flux preference mirrors its mineral resources. Soda where there is natron or halophytic plants; lead where there is galena; calcia where there is limestone and hot kilns.</li><li><strong>Single-flux systems are fragile:</strong> Pure lead, pure soda, and pure calcia glazes all suffer from narrow firing ranges, specific defect patterns, and limited colour response. History moved toward multi-flux systems wherever kiln technology allowed.</li><li><strong>Temperature unlocks earths:</strong> Below cone&nbsp;2, alkalis and lead dominate because calcia and magnesia lack the activation energy to flux effectively. Above cone&nbsp;6, earths become primary fluxes. The historical shift from earthenware to stoneware is fundamentally a shift from alkali/lead to calcium/magnesium flux systems.</li><li><strong>Aesthetics and chemistry co-evolve:</strong> Shino's soft surface requires extreme alkali. Celadon's jade depth requires high calcia. Crystal glazes require high zinc. The aesthetic intent and the flux chemistry are inseparable.</li></ol>
 </div></div>
 
 <h2 id="flux-ratios-what-the-atlas-currently-does" class="section-title">Flux Ratios — What the Atlas Currently Does</h2>
-<a id="label-sec-current"></a>
 
 <p>The Stull Atlas currently computes 7 dedicated flux-analysis Z-axes, plus numerous flux-dependent properties spread across other categories. Here is a complete inventory.</p>
 
@@ -454,13 +498,13 @@ The celebrated Jun blue glaze of the Song dynasty (∼1100 CE) is not coloured b
 <div class="centered">
 <div class="table-wrapper"><table class="styled-table"><tr><th><strong>#</strong></th><th><strong>Z-Axis Name</strong></th><th><strong>What It Measures</strong></th></tr><tr><td>1</td><td>Flux Ratio ($R_{\text{flux}}$)</td><td>Total flux as fraction of all oxides</td></tr><tr><td>2</td><td>R<sub>2</sub>O:RO Ratio</td><td>Balance between alkali and alkaline earth fluxes</td></tr><tr><td>3</td><td>Combined Alkali</td><td>Total $\text{R}_2\text{O} = \NaO + \KO + \LiO$</td></tr><tr><td>4</td><td>Shannon Entropy ($H$)</td><td>Diversity/evenness of flux distribution</td></tr><tr><td>5</td><td>Total Fluidity</td><td>Weighted sum using Eppler effectiveness factors</td></tr><tr><td>6</td><td>Mean Field Strength</td><td>Molar-weighted average of Dietzel $F$ values</td></tr><tr><td>7</td><td>Mixed Alkali Effect</td><td>$4 x_{\text{Na}} x_{\text{K}}$ interaction index</td></tr></table></div></div>
 
-<h3 id="flux-ratio-r-text-flux-deep-dive" class="subsection-title">Flux Ratio ($R_{\text{flux}}$) — Deep Dive</h3>
+<p>\subsection{Flux Ratio ($R_{\text{flux}}$) — Deep Dive}</p>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Flux Ratio</div><div class="box-content">
-<div class="math-display">\begin{equation}
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Flux Ratio</div><div class="box-content">
+<div class="math-display">\[
     R_{\text{flux}} = \frac{\sum \text{fluxes}}{\SiO + \AlO + \BO + \sum \text{fluxes}}
-    \label{eq:flux_ratio}
-\end{equation}</div>
+    
+\]</div>
 
 <p>The flux ratio measures the molar proportion of network-modifying oxides relative to the total oxide content. It treats all fluxes as equivalent by moles—which is its strength (simplicity) and its weakness (it ignores flux identity).</p>
 
@@ -472,11 +516,11 @@ The celebrated Jun blue glaze of the Song dynasty (∼1100 CE) is not coloured b
 
 <h3 id="r2o-ro-ratio-the-alkali-earth-balance" class="subsection-title">R<sub>2</sub>O:RO Ratio — The Alkali-Earth Balance</h3>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ R<sub>2</sub>O:RO Ratio</div><div class="box-content">
-<div class="math-display">\begin{equation}
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ R<sub>2</sub>O:RO Ratio</div><div class="box-content">
+<div class="math-display">\[
     \text{R}_2\text{O}:\text{RO} = \frac{\NaO + \KO + \LiO}{\CaOx + \MgOx + \BaOx + \SrOx + \ZnOx + \PbOx}
-    \label{eq:r2o_ro}
-\end{equation}</div>
+    
+\]</div>
 
 <p>This ratio captures the most fundamental division in the flux family: monovalent versus divalent. It has profound consequences across nearly every property category:</p>
 
@@ -488,11 +532,11 @@ The celebrated Jun blue glaze of the Song dynasty (∼1100 CE) is not coloured b
 
 <h3 id="shannon-entropy-flux-diversity" class="subsection-title">Shannon Entropy — Flux Diversity</h3>
 
-<p>Already described in the main report (Eq.&nbsp;\ref{eq:shannon}), but its strategic significance bears emphasis:</p>
+<p>Already described in the main report (Eq.&nbsp;[eq:shannon]), but its strategic significance bears emphasis:</p>
 
 <p>Shannon entropy is the only flux metric that captures <em>how many fluxes are present and how evenly they are distributed</em>, independent of total flux amount or alkali/earth balance. It is the missing dimension that transforms flux analysis from a single ratio into a compositional fingerprint.</p>
 
-<div class="styled-box examplebox" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Three glazes with identical $R_{\text{flux}}$ and R<sub>2</sub>O:RO</div><div class="box-content">
+<div class="styled-box example-box" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Three glazes with identical $R_{\text{flux}}$ and R<sub>2</sub>O:RO</div><div class="box-content">
 <div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Glaze</strong></th><th>$R_{\text{flux}}$</th><th>R<sub>2</sub>O:RO</th><th><strong>Flux Breakdown</strong></th></tr><tr><td>A</td><td>0.25</td><td>0.5</td><td>Na<sub>2</sub>O 0.33, CaO 0.67</td></tr><tr><td>B</td><td>0.25</td><td>0.5</td><td>Na<sub>2</sub>O 0.20, K<sub>2</sub>O 0.13, CaO 0.40, MgO 0.15, ZnO 0.12</td></tr><tr><td>C</td><td>0.25</td><td>0.5</td><td>Li<sub>2</sub>O 0.05, Na<sub>2</sub>O 0.10, K<sub>2</sub>O 0.18, CaO 0.30, MgO 0.15, BaO 0.12, ZnO 0.10</td></tr></table></div></div>
 
 <p>Shannon entropy: $H_A = 0.64$, $H_B = 1.50$, $H_C = 1.86$.</p>
@@ -506,11 +550,11 @@ This is what entropy captures that the ratios miss.
 
 <p>Not all fluxes are created equal. Total fluidity weights each flux by its Eppler effectiveness factor, providing a single number that better predicts melting power than raw flux count:</p>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Total Fluidity</div><div class="box-content">
-<div class="math-display">\begin{equation}
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Total Fluidity</div><div class="box-content">
+<div class="math-display">\[
     \Phi = \sum_i w_i \, x_i
-    \label{eq:fluidity}
-\end{equation}</div>
+    
+\]</div>
 where $x_i$ are the UMF molar amounts and $w_i$ are the Eppler effectiveness weights:
 
 <div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Oxide</strong></th><th>$w$</th><th><strong>Oxide</strong></th><th>$w$</th><th><strong>Oxide</strong></th><th>$w$</th></tr><tr><td>Li<sub>2</sub>O</td><td>5.0</td><td>CaO</td><td>1.0</td><td>ZnO</td><td>0.7</td></tr><tr><td>Na<sub>2</sub>O</td><td>1.0</td><td>SrO</td><td>0.7</td><td>MgO</td><td>0.4</td></tr><tr><td>K<sub>2</sub>O</td><td>0.9</td><td>BaO</td><td>0.6</td><td>PbO</td><td>2.0</td></tr></table></div></div>
@@ -525,7 +569,6 @@ where $x_i$ are the UMF molar amounts and $w_i$ are the Eppler effectiveness wei
 <ul><li><strong>Mean Field Strength:</strong> Weighted average of Dietzel $F$ values. Higher values predict stiffer, more durable glasses. It is the flux-side complement to the former-side metric of NBO/T.</li><li><strong>Mixed Alkali Effect (MAE):</strong> $4 x_{\text{Na}} x_{\text{K}}$, peaked at 50:50 Na:K. Predicts anomalous suppression of expansion, conductivity, and viscosity.</li></ul>
 
 <h2 id="flux-dependent-properties-across-the-atlas" class="section-title">Flux-Dependent Properties Across the Atlas</h2>
-<a id="label-sec-flux-dependent"></a>
 
 <p>Beyond the 7 dedicated flux axes, flux composition influences the majority of the 133 Z-axis properties. This section maps which properties are most flux-sensitive and which oxide changes have the greatest impact.</p>
 
@@ -533,7 +576,7 @@ where $x_i$ are the UMF molar amounts and $w_i$ are the Eppler effectiveness wei
 
 <div class="centered">
 
-<div class="table-wrapper"><table class="styled-table"><tr><th><strong>Property</strong></th><th>70Li<sub>2</sub>O</th><th>70Na<sub>2</sub>O</th><th>70K<sub>2</sub>O</th><th>70CaO</th><th>70MgO</th><th>70BaO</th><th>70SrO</th><th>70ZnO</th><th>70PbO</th></tr><tr><td>COE (α)</td><td>$+$</td><td>$++$</td><td>$+$</td><td>$+$</td><td>$\circ$</td><td>$+$</td><td>$+$</td><td>$+$</td><td>$+$</td></tr><tr><td>Viscosity (η)</td><td>–</td><td>–</td><td>$-$</td><td>$-$</td><td>$\circ$</td><td>$-$</td><td>$-$</td><td>$-$</td><td>–</td></tr><tr><td>NBO/T</td><td>$++$</td><td>$++$</td><td>$++$</td><td>$+$</td><td>$+$</td><td>$+$</td><td>$+$</td><td>$+$</td><td>$+$</td></tr><tr><td>Refractive Index ($n$)</td><td>$-$</td><td>$+$</td><td>$+$</td><td>$+$</td><td>$\circ$</td><td>$++$</td><td>$+$</td><td>$+$</td><td>$++$</td></tr><tr><td>Surface Tension (γ)</td><td>$+$</td><td>$-$</td><td>$-$</td><td>$+$</td><td>$++$</td><td>$-$</td><td>$-$</td><td>$+$</td><td>$-$</td></tr><tr><td>Durability</td><td>$+$</td><td>–</td><td>–</td><td>$+$</td><td>$++$</td><td>$-$</td><td>$\circ$</td><td>$+$</td><td>$-$</td></tr><tr><td>$T_g$</td><td>–</td><td>$-$</td><td>$-$</td><td>$+$</td><td>$++$</td><td>$\circ$</td><td>$\circ$</td><td>$\circ$</td><td>$-$</td></tr><tr><td>Crystal tendency</td><td>$-$</td><td>$-$</td><td>$-$</td><td>$++$</td><td>$++$</td><td>$+$</td><td>$+$</td><td>$++$</td><td>$-$</td></tr><tr><td>Matteness</td><td>$-$</td><td>$-$</td><td>$-$</td><td>$+$</td><td>$++$</td><td>$+$</td><td>$+$</td><td>$+$</td><td>$-$</td></tr><tr><td>Leach risk</td><td>$+$</td><td>$++$</td><td>$++$</td><td>$-$</td><td>$-$</td><td>$+$</td><td>$-$</td><td>$-$</td><td>$++$</td></tr></table></div></div>
+<div class="table-wrapper"><table class="styled-table"><tr><th><strong>Property</strong></th><th>70Li<sub>2</sub>O</th><th>70Na<sub>2</sub>O</th><th>70K<sub>2</sub>O</th><th>70CaO</th><th>70MgO</th><th>70BaO</th><th>70SrO</th><th>70ZnO</th><th>70PbO</th></tr><tr><td>COE ($\alpha$)</td><td>$+$</td><td>$++$</td><td>$+$</td><td>$+$</td><td>$\circ$</td><td>$+$</td><td>$+$</td><td>$+$</td><td>$+$</td></tr><tr><td>Viscosity ($\eta$)</td><td>–</td><td>–</td><td>$-$</td><td>$-$</td><td>$\circ$</td><td>$-$</td><td>$-$</td><td>$-$</td><td>–</td></tr><tr><td>NBO/T</td><td>$++$</td><td>$++$</td><td>$++$</td><td>$+$</td><td>$+$</td><td>$+$</td><td>$+$</td><td>$+$</td><td>$+$</td></tr><tr><td>Refractive Index ($n$)</td><td>$-$</td><td>$+$</td><td>$+$</td><td>$+$</td><td>$\circ$</td><td>$++$</td><td>$+$</td><td>$+$</td><td>$++$</td></tr><tr><td>Surface Tension ($\gamma$)</td><td>$+$</td><td>$-$</td><td>$-$</td><td>$+$</td><td>$++$</td><td>$-$</td><td>$-$</td><td>$+$</td><td>$-$</td></tr><tr><td>Durability</td><td>$+$</td><td>–</td><td>–</td><td>$+$</td><td>$++$</td><td>$-$</td><td>$\circ$</td><td>$+$</td><td>$-$</td></tr><tr><td>$T_g$</td><td>–</td><td>$-$</td><td>$-$</td><td>$+$</td><td>$++$</td><td>$\circ$</td><td>$\circ$</td><td>$\circ$</td><td>$-$</td></tr><tr><td>Crystal tendency</td><td>$-$</td><td>$-$</td><td>$-$</td><td>$++$</td><td>$++$</td><td>$+$</td><td>$+$</td><td>$++$</td><td>$-$</td></tr><tr><td>Matteness</td><td>$-$</td><td>$-$</td><td>$-$</td><td>$+$</td><td>$++$</td><td>$+$</td><td>$+$</td><td>$+$</td><td>$-$</td></tr><tr><td>Leach risk</td><td>$+$</td><td>$++$</td><td>$++$</td><td>$-$</td><td>$-$</td><td>$+$</td><td>$-$</td><td>$-$</td><td>$++$</td></tr></table></div></div>
 
 <p>{ Key: $++$ = strong increase, $+$ = moderate increase, $\circ$ = negligible, $-$ = moderate decrease, – = strong decrease.}</p>
 
@@ -545,15 +588,14 @@ where $x_i$ are the UMF molar amounts and $w_i$ are the Eppler effectiveness wei
 
 <p>Several important flux-related phenomena cannot be reduced to a single axis:</p>
 
-<dl class="description-list"><dt><strong>Eutectic Depression (“Cocktail Effect”)</strong></dt>
+<p><dl class="description-list"><dt><strong>Eutectic Depression (“Cocktail Effect”)</strong></dt>
 <dd>When multiple fluxes are combined, the system accesses multi-component eutectic compositions where the liquidus temperature is lower than any single-flux binary eutectic. This effect—captured qualitatively by Shannon entropy—is actually a function of <em>specific</em> flux combinations, not just count and evenness. The K<sub>2</sub>O–CaO–SiO<sub>2</sub> ternary has different eutectics than Na<sub>2</sub>O–CaO–SiO<sub>2</sub>. A future flux toolkit should compute eutectic depression from multi-component phase diagram data.</dd>
 <dt><strong>Boron Ambiguity</strong></dt>
 <dd>B<sub>2</sub>O<sub>3</sub> is classified as a glass former in Dietzel's scheme (field strength 1.34), but at levels above ∼0.3 moles it increasingly acts as a flux, lowering viscosity and melting temperature. The “boron anomaly”—the transition of B<sup>3+</sup> from trigonal to tetrahedral coordination depending on alkali content—means that boron's flux-versus-former character depends on the alkali content. Current flux metrics either include or exclude B<sub>2</sub>O<sub>3</sub> entirely; the reality is that its flux contribution is a smooth function of the surrounding composition.</dd>
 <dt><strong>Volatilisation Losses</strong></dt>
-<dd>Na<sub>2</sub>O, K<sub>2</sub>O, B<sub>2</sub>O<sub>3</sub>, PbO, and ZnO are volatile at high temperatures. The actual flux composition after firing differs from the input recipe. At cone&nbsp;10, a glaze can lose 5–15% of its soda and most of its boron. No current Z-axis accounts for this.</dd></dl>
+<dd>Na<sub>2</sub>O, K<sub>2</sub>O, B<sub>2</sub>O<sub>3</sub>, PbO, and ZnO are volatile at high temperatures. The actual flux composition after firing differs from the input recipe. At cone&nbsp;10, a glaze can lose 5–15% of its soda and most of its boron. No current Z-axis accounts for this.</dd></dl></p>
 
 <h2 id="flux-colorant-interactions" class="section-title">Flux-Colorant Interactions</h2>
-<a id="label-sec-colorant"></a>
 
 <p>The same colouring oxide in different flux systems can produce completely different colours, intensities, and optical effects. This is one of the most practically important—and least quantified—aspects of flux chemistry. A potter who changes the flux ratio to fix crazing may inadvertently destroy the colour they were trying to preserve.</p>
 
@@ -571,7 +613,7 @@ where $x_i$ are the UMF molar amounts and $w_i$ are the Eppler effectiveness wei
 
 <h3 id="critical-flux-colour-interactions" class="subsection-title">Critical Flux-Colour Interactions</h3>
 
-<h4 id="iron-in-calcium-vs-alkali-the-celadon-question" class="subsubsection-title">Iron in Calcium vs. Alkali: The Celadon Question</h4>
+<h4 class="subsubsection-title">Iron in Calcium vs. Alkali: The Celadon Question</h4>
 
 <p>The jade-green colour of celadon is not simply “iron in reduction.” It is specifically <em>Fe<sup>2+</sup> in a high-calcium, moderate-silica glass matrix.</em> The mechanism:</p>
 
@@ -579,7 +621,7 @@ where $x_i$ are the UMF molar amounts and $w_i$ are the Eppler effectiveness wei
 
 <p><strong>Atlas implication:</strong> A “celadon potential” axis could be defined as $f(\text{CaO}, \text{Fe}_2\text{O}_3, \text{atmosphere})$, predicting whether a given flux system will produce green vs. amber with iron.</p>
 
-<h4 id="copper-red-the-most-flux-sensitive-colour" class="subsubsection-title">Copper Red: The Most Flux-Sensitive Colour</h4>
+<h4 class="subsubsection-title">Copper Red: The Most Flux-Sensitive Colour</h4>
 
 <p>Copper-red glazes (sang de boeuf, oxblood, flambé) require Cu<sup>+</sup> nanoparticles (or Cu<sup>0</sup> colloids) suspended in the glass matrix. This is achieved only under reducing conditions with a narrow compositional window:</p>
 
@@ -587,7 +629,7 @@ where $x_i$ are the UMF molar amounts and $w_i$ are the Eppler effectiveness wei
 
 <p><strong>Atlas implication:</strong> “Copper red stability” could be a computed axis—a function of alkali content, boron, calcia, alumina, and the R<sub>2</sub>O:RO ratio.</p>
 
-<h4 id="the-zinc-chromium-problem" class="subsubsection-title">The Zinc-Chromium Problem</h4>
+<h4 class="subsubsection-title">The Zinc-Chromium Problem</h4>
 
 <p>When ZnO and Cr<sub>2</sub>O<sub>3</sub> coexist in a glaze, they form the spinel ZnCr<sub>2</sub>O<sub>4</sub>, which is brown. This overrides chromium's normal green colour completely. This is not a gradual shift—it is an abrupt compositional switch:</p>
 
@@ -604,13 +646,12 @@ where $x_i$ are the UMF molar amounts and $w_i$ are the Eppler effectiveness wei
 <p>This would be the first glaze calculator to predict <em>colour from chemistry</em>, moving beyond the current approach of “add cobalt for blue” intuitions.</p>
 
 <h2 id="what-you-should-be-able-to-do-proposed-flux-features" class="section-title">What You Should Be Able to Do — Proposed Flux Features</h2>
-<a id="label-sec-proposed"></a>
 
 <p>The existing 7 flux Z-axes provide a good foundation, but flux analysis could be vastly richer. This section proposes concrete features, ranked by implementation difficulty and user value.</p>
 
 <h3 id="tier-1-interactive-flux-ratio-controls-v3-6-4" class="subsection-title">Tier 1: Interactive Flux Ratio Controls (v3.6.4)</h3>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Planned for v3.6.4 — March 2026</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Planned for v3.6.4 — March 2026</div><div class="box-content">
 The most impactful addition is a set of <strong>interactive sliders</strong> that allow the user to adjust the flux distribution in real time and see the 3D property landscape update instantly.
 
 <p><strong>Core concept:</strong> Instead of switching between individual flux Z-axes one at a time, the user can:
@@ -619,22 +660,22 @@ The most impactful addition is a set of <strong>interactive sliders</strong> tha
 <p><strong>Implementation:</strong> Each data point's UMF is held constant on the Si-Al axes (the Stull grid) while the flux component is redistributed according to the slider positions. All 133 properties are recomputed on each slider movement. Since the property engine runs in $\lt  1$&nbsp;ms per point, this is feasible even for thousands of data points.
 </div></div></p>
 
-<h4 id="proposed-slider-architecture" class="subsubsection-title">Proposed Slider Architecture</h4>
+<h4 class="subsubsection-title">Proposed Slider Architecture</h4>
 
 <div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>#</strong></th><th><strong>Slider</strong></th><th><strong>What It Controls</strong></th><th><strong>Range</strong></th></tr><tr><td>1</td><td>Total Flux</td><td>$R_{\text{flux}}$ (fraction of total oxides)</td><td>0.10–0.50</td></tr><tr><td>2</td><td>Alkali:Earth</td><td>R<sub>2</sub>O:RO ratio</td><td>0:1 to 1:0</td></tr><tr><td>3</td><td>Na:K</td><td>Soda-potash split (within R<sub>2</sub>O)</td><td>0:1 to 1:0</td></tr><tr><td>4</td><td>Ca:Mg</td><td>Calcia-magnesia split (within RO)</td><td>0:1 to 1:0</td></tr><tr><td>5</td><td>Lithia</td><td>Li<sub>2</sub>O fraction of R<sub>2</sub>O</td><td>0%–30%</td></tr><tr><td>6</td><td>Zinc</td><td>ZnO fraction of RO</td><td>0%–30%</td></tr><tr><td>7</td><td>Barium</td><td>BaO fraction of RO</td><td>0%–30%</td></tr></table></div></div>
 
 <p><strong>Constraint system:</strong> Sliders must respect the unity-flux constraint ($\sum \text{fluxes} = 1.0$ in UMF). Adjusting one slider automatically redistributes the remaining flux proportionally. The system should provide visual feedback when an adjustment would push a minor flux to zero or when the total exceeds bounds.</p>
 
-<h4 id="slider-property-chain" class="subsubsection-title">Slider → Property Chain</h4>
+<h4 class="subsubsection-title">Slider → Property Chain</h4>
 
 <p>When the user moves a slider, the following cascade occurs:
 <ol><li>New flux vector $\mathbf{f} = [f_{\text{Li}}, f_{\text{Na}}, f_{\text{K}}, f_{\text{Ca}}, f_{\text{Mg}}, f_{\text{Ba}}, f_{\text{Sr}}, f_{\text{Zn}}, f_{\text{Pb}}]$ is computed from slider positions.</li><li>For each data point on the Stull grid, the UMF is updated: Si and Al are held constant, flux vector is replaced with $\mathbf{f}$.</li><li>All 133 properties are recomputed.</li><li>The 3D surface is re-rendered with the current Z-axis.</li><li>Info-ring colors update to reflect new property values.</li></ol></p>
 
-<p>Total computation: $N_{\text{points}} \times 133 \times O(1)$ per point ≈ 5,000 × 0.5&nbsp;ms ≈ 2.5&nbsp;s per slider update. This may need optimisation (only recompute flux-dependent properties, cache Si/Al-dependent results).</p>
+<p>Total computation: $N_{\text{points}} \times 133 \times O(1)$ per point ≈ 5,000 × 0.5&nbsp; ≈ 2.5&nbsp;s per slider update. This may need optimisation (only recompute flux-dependent properties, cache Si/Al-dependent results).</p>
 
 <h3 id="tier-2-flux-substitution-paths" class="subsection-title">Tier 2: Flux Substitution Paths</h3>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Proposed Feature</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Proposed Feature</div><div class="box-content">
 <strong>Flux Substitution Path</strong> — trace the effect of swapping one flux for another while holding everything else constant.
 
 <p><strong>Concept:</strong> The user selects a source flux (e.g., Na<sub>2</sub>O) and a target flux (e.g., CaO) and a substitution range (e.g., 0% to 100% replacement). The atlas walks along the substitution line, computing all 133 properties at each step, and renders:
@@ -651,7 +692,7 @@ where $\mathbf{e}_i$ is the unit vector for oxide $i$ and $s$ is the molar amoun
 
 <h3 id="tier-3-flux-fingerprinting" class="subsection-title">Tier 3: Flux Fingerprinting</h3>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Proposed Feature</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Proposed Feature</div><div class="box-content">
 <strong>Flux Fingerprint</strong> — a radar/spider chart showing the 10-dimensional flux distribution of any selected glaze, with overlays for comparison and archetype templates.
 
 <p><strong>Components:</strong>
@@ -661,7 +702,7 @@ where $\mathbf{e}_i$ is the unit vector for oxide $i$ and $s$ is the molar amoun
 
 <h3 id="tier-4-flux-interaction-map" class="subsection-title">Tier 4: Flux Interaction Map</h3>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Proposed Feature</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Proposed Feature</div><div class="box-content">
 <strong>Flux Interaction Heatmap</strong> — a matrix showing pairwise synergy/antagonism between fluxes for a specific property.
 
 <p><strong>Concept:</strong> For a chosen property $P$ (e.g., COE), compute the second-order interaction term for every flux pair:
@@ -677,7 +718,7 @@ where $\mathbf{e}_i$ is the unit vector for oxide $i$ and $s$ is the molar amoun
 
 <h3 id="tier-5-flux-aware-recipe-optimisation" class="subsection-title">Tier 5: Flux-Aware Recipe Optimisation</h3>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Proposed Feature</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Proposed Feature</div><div class="box-content">
 <strong>Flux Optimiser</strong> — given target values for multiple properties, find the optimal flux distribution.
 
 <p><strong>Concept:</strong> The user specifies constraints:
@@ -686,7 +727,7 @@ where $\mathbf{e}_i$ is the unit vector for oxide $i$ and $s$ is the molar amoun
 <p>The optimiser searches the 9-dimensional flux simplex (10 fluxes, summing to 1.0) for distributions that satisfy all constraints while minimising a user-selected objective (e.g., maximise entropy, minimise cost, minimise toxicity).</p>
 
 <p><strong>Algorithm:</strong> Constrained optimisation on the flux simplex:
-<div class="math-display">\begin{align}
+<div class="math-display">\[\begin{aligned}
     \min_{\mathbf{f} \in \Delta^9} \quad & -H(\mathbf{f}) \quad\text{(maximise diversity)}  \\
     \text{subject to} \quad
     & \alpha(\mathbf{f}) \lt  \alpha_{\max}  \\
@@ -694,14 +735,14 @@ where $\mathbf{e}_i$ is the unit vector for oxide $i$ and $s$ is the molar amoun
     & \text{FoodSafety}(\mathbf{f}) \gt  S_{\min}  \\
     & \text{Matteness}(\mathbf{f}) \gt  M_{\min}  \\
     & f_i \geq 0 \;\forall\, i, \quad \sum_i f_i = 1.0 
-\end{align}</div></p>
+\end{aligned}\]</div></p>
 
 <p>where $\Delta^9$ is the 9-simplex (the set of all valid flux distributions). This is a non-linear constrained optimisation problem solvable by sequential quadratic programming (SQP) or interior-point methods. Since all property functions are smooth and fast to evaluate, convergence is typically reached in $\lt  100$ iterations.
 </div></div></p>
 
 <h3 id="tier-6-volatilisation-corrected-flux" class="subsection-title">Tier 6: Volatilisation-Corrected Flux</h3>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Proposed Feature</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Proposed Feature</div><div class="box-content">
 <strong>Post-Firing Flux Correction</strong> — estimate the actual flux composition after volatile losses.
 
 <p>Volatile oxides lose mass during firing, especially at high temperatures and with extended soaks. A volatilisation model would estimate the <em>actual</em> flux composition in the fired glass, enabling more accurate property predictions for high-fire work.</p>
@@ -713,7 +754,6 @@ where $\mathbf{e}_i$ is the unit vector for oxide $i$ and $s$ is the molar amoun
 </div></div></p>
 
 <h2 id="flux-ratio-design-patterns" class="section-title">Flux Ratio Design Patterns</h2>
-<a id="label-sec-design-patterns"></a>
 
 <p>This section provides practical recipes for common glaze-development tasks expressed as flux-ratio manipulations.</p>
 
@@ -726,11 +766,11 @@ where $\mathbf{e}_i$ is the unit vector for oxide $i$ and $s$ is the molar amoun
 <p><strong>Fix sequence (in order of impact):</strong>
 <ol><li><strong>Add silica:</strong> Increase SiO<sub>2</sub> by 0.2–0.5 in UMF. This is the most powerful single fix because silica has the lowest Appen expansion factor ($\alpha = 0.5$) and simultaneously stiffens the glass.</li><li><strong>Reduce soda:</strong> Drop Na<sub>2</sub>O by 0.05–0.10. Each 0.05 moles removed saves ∼2 units of COE.</li><li><strong>Replace soda with potash:</strong> Invoke the Mixed Alkali Effect. A 50:50 Na:K split gives maximum expansion suppression.</li><li><strong>Add magnesia:</strong> Replace some calcia with MgO. Each 0.10 moles substituted saves ∼1.2 units of COE.</li><li><strong>The lithia trick:</strong> Replace 0.10 Na<sub>2</sub>O with 0.02 Li<sub>2</sub>O. Equivalent flux power, 3 units less COE.</li></ol></p>
 
-<div class="styled-box examplebox" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Craze Fix Worked Example</div><div class="box-content">
-Starting glaze UMF (crazing): Na<sub>2</sub>O 0.35, K<sub>2</sub>O 0.05, CaO 0.50, MgO 0.10.<br>
+<div class="styled-box example-box" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Craze Fix Worked Example</div><div class="box-content">
+Starting glaze UMF (crazing): Na<sub>2</sub>O 0.35, K<sub>2</sub>O 0.05, CaO 0.50, MgO 0.10.\\
 COE $\approx 8.1 \times 10^{-6}$ (body = 7.5). Stress = $-25$&nbsp;MPa (tension).
 
-<p><strong>After fix:</strong> Na<sub>2</sub>O 0.15, K<sub>2</sub>O 0.15, Li<sub>2</sub>O 0.05, CaO 0.40, MgO 0.20, ZnO 0.05.<br>
+<p><strong>After fix:</strong> Na<sub>2</sub>O 0.15, K<sub>2</sub>O 0.15, Li<sub>2</sub>O 0.05, CaO 0.40, MgO 0.20, ZnO 0.05.\\
 COE $\approx 5.8 \times 10^{-6}$. Stress = $+60$&nbsp;MPa (compression). Shannon $H = 1.67$ (up from 0.95).</p>
 
 <p>The fix achieved three things simultaneously: eliminated crazing, increased flux diversity (wider firing range), and improved chemical durability (less alkali).
@@ -771,7 +811,6 @@ COE $\approx 5.8 \times 10^{-6}$. Stress = $+60$&nbsp;MPa (compression). Shannon
 <p>The atlas's crystal window, devitrification index, and Hrubý parameter provide real-time feedback on each adjustment.</p>
 
 <h2 id="raw-materials-amp-flux-delivery-constraints" class="section-title">Raw Materials &amp; Flux Delivery Constraints</h2>
-<a id="label-sec-materials"></a>
 
 <p>UMF analysis treats each oxide as an independent variable—a dial you can turn freely. Real batch formulation is nothing like this. Raw materials deliver fluxes in <em>locked ratios</em> determined by their crystal structure. Understanding these delivery constraints is essential for translating flux-ratio targets into actual recipes.</p>
 
@@ -785,7 +824,7 @@ COE $\approx 5.8 \times 10^{-6}$. Stress = $+60$&nbsp;MPa (compression). Shannon
 
 <h3 id="implications-for-flux-ratio-design" class="subsection-title">Implications for Flux Ratio Design</h3>
 
-<div class="styled-box warnbox" style="border-left-color:#EF4444"><div class="box-title" style="color:#EF4444">⚠️ The Feldspar Constraint</div><div class="box-content">
+<div class="styled-box warn-box" style="border-left-color:#EF4444"><div class="box-title" style="color:#EF4444">⚠️ The Feldspar Constraint</div><div class="box-content">
 <strong>You cannot add soda without adding alumina and silica.</strong> If a glaze recipe uses soda feldspar as the Na<sub>2</sub>O source, increasing Na<sub>2</sub>O by 0.10 also increases Al<sub>2</sub>O<sub>3</sub> by 0.10 and SiO<sub>2</sub> by 0.60. This means the Si:Al ratio, the flux ratio, and the total oxide count all change simultaneously. UMF adjustments that look simple (“just add 0.10 Na<sub>2</sub>O”) are actually three-dimensional moves in composition space.
 
 <p>The same constraint applies to potash feldspar and spodumene. The only way to add pure alkali without alumina or silica is to use soda ash (Na<sub>2</sub>CO<sub>3</sub>), potassium carbonate, or lithium carbonate—reactive materials that can cause drying/mixing problems in raw glazes.
@@ -797,14 +836,13 @@ COE $\approx 5.8 \times 10^{-6}$. Stress = $+60$&nbsp;MPa (compression). Shannon
 
 <h3 id="proposed-material-aware-flux-optimiser" class="subsection-title">Proposed: Material-Aware Flux Optimiser</h3>
 
-<p>A truly useful flux optimiser (see §<a href="#label-sec-proposed" class="ref-link">sec:proposed</a>) should operate in <em>batch space</em>, not just UMF space:</p>
+<p>A truly useful flux optimiser (see §[sec:proposed]) should operate in <em>batch space</em>, not just UMF space:</p>
 
 <ol><li>Accept a target flux vector in UMF.</li><li>Accept a list of available raw materials (with their known UMF delivery formulas).</li><li>Solve the linear system for the batch recipe that most closely achieves the target UMF.</li><li>Report which flux targets are achievable with the available materials and which require substitutions or additions.</li><li>Flag <em>delivery conflicts</em>: cases where achieving the target flux requires impossible material combinations (e.g., Ca:Mg = 5:1 but only dolomite is available for Mg).</li></ol>
 
 <p>This bridges the gap between the idealised UMF world (where all oxides are independent) and the constrained reality of the materials shelf.</p>
 
 <h2 id="flux-operating-windows-by-cone-range" class="section-title">Flux Operating Windows by Cone Range</h2>
-<a id="label-sec-windows"></a>
 
 <p>The safe operating range for each flux depends strongly on firing temperature. A flux that is inert at cone&nbsp;06 may be the primary melter at cone&nbsp;10. This section provides concrete UMF limits by cone range.</p>
 
@@ -834,14 +872,13 @@ COE $\approx 5.8 \times 10^{-6}$. Stress = $+60$&nbsp;MPa (compression). Shannon
 
 <h3 id="the-temperature-flux-phase-diagram" class="subsection-title">The Temperature-Flux Phase Diagram</h3>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Proposed Visualisation</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Proposed Visualisation</div><div class="box-content">
 Imagine a heatmap where the X-axis is firing temperature (cone 06 to cone 12), the Y-axis is each flux oxide, and the colour intensity shows that oxide's fluxing effectiveness at that temperature. This would reveal:
 <ul><li>The <strong>crossover point</strong> where calcia overtakes soda as the primary flux (∼ cone 2–4).</li><li>The <strong>magnesia activation temperature</strong> where MgO transitions from inert to active (∼ cone 4–6).</li><li>The <strong>boron fade zone</strong> where volatilisation losses exceed fluxing benefit (∼ cone 8–10).</li><li>The <strong>alkali volatility cliff</strong> where soda begins significant evaporation (∼ cone 9–10).</li></ul>
 This visualisation does not currently exist in any ceramic software.
 </div></div>
 
 <h2 id="defect-diagnosis-amp-flux-based-fixes" class="section-title">Defect Diagnosis &amp; Flux-Based Fixes</h2>
-<a id="label-sec-defects"></a>
 
 <p>Glaze defects are the potter's daily reality. Most defects have flux-related causes, and most can be fixed by targeted flux adjustments. This section provides a systematic diagnostic table.</p>
 
@@ -849,7 +886,7 @@ This visualisation does not currently exist in any ceramic software.
 
 <div class="centered">
 
-<div class="table-wrapper"><table class="styled-table"><tr><th><strong>Defect</strong></th><th><strong>Likely Flux Cause</strong></th><th><strong>Flux Fix</strong></th></tr><tr><td><strong>Crazing</strong> (network of fine cracks)</td><td>Glaze COE</td><td>gt; body COE. Too much alkali (especially Na<sub>2</sub>O).</td><td>Reduce Na<sub>2</sub>O, replace with K<sub>2</sub>O (MAE) or MgO (low α). Add silica. The lithia trick.</td></tr><tr><td><strong>Shivering / Chipping</strong> (glaze flakes off)</td><td>Glaze COE ≪ body COE. Excessive compression. Too much MgO or SiO<sub>2</sub>.</td><td>Increase alkali slightly. Reduce MgO. Reduce SiO<sub>2</sub> by 0.3–0.5.</td></tr><tr><td><strong>Running / Dripping</strong> (glaze flows off vertical surfaces)</td><td>Too fluid at peak temperature. Excessive Na<sub>2</sub>O, Li<sub>2</sub>O, or PbO. Low viscosity.</td><td>Increase CaO or MgO (stiffer earths). Add Al<sub>2</sub>O<sub>3</sub>. Reduce Na<sub>2</sub>O or Li<sub>2</sub>O. Fire lower.</td></tr><tr><td><strong>Crawling / Beading</strong> (glaze pulls away from body)</td><td>High surface tension combined with poor body adhesion. Can be caused by high MgO or high CaO without enough alkali.</td><td>Add small amount of alkali (Na<sub>2</sub>O 0.05–0.10) to reduce surface tension. Reduce MgO if $\gt  0.30$.</td></tr><tr><td><strong>Pinholing</strong> (small holes from trapped gas)</td><td>Glaze too viscous to heal before cooling begins. Often high MgO or low total flux.</td><td>Increase total flux ($R_{\text{flux}}$). Add Na<sub>2</sub>O or Li<sub>2</sub>O for fluidity. Extend soak time.</td></tr><tr><td><strong>Blistering / Bloating</strong> (large bubbles)</td><td>Glaze too fluid too early; gases generated during flux decomposition (carbonates).</td><td>Slow the ramp through 600–900&nbsp;°C. Reduce carbonate sources. Switch to wollastonite (no CO<sub>2</sub> release).</td></tr><tr><td><strong>Dry / Rough surface</strong></td><td>Under-fluxed. $R_{\text{flux}} \lt  0.15$. High MgO without co-flux.</td><td>Increase total flux. Add Li<sub>2</sub>O or Na<sub>2</sub>O as a “booster.”</td></tr><tr><td><strong>Orange peel texture</strong></td><td>Moderate under-fluxing or high viscosity at peak. Often high K<sub>2</sub>O without co-flux.</td><td>Increase fluidity: add Li<sub>2</sub>O or increase Na<sub>2</sub>O. Extend soak.</td></tr><tr><td><strong>Leaching / Food-safety failure</strong></td><td>High alkali ($\text{R}_2\text{O} \gt  0.35$). Barium or lead present. Poor glass network.</td><td>Reduce R<sub>2</sub>O:RO ratio. Increase CaO and Al<sub>2</sub>O<sub>3</sub>. Eliminate BaO and PbO. Increase SiO<sub>2</sub>.</td></tr><tr><td><strong>Unexpected colour shift</strong></td><td>Flux change altered the ligand field around the colourant (see sec:colorant).</td><td>Identify the flux-colorant interaction. Adjust the specific oxide responsible (e.g., remove ZnO if Cr turned brown).</td></tr><tr><td><strong>Devitrification (unwanted crystals)</strong></td><td>Excessive CaO ($\gt  0.55$), MgO ($\gt  0.25$), or ZnO ($\gt  0.20$) with slow cooling.</td><td>Reduce the crystallising flux. Add alkali (“crystal poison”). Speed cooling through $900\;\text{°C}–700\;\text{°C}$.</td></tr></table></div></div>
+<div class="table-wrapper"><table class="styled-table"><tr><th><strong>Defect</strong></th><th><strong>Likely Flux Cause</strong></th><th><strong>Flux Fix</strong></th></tr><tr><td><strong>Crazing</strong> (network of fine cracks)</td><td>Glaze COE</td><td>gt; body COE. Too much alkali (especially Na<sub>2</sub>O).</td><td>Reduce Na<sub>2</sub>O, replace with K<sub>2</sub>O (MAE) or MgO (low $\alpha$). Add silica. The lithia trick.</td></tr><tr><td><strong>Shivering / Chipping</strong> (glaze flakes off)</td><td>Glaze COE ≪ body COE. Excessive compression. Too much MgO or SiO<sub>2</sub>.</td><td>Increase alkali slightly. Reduce MgO. Reduce SiO<sub>2</sub> by 0.3–0.5.</td></tr><tr><td><strong>Running / Dripping</strong> (glaze flows off vertical surfaces)</td><td>Too fluid at peak temperature. Excessive Na<sub>2</sub>O, Li<sub>2</sub>O, or PbO. Low viscosity.</td><td>Increase CaO or MgO (stiffer earths). Add Al<sub>2</sub>O<sub>3</sub>. Reduce Na<sub>2</sub>O or Li<sub>2</sub>O. Fire lower.</td></tr><tr><td><strong>Crawling / Beading</strong> (glaze pulls away from body)</td><td>High surface tension combined with poor body adhesion. Can be caused by high MgO or high CaO without enough alkali.</td><td>Add small amount of alkali (Na<sub>2</sub>O 0.05–0.10) to reduce surface tension. Reduce MgO if $\gt  0.30$.</td></tr><tr><td><strong>Pinholing</strong> (small holes from trapped gas)</td><td>Glaze too viscous to heal before cooling begins. Often high MgO or low total flux.</td><td>Increase total flux ($R_{\text{flux}}$). Add Na<sub>2</sub>O or Li<sub>2</sub>O for fluidity. Extend soak time.</td></tr><tr><td><strong>Blistering / Bloating</strong> (large bubbles)</td><td>Glaze too fluid too early; gases generated during flux decomposition (carbonates).</td><td>Slow the ramp through 600–900&nbsp;°C. Reduce carbonate sources. Switch to wollastonite (no CO<sub>2</sub> release).</td></tr><tr><td><strong>Dry / Rough surface</strong></td><td>Under-fluxed. $R_{\text{flux}} \lt  0.15$. High MgO without co-flux.</td><td>Increase total flux. Add Li<sub>2</sub>O or Na<sub>2</sub>O as a “booster.”</td></tr><tr><td><strong>Orange peel texture</strong></td><td>Moderate under-fluxing or high viscosity at peak. Often high K<sub>2</sub>O without co-flux.</td><td>Increase fluidity: add Li<sub>2</sub>O or increase Na<sub>2</sub>O. Extend soak.</td></tr><tr><td><strong>Leaching / Food-safety failure</strong></td><td>High alkali ($\text{R}_2\text{O} \gt  0.35$). Barium or lead present. Poor glass network.</td><td>Reduce R<sub>2</sub>O:RO ratio. Increase CaO and Al<sub>2</sub>O<sub>3</sub>. Eliminate BaO and PbO. Increase SiO<sub>2</sub>.</td></tr><tr><td><strong>Unexpected colour shift</strong></td><td>Flux change altered the ligand field around the colourant (see [sec:colorant]).</td><td>Identify the flux-colorant interaction. Adjust the specific oxide responsible (e.g., remove ZnO if Cr turned brown).</td></tr><tr><td><strong>Devitrification (unwanted crystals)</strong></td><td>Excessive CaO ($\gt  0.55$), MgO ($\gt  0.25$), or ZnO ($\gt  0.20$) with slow cooling.</td><td>Reduce the crystallising flux. Add alkali (“crystal poison”). Speed cooling through $900\;\text{°C}–700\;\text{°C}$.</td></tr></table></div></div>
 
 <h3 id="the-defect-triangle" class="subsection-title">The Defect Triangle</h3>
 
@@ -860,16 +897,15 @@ This visualisation does not currently exist in any ceramic software.
 <p>The atlas's Z-axes map directly onto this triangle: $R_{\text{flux}}$ captures the too-much/too-little axis; the 6 remaining flux axes plus Shannon entropy capture the “wrong flux” dimension. A defect-diagnostic mode could highlight which Z-axes are in their danger zones for the currently selected composition.</p>
 
 <h2 id="famous-glazes-dissected" class="section-title">Famous Glazes Dissected</h2>
-<a id="label-sec-famous"></a>
 
 <p>Theory becomes tangible when applied to real glazes. This section takes iconic glaze types, presents their typical flux fingerprints, and explains <em>why</em> those particular flux distributions produce the effects they are famous for.</p>
 
 <h3 id="celadon-chinese-amp-korean" class="subsection-title">Celadon (Chinese &amp; Korean)</h3>
 
-<div class="styled-box examplebox" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Celadon Flux Profile</div><div class="box-content">
+<div class="styled-box example-box" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Celadon Flux Profile</div><div class="box-content">
 <div class="table-wrapper"><table class="styled-table"><tr><th><strong>Type:</strong> High-fire reduction stoneware</th><th><strong>Cone:</strong> 9–11</th></tr></table></div>
 
-<p><strong>Typical UMF:</strong> K<sub>2</sub>O 0.15–0.25, Na<sub>2</sub>O 0.05–0.10, CaO 0.50–0.65, MgO 0.05–0.10.<br>
+<p><strong>Typical UMF:</strong> K<sub>2</sub>O 0.15–0.25, Na<sub>2</sub>O 0.05–0.10, CaO 0.50–0.65, MgO 0.05–0.10.\\
 $R_{\text{flux}} \approx 0.22–0.28$. R<sub>2</sub>O:RO $\approx 0.30–0.45$. H $\approx 1.0–1.3$.</p>
 
 <p><strong>Why it works:</strong>
@@ -878,10 +914,10 @@ $R_{\text{flux}} \approx 0.22–0.28$. R<sub>2</sub>O:RO $\approx 0.30–0.45$. 
 
 <h3 id="tenmoku-chinese-hare-s-fur-oil-spot" class="subsection-title">Tenmoku (Chinese “Hare's Fur” / “Oil Spot”)</h3>
 
-<div class="styled-box examplebox" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Tenmoku Flux Profile</div><div class="box-content">
+<div class="styled-box example-box" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Tenmoku Flux Profile</div><div class="box-content">
 <div class="table-wrapper"><table class="styled-table"><tr><th><strong>Type:</strong> High-fire reduction iron glaze</th><th><strong>Cone:</strong> 9–12</th></tr></table></div>
 
-<p><strong>Typical UMF:</strong> K<sub>2</sub>O 0.20–0.30, CaO 0.50–0.65, MgO 0.05–0.15.<br>
+<p><strong>Typical UMF:</strong> K<sub>2</sub>O 0.20–0.30, CaO 0.50–0.65, MgO 0.05–0.15.\\
 Iron content: 8–12% Fe<sub>2</sub>O<sub>3</sub>. $R_{\text{flux}} \approx 0.25–0.30$.</p>
 
 <p><strong>Why it works:</strong>
@@ -890,10 +926,10 @@ Iron content: 8–12% Fe<sub>2</sub>O<sub>3</sub>. $R_{\text{flux}} \approx 0.25
 
 <h3 id="shino-japanese" class="subsection-title">Shino (Japanese)</h3>
 
-<div class="styled-box examplebox" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Shino Flux Profile</div><div class="box-content">
+<div class="styled-box example-box" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Shino Flux Profile</div><div class="box-content">
 <div class="table-wrapper"><table class="styled-table"><tr><th><strong>Type:</strong> Extreme-alkali stoneware</th><th><strong>Cone:</strong> 8–10</th></tr></table></div>
 
-<p><strong>Typical UMF:</strong> Na<sub>2</sub>O 0.30–0.50, K<sub>2</sub>O 0.15–0.30, CaO 0.05–0.15, MgO 0.00–0.05.<br>
+<p><strong>Typical UMF:</strong> Na<sub>2</sub>O 0.30–0.50, K<sub>2</sub>O 0.15–0.30, CaO 0.05–0.15, MgO 0.00–0.05.\\
 R<sub>2</sub>O:RO $\approx 2.5–6.0$ (extreme alkali dominance). H $\approx 0.7–1.1$.</p>
 
 <p><strong>Why it works (and why it's fragile):</strong>
@@ -902,10 +938,10 @@ R<sub>2</sub>O:RO $\approx 2.5–6.0$ (extreme alkali dominance). H $\approx 0.7
 
 <h3 id="crystal-glaze-zinc-willemite" class="subsection-title">Crystal Glaze (Zinc-Willemite)</h3>
 
-<div class="styled-box examplebox" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Crystal Glaze Flux Profile</div><div class="box-content">
+<div class="styled-box example-box" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Crystal Glaze Flux Profile</div><div class="box-content">
 <div class="table-wrapper"><table class="styled-table"><tr><th><strong>Type:</strong> Zinc crystal growth on fluid base</th><th><strong>Cone:</strong> 8–10</th></tr></table></div>
 
-<p><strong>Typical UMF:</strong> Na<sub>2</sub>O 0.25–0.40, Li<sub>2</sub>O 0.00–0.10, CaO 0.10–0.20, ZnO 0.20–0.35.<br>
+<p><strong>Typical UMF:</strong> Na<sub>2</sub>O 0.25–0.40, Li<sub>2</sub>O 0.00–0.10, CaO 0.10–0.20, ZnO 0.20–0.35.\\
 No alumina ($\AlO \approx 0.0–0.05$). Very high silica ($\SiO\ 4.0–6.0$).</p>
 
 <p><strong>Why it works:</strong>
@@ -914,10 +950,10 @@ No alumina ($\AlO \approx 0.0–0.05$). Very high silica ($\SiO\ 4.0–6.0$).</p
 
 <h3 id="ch-n-jun-blue-song-dynasty" class="subsection-title">Chün / Jun Blue (Song Dynasty)</h3>
 
-<div class="styled-box examplebox" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Jun Blue Flux Profile</div><div class="box-content">
+<div class="styled-box example-box" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Jun Blue Flux Profile</div><div class="box-content">
 <div class="table-wrapper"><table class="styled-table"><tr><th><strong>Type:</strong> Opalescent blue via phase separation</th><th><strong>Cone:</strong> 9–11</th></tr></table></div>
 
-<p><strong>Typical UMF:</strong> CaO 0.50–0.60, K<sub>2</sub>O 0.15–0.25, Na<sub>2</sub>O 0.05–0.10, MgO 0.05–0.10.<br>
+<p><strong>Typical UMF:</strong> CaO 0.50–0.60, K<sub>2</sub>O 0.15–0.25, Na<sub>2</sub>O 0.05–0.10, MgO 0.05–0.10.\\
 Plus $\PO \approx 0.03–0.08$ (from bone ash). Low $\AlO \approx 0.10–0.15$.</p>
 
 <p><strong>Why it works:</strong>
@@ -926,10 +962,10 @@ Plus $\PO \approx 0.03–0.08$ (from bone ash). Low $\AlO \approx 0.10–0.15$.<
 
 <h3 id="wood-ash-iga-shigaraki-style" class="subsection-title">Wood Ash (Iga / Shigaraki Style)</h3>
 
-<div class="styled-box examplebox" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Natural Wood Ash Flux Profile</div><div class="box-content">
+<div class="styled-box example-box" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Natural Wood Ash Flux Profile</div><div class="box-content">
 <div class="table-wrapper"><table class="styled-table"><tr><th><strong>Type:</strong> Accidental/natural high-fire ash glaze</th><th><strong>Cone:</strong> 10–13</th></tr></table></div>
 
-<p><strong>Typical UMF (mixed hardwood ash):</strong> CaO 0.45–0.60, K<sub>2</sub>O 0.10–0.20, MgO 0.05–0.15, Na<sub>2</sub>O 0.05–0.10, P<sub>2</sub>O<sub>5</sub> 0.03–0.10.<br>
+<p><strong>Typical UMF (mixed hardwood ash):</strong> CaO 0.45–0.60, K<sub>2</sub>O 0.10–0.20, MgO 0.05–0.15, Na<sub>2</sub>O 0.05–0.10, P<sub>2</sub>O<sub>5</sub> 0.03–0.10.\\
 $H \approx 1.3–1.6$ (moderate-high entropy from natural multi-flux delivery).</p>
 
 <p><strong>Why it works:</strong>
@@ -937,7 +973,6 @@ $H \approx 1.3–1.6$ (moderate-high entropy from natural multi-flux delivery).<
 </div></div></p>
 
 <h2 id="the-flux-simplex-a-mathematical-perspective" class="section-title">The Flux Simplex — A Mathematical Perspective</h2>
-<a id="label-sec-simplex"></a>
 
 <h3 id="compositional-data-on-the-simplex" class="subsection-title">Compositional Data on the Simplex</h3>
 
@@ -946,15 +981,15 @@ $H \approx 1.3–1.6$ (moderate-high entropy from natural multi-flux delivery).<
 <p>This has profound mathematical implications:</p>
 
 <ol><li><strong>Euclidean distances are misleading.</strong> Two compositions $\mathbf{f}$ and $\mathbf{g}$ that look close in Euclidean space may be compositionally very different when viewed on the simplex. The proper distance metric is the <em>Aitchison distance</em>:
-    <div class="math-display">\begin{equation}
+    <div class="math-display">\[
         d_A(\mathbf{f}, \mathbf{g}) = \left\| \text{clr}(\mathbf{f}) - \text{clr}(\mathbf{g}) \right\|_2
-        \label{eq:aitchison}
-    \end{equation}</div>
-    where $\text{clr}(\mathbf{f})$ is the centred log-ratio transform: $\text{clr}(f_i) = \ln(f_i / g_m(\mathbf{f}))$, and $g_m$ is the geometric mean.</li><li><strong>Linear interpolation on the simplex is not straight-line interpolation.</strong> The Walk feature's UMF interpolation (Eq.&nbsp;\ref{eq:interpolation}) works because it operates on unnormalised oxide amounts. But if we want to interpolate <em>within</em> the flux distribution (holding total flux constant), the geometrically correct interpolation uses the <em>power mean</em> (perturbation) in the simplex:
-    <div class="math-display">\begin{equation}
+        
+    \]</div>
+    where $\text{clr}(\mathbf{f})$ is the centred log-ratio transform: $\text{clr}(f_i) = \ln(f_i / g_m(\mathbf{f}))$, and $g_m$ is the geometric mean.</li><li><strong>Linear interpolation on the simplex is not straight-line interpolation.</strong> The Walk feature's UMF interpolation (Eq.&nbsp;[eq:interpolation]) works because it operates on unnormalised oxide amounts. But if we want to interpolate <em>within</em> the flux distribution (holding total flux constant), the geometrically correct interpolation uses the <em>power mean</em> (perturbation) in the simplex:
+    <div class="math-display">\[
         \mathbf{f}(t) = \mathcal{C}\!\left[\mathbf{f}_A^{1-t} \odot \mathbf{f}_B^{t}\right]
-        \label{eq:simplex_interp}
-    \end{equation}</div>
+        
+    \]</div>
     where $\mathcal{C}[\cdot]$ is the closure operator (normalise to sum 1) and $\odot$ denotes component-wise operations.</li><li><strong>PCA on compositional data requires ILR/CLR transforms.</strong> Standard PCA on raw flux proportions produces spurious correlations because of the closure constraint. To discover the true variance structure of flux distributions across a database of glazes, the data must first be transformed to ILR (isometric log-ratio) coordinates, as developed by Aitchison (1986) and Egozcue et al. (2003).</li></ol>
 
 <h3 id="why-this-matters-for-the-atlas" class="subsection-title">Why This Matters for the Atlas</h3>
@@ -964,7 +999,6 @@ $H \approx 1.3–1.6$ (moderate-high entropy from natural multi-flux delivery).<
 <p><strong>Planned implementation (v4.0):</strong> The Compositional Data Analysis (CoDA) module will introduce ILR/CLR transforms, Aitchison distance, and simplex-aware interpolation for flux analysis.</p>
 
 <h2 id="advanced-flux-topics" class="section-title">Advanced Flux Topics</h2>
-<a id="label-sec-advanced"></a>
 
 <h3 id="the-boron-problem" class="subsection-title">The Boron Problem</h3>
 
@@ -1009,7 +1043,6 @@ where $(x)^+ = \max(0, x)$. This assigns zero flux character to boron when alkal
 <p><div class="math-display">\[R_{\text{flux,eff}} = \frac{\sum \text{fluxes} - \sum \text{R}_2\text{O}}{\text{total oxides}} \quad \text{when ASI} \gt  1\]</div></p>
 
 <h2 id="phase-separation-amp-immiscibility" class="section-title">Phase Separation &amp; Immiscibility</h2>
-<a id="label-sec-phase-sep"></a>
 
 <p>Not every molten glaze is a single homogeneous liquid.  Under certain flux distributions, the melt spontaneously separates into two (or more) coexisting liquid phases that differ in composition and physical properties.  This phenomenon—<em>liquid–liquid immiscibility</em>—is the engine behind some of the most prized visual effects in ceramic history. It is also the source of some of the most baffling defects.</p>
 
@@ -1033,13 +1066,13 @@ where $(x)^+ = \max(0, x)$. This assigns zero flux character to boron when alkal
 
 <h3 id="the-jun-blue-mechanism-in-detail" class="subsection-title">The Jun Blue Mechanism in Detail</h3>
 
-<p>Jun blue (Chün blue) is the paradigmatic case.  The flux fingerprint<br> (CaO $\approx 0.55$, K<sub>2</sub>O $\approx 0.20$, P<sub>2</sub>O<sub>5</sub> $\approx 0.05$, low Al<sub>2</sub>O<sub>3</sub>) places the composition inside the CaO–SiO<sub>2</sub>–P<sub>2</sub>O<sub>5</sub> immiscibility dome.  On cooling through approximately 1150&nbsp;°C–950&nbsp;°C, spinodal decomposition produces two interpenetrating phases:</p>
+<p>Jun blue (Chün blue) is the paradigmatic case.  The flux fingerprint\linebreak (CaO $\approx 0.55$, K<sub>2</sub>O $\approx 0.20$, P<sub>2</sub>O<sub>5</sub> $\approx 0.05$, low Al<sub>2</sub>O<sub>3</sub>) places the composition inside the CaO–SiO<sub>2</sub>–P<sub>2</sub>O<sub>5</sub> immiscibility dome.  On cooling through approximately 1150&nbsp;°C–950&nbsp;°C, spinodal decomposition produces two interpenetrating phases:</p>
 
 <ul><li>A <strong>phosphorus-rich, calcium-rich</strong> high-index phase forming droplets of $\sim 50–200$&nbsp;nm diameter.</li><li>A <strong>silica-rich, alkali-rich</strong> low-index continuous matrix.</li></ul>
 
 <p>The refractive-index contrast between phases, combined with the nanoscale droplet size, produces <strong>Rayleigh scattering</strong>: short wavelengths (blue/violet) scatter far more than long wavelengths (red).  The transmitted light appears warm amber-pink; the scattered light appears blue.  No colourant is needed—the colour is entirely structural.</p>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Controlling Jun Blue via Flux Ratios</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Controlling Jun Blue via Flux Ratios</div><div class="box-content">
 The blue intensity is controlled by three atlas-measurable parameters:
 <ol><li><strong>Phosphorus content:</strong> Must be $\gt 0.03$ UMF to enter the immiscibility dome. Increasing P<sub>2</sub>O<sub>5</sub> intensifies the blue up to $\sim 0.08$, above which the glaze becomes milky-white (excess scattering).</li><li><strong>Calcia level:</strong> Must be $\gt 0.45$ to provide the CaO–P<sub>2</sub>O<sub>5</sub> association.  Below 0.40, Jun blue disappears.</li><li><strong>Alumina level:</strong> Must be $\lt 0.15$ UMF. Alumina stabilises the homogeneous phase and suppresses immiscibility. This is why celadon (same CaO level, but $\AlO \approx 0.35$) does not show blue.</li></ol>
 Proposed Z-axis: <strong>Immiscibility Index</strong> = $[\PO] \times [\CaOx] / ([\AlO] + 0.01)$, scaled to indicate proximity to the immiscibility dome.
@@ -1058,7 +1091,6 @@ Proposed Z-axis: <strong>Immiscibility Index</strong> = $[\PO] \times [\CaOx] / 
 <ol><li>An <strong>Immiscibility Index</strong> Z-axis (see infobox above) marking compositions likely to phase-separate.</li><li>A <strong>Phase-Separation Warning Layer</strong> in the 3D plot that highlights the immiscibility dome boundary for the CaO–SiO<sub>2</sub>–P<sub>2</sub>O<sub>5</sub> and SiO<sub>2</sub>–BaO systems.</li><li>Integration with the <strong>devitrification index</strong>: phase separation can either suppress crystals (by disrupting long-range order) or promote them (by concentrating crystal-forming oxides in one phase). The two phenomena are coupled and should be displayed together.</li></ol>
 
 <h2 id="glaze-body-interface-amp-flux-migration" class="section-title">Glaze–Body Interface &amp; Flux Migration</h2>
-<a id="label-sec-interface"></a>
 
 <p>A glaze is not a painting on a wall—it is a <em>graded chemical system</em> that reacts with the ceramic body beneath it. The boundary between glaze and body is not a sharp line but a diffusion zone typically $20–200\;\text{}$ thick where flux ions migrate, crystals nucleate, and new phases form. Understanding this interface is essential because:</p>
 
@@ -1074,17 +1106,17 @@ Proposed Z-axis: <strong>Immiscibility Index</strong> = $[\PO] \times [\CaOx] / 
 
 <h3 id="what-happens-at-the-interface" class="subsection-title">What Happens at the Interface</h3>
 
-<h4 id="mullite-crystal-growth" class="subsubsection-title">Mullite Crystal Growth</h4>
+<h4 class="subsubsection-title">Mullite Crystal Growth</h4>
 
 <p>At high-fire temperatures ($\gt  1200\;\text{°C}$), the body clay decomposes into mullite (Al<sub>6</sub>Si<sub>2</sub>O<sub>13</sub>) and glassy silica. If flux from the glaze penetrates the upper body layer, it dissolves the nascent mullite on the body side while promoting mullite crystal growth <em>into the glaze layer</em>. These mullite needles anchor the glaze to the body mechanically—the “roots” of a well-adhered glaze.</p>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ The Mullite Anchor Effect</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ The Mullite Anchor Effect</div><div class="box-content">
 Well-fitted stoneware glazes show 5–$20\;\text{}$ mullite needles growing from the body into the glaze base. These needles:
 <ul><li>Increase the effective surface area at the interface by 3–10×, dramatically improving adhesion.</li><li>Raise the local Al<sub>2</sub>O<sub>3</sub> content in the lower glaze, which <em>increases viscosity</em> and <em>suppresses further flux migration</em>—a self-limiting mechanism.</li><li>Create a graded expansion profile (body → mullite zone → glaze) that distributes thermal stress over the transition rather than concentrating it at a sharp boundary.</li></ul>
 Calcia-rich glazes promote strong mullite anchoring because Ca<sup>2+</sup> acts as a mineraliser for mullite growth. Alkali-rich glazes may dissolve mullite too aggressively, yielding a glassy interface with poor mechanical interlock.
 </div></div>
 
-<h4 id="anorthite-layer-formation" class="subsubsection-title">Anorthite Layer Formation</h4>
+<h4 class="subsubsection-title">Anorthite Layer Formation</h4>
 
 <p>When a calcia-rich glaze ($\CaOx \gt  0.40$) meets a high-alumina body (e.g., stoneware or porcelain), calcium diffusing into the body reacts with alumina and silica to form <strong>anorthite</strong> (CaAl<sub>2</sub>Si<sub>2</sub>O<sub>8</sub>)—a feldspar mineral.  This anorthite interlayer:</p>
 
@@ -1092,9 +1124,9 @@ Calcia-rich glazes promote strong mullite anchoring because Ca<sup>2+</sup> acts
 
 <p><strong>Flux significance:</strong> This is why calcia is the “safest” primary flux for stoneware. It forms beneficial interface phases.  Soda, by contrast, tends to dissolve into the body without forming protective interlayer crystals.</p>
 
-<h4 id="cristobalite-shell-formation" class="subsubsection-title">Cristobalite Shell Formation</h4>
+<h4 class="subsubsection-title">Cristobalite Shell Formation</h4>
 
-<p>In the uppermost layer of the body (within $\sim 50\;\text{}$ of the interface), flux penetration from the glaze can convert amorphous silica in the body into <strong>cristobalite</strong>—a high-temperature polymorph of SiO<sub>2</sub> with a sharp volume change at $220\;\text{°C}$ (the α-β inversion).  This creates a local expansion mismatch that can either:</p>
+<p>In the uppermost layer of the body (within $\sim 50\;\text{}$ of the interface), flux penetration from the glaze can convert amorphous silica in the body into <strong>cristobalite</strong>—a high-temperature polymorph of SiO<sub>2</sub> with a sharp volume change at $220\;\text{°C}$ (the $\alpha$-$\beta$ inversion).  This creates a local expansion mismatch that can either:</p>
 
 <ul><li><strong>Help:</strong> Put the glaze into slight compression, closing craze lines. (This is a common mechanism for “self-healing” glazes on silica-rich bodies.)</li><li><strong>Hurt:</strong> If the cristobalite layer is too thick, the $220\;\text{°C}$ inversion produces enough stress to crack the body at the interface (dunting).</li></ul>
 
@@ -1104,8 +1136,7 @@ Calcia-rich glazes promote strong mullite anchoring because Ca<sup>2+</sup> acts
 
 <p>The concentration of each flux as a function of depth from the glaze surface follows a characteristic <strong>error-function profile</strong> (the solution to Fick's second law for diffusion from a constant source):</p>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Flux Diffusion Profile</div><div class="box-content">
-<a id="label-eq-diffusion"></a>
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Flux Diffusion Profile</div><div class="box-content">
 <div class="math-display">\[C(x, t) = C_{\text{surface}} \cdot \operatorname{erfc}\!\left(\frac{x}{2\sqrt{Dt}}\right)\]</div>
 
 <p>where $C(x,t)$ is the concentration of a flux oxide at depth $x$ from the glaze surface after firing time $t$, $D$ is the effective diffusion coefficient, and $\operatorname{erfc}$ is the complementary error function.
@@ -1117,7 +1148,7 @@ Calcia-rich glazes promote strong mullite anchoring because Ca<sup>2+</sup> acts
 
 <div class="table-wrapper"><table class="styled-table"><tr><th><strong>Flux Ion</strong></th><th><strong>Approx. $D$ (cm<sup>2</sup>/s)</strong></th><th><strong>Penetration Depth</strong></th></tr><tr><td>Li<sup>+</sup></td><td>$10^{-7}$</td><td>$\sim 100\;\text{}$</td></tr><tr><td>Na<sup>+</sup></td><td>$10^{-8}$</td><td>$\sim 30\;\text{}$</td></tr><tr><td>K<sup>+</sup></td><td>$10^{-9}$</td><td>$\sim 10\;\text{}$</td></tr><tr><td>Ca<sup>2+</sup></td><td>$10^{-9}$</td><td>$\sim 10\;\text{}$</td></tr><tr><td>Mg<sup>2+</sup></td><td>$10^{-10}$</td><td>$\sim 3\;\text{}$</td></tr><tr><td>Ba<sup>2+</sup></td><td>$10^{-10}$</td><td>$\sim 3\;\text{}$</td></tr></table></div></div>
 
-<div class="styled-box warnbox" style="border-left-color:#EF4444"><div class="box-title" style="color:#EF4444">⚠️ Lithium's Disappearing Act</div><div class="box-content">
+<div class="styled-box warn-box" style="border-left-color:#EF4444"><div class="box-title" style="color:#EF4444">⚠️ Lithium's Disappearing Act</div><div class="box-content">
 Lithium diffuses so rapidly that in a long high-fire soak ($\gt  30$&nbsp;min above 1200&nbsp;°C), a significant fraction of the Li<sub>2</sub>O originally in the glaze migrates into the body. The fired glaze composition is measurably different from the batch recipe. This is why lithia-containing glazes sometimes craze unpredictably: the actual glaze expansion is higher than calculated because Li<sub>2</sub>O (the lowest-expansion flux) has partially escaped. Potters call this “lithium burnout,” but it is really lithium <em>migration</em>, not volatilisation.
 </div></div>
 
@@ -1136,7 +1167,6 @@ Lithium diffuses so rapidly that in a long high-fire soak ($\gt  30$&nbsp;min ab
 <ul><li><strong>Migration Risk Index:</strong> A Z-axis that estimates the fraction of each flux expected to migrate into the body for a given firing schedule. Based on tabulated $D$ values and the diffusion equation above.</li><li><strong>Post-Migration Composition:</strong> A “corrected UMF” that adjusts for predicted diffusion losses (Li, Na) and body gains (Fe, Si). This would replace the static UMF with a dynamic, firing-aware composition.</li><li><strong>Interface Phase Predictor:</strong> Using the CaO–Al<sub>2</sub>O<sub>3</sub>–SiO<sub>2</sub> phase diagram, predict whether the interface will produce mullite, anorthite, cristobalite, or remain glassy, based on the flux that arrives at the body surface.</li><li><strong>Adhesion Score:</strong> A composite metric combining mullite anchor potential (favoured by high Ca, moderate flux diffusion, high-Al body) with expansion mismatch. A low adhesion score flags compositions at risk of shivering or crawling from the body.</li></ul>
 
 <h2 id="multi-objective-optimisation-amp-pareto-frontiers" class="section-title">Multi-Objective Optimisation &amp; Pareto Frontiers</h2>
-<a id="label-sec-pareto"></a>
 
 <p>Real glaze design is never about optimising a single property. The potter simultaneously needs:</p>
 
@@ -1148,7 +1178,7 @@ Lithium diffuses so rapidly that in a long high-fire soak ($\gt  30$&nbsp;min ab
 
 <p>Given two objectives $f_1$ (e.g., minimise COE) and $f_2$ (e.g., maximise fluidity), a glaze composition $\mathbf{x}$ is <strong>Pareto-optimal</strong> if no other composition $\mathbf{y}$ exists such that $f_1(\mathbf{y}) \leq f_1(\mathbf{x})$ and $f_2(\mathbf{y}) \geq f_2(\mathbf{x})$ simultaneously (with at least one strict inequality). The set of all Pareto-optimal compositions forms the <strong>Pareto frontier</strong>—a curve (or surface, for $\gt 2$ objectives) that represents the best achievable trade-offs.</p>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ What the Pareto Frontier Tells You</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ What the Pareto Frontier Tells You</div><div class="box-content">
 <ul><li><strong>Every point on the frontier is “best”:</strong> You cannot improve one objective without sacrificing another.</li><li><strong>Points below the frontier are suboptimal:</strong> A better flux distribution exists.</li><li><strong>The shape of the frontier reveals the trade-off structure:</strong> A concave frontier means trade-offs are harsh (small gains cost a lot); a convex frontier means trade-offs are gentle (compromise solutions are nearly as good as extremes).</li><li><strong>The potter chooses where on the frontier to operate:</strong> This is a design decision, not a mathematical one.</li></ul>
 </div></div>
 
@@ -1170,9 +1200,9 @@ Lithium diffuses so rapidly that in a long high-fire soak ($\gt  30$&nbsp;min ab
 
 <h3 id="proposed-pareto-visualisation" class="subsection-title">Proposed Pareto Visualisation</h3>
 
-<ol><li><strong>2D Pareto Plot:</strong> Select two Z-axes (e.g., COE $\alpha^{\times10^6}$ and Total Fluidity $F_{\text{total}}$). Plot all compositions as grey dots. Highlight the Pareto frontier as a coloured curve. Allow the user to click any frontier point to see the corresponding UMF and flux distribution.</li><li><strong>3D Pareto Surface:</strong> For three objectives, the frontier becomes a surface displayed in the existing 3D viewport. The user can rotate and explore the trade-off surface interactively.</li><li><strong>What-If on the Frontier:</strong> Combined with the flux-slider tool (§<a href="#label-sec-proposed" class="ref-link">sec:proposed</a>), the user could “walk” along the Pareto frontier, watching the flux fingerprint change as they trade one objective for another in real time.</li><li><strong>Constraint Filters:</strong> Before computing the frontier, apply hard constraints (e.g., “no barium,” “no lead,” “flux ratio $\gt  0.20$”) to restrict the feasible set.</li></ol>
+<ol><li><strong>2D Pareto Plot:</strong> Select two Z-axes (e.g., COE $\alpha^{\times10^6}$ and Total Fluidity $F_{\text{total}}$). Plot all compositions as grey dots. Highlight the Pareto frontier as a coloured curve. Allow the user to click any frontier point to see the corresponding UMF and flux distribution.</li><li><strong>3D Pareto Surface:</strong> For three objectives, the frontier becomes a surface displayed in the existing 3D viewport. The user can rotate and explore the trade-off surface interactively.</li><li><strong>What-If on the Frontier:</strong> Combined with the flux-slider tool (§[sec:proposed]), the user could “walk” along the Pareto frontier, watching the flux fingerprint change as they trade one objective for another in real time.</li><li><strong>Constraint Filters:</strong> Before computing the frontier, apply hard constraints (e.g., “no barium,” “no lead,” “flux ratio $\gt  0.20$”) to restrict the feasible set.</li></ol>
 
-<div class="styled-box examplebox" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Pareto in Practice — The Craze-Free Satin Problem</div><div class="box-content">
+<div class="styled-box example-box" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Pareto in Practice — The Craze-Free Satin Problem</div><div class="box-content">
 A potter wants a satin-matte surface at cone&nbsp;6 that does not craze.  The objectives are:
 <ul><li>Minimise COE ($\alpha \lt  6.5 \times 10^{-6}$&nbsp;K<sup>-1</sup>)</li><li>Achieve satin surface (devitrification index $D_I \gt  0.4$ or barium matte $\BaOx \gt  0.12$)</li></ul>
 The unconstrained minima are incompatible: low COE favours high MgO (which gives true mattes, not satin) and low alkali; satin texture from BaO requires enough alkali to flux the barium.  The Pareto frontier reveals a narrow corridor at approximately:
@@ -1184,8 +1214,7 @@ The atlas could highlight this corridor directly on the 3D Stull grid and allow 
 
 <p>When many objectives compete ($k \gt  3$), visualising the Pareto frontier becomes impractical. An alternative is the <strong>Derringer–Suich desirability function</strong>, which maps each objective to a $[0,1]$ satisfaction score and combines them with a geometric mean:</p>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Overall Desirability</div><div class="box-content">
-<a id="label-eq-desirability"></a>
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Overall Desirability</div><div class="box-content">
 <div class="math-display">\[D_{\text{overall}} = \left(\prod_{i=1}^{k} d_i^{w_i}\right)^{1/\sum w_i}\]</div>
 
 <p>where $d_i$ is the desirability score for objective $i$ (0 = unacceptable, 1 = ideal), and $w_i$ is the importance weight assigned by the potter.
@@ -1199,7 +1228,6 @@ The atlas could highlight this corridor directly on the 3D Stull grid and allow 
 <p>The overall desirability $D_{\text{overall}}$ becomes a single Z-axis that encodes the potter's entire set of requirements.  The atlas could display $D_{\text{overall}}$ as a colour overlay on the Stull grid, with hot spots showing where all requirements are simultaneously well-satisfied.  This collapses multi-objective optimisation into a single, intuitive visual search.</p>
 
 <h2 id="proposed-new-z-axis-properties" class="section-title">Proposed New Z-Axis Properties</h2>
-<a id="label-sec-new-axes"></a>
 
 <p>Based on the analysis above, the following new Z-axis properties are proposed for implementation:</p>
 
@@ -1210,7 +1238,6 @@ The atlas could highlight this corridor directly on the 3D Stull grid and allow 
 <p>Implementing these 20 axes would bring the total from 133 to 153, with the flux analysis category growing from 7 to 27 axes—the largest category in the system.</p>
 
 <h2 id="summary-amp-recommendations" class="section-title">Summary &amp; Recommendations</h2>
-<a id="label-sec-summary"></a>
 
 <h3 id="what-exists-today" class="subsection-title">What Exists Today</h3>
 
@@ -1234,23 +1261,5 @@ The atlas could highlight this corridor directly on the 3D Stull grid and allow 
     { Companion to the Stull Atlas Comprehensive Report}</div>
 </main>
 </div>
-<script>
-// TOC scroll-spy
-(function(){
-  const links = document.querySelectorAll('.toc a');
-  if(!links.length) return;
-  const ids = Array.from(links).map(a => a.getAttribute('href')?.slice(1)).filter(Boolean);
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if(e.isIntersecting){
-        links.forEach(a => a.classList.remove('active'));
-        const a = document.querySelector('.toc a[href="#'+e.target.id+'"]');
-        if(a) a.classList.add('active');
-      }
-    });
-  }, { rootMargin: '-20% 0px -75% 0px' });
-  ids.forEach(id => { const el = document.getElementById(id); if(el) observer.observe(el); });
-})();
-</script>
 </body>
 </html>

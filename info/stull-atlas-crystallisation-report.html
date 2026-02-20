@@ -6,38 +6,34 @@
 <title>Stull Atlas — Crystallisation & Phase Equilibria</title>
 <script>
 window.MathJax = {
-  loader: { load: ['[tex]/mhchem', '[tex]/cancel', '[tex]/boldsymbol'] },
   tex: {
     inlineMath: [['$','$']],
     displayMath: [['\\[','\\]']],
     processEscapes: true,
-    tags: 'ams',
-    packages: { '[+]': ['mhchem', 'cancel', 'boldsymbol'] },
     macros: {
       SiO: '\\text{SiO}_2',
       AlO: '\\text{Al}_2\\text{O}_3',
       NaO: '\\text{Na}_2\\text{O}',
-      KO: '\\text{K}_2\\text{O}',
-      CaOx: '\\text{CaO}',
-      MgOx: '\\text{MgO}',
-      BO: '\\text{B}_2\\text{O}_3',
+      KO:  '\\text{K}_2\\text{O}',
+      CaOx:'\\text{CaO}',
+      MgOx:'\\text{MgO}',
+      BO:  '\\text{B}_2\\text{O}_3',
       FeO: '\\text{Fe}_2\\text{O}_3',
       LiO: '\\text{Li}_2\\text{O}',
-      ZnOx: '\\text{ZnO}',
-      BaOx: '\\text{BaO}',
-      SrOx: '\\text{SrO}',
-      PbOx: '\\text{PbO}',
+      ZnOx:'\\text{ZnO}',
+      BaOx:'\\text{BaO}',
+      SrOx:'\\text{SrO}',
+      PbOx:'\\text{PbO}',
       TiO: '\\text{TiO}_2',
       ZrO: '\\text{ZrO}_2',
       SnO: '\\text{SnO}_2',
-      CoOx: '\\text{CoO}',
-      CuOx: '\\text{CuO}',
-      MnOx: '\\text{MnO}',
-      NiOx: '\\text{NiO}',
+      CoOx:'\\text{CoO}',
+      CuOx:'\\text{CuO}',
+      MnOx:'\\text{MnO}',
+      NiOx:'\\text{NiO}',
       CrO: '\\text{Cr}_2\\text{O}_3',
-      PO: '\\text{P}_2\\text{O}_5',
-      arraystretch: '1.3',
-      bm: ['\\boldsymbol{#1}', 1],
+      PO:  '\\text{P}_2\\text{O}_5',
+      bm:  ['\\boldsymbol{#1}', 1],
     }
   },
   options: { skipHtmlTags: ['script','noscript','style','textarea','code'] }
@@ -57,182 +53,234 @@ window.MathJax = {
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  background: var(--bg); color: var(--text);
-  line-height: 1.75; font-size: 16px;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.75;
+  font-size: 16px;
 }
+
+/* Nav */
 .top-nav {
-  background: var(--surface); border-bottom: 1px solid var(--border);
-  padding: 12px 24px; position: sticky; top: 0; z-index: 100;
-  display: flex; flex-wrap: wrap; gap: 8px; backdrop-filter: blur(10px);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  backdrop-filter: blur(10px);
 }
 .nav-link {
-  color: var(--text-muted); text-decoration: none; font-size: 13px;
-  padding: 4px 10px; border-radius: 4px; transition: all .2s;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  transition: all .2s;
 }
 .nav-link:hover { color: var(--accent); background: rgba(255,255,255,.05); }
+
+/* Layout */
 .page-container {
-  display: grid; grid-template-columns: 260px 1fr;
-  max-width: 1400px; margin: 0 auto; min-height: 100vh;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 100vh;
 }
 @media (max-width: 900px) {
   .page-container { grid-template-columns: 1fr; }
   .toc { display: none; }
 }
+
+/* TOC sidebar */
 .toc {
-  position: sticky; top: 60px; height: calc(100vh - 60px);
-  overflow-y: auto; padding: 24px 16px;
-  border-right: 1px solid var(--border); font-size: 13px;
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  padding: 24px 16px;
+  border-right: 1px solid var(--border);
+  font-size: 13px;
 }
 .toc h2 {
-  font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px;
-  color: var(--text-muted); margin-bottom: 16px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
 }
 .toc ul { list-style: none; }
 .toc li { margin-bottom: 3px; }
 .toc a {
-  color: var(--text-muted); text-decoration: none; display: block;
-  padding: 3px 8px; border-radius: 4px; transition: all .2s; line-height: 1.4;
+  color: var(--text-muted);
+  text-decoration: none;
+  display: block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  transition: all .2s;
+  line-height: 1.4;
 }
 .toc a:hover { color: var(--accent); background: rgba(255,255,255,.04); }
 .toc-h3 { padding-left: 14px; }
 .toc-h3 a { font-size: 12px; }
-.content { padding: 40px 52px 100px; max-width: 880px; }
+
+/* Content */
+.content {
+  padding: 40px 52px 100px;
+  max-width: 880px;
+}
+
+/* Title page */
 .title-page {
-  text-align: center; padding: 56px 20px 36px; margin-bottom: 44px;
+  text-align: center;
+  padding: 56px 20px 36px;
+  margin-bottom: 44px;
   border-bottom: 1px solid var(--border);
 }
 .main-title {
-  font-size: 2.6em; font-weight: 800; color: var(--accent);
-  margin-bottom: 8px; letter-spacing: -0.5px;
+  font-size: 2.6em;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
 }
-.subtitle { font-size: 1.3em; color: var(--text-muted); margin-bottom: 14px; }
-.title-desc { color: var(--text-muted); font-size: 0.95em; max-width: 600px; margin: 6px auto; }
+.subtitle {
+  font-size: 1.3em;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+.title-desc {
+  color: var(--text-muted);
+  font-size: 0.95em;
+  max-width: 600px;
+  margin: 6px auto;
+}
+
+/* Abstract */
 .abstract {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 8px; padding: 24px 28px; margin-bottom: 40px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px 28px;
+  margin-bottom: 40px;
 }
 .abstract h2 { color: var(--accent); font-size: 1.1em; margin-bottom: 12px; }
 .abstract p { color: var(--text-muted); font-size: 0.95em; line-height: 1.7; }
-.part-header { margin: 48px 0 24px; }
+
+/* Headings */
 .part-title {
-  font-size: 2.2em; color: var(--accent); text-align: center;
-  padding: 40px 0 20px; border-top: 2px solid var(--accent);
+  font-size: 2.2em;
+  color: var(--accent);
+  text-align: center;
+  padding: 40px 0 20px;
+  margin: 48px 0 24px;
+  border-top: 2px solid var(--accent);
   border-bottom: 2px solid var(--accent);
 }
 h2.section-title {
-  font-size: 1.55em; color: var(--accent); margin: 52px 0 18px;
-  padding-bottom: 10px; border-bottom: 2px solid var(--accent);
+  font-size: 1.55em;
+  color: var(--accent);
+  margin: 52px 0 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--accent);
 }
 h3.subsection-title {
-  font-size: 1.2em; color: var(--text); margin: 36px 0 14px; font-weight: 600;
+  font-size: 1.2em;
+  color: var(--text);
+  margin: 36px 0 14px;
+  font-weight: 600;
 }
 h4.subsubsection-title {
-  font-size: 1.02em; color: var(--text-muted); font-style: italic; margin: 26px 0 10px;
+  font-size: 1.02em;
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 26px 0 10px;
 }
-.styled-box {
-  background: var(--surface); border: 1px solid var(--border);
-  border-left: 4px solid var(--accent); border-radius: 6px;
-  padding: 22px 26px; margin: 24px 0;
-}
-.box-title { font-weight: 700; font-size: 1.05em; margin-bottom: 12px; }
-.box-content { color: var(--text); line-height: 1.75; }
-.box-content p { margin-bottom: 10px; }
-.equationbox { background: rgba(245, 158, 11, .04); border-color: rgba(255,255,255,.1); border-left-color: #F59E0B; }
-.infobox { background: rgba(59, 130, 246, .04); border-color: rgba(255,255,255,.1); border-left-color: #3B82F6; }
-.warnbox { background: rgba(239, 68, 68, .04); border-color: rgba(255,255,255,.1); border-left-color: #EF4444; }
-.examplebox { background: rgba(34, 197, 94, .04); border-color: rgba(255,255,255,.1); border-left-color: #22C55E; }
-.deepbox { background: rgba(124, 58, 237, .04); border-color: rgba(255,255,255,.1); border-left-color: #7C3AED; }
-.crystalbox { background: rgba(13, 148, 136, .04); border-color: rgba(255,255,255,.1); border-left-color: #0D9488; }
-.cobaltbox { background: rgba(30, 58, 138, .06); border-color: rgba(255,255,255,.1); border-left-color: #1E3A8A; }
-.copperbox { background: rgba(184, 115, 51, .04); border-color: rgba(255,255,255,.1); border-left-color: #B87333; }
-.ironbox { background: rgba(139, 69, 19, .04); border-color: rgba(255,255,255,.1); border-left-color: #8B4513; }
-.histbox { background: rgba(13, 148, 136, .04); border-color: rgba(255,255,255,.1); border-left-color: #0D9488; }
-.safebox { background: rgba(71, 85, 105, .06); border-color: rgba(255,255,255,.1); border-left-color: #475569; }
 
+/* Boxes */
+.styled-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 22px 26px;
+  margin: 24px 0;
+}
+.box-title {
+  font-weight: 700;
+  font-size: 1.05em;
+  margin-bottom: 12px;
+}
+.box-content {
+  color: var(--text);
+  line-height: 1.75;
+}
+.box-content p { margin-bottom: 10px; }
+.equation-box { background: rgba(245, 158, 11, .04); border-color: rgba(245, 158, 11, .25); }
+.info-box { background: rgba(59, 130, 246, .04); border-color: rgba(59, 130, 246, .25); }
+.warn-box { background: rgba(239, 68, 68, .04); border-color: rgba(239, 68, 68, .25); }
+.example-box { background: rgba(34, 197, 94, .04); border-color: rgba(34, 197, 94, .25); }
+.deep-box { background: rgba(124, 58, 237, .04); border-color: rgba(124, 58, 237, .25); }
+.crystal-box { background: rgba(13, 148, 136, .04); border-color: rgba(13, 148, 136, .25); }
+.cobalt-box { background: rgba(30, 58, 138, .06); border-color: rgba(30, 58, 138, .35); }
+.copper-box { background: rgba(184, 115, 51, .04); border-color: rgba(184, 115, 51, .25); }
+.iron-box { background: rgba(139, 69, 19, .04); border-color: rgba(139, 69, 19, .25); }
+.hist-box { background: rgba(13, 148, 136, .04); border-color: rgba(13, 148, 136, .25); }
+.safe-box { background: rgba(71, 85, 105, .06); border-color: rgba(71, 85, 105, .35); }
+
+/* Tables */
 .table-wrapper { overflow-x: auto; margin: 18px 0; }
 .styled-table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
 .styled-table th {
-  background: var(--surface2); color: var(--accent); font-weight: 600;
-  text-align: left; padding: 10px 14px; border-bottom: 2px solid var(--accent);
+  background: var(--surface2);
+  color: var(--accent);
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 2px solid var(--accent);
 }
 .styled-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
 .styled-table tr:hover td { background: rgba(255,255,255,.02); }
+
+/* Lists */
 ul, ol { margin: 14px 0; padding-left: 26px; }
 li { margin-bottom: 7px; line-height: 1.65; }
 dl.description-list { margin: 18px 0; }
-dl.description-list dt {
-  color: var(--accent); font-size: 1.05em; margin-top: 20px; padding-bottom: 4px;
-}
+dl.description-list dt { color: var(--accent); font-size: 1.05em; margin-top: 20px; padding-bottom: 4px; }
 dl.description-list dd { margin: 0 0 14px 0; padding-left: 22px; line-height: 1.75; }
+
+/* Math */
 .math-display { overflow-x: auto; padding: 14px 0; }
+
+/* Misc */
 p { margin-bottom: 14px; }
 code {
-  background: var(--surface2); padding: 2px 6px; border-radius: 3px;
-  font-size: 0.9em; color: #e879f9; font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  background: var(--surface2);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.9em;
+  color: #e879f9;
 }
 .centered { text-align: center; margin: 18px 0; }
 .small-caps { font-variant: small-caps; }
 .fbox { border: 1px solid var(--border); padding: 4px 8px; border-radius: 3px; }
-.footnote-ref a { color: var(--accent); text-decoration: none; font-size: 0.8em; }
-.footnotes { margin-top: 60px; font-size: 0.9em; color: var(--text-muted); }
-.footnotes hr { border: none; border-top: 1px solid var(--border); margin-bottom: 16px; }
-.footnotes-title { font-size: 1.1em; color: var(--accent); margin-bottom: 12px; }
-.footnote-list { padding-left: 20px; }
-.footnote-list li { margin-bottom: 8px; line-height: 1.6; }
-.footnote-backref { text-decoration: none; color: var(--accent); margin-left: 4px; }
+.footnote { font-size: 0.85em; color: var(--text-muted); }
 .caption { font-size: 0.9em; color: var(--text-muted); text-align: center; margin: 8px 0; }
 strong { color: #fff; }
 a { color: var(--accent); }
-/* Figures */
-.figure { text-align: center; margin: 24px 0; }
-.responsive-img { max-width: 100%; height: auto; border-radius: 6px; }
-/* Code blocks */
-pre { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 16px 20px; overflow-x: auto; margin: 18px 0; }
-pre code { background: none; padding: 0; color: var(--text); font-size: 0.88em; }
-/* Theorem blocks */
-.theorem-block { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 6px; padding: 18px 22px; margin: 22px 0; }
-.theorem-heading { font-weight: 700; font-size: 1.02em; margin-bottom: 8px; }
-.theorem-body { line-height: 1.75; }
-.proof-block { border-left-style: dashed; }
-.qed { text-align: right; font-size: 1.1em; margin-top: 4px; color: var(--text-muted); }
-/* Bibliography */
-.bibliography { margin: 40px 0; padding-top: 20px; border-top: 2px solid var(--border); }
-.bib-list { padding-left: 26px; }
-.bib-list li { margin-bottom: 10px; font-size: 0.92em; }
-/* Cross-ref links */
-.ref-link { color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); }
-.ref-link:hover { border-bottom-style: solid; }
-/* Paragraph/subparagraph */
-h5.paragraph-title { font-size: 0.98em; font-weight: 700; margin: 20px 0 6px; color: var(--text); }
-h6.subparagraph-title { font-size: 0.92em; font-weight: 600; margin: 16px 0 4px; color: var(--text-muted); }
-/* Placeholders */
-.placeholder { background: var(--surface2); border: 1px dashed var(--border); border-radius: 6px; padding: 20px; text-align: center; color: var(--text-muted); font-style: italic; margin: 18px 0; }
-/* Dark/light toggle */
-.theme-toggle { cursor: pointer; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); font-size: 13px; padding: 4px 10px; margin-left: auto; }
-.theme-toggle:hover { color: var(--accent); }
-/* TOC scroll-spy */
-.toc a.active { color: var(--accent); background: rgba(99,102,241,.08); font-weight: 600; }
+
+/* Scrollbar */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #555; }
-/* Light theme */
-body.light { --bg: #fafafa; --surface: #fff; --surface2: #f3f4f6; --text: #1f2937; --text-muted: #6b7280; --border: #e5e7eb; }
-body.light strong { color: #111827; }
-/* Print */
-@media print {
-  body { background: #fff !important; color: #000 !important; font-size: 11pt; }
-  .top-nav, .toc, .theme-toggle { display: none !important; }
-  .page-container { display: block !important; }
-  .content { max-width: 100% !important; padding: 0 !important; }
-  a { color: #000 !important; text-decoration: underline; }
-  .styled-box, .theorem-block { break-inside: avoid; border-color: #999 !important; }
-  pre { border-color: #ccc !important; }
-}
 </style>
 </head>
 <body>
-<nav class="top-nav"><a href="index.html" class="nav-link">← Home</a> <a href="stull-atlas-report.html" class="nav-link">Comprehensive Report</a> <a href="stull-atlas-equations-report.html" class="nav-link">Equations Deep Dive</a> <a href="stull-atlas-flux-report.html" class="nav-link">Flux & Flux Ratio Report</a> <a href="stull-atlas-colorant-report.html" class="nav-link">Colorant & Crystal Field Theory</a> <a href="stull-atlas-crystallisation-report.html" class="nav-link">Crystallisation & Phase Equilibria</a> <a href="stull-atlas-analysis-compendium.html" class="nav-link">Advanced Analysis Compendium</a><button class="theme-toggle" onclick="document.body.classList.toggle('light')">☀/☾</button></nav>
+<nav class="top-nav"><a href="index.html" class="nav-link">← Home</a> <a href="stull-atlas-report.html" class="nav-link">Comprehensive Report</a> <a href="stull-atlas-equations-report.html" class="nav-link">Equations Deep Dive</a> <a href="stull-atlas-flux-report.html" class="nav-link">Flux & Flux Ratio Report</a> <a href="stull-atlas-colorant-report.html" class="nav-link">Colorant & Crystal Field Theory</a> <a href="stull-atlas-crystallisation-report.html" class="nav-link">Crystallisation & Phase Equilibria</a> <a href="stull-atlas-analysis-compendium.html" class="nav-link">Advanced Analysis Compendium</a></nav>
 <div class="page-container">
 <nav class="toc"><h2>Contents</h2><ul><li class="toc-h2"><a href="#introduction-glass-vs-crystal">Introduction: Glass vs. Crystal</a></li><li class="toc-h3"><a href="#the-thermodynamic-driving-force">The Thermodynamic Driving Force</a></li><li class="toc-h2"><a href="#classical-nucleation-theory">Classical Nucleation Theory</a></li><li class="toc-h3"><a href="#homogeneous-nucleation">Homogeneous Nucleation</a></li><li class="toc-h3"><a href="#nucleation-rate">Nucleation Rate</a></li><li class="toc-h3"><a href="#heterogeneous-nucleation">Heterogeneous Nucleation</a></li><li class="toc-h2"><a href="#crystal-growth">Crystal Growth</a></li><li class="toc-h3"><a href="#growth-rate">Growth Rate</a></li><li class="toc-h3"><a href="#growth-morphology">Growth Morphology</a></li><li class="toc-h2"><a href="#ttt-diagrams-and-the-nose-of-crystallisation">TTT Diagrams and the Nose of Crystallisation</a></li><li class="toc-h3"><a href="#the-c-curve">The C-Curve</a></li><li class="toc-h3"><a href="#atlas-connection-the-hrub-parameter">Atlas Connection: The Hrubý Parameter</a></li><li class="toc-h3"><a href="#atlas-connection-the-turnbull-reduced-glass-transition">Atlas Connection: The Turnbull Reduced Glass Transition</a></li><li class="toc-h2"><a href="#devitrification-unwanted-crystallisation">Devitrification: Unwanted Crystallisation</a></li><li class="toc-h3"><a href="#common-devitrification-phases">Common Devitrification Phases</a></li><li class="toc-h3"><a href="#diagnosing-devitrification">Diagnosing Devitrification</a></li><li class="toc-h3"><a href="#preventing-devitrification">Preventing Devitrification</a></li><li class="toc-h2"><a href="#crystal-glaze-design">Crystal Glaze Design</a></li><li class="toc-h3"><a href="#zinc-silicate-willemite-crystal-glazes">Zinc Silicate (Willemite) Crystal Glazes</a></li><li class="toc-h3"><a href="#wollastonite-casio3-crystals">Wollastonite (CaSiO3) Crystals</a></li><li class="toc-h3"><a href="#rutile-crystal-effects">Rutile Crystal Effects</a></li><li class="toc-h2"><a href="#phase-separation-liquid-liquid-immiscibility">Phase Separation (Liquid–Liquid Immiscibility)</a></li><li class="toc-h3"><a href="#thermodynamics-of-immiscibility">Thermodynamics of Immiscibility</a></li><li class="toc-h3"><a href="#spinodal-vs-binodal-decomposition">Spinodal vs. Binodal Decomposition</a></li><li class="toc-h3"><a href="#the-immiscibility-dome-in-silicate-systems">The Immiscibility Dome in Silicate Systems</a></li><li class="toc-h2"><a href="#opalescence-amp-structural-color">Opalescence &amp; Structural Color</a></li><li class="toc-h3"><a href="#the-physics-of-opalescence">The Physics of Opalescence</a></li><li class="toc-h3"><a href="#chun-jun-blue">Chun / Jun Blue (鈞)</a></li><li class="toc-h2"><a href="#phase-diagrams-and-eutectic-navigation">Phase Diagrams and Eutectic Navigation</a></li><li class="toc-h3"><a href="#the-binary-eutectic">The Binary Eutectic</a></li><li class="toc-h3"><a href="#key-binary-eutectics">Key Binary Eutectics</a></li><li class="toc-h3"><a href="#ternary-phase-diagrams-and-the-stull-chart">Ternary Phase Diagrams and the Stull Chart</a></li><li class="toc-h3"><a href="#liquidus-prediction">Liquidus Prediction</a></li><li class="toc-h2"><a href="#specific-crystal-systems-in-glazes">Specific Crystal Systems in Glazes</a></li><li class="toc-h3"><a href="#calcium-phosphate-bone-ash-opalescence">Calcium Phosphate (Bone Ash) Opalescence</a></li><li class="toc-h3"><a href="#iron-crystals-tenmoku-family">Iron Crystals (Tenmoku Family)</a></li><li class="toc-h3"><a href="#aventurine">Aventurine</a></li><li class="toc-h2"><a href="#matte-glazes-controlled-microcrystallisation">Matte Glazes: Controlled Microcrystallisation</a></li><li class="toc-h3"><a href="#types-of-ceramic-matte">Types of Ceramic Matte</a></li><li class="toc-h2"><a href="#worked-examples">Worked Examples</a></li><li class="toc-h3"><a href="#example-1-will-this-glaze-devitrify">Example 1: Will This Glaze Devitrify?</a></li><li class="toc-h3"><a href="#example-2-designing-a-crystal-glaze">Example 2: Designing a Crystal Glaze</a></li><li class="toc-h2"><a href="#atlas-equation-summary-for-crystallisation">Atlas Equation Summary for Crystallisation</a></li></ul></nav>
 <main class="content">
@@ -245,7 +293,6 @@ body.light strong { color: #111827; }
 </div>
 
 <h2 id="introduction-glass-vs-crystal" class="section-title">Introduction: Glass vs. Crystal</h2>
-<a id="label-sec-intro"></a>
 
 <p>A ceramic glaze is, thermodynamically, a <strong>metastable</strong> material. The equilibrium state at room temperature for any silicate melt composition is a mixture of crystalline phases — it “wants” to be a rock, not a glass. That it remains glassy at all is a kinetic accident: the melt was cooled fast enough that the atoms could not find their equilibrium crystal lattice positions before thermal motion was quenched.</p>
 
@@ -255,11 +302,11 @@ body.light strong { color: #111827; }
 
 <p>The driving force for crystallisation is the free energy difference between the supercooled liquid (the glass) and the crystal:</p>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Gibbs Free Energy of Crystallisation</div><div class="box-content">
-<div class="math-display">\begin{equation}
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Gibbs Free Energy of Crystallisation</div><div class="box-content">
+<div class="math-display">\[
     \Delta G_{\text{cryst}} = G_{\text{crystal}} - G_{\text{liquid}} = \Delta H_{\text{fus}}\,\frac{T_m - T}{T_m} \approx -\Delta H_{\text{fus}}\,\frac{\Delta T}{T_m}
-    \label{eq:dg_cryst}
-\end{equation}</div>
+    
+\]</div>
 where $\Delta T = T_m - T$ is the undercooling below the liquidus temperature $T_m$, and $\Delta H_{\text{fus}}$ is the enthalpy of fusion. This linearisation (Turnbull approximation) is valid for moderate undercooling.
 </div></div>
 
@@ -269,7 +316,6 @@ where $\Delta T = T_m - T$ is the undercooling below the liquidus temperature $T
 <p>This competition between increasing driving force and decreasing mobility is the central tension of crystallisation kinetics.</p>
 
 <h2 id="classical-nucleation-theory" class="section-title">Classical Nucleation Theory</h2>
-<a id="label-sec-nucleation"></a>
 
 <p>Before a crystal can grow, it must first <em>nucleate</em> — a small cluster of atoms must spontaneously arrange themselves in the crystal lattice. This is the nucleation step, and it is the critical bottleneck for crystallisation.</p>
 
@@ -277,11 +323,11 @@ where $\Delta T = T_m - T$ is the undercooling below the liquidus temperature $T
 
 <p>In a perfectly uniform liquid, nucleation must occur spontaneously (“homogeneously”). The free energy of forming a spherical nucleus of radius $r$ has two competing terms:</p>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Classical Nucleation Free Energy</div><div class="box-content">
-<div class="math-display">\begin{equation}
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Classical Nucleation Free Energy</div><div class="box-content">
+<div class="math-display">\[
     \Delta G(r) = -\frac{4}{3}\pi r^3 \,\frac{|\Delta G_v|}{V_m} + 4\pi r^2 \,\sigma
-    \label{eq:nucleation_dg}
-\end{equation}</div>
+    
+\]</div>
 where:
 <ul><li>First term: Volume free energy gain ($\Delta G_v \lt  0$, favouring crystallisation)</li><li>Second term: Surface energy cost ($\sigma \gt  0$, opposing nucleation)</li><li>$V_m$: Molar volume of the crystal</li></ul>
 </div></div>
@@ -290,41 +336,41 @@ where:
 
 <p>The critical radius $r^*$ is where $d(\Delta G)/dr = 0$:</p>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Critical Nucleus Radius</div><div class="box-content">
-<div class="math-display">\begin{equation}
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Critical Nucleus Radius</div><div class="box-content">
+<div class="math-display">\[
     r^* = \frac{2\sigma V_m}{|\Delta G_v|} = \frac{2\sigma T_m}{\Delta H_{\text{fus}} \, \Delta T}
-    \label{eq:critical_radius}
-\end{equation}</div>
+    
+\]</div>
 The critical nucleus contains ∼100–1000 atoms for typical silicate systems.
 </div></div>
 
 <p>The activation barrier for nucleation (the height of the $\Delta G(r)$ curve at $r = r^*$):</p>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Nucleation Barrier</div><div class="box-content">
-<div class="math-display">\begin{equation}
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Nucleation Barrier</div><div class="box-content">
+<div class="math-display">\[
     \Delta G^* = \frac{16\pi\sigma^3 V_m^2}{3(\Delta G_v)^2} = \frac{16\pi\sigma^3 T_m^2}{3(\Delta H_{\text{fus}})^2(\Delta T)^2}
-    \label{eq:nucleation_barrier}
-\end{equation}</div>
+    
+\]</div>
 </div></div>
 
-<div class="styled-box deepbox" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 The Nucleation Paradox</div><div class="box-content">
+<div class="styled-box deep-box" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 The Nucleation Paradox</div><div class="box-content">
 As undercooling $\Delta T$ increases:
-<ol><li>The critical radius $r^*$ <em>decreases</em> (Eq.&nbsp;\ref{eq:critical_radius}) — smaller nuclei become stable.</li><li>The nucleation barrier $\Delta G^*$ <em>decreases</em> (Eq.&nbsp;\ref{eq:nucleation_barrier}) — nucleation becomes thermodynamically easier.</li><li><strong>But</strong> the melt viscosity η <em>increases</em> exponentially (VFT, Atlas Eq.&nbsp;11) — atomic diffusion slows down.</li></ol>
+<ol><li>The critical radius $r^*$ <em>decreases</em> (Eq.&nbsp;[eq:critical_radius]) — smaller nuclei become stable.</li><li>The nucleation barrier $\Delta G^*$ <em>decreases</em> (Eq.&nbsp;[eq:nucleation_barrier]) — nucleation becomes thermodynamically easier.</li><li><strong>But</strong> the melt viscosity $\eta$ <em>increases</em> exponentially (VFT, Atlas Eq.&nbsp;11) — atomic diffusion slows down.</li></ol>
 
-<p>Result: The nucleation rate passes through a <strong>maximum</strong> at an intermediate undercooling. Too little undercooling: low driving force. Too much undercooling: atoms can't move. This maximum defines the “nose” of the TTT diagram (Section&nbsp;<a href="#label-sec-ttt" class="ref-link">sec:ttt</a>).
+<p>Result: The nucleation rate passes through a <strong>maximum</strong> at an intermediate undercooling. Too little undercooling: low driving force. Too much undercooling: atoms can't move. This maximum defines the “nose” of the TTT diagram (Section&nbsp;[sec:ttt]).
 </div></div></p>
 
 <h3 id="nucleation-rate" class="subsection-title">Nucleation Rate</h3>
 
 <p>The steady-state nucleation rate (number of critical nuclei formed per unit volume per unit time):</p>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Steady-State Nucleation Rate</div><div class="box-content">
-<div class="math-display">\begin{equation}
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Steady-State Nucleation Rate</div><div class="box-content">
+<div class="math-display">\[
     I = I_0 \exp\!\left(-\frac{\Delta G^*}{k_B T}\right) \exp\!\left(-\frac{\Delta G_D}{k_B T}\right)
-    \label{eq:nucleation_rate}
-\end{equation}</div>
+    
+\]</div>
 where:
-<ul><li>$I_0$: Pre-exponential factor (∼10^{30}–$10^{42}$&nbsp;/³m/s)</li><li>$\Delta G^*$: Nucleation barrier (Eq.&nbsp;\ref{eq:nucleation_barrier})</li><li>$\Delta G_D$: Activation energy for diffusion across the nucleus-liquid interface</li><li>$k_B$: Boltzmann constant</li></ul>
+<ul><li>$I_0$: Pre-exponential factor (∼10^{30}–$10^{42}$&nbsp;/³m/s)</li><li>$\Delta G^*$: Nucleation barrier (Eq.&nbsp;[eq:nucleation_barrier])</li><li>$\Delta G_D$: Activation energy for diffusion across the nucleus-liquid interface</li><li>$k_B$: Boltzmann constant</li></ul>
 The diffusion term can be related to viscosity via the Stokes–Einstein relation: $\Delta G_D \propto \ln \eta$.
 </div></div>
 
@@ -332,11 +378,11 @@ The diffusion term can be related to viscosity via the Stokes–Einstein relatio
 
 <p>In practice, homogeneous nucleation in silicate melts is extremely rare. The nucleation barrier $\Delta G^*$ is too high for most compositions. Instead, nucleation occurs <strong>heterogeneously</strong> — on pre-existing surfaces, impurities, or compositional fluctuations that reduce the barrier:</p>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Heterogeneous Nucleation</div><div class="box-content">
-<div class="math-display">\begin{equation}
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Heterogeneous Nucleation</div><div class="box-content">
+<div class="math-display">\[
     \Delta G^*_{\text{het}} = \Delta G^*_{\text{hom}} \cdot f(\theta)
-    \label{eq:het_nucleation}
-\end{equation}</div>
+    
+\]</div>
 where $f(\theta) = \frac{(2 + \cos\theta)(1 - \cos\theta)^2}{4}$ is the wetting angle factor, always $\leq 1$.
 </div></div>
 
@@ -344,7 +390,6 @@ where $f(\theta) = \frac{(2 + \cos\theta)(1 - \cos\theta)^2}{4}$ is the wetting 
 <ul><li><strong>TiO<sub>2</sub> (rutile/anatase):</strong> The most powerful nucleating agent in silicate glasses. TiO<sub>2</sub> promotes phase separation (immiscibility), creating nanoscale compositional heterogeneities that serve as nucleation sites.</li><li><strong>ZrO<sub>2</sub> (zirconia):</strong> Acts as an insoluble seed crystal for wollastonite and other calcium silicate phases.</li><li><strong>P<sub>2</sub>O<sub>5</sub> (phosphorus pentoxide):</strong> Promotes liquid-liquid immiscibility in silicate melts, creating phosphate-rich droplets that nucleate apatite or whitlockite crystals.</li><li><strong>Cr<sub>2</sub>O<sub>3</sub>:</strong> Forms spinel nuclei that seed crystal growth.</li><li><strong>Metallic particles (Cu<sup>0</sup>, Fe<sup>0</sup>):</strong> Surface sites for crystallisation.</li><li><strong>Bubble surfaces:</strong> The gas-glass interface provides nucleation sites. This is why crystals often form on bubble trails.</li></ul></p>
 
 <h2 id="crystal-growth" class="section-title">Crystal Growth</h2>
-<a id="label-sec-growth"></a>
 
 <p>Once a stable nucleus has formed (passed $r^*$), the crystal grows by adding atoms from the surrounding supercooled liquid to the crystal surface.</p>
 
@@ -352,11 +397,11 @@ where $f(\theta) = \frac{(2 + \cos\theta)(1 - \cos\theta)^2}{4}$ is the wetting 
 
 <p>The crystal growth rate $u$ depends on the same two competing factors as nucleation:</p>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Crystal Growth Rate</div><div class="box-content">
-<div class="math-display">\begin{equation}
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Crystal Growth Rate</div><div class="box-content">
+<div class="math-display">\[
     u = u_0 \left[1 - \exp\!\left(-\frac{|\Delta G_v|}{k_B T}\right)\right] \exp\!\left(-\frac{\Delta G_D}{k_B T}\right)
-    \label{eq:growth_rate}
-\end{equation}</div>
+    
+\]</div>
 <ul><li>First factor: Thermodynamic driving force (zero at $T_m$, increases with undercooling)</li><li>Second factor: Kinetic mobility (maximum at $T_m$, decreases with undercooling)</li></ul>
 Result: Like nucleation rate, growth rate passes through a <strong>maximum</strong> at intermediate undercooling.
 </div></div>
@@ -371,7 +416,6 @@ Result: Like nucleation rate, growth rate passes through a <strong>maximum</stro
 <ul><li><strong>Needle/acicular:</strong> Wollastonite (CaSiO<sub>3</sub>), mullite (3Al<sub>2</sub>O<sub>3</sub>· 2SiO<sub>2</sub>)</li><li><strong>Plate/tabular:</strong> Zinc silicate (Zn<sub>2</sub>SiO<sub>4</sub>, willemite), hematite (Fe<sub>2</sub>O<sub>3</sub>)</li><li><strong>Dendritic:</strong> Zinc silicate crystal glazes, rutile “tiger skin”</li><li><strong>Spherulitic:</strong> Devitrification crystals, calcium phosphate opalescence</li></ul></p>
 
 <h2 id="ttt-diagrams-and-the-nose-of-crystallisation" class="section-title">TTT Diagrams and the Nose of Crystallisation</h2>
-<a id="label-sec-ttt"></a>
 
 <p>A TTT (Time–Temperature–Transformation) diagram plots the time required for a given volume fraction of crystallisation to occur at each temperature. It captures the competition between thermodynamic driving force and kinetic limitation.</p>
 
@@ -381,7 +425,7 @@ Result: Like nucleation rate, growth rate passes through a <strong>maximum</stro
 
 <div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Temperature Region</strong></th><th><strong>Crystallisation Time</strong></th></tr><tr><td>Near $T_m$ (small $\Delta T$)</td><td>Very long (low driving force)</td></tr><tr><td>$T_{\text{nose}}$ (optimal $\Delta T$)</td><td><strong>Shortest</strong> (maximum rate)</td></tr><tr><td>Near $T_g$ (large $\Delta T$)</td><td>Very long (high viscosity, frozen kinetics)</td></tr><tr><td>Below $T_g$</td><td>Effectively infinite (glass state)</td></tr></table></div></div>
 
-<div class="styled-box crystalbox" style="border-left-color:#0D9488"><div class="box-title" style="color:#0D9488">💎 Practical Implications of the TTT Nose</div><div class="box-content">
+<div class="styled-box crystal-box" style="border-left-color:#0D9488"><div class="box-title" style="color:#0D9488">💎 Practical Implications of the TTT Nose</div><div class="box-content">
 <ol><li><strong>To avoid crystallisation (clear glaze):</strong> Cool fast enough to “miss the nose” — pass through $T_{\text{nose}}$ before significant nucleation occurs. The critical cooling rate $q_c$ is:
     <div class="math-display">\[q_c \approx \frac{T_m - T_{\text{nose}}}{t_{\text{nose}}}\]</div>
     where $t_{\text{nose}}$ is the time at the nose. For most stoneware glazes, $q_c \approx 1–10$&nbsp;°C/min.</li><li><strong>To promote crystallisation (crystal glaze):</strong> Hold at or near $T_{\text{nose}}$ during cooling. The longer the hold, the more crystal growth occurs.</li><li><strong>To control crystal size:</strong> Nucleate at high undercooling (many small nuclei) then grow at $T_{\text{nose}}$ (controlled growth). Or nucleate at low undercooling (few nuclei) for large, spectacular crystals.</li></ol>
@@ -391,11 +435,11 @@ Result: Like nucleation rate, growth rate passes through a <strong>maximum</stro
 
 <p>The Stull Atlas Equation 40 provides a quantitative measure of a glass's resistance to crystallisation:</p>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Hrubý Glass-Forming Parameter</div><div class="box-content">
-<div class="math-display">\begin{equation}
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Hrubý Glass-Forming Parameter</div><div class="box-content">
+<div class="math-display">\[
     K_H = \frac{T_c - T_g}{T_m - T_c}
-    \label{eq:hruby}
-\end{equation}</div>
+    
+\]</div>
 where:
 <ul><li>$T_c$: Onset temperature of crystallisation (from DSC)</li><li>$T_g$: Glass transition temperature (Atlas Eq.&nbsp;10)</li><li>$T_m$: Melting/liquidus temperature</li></ul>
 <strong>Higher $K_H$ = more stable glass = harder to crystallise.</strong> $K_H \gt  0.5$: excellent glass former. $K_H \lt  0.1$: poor glass former (crystallises easily).
@@ -405,18 +449,17 @@ where:
 
 <p>Equation 39 gives:</p>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Reduced Glass Transition Temperature</div><div class="box-content">
-<div class="math-display">\begin{equation}
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Reduced Glass Transition Temperature</div><div class="box-content">
+<div class="math-display">\[
     T_{rg} = \frac{T_g}{T_m}
-    \label{eq:trg}
-\end{equation}</div>
+    
+\]</div>
 $T_{rg} \gt  2/3$: Strong glass former; crystallisation suppressed. $T_{rg} \lt  1/2$: Weak glass former; crystallisation likely.
 </div></div>
 
 <p>For crystal glaze design, we <em>want</em> a low $T_{rg}$ – the melt should be a poor glass former that readily crystallises. For clear, glassy glazes, we want high $T_{rg}$.</p>
 
 <h2 id="devitrification-unwanted-crystallisation" class="section-title">Devitrification: Unwanted Crystallisation</h2>
-<a id="label-sec-devit"></a>
 
 <p>Devitrification is the unintentional crystallisation of a glaze during cooling, producing unwanted haze, roughness, or matte patches. It is the most common crystallisation defect in ceramics.</p>
 
@@ -426,7 +469,7 @@ $T_{rg} \gt  2/3$: Strong glass former; crystallisation suppressed. $T_{rg} \lt 
 
 <h3 id="diagnosing-devitrification" class="subsection-title">Diagnosing Devitrification</h3>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Devitrification Diagnostic Flowchart</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Devitrification Diagnostic Flowchart</div><div class="box-content">
 <ol><li><strong>Is the matte/haze on thin edges or rims only?</strong>
     <ul><li></li><li>Yes → Likely wollastonite or anorthite devitrification, exacerbated by thinner glaze (less thermal mass, cools faster locally — wait, actually thin glaze cools <em>faster</em>, which should suppress crystallisation. The real reason is that thin edges have reduced flux concentration due to body absorption and thermal gradient effects.)</li><li>No → Continue</li></ul></li><li><strong>Is the matte uniform across the entire surface?</strong>
     <ul><li></li><li>Yes → Likely cristobalite or fine-grained devitrification throughout; cool faster.</li><li>No → Patchy devitrification, usually from composition variation or kiln cold spots.</li></ul></li><li><strong>Can you see individual crystals?</strong>
@@ -440,7 +483,6 @@ $T_{rg} \gt  2/3$: Strong glass former; crystallisation suppressed. $T_{rg} \lt 
 <ol><li><strong>Increase $T_{rg}$ (Eq.&nbsp;39):</strong> Add network formers (SiO<sub>2</sub>, B<sub>2</sub>O<sub>3</sub>, Al<sub>2</sub>O<sub>3</sub>) to raise $T_g$ relative to $T_m$.</li><li><strong>Increase $K_H$ (Eq.&nbsp;40):</strong> Increase the glass-forming ability by adding mixed alkalis (confusion effect), B<sub>2</sub>O<sub>3</sub>, or Al<sub>2</sub>O<sub>3</sub>.</li><li><strong>Cool faster past the nose:</strong> If the nose temperature is known, programme the kiln to drop through that range at $\gt q_c$&nbsp;°C/min.</li><li><strong>Avoid nucleating impurities:</strong> Keep TiO<sub>2</sub>, ZrO<sub>2</sub>, P<sub>2</sub>O<sub>5</sub> levels low if crystal-free surfaces are desired.</li><li><strong>Balance the composition:</strong> Use the atlas to check that Si:Al ratios and flux levels do not place the composition in a known devitrification field.</li></ol>
 
 <h2 id="crystal-glaze-design" class="section-title">Crystal Glaze Design</h2>
-<a id="label-sec-crystal"></a>
 
 <p>Crystal glazes are the deliberate, artistic exploitation of crystallisation. Large, visible crystals (often 1–10&nbsp;cm in diameter) are grown in the glaze by carefully controlling nucleation and growth.</p>
 
@@ -448,31 +490,31 @@ $T_{rg} \gt  2/3$: Strong glass former; crystallisation suppressed. $T_{rg} \lt 
 
 <p>The most common and spectacular crystal glaze type. Zinc silicate (Zn<sub>2</sub>SiO<sub>4</sub>, willemite) crystals grow as hexagonal discs or six-pointed stars with vivid colors from added colorants.</p>
 
-<h4 id="composition-requirements" class="subsubsection-title">Composition Requirements</h4>
+<h4 class="subsubsection-title">Composition Requirements</h4>
 
-<div class="styled-box examplebox" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Typical Zinc Crystal Glaze UMF</div><div class="box-content">
+<div class="styled-box example-box" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Typical Zinc Crystal Glaze UMF</div><div class="box-content">
 <div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Oxide</strong></th><th><strong>Moles</strong></th></tr><tr><td>ZnO</td><td>0.40–0.60</td></tr><tr><td>CaO</td><td>0.10–0.20</td></tr><tr><td>Na<sub>2</sub>O + K<sub>2</sub>O</td><td>0.25–0.40</td></tr><tr><td>Al<sub>2</sub>O<sub>3</sub></td><td>0.00–0.10</td></tr><tr><td>SiO<sub>2</sub></td><td>2.50–4.00</td></tr></table></div></div>
 Key features:
 <ul><li>Very high ZnO (40–60% of flux): Provides the Zn for Zn<sub>2</sub>SiO<sub>4</sub> crystal growth</li><li>Very low Al<sub>2</sub>O<sub>3</sub> ($\lt 0.1$): Alumina inhibits crystallisation by increasing melt viscosity and stabilising the glass</li><li>High total flux (low $T_{rg}$): Makes a poor glass former that readily crystallises</li><li>High silica ($\gt 3.0$): Provides the Si for Zn<sub>2</sub>SiO<sub>4</sub></li></ul>
 </div></div>
 
-<h4 id="the-firing-schedule" class="subsubsection-title">The Firing Schedule</h4>
+<h4 class="subsubsection-title">The Firing Schedule</h4>
 
 <p>The firing schedule for crystal glazes is the most exacting in ceramics:</p>
 
 <ol><li><strong>Heat to peak temperature</strong> (∼1280&nbsp;°C for cone 10, 1230&nbsp;°C for cone 6) and soak 15–30 minutes to fully melt the glaze and dissolve all zinc silicate that may have formed prematurely.</li><li><strong>Crash-cool</strong> by ∼100&nbsp;°C–150&nbsp;°C (e.g., from 1280&nbsp;°C to 1130&nbsp;°C) in 30–60 minutes. This passes through the high-temperature nucleation zone without allowing large nuclei to form. The goal is to reach the growth zone with <em>few</em> nuclei (for large crystals).</li><li><strong>Hold at the growth temperature</strong> ($T_{\text{hold}} \approx$&nbsp;1050&nbsp;°C–1130&nbsp;°C) for 2–6 hours. During this hold, existing nuclei grow into large crystals. The radius of a crystal grows approximately as:
-    <div class="math-display">\begin{equation}
+    <div class="math-display">\[
         r(t) \approx r_0 + u \cdot t
-    \end{equation}</div>
-    where $u$ is the growth rate (typically 0.5–5&nbsp;µm/s) and $t$ is the hold time.</li><li><strong>Cool slowly</strong> to below $T_g$ to avoid thermal shock cracking.</li></ol>
+    \]</div>
+    where $u$ is the growth rate (typically 0.5–5&nbsp;μm/s) and $t$ is the hold time.</li><li><strong>Cool slowly</strong> to below $T_g$ to avoid thermal shock cracking.</li></ol>
 
-<div class="styled-box deepbox" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 Why Crystal Glazes Need a Catch Tray</div><div class="box-content">
+<div class="styled-box deep-box" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 Why Crystal Glazes Need a Catch Tray</div><div class="box-content">
 Crystal glazes have extremely high flux content (&gt;70% flux oxides by weight) and very low alumina. The VFT viscosity (Atlas Eq.&nbsp;11) at peak temperature gives $\log\eta \approx 2.0–3.0$ — the glaze is almost as fluid as honey. It will run off vertical surfaces and pool at the bottom. Crystal glaze pots <strong>must</strong> be fired on a pedestal over a catch tray, and the glaze must be wiped or ground from the foot.
 
 <p>This runny nature is not a flaw but a requirement: the low viscosity allows Zn<sup>2+</sup> and Si<sup>4+</sup> ions to diffuse rapidly to the growing crystal front. If the glaze were more viscous (higher alumina), diffusion would be too slow and crystals would remain microscopic.
 </div></div></p>
 
-<h4 id="crystal-size-and-distribution" class="subsubsection-title">Crystal Size and Distribution</h4>
+<h4 class="subsubsection-title">Crystal Size and Distribution</h4>
 
 <div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Variable</strong></th><th><strong>More Nuclei (smaller crystals)</strong></th><th><strong>Fewer Nuclei (larger crystals)</strong></th></tr><tr><td>Crash-cool rate</td><td>Slower (more time in nuc. zone)</td><td>Faster (less time in nuc. zone)</td></tr><tr><td>Peak temperature</td><td>Lower (incomplete dissolution)</td><td>Higher (complete dissolution)</td></tr><tr><td>TiO<sub>2</sub> addition</td><td>Yes (nucleating agent)</td><td>No</td></tr><tr><td>Hold time</td><td>Short</td><td>Long</td></tr><tr><td>Zn content</td><td>Lower (less driving force)</td><td>Higher (more driving force)</td></tr></table></div></div>
 
@@ -491,14 +533,13 @@ Crystal glazes have extremely high flux content (&gt;70% flux oxides by weight) 
 
 <ol><li><strong>Phase separation nucleation:</strong> TiO<sub>2</sub> induces liquid-liquid immiscibility, creating Ti-rich and Ti-poor regions. The Ti-rich regions crystallise as rutile needles or anatase plates.</li><li><strong>Fe–Ti interaction:</strong> In iron-bearing glazes, rutile promotes Fe<sub>2</sub>TiO<sub>5</sub> (pseudobrookite) or ilmenite (FeTiO<sub>3</sub>) crystal formation, producing golden-brown “tiger” streaks.</li><li><strong>Surface nucleation:</strong> Rutile crystals often nucleate at the glaze surface (where $p_{\text{O}_2}$ is highest), creating a surface crust of crystals with a glassy interior — the “floating crystal” effect.</li></ol>
 
-<div class="styled-box crystalbox" style="border-left-color:#0D9488"><div class="box-title" style="color:#0D9488">💎 Rutile Blue — More Than Just TiO<sub>2</sub></div><div class="box-content">
+<div class="styled-box crystal-box" style="border-left-color:#0D9488"><div class="box-title" style="color:#0D9488">💎 Rutile Blue — More Than Just TiO<sub>2</sub></div><div class="box-content">
 The famous “rutile blue” glaze (sometimes called “floating blue” or “chun blue”) is produced by adding 2–6% rutile to a glaze containing $\lt 1\%$ iron and moderate alkali flux. The blue color is <em>not</em> from titanium absorption (Ti<sup>4+</sup> is $d^0$, colorless). Instead:
 <ol><li>The rutile induces nanoscale phase separation (50–200&nbsp;nm droplets)</li><li>These droplets have a different refractive index from the matrix ($\Delta n \approx 0.02$–0.05)</li><li>Rayleigh scattering of short wavelengths (blue/violet) off these nanodroplets produces a structural blue color — the same physics as a blue sky</li><li>The underlying iron gives a yellow-brown body color; the blue scattering overlays this, producing a blue/gray/lavender appearance</li></ol>
-This is <em>not</em> a colorant-based blue; it is an <strong>opalescence</strong> effect (see Section&nbsp;<a href="#label-sec-opalescence" class="ref-link">sec:opalescence</a>).
+This is <em>not</em> a colorant-based blue; it is an <strong>opalescence</strong> effect (see Section&nbsp;[sec:opalescence]).
 </div></div>
 
 <h2 id="phase-separation-liquid-liquid-immiscibility" class="section-title">Phase Separation (Liquid–Liquid Immiscibility)</h2>
-<a id="label-sec-phase-sep"></a>
 
 <p>Not all “crystallisation” events involve true crystal formation. In many glass systems, the homogeneous supercooled liquid separates into two <em>liquid</em> phases of different composition before either crystallises. This is liquid-liquid immiscibility, or phase separation.</p>
 
@@ -506,11 +547,11 @@ This is <em>not</em> a colorant-based blue; it is an <strong>opalescence</strong
 
 <p>Phase separation occurs when the free energy of mixing curve $\Delta G_{\text{mix}}(x)$ develops a region of negative curvature:</p>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Condition for Immiscibility</div><div class="box-content">
-<div class="math-display">\begin{equation}
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Condition for Immiscibility</div><div class="box-content">
+<div class="math-display">\[
     \frac{\partial^2 \Delta G_{\text{mix}}}{\partial x^2} \lt  0
-    \label{eq:immiscibility}
-\end{equation}</div>
+    
+\]</div>
 In this composition range, the system can lower its total free energy by separating into two phases of different composition.
 </div></div>
 
@@ -527,19 +568,18 @@ In this composition range, the system can lower its total free energy by separat
 <ol><li><strong>Na<sub>2</sub>O–B<sub>2</sub>O<sub>3</sub>–SiO<sub>2</sub> (Pyrex-type):</strong> The borosilicate immiscibility dome. The glass separates into a Na<sub>2</sub>O–B<sub>2</sub>O<sub>3</sub>-rich phase and a SiO<sub>2</sub>-rich phase. This is the basis of Vycor glass processing and is relevant to any borosilicate glaze formulation.</li><li><strong>CaO–SiO<sub>2</sub>–Al<sub>2</sub>O<sub>3</sub>:</strong> The lime–silica immiscibility region. High-calcium, moderate-silica compositions can phase-separate, producing opalescent wollastonite-composition droplets.</li><li><strong>P<sub>2</sub>O<sub>5</sub>–SiO<sub>2</sub>:</strong> Phosphorus is highly immiscible with silica. Even 0.5% P<sub>2</sub>O<sub>5</sub> can induce phase separation in silicate glasses, producing the characteristic opalescent “chun” or “jun” blue.</li><li><strong>TiO<sub>2</sub>–SiO<sub>2</sub>:</strong> Titanium-rich compositions phase-separate, producing the rutile effects described above.</li><li><strong>ZnO–SiO<sub>2</sub>–Al<sub>2</sub>O<sub>3</sub>:</strong> The zinc system has complex immiscibility that affects zinc crystal glaze behavior at sub-crystallisation temperatures.</li></ol>
 
 <h2 id="opalescence-amp-structural-color" class="section-title">Opalescence &amp; Structural Color</h2>
-<a id="label-sec-opalescence"></a>
 
 <h3 id="the-physics-of-opalescence" class="subsection-title">The Physics of Opalescence</h3>
 
 <p>Opalescence is the phenomenon where a glass appears bluish in transmitted light and orange-brownish in reflected light (or vice versa). It arises from <strong>Rayleigh scattering</strong> by nanoscale phase-separated droplets or crystallites:</p>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Rayleigh Scattering Intensity</div><div class="box-content">
-<div class="math-display">\begin{equation}
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Rayleigh Scattering Intensity</div><div class="box-content">
+<div class="math-display">\[
     I \propto \frac{d^6}{\lambda^4}\,(\Delta n)^2\,N
-    \label{eq:rayleigh}
-\end{equation}</div>
+    
+\]</div>
 where:
-<ul><li>$d$: Droplet diameter ($d \ll \lambda$, typically 10–100&nbsp;nm)</li><li>λ: Wavelength of light</li><li>$\Delta n$: Refractive index contrast between droplet and matrix</li><li>$N$: Number density of droplets</li></ul>
+<ul><li>$d$: Droplet diameter ($d \ll \lambda$, typically 10–100&nbsp;nm)</li><li>$\lambda$: Wavelength of light</li><li>$\Delta n$: Refractive index contrast between droplet and matrix</li><li>$N$: Number density of droplets</li></ul>
 </div></div>
 
 <p>The $\lambda^{-4}$ dependence is critical: blue light ($\lambda \approx 450$&nbsp;nm) is scattered ∼5.7× more strongly than red light ($\lambda \approx 700$&nbsp;nm). When white light enters the glass:
@@ -549,19 +589,18 @@ where:
 
 <p>The most famous opalescent glaze in ceramic history. Song Dynasty Jun ware (960–1279 CE) exhibits a luminous, ethereal blue that cannot be reproduced by any colorant. The mechanism:</p>
 
-<div class="styled-box crystalbox" style="border-left-color:#0D9488"><div class="box-title" style="color:#0D9488">💎 The Chun Blue Mechanism</div><div class="box-content">
+<div class="styled-box crystal-box" style="border-left-color:#0D9488"><div class="box-title" style="color:#0D9488">💎 The Chun Blue Mechanism</div><div class="box-content">
 <ol><li>The glaze contains 0.5–3% P<sub>2</sub>O<sub>5</sub> (from bone ash or wood ash) in a high-calcium, moderate-alkali base.</li><li>During cooling, phosphate-rich liquid droplets phase-separate from the silicate matrix (P<sub>2</sub>O<sub>5</sub>–SiO<sub>2</sub> immiscibility).</li><li>The droplets are 30–100&nbsp;nm in diameter — below the wavelength of visible light.</li><li>Rayleigh scattering produces structural blue color.</li><li>A small amount of Fe<sup>2+</sup> (0.5–1% Fe<sub>2</sub>O<sub>3</sub> from impurities) adds a subtle green-blue tint that deepens the perceived color.</li></ol>
 
 <p>The blue is opalescent: viewed against a dark background, it appears blue; against light, it appears amber-brown.
 </div></div></p>
 
-<div class="styled-box infobox" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Atlas Equations for Opalescence Design</div><div class="box-content">
+<div class="styled-box info-box" style="border-left-color:#3B82F6"><div class="box-title" style="color:#3B82F6">ℹ️ Atlas Equations for Opalescence Design</div><div class="box-content">
 To design an opalescent glaze:
 <ul><li>Use Atlas NBO/T (Eq.&nbsp;14) to ensure sufficient network depolymerisation for phase separation</li><li>Use VFT viscosity (Eq.&nbsp;11) to ensure the melt is fluid enough for droplet formation but viscous enough to prevent coalescence (droplets growing too large → Mie scattering → white opacity instead of blue)</li><li>Target $T_g$ (Eq.&nbsp;10) to freeze in the optimal droplet size</li><li>Use refractive index (Eq.&nbsp;24) to estimate $\Delta n$ between phases</li></ul>
 </div></div>
 
 <h2 id="phase-diagrams-and-eutectic-navigation" class="section-title">Phase Diagrams and Eutectic Navigation</h2>
-<a id="label-sec-phase-diagrams"></a>
 
 <p>Phase diagrams are the roadmaps of crystallisation. They show which crystal phases are stable at each composition and temperature, and where the liquid (glass) phase exists.</p>
 
@@ -569,11 +608,11 @@ To design an opalescent glaze:
 
 <p>The simplest relevant case: a two-component system (e.g., CaO–SiO<sub>2</sub>) with a single eutectic point.</p>
 
-<div class="styled-box equationbox" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Eutectic Properties</div><div class="box-content">
+<div class="styled-box equation-box" style="border-left-color:#F59E0B"><div class="box-title" style="color:#F59E0B">⚡ Eutectic Properties</div><div class="box-content">
 At the eutectic composition and temperature:
-<div class="math-display">\begin{equation}
+<div class="math-display">\[
     T_E = \min(T_{\text{liq}}); \quad x_E = \text{composition at } T_E
-\end{equation}</div>
+\]</div>
 <ul><li>$T_E$: The lowest melting temperature in the system</li><li>$x_E$: The eutectic composition — the only composition that melts completely at $T_E$</li><li>At $x_E$, the liquid coexists with <em>two</em> solid phases simultaneously</li></ul>
 </div></div>
 
@@ -588,7 +627,7 @@ At the eutectic composition and temperature:
 
 <p>The Stull Chart itself is fundamentally a <strong>projected ternary phase diagram</strong>. It maps compositions in the R<sub>2</sub>O/RO–Al<sub>2</sub>O<sub>3</sub>–SiO<sub>2</sub> space onto a two-dimensional grid with Al<sub>2</sub>O<sub>3</sub> on the $x$-axis and SiO<sub>2</sub> on the $y$-axis (with total flux normalised to 1.0 in UMF notation).</p>
 
-<div class="styled-box deepbox" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 The Stull Chart as Phase Map</div><div class="box-content">
+<div class="styled-box deep-box" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 The Stull Chart as Phase Map</div><div class="box-content">
 Each region of the Stull Chart corresponds to a different primary crystallisation field:
 <ul><li><strong>Low Si, low Al:</strong> Flux mineral fields (nepheline, leucite). Glazes here are very runny, high-expansion, poor chemical resistance.</li><li><strong>Low Si, high Al:</strong> Corundum/mullite fields. Unrealistic for glazes (too refractory).</li><li><strong>High Si, low Al:</strong> Quartz/cristobalite fields. Clear, glossy, hard glazes. Risk of cristobalite devitrification.</li><li><strong>High Si, high Al:</strong> Mullite field. Very refractory; only reached in porcelain bodies, not glazes.</li><li><strong>The “sweet spot” (∼0.3–0.5 Al, ∼2.5–4.0 Si):</strong> Multiple eutectic boundaries converge here. The most stable glazes — best glass formers, least devitrification, best balance of properties. This is where most functional stoneware glazes live.</li></ul>
 
@@ -602,11 +641,10 @@ Each region of the Stull Chart corresponds to a different primary crystallisatio
 <div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Atlas Equation</strong></th><th><strong>Liquidus Information</strong></th></tr><tr><td>VFT $T_{12}$ (Eq.&nbsp;12)</td><td>Approximates logworking temperature ≈ near liquidus</td></tr><tr><td>$T_g$ (Eq.&nbsp;10)</td><td>Glass transition; lower bound for crystal growth zone</td></tr><tr><td>$T_{rg}$ (Eq.&nbsp;39)</td><td>Ratio $T_g/T_m$; correlates with glass-forming ability</td></tr><tr><td>$K_H$ (Eq.&nbsp;40)</td><td>Hrubý parameter; requires knowledge of $T_c$ and $T_m$</td></tr><tr><td>Softening point (Eq.&nbsp;9)</td><td>Littleton point; glass is mobile above this</td></tr></table></div></div>
 
 <h2 id="specific-crystal-systems-in-glazes" class="section-title">Specific Crystal Systems in Glazes</h2>
-<a id="label-sec-specific"></a>
 
 <h3 id="calcium-phosphate-bone-ash-opalescence" class="subsection-title">Calcium Phosphate (Bone Ash) Opalescence</h3>
 
-<p>Adding bone ash (Ca<sub>3</sub>(PO<sub>4</sub>)<sub>2</sub>, tricalcium phosphate) to a glaze introduces both CaO and P<sub>2</sub>O<sub>5</sub>. The phosphorus is almost completely immiscible with the silicate network, and during cooling it precipitates as amorphous calcium phosphate droplets (later crystallising as whitlockite, β-Ca<sub>3</sub>(PO<sub>4</sub>)<sub>2</sub>, or hydroxyapatite).</p>
+<p>Adding bone ash (Ca<sub>3</sub>(PO<sub>4</sub>)<sub>2</sub>, tricalcium phosphate) to a glaze introduces both CaO and P<sub>2</sub>O<sub>5</sub>. The phosphorus is almost completely immiscible with the silicate network, and during cooling it precipitates as amorphous calcium phosphate droplets (later crystallising as whitlockite, $\beta$-Ca<sub>3</sub>(PO<sub>4</sub>)<sub>2</sub>, or hydroxyapatite).</p>
 
 <p>Effects:
 <ul><li>2–4% bone ash: Subtle opalescence (blue haze). The “jun” effect.</li><li>5–10% bone ash: Milky opacity. The phosphate droplets grow large enough for Mie scattering, producing a white or cream opacity.</li><li>10–20% bone ash: Dense white opacity with possible crawling (high surface tension from phosphate).</li></ul></p>
@@ -625,15 +663,14 @@ Each region of the Stull Chart corresponds to a different primary crystallisatio
 <ul><li>Very high iron (8–15%)</li><li>Very low viscosity ($\log\eta \lt  3$ at peak temperature)</li><li>Extremely slow cooling through the crystal growth zone</li><li>Oxidation atmosphere (hematite is the stable phase)</li></ul></p>
 
 <h2 id="matte-glazes-controlled-microcrystallisation" class="section-title">Matte Glazes: Controlled Microcrystallisation</h2>
-<a id="label-sec-matte"></a>
 
-<p>Matte glazes achieve their non-glossy surface through controlled crystallisation of extremely fine crystals ($\lt 1\;\text{µm}$) that scatter light in all directions, breaking the specular reflection.</p>
+<p>Matte glazes achieve their non-glossy surface through controlled crystallisation of extremely fine crystals ($\lt 1\;\text{μm}$) that scatter light in all directions, breaking the specular reflection.</p>
 
 <h3 id="types-of-ceramic-matte" class="subsection-title">Types of Ceramic Matte</h3>
 
 <div class="centered"><div class="table-wrapper"><table class="styled-table"><tr><th><strong>Type</strong></th><th><strong>Mechanism</strong></th><th><strong>Composition/Process</strong></th></tr><tr><td>Crystal matte</td><td>Microcrystals scatter light</td><td>High CaO or MgO; slow cooling</td></tr><tr><td>Underfired matte</td><td>Incomplete melting</td><td>Deliberately lowering peak temp</td></tr><tr><td>High-alumina matte</td><td>Network resistance to flow</td><td>Very high Al<sub>2</sub>O<sub>3</sub> ($\gt 0.5$ in UMF); surface roughness</td></tr><tr><td>Phase-separation matte</td><td>Spinodal texture</td><td>TiO<sub>2</sub> or P<sub>2</sub>O<sub>5</sub> induced</td></tr><tr><td>Barium matte</td><td>Ba-silicate crystals</td><td>High BaO ($\gt 0.3$); slow cool</td></tr></table></div></div>
 
-<div class="styled-box warnbox" style="border-left-color:#EF4444"><div class="box-title" style="color:#EF4444">⚠️ Crystal Matte vs. Underfired Matte</div><div class="box-content">
+<div class="styled-box warn-box" style="border-left-color:#EF4444"><div class="box-title" style="color:#EF4444">⚠️ Crystal Matte vs. Underfired Matte</div><div class="box-content">
 These two types of matte glaze look similar but behave very differently:
 
 <p><strong>Crystal matte</strong> (wollastonite, diopside): Fully melted, then crystallised during cooling. The surface is made of interlocking crystals with glassy matrix between them. It is <strong>durable, food-safe, and predictable</strong>. It resists acid attack because the crystalline phases are chemically stable.</p>
@@ -644,11 +681,10 @@ These two types of matte glaze look similar but behave very differently:
 </div></div></p>
 
 <h2 id="worked-examples" class="section-title">Worked Examples</h2>
-<a id="label-sec-examples"></a>
 
 <h3 id="example-1-will-this-glaze-devitrify" class="subsection-title">Example 1: Will This Glaze Devitrify?</h3>
 
-<div class="styled-box examplebox" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Devitrification Risk Assessment</div><div class="box-content">
+<div class="styled-box example-box" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Devitrification Risk Assessment</div><div class="box-content">
 Given the reference composition (K<sub>2</sub>O 0.11, Na<sub>2</sub>O 0.24, CaO 0.42, MgO 0.18, ZnO 0.05, Al<sub>2</sub>O<sub>3</sub> 0.35, SiO<sub>2</sub> 3.20, B<sub>2</sub>O<sub>3</sub> 0.10):
 
 <p><strong>Step 1: Check $T_{rg}$</strong>
@@ -666,7 +702,7 @@ This is above 0.5 but below 2/3. Moderate glass-forming ability — some devitri
 
 <h3 id="example-2-designing-a-crystal-glaze" class="subsection-title">Example 2: Designing a Crystal Glaze</h3>
 
-<div class="styled-box examplebox" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Crystal Glaze Design</div><div class="box-content">
+<div class="styled-box example-box" style="border-left-color:#22C55E"><div class="box-title" style="color:#22C55E">📝 Crystal Glaze Design</div><div class="box-content">
 Goal: Design a zinc crystal glaze for cone 6 (1222&nbsp;°C).
 
 <p><strong>Step 1: Set target UMF</strong>
@@ -683,12 +719,11 @@ Goal: Design a zinc crystal glaze for cone 6 (1222&nbsp;°C).
 </div></div></p>
 
 <h2 id="atlas-equation-summary-for-crystallisation" class="section-title">Atlas Equation Summary for Crystallisation</h2>
-<a id="label-sec-eq-summary"></a>
 
 <div class="centered">
-<div class="table-wrapper"><table class="styled-table"><tr><th><strong>Atlas Equation</strong></th><th><strong>Parameter</strong></th><th><strong>Crystallisation Relevance</strong></th></tr><tr><td>Eq.&nbsp;10: $T_g$</td><td>Glass transition</td><td>Lower bound of crystal growth zone; used in $T_{rg}$ and $K_H$</td></tr><tr><td>Eq.&nbsp;11: VFT $\eta(T)$</td><td>Viscosity vs. $T$</td><td>Controls diffusion; determines nucleation and growth rates; predicts runny-ness</td></tr><tr><td>Eq.&nbsp;12: Working range</td><td>$T_{12}$ (logworking)</td><td>Upper bound of practical crystal growth zone</td></tr><tr><td>Eq.&nbsp;14: NBO/T</td><td>Network connectivity</td><td>High NBO/T → more mobile melt → easier crystallisation</td></tr><tr><td>Eq.&nbsp;24: $n$</td><td>Refractive index</td><td>Controls $\Delta n$ for opalescence (Rayleigh scattering)</td></tr><tr><td>Eq.&nbsp;26: γ</td><td>Surface tension</td><td>Controls nucleation barrier (σ in Eq.&nbsp;eq:nucleation_barrier)</td></tr><tr><td>Eq.&nbsp;39: $T_{rg}$</td><td>Reduced glass transition</td><td>Primary indicator of glass-forming ability</td></tr><tr><td>Eq.&nbsp;40: $K_H$</td><td>Hrubý parameter</td><td>Quantitative measure of crystallisation resistance</td></tr><tr><td>Eq.&nbsp;6: COE</td><td>Thermal expansion</td><td>Changes if crystal phases form (crystals have different COE than glass matrix)</td></tr></table></div></div>
+<div class="table-wrapper"><table class="styled-table"><tr><th><strong>Atlas Equation</strong></th><th><strong>Parameter</strong></th><th><strong>Crystallisation Relevance</strong></th></tr><tr><td>Eq.&nbsp;10: $T_g$</td><td>Glass transition</td><td>Lower bound of crystal growth zone; used in $T_{rg}$ and $K_H$</td></tr><tr><td>Eq.&nbsp;11: VFT $\eta(T)$</td><td>Viscosity vs. $T$</td><td>Controls diffusion; determines nucleation and growth rates; predicts runny-ness</td></tr><tr><td>Eq.&nbsp;12: Working range</td><td>$T_{12}$ (logworking)</td><td>Upper bound of practical crystal growth zone</td></tr><tr><td>Eq.&nbsp;14: NBO/T</td><td>Network connectivity</td><td>High NBO/T → more mobile melt → easier crystallisation</td></tr><tr><td>Eq.&nbsp;24: $n$</td><td>Refractive index</td><td>Controls $\Delta n$ for opalescence (Rayleigh scattering)</td></tr><tr><td>Eq.&nbsp;26: $\gamma$</td><td>Surface tension</td><td>Controls nucleation barrier ($\sigma$ in Eq.&nbsp;[eq:nucleation_barrier])</td></tr><tr><td>Eq.&nbsp;39: $T_{rg}$</td><td>Reduced glass transition</td><td>Primary indicator of glass-forming ability</td></tr><tr><td>Eq.&nbsp;40: $K_H$</td><td>Hrubý parameter</td><td>Quantitative measure of crystallisation resistance</td></tr><tr><td>Eq.&nbsp;6: COE</td><td>Thermal expansion</td><td>Changes if crystal phases form (crystals have different COE than glass matrix)</td></tr></table></div></div>
 
-<div class="styled-box deepbox" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 The Crystal Decision Tree</div><div class="box-content">
+<div class="styled-box deep-box" style="border-left-color:#7C3AED"><div class="box-title" style="color:#7C3AED">🔬 The Crystal Decision Tree</div><div class="box-content">
 When formulating a new glaze, the crystallisation question reduces to:
 
 <ol><li><strong>Do I want crystals?</strong>
@@ -698,23 +733,5 @@ When formulating a new glaze, the crystallisation question reduces to:
 </div></div>
 </main>
 </div>
-<script>
-// TOC scroll-spy
-(function(){
-  const links = document.querySelectorAll('.toc a');
-  if(!links.length) return;
-  const ids = Array.from(links).map(a => a.getAttribute('href')?.slice(1)).filter(Boolean);
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if(e.isIntersecting){
-        links.forEach(a => a.classList.remove('active'));
-        const a = document.querySelector('.toc a[href="#'+e.target.id+'"]');
-        if(a) a.classList.add('active');
-      }
-    });
-  }, { rootMargin: '-20% 0px -75% 0px' });
-  ids.forEach(id => { const el = document.getElementById(id); if(el) observer.observe(el); });
-})();
-</script>
 </body>
 </html>

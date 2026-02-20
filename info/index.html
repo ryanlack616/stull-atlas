@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stull Atlas Explorer</title>
+<title>Stull Atlas — Documentation</title>
 <style>
 :root { --bg: #0f0f0f; --surface: #1a1a1a; --text: #e5e5e5; --text-muted: #a3a3a3; --border: #333; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -11,6 +11,10 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .hero { text-align: center; padding: 80px 24px 40px; }
 .hero h1 { font-size: 3em; font-weight: 800; background: linear-gradient(135deg, #6366F1, #F59E0B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 12px; }
 .hero p { color: var(--text-muted); font-size: 1.15em; max-width: 600px; margin: 0 auto; }
+.stats { display: flex; justify-content: center; gap: 40px; margin: 32px 0; flex-wrap: wrap; }
+.stat { text-align: center; }
+.stat-value { font-size: 2em; font-weight: 800; color: #F59E0B; }
+.stat-label { font-size: 0.85em; color: var(--text-muted); }
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; padding: 20px 24px 80px; }
 .card { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid; border-radius: 8px; padding: 28px 24px; text-decoration: none; transition: all .25s; }
 .card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,.3); border-color: #555; }
@@ -21,7 +25,13 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 <body>
 <div class="hero">
     <h1>Stull Atlas Explorer</h1>
-    <p>In-depth technical reports covering the math, chemistry, and analysis</p>
+    <p>Comprehensive documentation for the real-time 3D ceramic glaze analysis application</p>
+    <div class="stats">
+        <div class="stat"><div class="stat-value">133</div><div class="stat-label">Properties</div></div>
+        <div class="stat"><div class="stat-value">22</div><div class="stat-label">Oxides</div></div>
+        <div class="stat"><div class="stat-value">40</div><div class="stat-label">Equations</div></div>
+        <div class="stat"><div class="stat-value">120+</div><div class="stat-label">References</div></div>
+    </div>
 </div>
 <div class="cards">
         <a href="stull-atlas-report.html" class="card" style="border-top-color:#6366F1">
