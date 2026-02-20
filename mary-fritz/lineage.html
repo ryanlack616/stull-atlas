@@ -193,9 +193,23 @@
       z-index: 50;
       display: none;
       width: 250px;
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
     }
     .settings-panel.open {
       display: block;
+    }
+    .settings-panel select {
+      flex: 1;
+      padding: 3px 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.74rem;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #fff;
+      color: #444;
+      cursor: pointer;
+      accent-color: #5a7247;
     }
     .settings-panel h4 {
       font-size: 0.82rem;
@@ -429,10 +443,74 @@
       <button onclick="resetView()">Reset</button>
       <button onclick="toggleLabels()" id="btn-labels" class="active">Labels</button>
       <button onclick="toggleSettings()" id="btn-settings">Settings</button>
+      <button onclick="toggleAdvanced()" id="btn-advanced">Advanced</button>
       <button onclick="reheat()">Reheat</button>
     </div>
 
+    <!-- Basic Settings panel -->
     <div class="settings-panel" id="settings-panel">
+      <h4>Display</h4>
+      <div class="setting-row">
+        <label>Link opacity</label>
+        <input type="range" id="s-linkopac" min="0" max="100" step="2" value="25">
+        <span class="val" id="v-linkopac">25%</span>
+      </div>
+      <div class="setting-row">
+        <label>Node scale</label>
+        <input type="range" id="s-nodescale" min="30" max="200" step="5" value="100">
+        <span class="val" id="v-nodescale">100%</span>
+      </div>
+      <div class="setting-row">
+        <label>Labels</label>
+        <button class="toggle on" id="t-labels" onclick="toggleLabels()"></button>
+      </div>
+      <div class="setting-row">
+        <label>Link lines</label>
+        <button class="toggle on" id="t-links" onclick="toggleLinkLines()"></button>
+      </div>
+      <div class="setting-row">
+        <label>3D nodes</label>
+        <button class="toggle on" id="t-3d" onclick="toggle3D()"></button>
+      </div>
+      <div class="setting-row">
+        <label>Mary glow</label>
+        <button class="toggle on" id="t-glow" onclick="toggleGlow()"></button>
+      </div>
+
+      <div class="setting-section">
+        <div class="section-label">Links</div>
+        <div class="setting-row">
+          <label>Style</label>
+          <select id="sel-linkstyle" onchange="setLinkStyle(this.value)">
+            <option value="straight">Straight</option>
+            <option value="curved" selected>Curved</option>
+            <option value="arc">Arc</option>
+          </select>
+        </div>
+        <div class="setting-row">
+          <label>Curve amt</label>
+          <input type="range" id="s-curve" min="0" max="80" step="2" value="30">
+          <span class="val" id="v-curve">30</span>
+        </div>
+        <div class="setting-row">
+          <label>Arrows</label>
+          <select id="sel-arrowstyle" onchange="setArrowStyle(this.value)">
+            <option value="none">None</option>
+            <option value="filled" selected>Filled</option>
+            <option value="open">Open</option>
+            <option value="dot">Dot</option>
+          </select>
+        </div>
+        <div class="setting-row">
+          <label>Arrow size</label>
+          <input type="range" id="s-arrowsize" min="2" max="16" step="1" value="6">
+          <span class="val" id="v-arrowsize">6</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Settings panel -->
+    <div class="settings-panel" id="advanced-panel">
       <h4>Simulation</h4>
       <div class="setting-row">
         <label>Repulsion</label>
@@ -461,28 +539,20 @@
       </div>
 
       <div class="setting-section">
-        <div class="section-label">Display</div>
+        <div class="section-label">Breathe</div>
         <div class="setting-row">
-          <label>Link opacity</label>
-          <input type="range" id="s-linkopac" min="0" max="100" step="2" value="25">
-          <span class="val" id="v-linkopac">25%</span>
+          <label>Breathe</label>
+          <button class="toggle on" id="t-breathe" onclick="toggleBreathe()"></button>
         </div>
         <div class="setting-row">
-          <label>Node scale</label>
-          <input type="range" id="s-nodescale" min="30" max="200" step="5" value="100">
-          <span class="val" id="v-nodescale">100%</span>
+          <label>Strength</label>
+          <input type="range" id="s-breathestr" min="0" max="50" step="1" value="15">
+          <span class="val" id="v-breathestr">0.15</span>
         </div>
         <div class="setting-row">
-          <label>Labels</label>
-          <button class="toggle on" id="t-labels" onclick="toggleLabels()"></button>
-        </div>
-        <div class="setting-row">
-          <label>Link lines</label>
-          <button class="toggle on" id="t-links" onclick="toggleLinkLines()"></button>
-        </div>
-        <div class="setting-row">
-          <label>Mary glow</label>
-          <button class="toggle on" id="t-glow" onclick="toggleGlow()"></button>
+          <label>Radius</label>
+          <input type="range" id="s-breatherad" min="40" max="300" step="10" value="120">
+          <span class="val" id="v-breatherad">120</span>
         </div>
       </div>
     </div>
@@ -528,7 +598,7 @@
 
   <script>
     // ── Data ──────────────────────────────────
-    const DATA = {"nodes": [{"id": "bob-valle", "name": "Bob Valle", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "cracked-pot-studio-tour", "name": "Cracked Pot Studio Tour", "type": "event", "cluster": "cpst", "color": "#c4956a", "radius": 14, "location": "Lansing, MI, US", "notes": "Self-guided ceramics studio tour in the Greater Lansing, Michigan area. Founded 2017 by ceramic artists. Michigan not-for-profit organization run by volunteer board. Annual autumn weekend event \u2014 open", "direct": true}, {"id": "suzanne-amann", "name": "Suzanne Amann", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. OGP studio on CPST. Co-host with Mike Amann.", "direct": true}, {"id": "pam-graham", "name": "Pam Graham", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "tiffany-mcintyre", "name": "Tiffany McIntyre", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "shingo-takeuchi", "name": "Shingo Takeuchi", "type": "person", "cluster": "japan", "color": "#bf4040", "radius": 12, "location": "Seto, Aichi, Japan", "notes": "Japanese ceramist (b. 1955, Seto, Aichi). Sekki (stoneware) and iron-zogan (inlay) specialist. Trained at Aichi Kiln Training School (1979), studied under Kato ShunTei II. Opened own studio in Seto 19", "direct": true}, {"id": "msu-mfa-2015", "name": "MSU MFA Exhibition 2015", "type": "event", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "East Lansing, MI, US", "notes": "MFA graduating exhibition at Eli and Edythe Broad Art Museum, MSU, April 2015. Six MFA candidates including Mary Fritz and Lane Kaufmann. Curated by Yesomi Umolu.", "direct": true}, {"id": "yesomi-umolu", "name": "Yesomi Umolu", "type": "person", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "", "notes": "Curator. Curated the 2015 MSU MFA exhibition at the Broad Art Museum featuring Mary Fritz and fellow graduates.", "direct": true}, {"id": "jim-feldkamp", "name": "Jim Feldkamp", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. BP studio on CPST.", "direct": true}, {"id": "bill-selanders", "name": "Bill Selanders", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. FK studio on CPST.", "direct": true}, {"id": "michigan-state-university", "name": "Michigan State University", "type": "institution", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "East Lansing, MI, US", "notes": "Major research university in East Lansing, Michigan. MFA ceramics program in Studio Art.", "direct": true}, {"id": "red-cedar-studio", "name": "Red Cedar Studio", "type": "place", "cluster": "studio", "color": "#7a9a6a", "radius": 14, "location": "Lansing, MI, US", "notes": "Pottery studio hosted by Mary Fritz. Part of the Cracked Pot Studio Tour. Overlooks the Red Cedar River, surrounded by nature. Website: crackedpotstudiotour.com/rcs-red-cedar-studio/", "direct": true}, {"id": "ned-krouse", "name": "Ned Krouse", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. NK studio on CPST.", "direct": true}, {"id": "charlotte-grenier", "name": "Charlotte Grenier", "type": "person", "cluster": "studio", "color": "#7a9a6a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio for CPST.", "direct": true}, {"id": "ruth-zimmerman", "name": "Ruth Zimmerman", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "brett-suave", "name": "Brett Suave", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "lee-kronenberg", "name": "Lee Kronenberg", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. ACP studio on CPST. Co-host with Nancy Kronenberg.", "direct": true}, {"id": "marie-gougeon", "name": "Marie Gougeon", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. MG studio on CPST.", "direct": true}, {"id": "ferris-state-university", "name": "Ferris State University", "type": "institution", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "Big Rapids, MI, US", "notes": "University in Big Rapids, Michigan. Mary Fritz teaches Interior Design / KCID and KGAR courses.", "direct": true}, {"id": "kw-bell", "name": "K.W. Bell", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "natalie-liu", "name": "Natalie Liu", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "paul-nilsson", "name": "Paul Nilsson", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "jae-won-lee", "name": "Jae Won Lee", "type": "person", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "East Lansing, MI, US", "notes": "Associate Professor at Michigan State University. MFA from Alfred University. Two-time Fulbright Scholar. Hand-builds porcelain.", "direct": true}, {"id": "delectable-2021", "name": "delecTable", "type": "event", "cluster": "mcaa", "color": "#8b6f4e", "radius": 10, "location": "West Bloomfield, MI, US", "notes": "All-ceramic juried tableware show at Janice Charach Gallery, Oct 24 - Dec 9, 2021. ~40 Michigan artists, ~350 pieces. MCAA-partnered. Organized by Mary Fritz, Peter Fritz, and Jim Adair.", "direct": true}, {"id": "janet-reifenberg", "name": "Janet Reifenberg", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "brian-kakas", "name": "Brian Kakas", "type": "person", "cluster": "mcaa", "color": "#8b6f4e", "radius": 8, "location": "Bowling Green, OH, US", "notes": "Ceramic artist and educator. Associate Professor of Art at Bowling Green State University (BGSU). Board member of Michigan Ceramic Art Association (MCAA). Panelist at NCECA 2026 on 'The State of Clay:", "direct": true}, {"id": "virginia-cassaday", "name": "Virginia Cassaday", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. CS studio on CPST.", "direct": true}, {"id": "doug-delind", "name": "Doug DeLind", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. DD studio on CPST.", "direct": true}, {"id": "nancy-kronenberg", "name": "Nancy Kronenberg", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. ACP studio on CPST. Co-host with Lee Kronenberg.", "direct": true}, {"id": "mcaa", "name": "Michigan Ceramic Art Association", "type": "institution", "cluster": "mcaa", "color": "#8b6f4e", "radius": 14, "location": "MI, US", "notes": "MCAA (michclay.com). Est. 1958 as Michigan Potters' Association. 300+ members statewide: studio artists, educators, galleries, guilds, students, collectors. Runs Michigan Ceramics Exhibition (biennial", "direct": true}, {"id": "nceca-2026", "name": "NCECA 2026", "type": "event", "cluster": "nceca", "color": "#4a6fa5", "radius": 14, "location": "", "notes": "60th annual conference 'Volumes' \u2014 March 25-28, 2026, Huntington Place Convention Center, Detroit. Ryan planning to demo Stull Atlas. Henry is a previous NCECA presenter (2014 Milwaukee).", "direct": true}, {"id": "jane-hildebrand", "name": "Jane Hildebrand", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. RB studio on CPST.", "direct": true}, {"id": "mary-fritz", "name": "Mary Fritz", "type": "person", "cluster": "center", "color": "#5a7247", "radius": 22, "location": "MI, US", "notes": "Creates hand-built functional and sculptural pieces. Uses flora and fauna and mother earth imagery \u2014 stories of discovery, absurdity, emotion, loss, and humor. Highlights whimsy of natural processes, ", "direct": false}, {"id": "maggie-valle", "name": "Maggie Valle", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "peter-fritz", "name": "Peter Fritz", "type": "person", "cluster": "family", "color": "#a85d3a", "radius": 12, "location": "Williamston, MI, US", "notes": "PhD in Engineering Mechanics (Penn State). MBA (Cardinal Stritch). Inventor of the Ceramic Arts Weldless Gas Kiln (PellaCom). MCAA Board Controller 2016-2022. CPST Board 2017-present. Husband of Mary ", "direct": true}, {"id": "ryan", "name": "Ryan", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 14, "location": "Howell, MI, US", "notes": "Potter in Howell, MI. Cone 10 gas reduction, raku, glow glazes. Built Stull Atlas. My Clay Corner Studio. Got into clay through a friend, restored a kickwheel, never stopped. Self-taught glaze artistr", "direct": true}, {"id": "andrea-deshano", "name": "Andrea DeShano", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "ann-valle", "name": "Ann Valle", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "blake-williams", "name": "Blake Williams", "type": "person", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "East Lansing, MI, US", "notes": "Associate Professor of Ceramics at Michigan State University. MFA from Louisiana State University, BFA from Alfred University. Likely MFA advisor to Mary Fritz.", "direct": true}, {"id": "jim-adair", "name": "Jim Adair", "type": "person", "cluster": "mcaa", "color": "#8b6f4e", "radius": 8, "location": "MI, US", "notes": "Ceramicist and MCAA member. Co-organized the \"delecTable\" exhibition at Janice Charach Gallery (2021) with Mary and Peter Fritz.", "direct": true}, {"id": "mike-amann", "name": "Mike Amann", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. OGP studio on CPST. Co-host with Suzanne Amann.", "direct": true}, {"id": "broad-art-museum", "name": "Eli and Edythe Broad Art Museum", "type": "place", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "East Lansing, MI, US", "notes": "Contemporary art museum at Michigan State University. Designed by Zaha Hadid, opened 2012.", "direct": true}, {"id": "lane-kaufmann", "name": "Lane Kaufmann", "type": "person", "cluster": "studio", "color": "#7a9a6a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. MFA in Ceramics from MSU (2015), same cohort as Mary Fritz. Guest artist at Red Cedar Studio for CPST.", "direct": true}, {"id": "janice-charach-gallery", "name": "Janice Charach Gallery", "type": "place", "cluster": "mcaa", "color": "#8b6f4e", "radius": 6, "location": "West Bloomfield, MI, US", "notes": "Art gallery at the Jewish Community Center of Metropolitan Detroit in West Bloomfield, Michigan. Director: Kelly Kaatz.", "direct": true}], "links": [{"source": "mary-fritz", "target": "red-cedar-studio", "type": "hosts", "label": "Host studio for CPST", "year": 2025}, {"source": "mary-fritz", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "mary-fritz", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "mary-fritz", "target": "kw-bell", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "andrea-deshano", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "pam-graham", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "natalie-liu", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "shingo-takeuchi", "type": "visited", "label": "Visited Takeuchi in Seto during Rokkoy\u014d trip, Dec 2025", "year": 2025}, {"source": "mary-fritz", "target": "shingo-takeuchi", "type": "gave_work", "label": "Gave Takeuchi one of Ryan Lack's translucent porcelain miniatures", "year": 2025}, {"source": "mary-fritz", "target": "michigan-state-university", "type": "studied_at", "label": "MFA in Ceramics, 2015", "year": 2015}, {"source": "mary-fritz", "target": "ferris-state-university", "type": "teaches_at", "label": "Interior Design / KCID and KGAR courses", "year": 2024}, {"source": "mary-fritz", "target": "broad-art-museum", "type": "exhibited_at", "label": "MFA graduating exhibition, April 2015", "year": 2015}, {"source": "mary-fritz", "target": "msu-mfa-2015", "type": "exhibited_at", "label": "One of 6 graduating MFA candidates", "year": 2015}, {"source": "mary-fritz", "target": "blake-williams", "type": "studied_under", "label": "MSU MFA ceramics faculty (likely advisor)", "year": 2015}, {"source": "mary-fritz", "target": "jae-won-lee", "type": "studied_under", "label": "MSU MFA ceramics faculty (likely advisor)", "year": 2015}, {"source": "mary-fritz", "target": "lane-kaufmann", "type": "cohort", "label": "MSU MFA Ceramics 2015", "year": 2015}, {"source": "mary-fritz", "target": "mcaa", "type": "member", "label": "Member and exhibition organizer", "year": 2021}, {"source": "mary-fritz", "target": "delectable-2021", "type": "organized", "label": "Co-organizer with Peter Fritz and Jim Adair", "year": 2021}, {"source": "mary-fritz", "target": "cracked-pot-studio-tour", "type": "founded", "label": "Founded CPST in 2017, inspired by St. Croix Valley Pottery Tour", "year": 2017}, {"source": "mary-fritz", "target": "nceca-2026", "type": "attending", "label": "Attending NCECA 2026 in Pittsburgh", "year": 2026}, {"source": "mary-fritz", "target": "brian-kakas", "type": "colleague", "label": "MCAA colleague, NCECA organizer", "year": null}, {"source": "mary-fritz", "target": "jim-adair", "type": "co_organized", "label": "Co-organized delecTable exhibition", "year": 2021}, {"source": "mary-fritz", "target": "janice-charach-gallery", "type": "exhibited_at", "label": "delecTable exhibition venue", "year": 2021}, {"source": "mary-fritz", "target": "charlotte-grenier", "type": "hosted", "label": "Guest artist at CPST open studio", "year": null}, {"source": "mary-fritz", "target": "yesomi-umolu", "type": "exhibited_under", "label": "Curator of MFA exhibition at Broad", "year": 2015}, {"source": "mary-fritz", "target": "nancy-kronenberg", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "lee-kronenberg", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "jim-feldkamp", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "virginia-cassaday", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "doug-delind", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "bill-selanders", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "marie-gougeon", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "ned-krouse", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "suzanne-amann", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "mike-amann", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "jane-hildebrand", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "ryan", "target": "mary-fritz", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "mary-fritz", "type": "personal", "label": "Friend", "year": null}, {"source": "peter-fritz", "target": "mary-fritz", "type": "married_to", "label": "Husband and wife", "year": null}, {"source": "andrea-deshano", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "andrea-deshano", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "natalie-liu", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "pam-graham", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "andrea-deshano", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ann-valle", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ann-valle", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "ann-valle", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ann-valle", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "ann-valle", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "bill-selanders", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "FK studio", "year": 2025}, {"source": "bob-valle", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "bob-valle", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "bob-valle", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "bob-valle", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "brett-suave", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "brett-suave", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "brett-suave", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "brett-suave", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "brett-suave", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "brett-suave", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "brian-kakas", "target": "mcaa", "type": "member", "label": "Curated MCAA Biennial", "year": null}, {"source": "brian-kakas", "target": "mcaa", "type": "president", "label": "MCAA President since 2023", "year": 2023}, {"source": "brian-kakas", "target": "nceca-2026", "type": "organizer", "label": "Organizing MCAA events at NCECA 2026 Detroit", "year": 2026}, {"source": "brian-kakas", "target": "nceca-2026", "type": "presenting_at", "label": "Panel: State of Clay", "year": null}, {"source": "broad-art-museum", "target": "michigan-state-university", "type": "part_of", "label": "Museum at MSU, designed by Zaha Hadid", "year": 2012}, {"source": "charlotte-grenier", "target": "red-cedar-studio", "type": "exhibited_at", "label": "Guest artist at CPST", "year": 2025}, {"source": "delectable-2021", "target": "janice-charach-gallery", "type": "held_at", "label": "Oct 24 - Dec 9, 2021", "year": 2021}, {"source": "delectable-2021", "target": "mcaa", "type": "partnered_with", "label": "MCAA-partnered juried exhibition", "year": 2021}, {"source": "doug-delind", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "DD studio", "year": 2025}, {"source": "jane-hildebrand", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "RB studio", "year": 2025}, {"source": "janet-reifenberg", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "janet-reifenberg", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "janet-reifenberg", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "janet-reifenberg", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "janet-reifenberg", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "janet-reifenberg", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "janet-reifenberg", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "jim-adair", "target": "delectable-2021", "type": "organized", "label": "Co-organizer with Mary and Peter Fritz", "year": 2021}, {"source": "jim-adair", "target": "mcaa", "type": "member", "label": "MCAA member, exhibition organizer", "year": 2021}, {"source": "jim-feldkamp", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "BP studio", "year": 2025}, {"source": "kw-bell", "target": "andrea-deshano", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "kw-bell", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "natalie-liu", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "pam-graham", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "kw-bell", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "lane-kaufmann", "target": "michigan-state-university", "type": "studied_at", "label": "MFA in Ceramics, 2015", "year": 2015}, {"source": "lane-kaufmann", "target": "msu-mfa-2015", "type": "exhibited_at", "label": "One of 6 graduating MFA candidates", "year": 2015}, {"source": "lane-kaufmann", "target": "red-cedar-studio", "type": "exhibited_at", "label": "Guest artist at CPST", "year": 2025}, {"source": "lee-kronenberg", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "ACP studio", "year": 2025}, {"source": "maggie-valle", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "maggie-valle", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "maggie-valle", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "marie-gougeon", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "MG studio", "year": 2025}, {"source": "mcaa", "target": "nceca-2026", "type": "affiliated_with", "label": "MCAA is Michigan's primary ceramics organization; many members attend NCECA", "year": null}, {"source": "mcaa", "target": "nceca-2026", "type": "exhibiting_at", "label": "NCECA 2026 Resource Hall exhibitor", "year": 2026}, {"source": "mcaa", "target": "nceca-2026", "type": "participating", "label": "MCAA Ceramic Biennial Award Winners exhibit, Empty Bowls Detroit", "year": 2026}, {"source": "mike-amann", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "OGP studio", "year": 2025}, {"source": "msu-mfa-2015", "target": "broad-art-museum", "type": "held_at", "label": "Exhibition at Broad Art Museum", "year": 2015}, {"source": "nancy-kronenberg", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "ACP studio", "year": 2025}, {"source": "natalie-liu", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "natalie-liu", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "natalie-liu", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ned-krouse", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "NK studio", "year": 2025}, {"source": "pam-graham", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "pam-graham", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "natalie-liu", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "pam-graham", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "paul-nilsson", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "paul-nilsson", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "peter-fritz", "target": "cracked-pot-studio-tour", "type": "board_member", "label": "Board of Directors 2017-present", "year": 2017}, {"source": "peter-fritz", "target": "delectable-2021", "type": "organized", "label": "Co-organizer with Mary Fritz and Jim Adair", "year": 2021}, {"source": "peter-fritz", "target": "mcaa", "type": "board_member", "label": "Controller, Board of Directors 2016-2022", "year": 2016}, {"source": "red-cedar-studio", "target": "cracked-pot-studio-tour", "type": "part_of", "label": "Host studio", "year": 2025}, {"source": "ruth-zimmerman", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "ruth-zimmerman", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "ryan", "target": "andrea-deshano", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "ryan", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "kw-bell", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "natalie-liu", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "nceca-2026", "type": "presenting_at", "label": "demoing Stull Atlas", "year": null}, {"source": "ryan", "target": "pam-graham", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "ryan", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "shingo-takeuchi", "type": "work_collected_by", "label": "Takeuchi received Ryan's translucent porcelain miniature via Mary Fritz, Dec 2025", "year": 2025}, {"source": "ryan", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "suzanne-amann", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "OGP studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "tiffany-mcintyre", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "tiffany-mcintyre", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "virginia-cassaday", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "CS studio", "year": 2025}, {"source": "yesomi-umolu", "target": "msu-mfa-2015", "type": "curated", "label": "Curator of MSU MFA 2015 exhibition", "year": 2015}]};
+    const DATA = {"nodes": [{"id": "maggie-valle", "name": "Maggie Valle", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "ned-krouse", "name": "Ned Krouse", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. NK studio on CPST.", "direct": true}, {"id": "doug-delind", "name": "Doug DeLind", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. DD studio on CPST.", "direct": true}, {"id": "paul-nilsson", "name": "Paul Nilsson", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "andrea-deshano", "name": "Andrea DeShano", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "bob-valle", "name": "Bob Valle", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "jane-hildebrand", "name": "Jane Hildebrand", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. RB studio on CPST.", "direct": true}, {"id": "brian-kakas", "name": "Brian Kakas", "type": "person", "cluster": "mcaa", "color": "#8b6f4e", "radius": 8, "location": "Bowling Green, OH, US", "notes": "Ceramic artist and educator. Associate Professor of Art at Bowling Green State University (BGSU). Board member of Michigan Ceramic Art Association (MCAA). Panelist at NCECA 2026 on 'The State of Clay:", "direct": true}, {"id": "jim-feldkamp", "name": "Jim Feldkamp", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. BP studio on CPST.", "direct": true}, {"id": "peter-fritz", "name": "Peter Fritz", "type": "person", "cluster": "family", "color": "#a85d3a", "radius": 12, "location": "Williamston, MI, US", "notes": "PhD in Engineering Mechanics (Penn State). MBA (Cardinal Stritch). Inventor of the Ceramic Arts Weldless Gas Kiln (PellaCom). MCAA Board Controller 2016-2022. CPST Board 2017-present. Husband of Mary ", "direct": true}, {"id": "ann-valle", "name": "Ann Valle", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "mike-amann", "name": "Mike Amann", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. OGP studio on CPST. Co-host with Suzanne Amann.", "direct": true}, {"id": "bill-selanders", "name": "Bill Selanders", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. FK studio on CPST.", "direct": true}, {"id": "ryan", "name": "Ryan", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 14, "location": "Howell, MI, US", "notes": "Potter in Howell, MI. Cone 10 gas reduction, raku, glow glazes. Built Stull Atlas. My Clay Corner Studio. Got into clay through a friend, restored a kickwheel, never stopped. Self-taught glaze artistr", "direct": true}, {"id": "ferris-state-university", "name": "Ferris State University", "type": "institution", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "Big Rapids, MI, US", "notes": "University in Big Rapids, Michigan. Mary Fritz teaches Interior Design / KCID and KGAR courses.", "direct": true}, {"id": "michigan-state-university", "name": "Michigan State University", "type": "institution", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "East Lansing, MI, US", "notes": "Major research university in East Lansing, Michigan. MFA ceramics program in Studio Art.", "direct": true}, {"id": "kw-bell", "name": "K.W. Bell", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "mary-fritz", "name": "Mary Fritz", "type": "person", "cluster": "center", "color": "#5a7247", "radius": 22, "location": "MI, US", "notes": "Creates hand-built functional and sculptural pieces. Uses flora and fauna and mother earth imagery \u2014 stories of discovery, absurdity, emotion, loss, and humor. Highlights whimsy of natural processes, ", "direct": false}, {"id": "red-cedar-studio", "name": "Red Cedar Studio", "type": "place", "cluster": "studio", "color": "#7a9a6a", "radius": 14, "location": "Lansing, MI, US", "notes": "Pottery studio hosted by Mary Fritz. Part of the Cracked Pot Studio Tour. Overlooks the Red Cedar River, surrounded by nature. Website: crackedpotstudiotour.com/rcs-red-cedar-studio/", "direct": true}, {"id": "ruth-zimmerman", "name": "Ruth Zimmerman", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "jae-won-lee", "name": "Jae Won Lee", "type": "person", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "East Lansing, MI, US", "notes": "Associate Professor at Michigan State University. MFA from Alfred University. Two-time Fulbright Scholar. Hand-builds porcelain.", "direct": true}, {"id": "mcaa", "name": "Michigan Ceramic Art Association", "type": "institution", "cluster": "mcaa", "color": "#8b6f4e", "radius": 14, "location": "MI, US", "notes": "MCAA (michclay.com). Est. 1958 as Michigan Potters' Association. 300+ members statewide: studio artists, educators, galleries, guilds, students, collectors. Runs Michigan Ceramics Exhibition (biennial", "direct": true}, {"id": "nancy-kronenberg", "name": "Nancy Kronenberg", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. ACP studio on CPST. Co-host with Lee Kronenberg.", "direct": true}, {"id": "tiffany-mcintyre", "name": "Tiffany McIntyre", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "janet-reifenberg", "name": "Janet Reifenberg", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "virginia-cassaday", "name": "Virginia Cassaday", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. CS studio on CPST.", "direct": true}, {"id": "cracked-pot-studio-tour", "name": "Cracked Pot Studio Tour", "type": "event", "cluster": "cpst", "color": "#c4956a", "radius": 14, "location": "Lansing, MI, US", "notes": "Self-guided ceramics studio tour in the Greater Lansing, Michigan area. Founded 2017 by ceramic artists. Michigan not-for-profit organization run by volunteer board. Annual autumn weekend event \u2014 open", "direct": true}, {"id": "nceca-2026", "name": "NCECA 2026", "type": "event", "cluster": "nceca", "color": "#4a6fa5", "radius": 14, "location": "", "notes": "60th annual conference 'Volumes' \u2014 March 25-28, 2026, Huntington Place Convention Center, Detroit. Ryan planning to demo Stull Atlas. Henry is a previous NCECA presenter (2014 Milwaukee).", "direct": true}, {"id": "charlotte-grenier", "name": "Charlotte Grenier", "type": "person", "cluster": "studio", "color": "#7a9a6a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio for CPST.", "direct": true}, {"id": "yesomi-umolu", "name": "Yesomi Umolu", "type": "person", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "", "notes": "Curator. Curated the 2015 MSU MFA exhibition at the Broad Art Museum featuring Mary Fritz and fellow graduates.", "direct": true}, {"id": "marie-gougeon", "name": "Marie Gougeon", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. MG studio on CPST.", "direct": true}, {"id": "shingo-takeuchi", "name": "Shingo Takeuchi", "type": "person", "cluster": "japan", "color": "#bf4040", "radius": 12, "location": "Seto, Aichi, Japan", "notes": "Japanese ceramist (b. 1955, Seto, Aichi). Sekki (stoneware) and iron-zogan (inlay) specialist. Trained at Aichi Kiln Training School (1979), studied under Kato ShunTei II. Opened own studio in Seto 19", "direct": true}, {"id": "lee-kronenberg", "name": "Lee Kronenberg", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. ACP studio on CPST. Co-host with Nancy Kronenberg.", "direct": true}, {"id": "broad-art-museum", "name": "Eli and Edythe Broad Art Museum", "type": "place", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "East Lansing, MI, US", "notes": "Contemporary art museum at Michigan State University. Designed by Zaha Hadid, opened 2012.", "direct": true}, {"id": "brett-suave", "name": "Brett Suave", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "natalie-liu", "name": "Natalie Liu", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "lane-kaufmann", "name": "Lane Kaufmann", "type": "person", "cluster": "studio", "color": "#7a9a6a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. MFA in Ceramics from MSU (2015), same cohort as Mary Fritz. Guest artist at Red Cedar Studio for CPST.", "direct": true}, {"id": "blake-williams", "name": "Blake Williams", "type": "person", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "East Lansing, MI, US", "notes": "Associate Professor of Ceramics at Michigan State University. MFA from Louisiana State University, BFA from Alfred University. Likely MFA advisor to Mary Fritz.", "direct": true}, {"id": "delectable-2021", "name": "delecTable", "type": "event", "cluster": "mcaa", "color": "#8b6f4e", "radius": 10, "location": "West Bloomfield, MI, US", "notes": "All-ceramic juried tableware show at Janice Charach Gallery, Oct 24 - Dec 9, 2021. ~40 Michigan artists, ~350 pieces. MCAA-partnered. Organized by Mary Fritz, Peter Fritz, and Jim Adair.", "direct": true}, {"id": "janice-charach-gallery", "name": "Janice Charach Gallery", "type": "place", "cluster": "mcaa", "color": "#8b6f4e", "radius": 6, "location": "West Bloomfield, MI, US", "notes": "Art gallery at the Jewish Community Center of Metropolitan Detroit in West Bloomfield, Michigan. Director: Kelly Kaatz.", "direct": true}, {"id": "suzanne-amann", "name": "Suzanne Amann", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. OGP studio on CPST. Co-host with Mike Amann.", "direct": true}, {"id": "pam-graham", "name": "Pam Graham", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "msu-mfa-2015", "name": "MSU MFA Exhibition 2015", "type": "event", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "East Lansing, MI, US", "notes": "MFA graduating exhibition at Eli and Edythe Broad Art Museum, MSU, April 2015. Six MFA candidates including Mary Fritz and Lane Kaufmann. Curated by Yesomi Umolu.", "direct": true}, {"id": "jim-adair", "name": "Jim Adair", "type": "person", "cluster": "mcaa", "color": "#8b6f4e", "radius": 8, "location": "MI, US", "notes": "Ceramicist and MCAA member. Co-organized the \"delecTable\" exhibition at Janice Charach Gallery (2021) with Mary and Peter Fritz.", "direct": true}], "links": [{"source": "mary-fritz", "target": "red-cedar-studio", "type": "hosts", "label": "Host studio for CPST", "year": 2025}, {"source": "mary-fritz", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "mary-fritz", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "mary-fritz", "target": "kw-bell", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "andrea-deshano", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "pam-graham", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "natalie-liu", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "shingo-takeuchi", "type": "visited", "label": "Visited Takeuchi in Seto during Rokkoy\u014d trip, Dec 2025", "year": 2025}, {"source": "mary-fritz", "target": "shingo-takeuchi", "type": "gave_work", "label": "Gave Takeuchi one of Ryan Lack's translucent porcelain miniatures", "year": 2025}, {"source": "mary-fritz", "target": "michigan-state-university", "type": "studied_at", "label": "MFA in Ceramics, 2015", "year": 2015}, {"source": "mary-fritz", "target": "ferris-state-university", "type": "teaches_at", "label": "Interior Design / KCID and KGAR courses", "year": 2024}, {"source": "mary-fritz", "target": "broad-art-museum", "type": "exhibited_at", "label": "MFA graduating exhibition, April 2015", "year": 2015}, {"source": "mary-fritz", "target": "msu-mfa-2015", "type": "exhibited_at", "label": "One of 6 graduating MFA candidates", "year": 2015}, {"source": "mary-fritz", "target": "blake-williams", "type": "studied_under", "label": "MSU MFA ceramics faculty (likely advisor)", "year": 2015}, {"source": "mary-fritz", "target": "jae-won-lee", "type": "studied_under", "label": "MSU MFA ceramics faculty (likely advisor)", "year": 2015}, {"source": "mary-fritz", "target": "lane-kaufmann", "type": "cohort", "label": "MSU MFA Ceramics 2015", "year": 2015}, {"source": "mary-fritz", "target": "mcaa", "type": "member", "label": "Member and exhibition organizer", "year": 2021}, {"source": "mary-fritz", "target": "delectable-2021", "type": "organized", "label": "Co-organizer with Peter Fritz and Jim Adair", "year": 2021}, {"source": "mary-fritz", "target": "cracked-pot-studio-tour", "type": "founded", "label": "Founded CPST in 2017, inspired by St. Croix Valley Pottery Tour", "year": 2017}, {"source": "mary-fritz", "target": "nceca-2026", "type": "attending", "label": "Attending NCECA 2026 in Pittsburgh", "year": 2026}, {"source": "mary-fritz", "target": "brian-kakas", "type": "colleague", "label": "MCAA colleague, NCECA organizer", "year": null}, {"source": "mary-fritz", "target": "jim-adair", "type": "co_organized", "label": "Co-organized delecTable exhibition", "year": 2021}, {"source": "mary-fritz", "target": "janice-charach-gallery", "type": "exhibited_at", "label": "delecTable exhibition venue", "year": 2021}, {"source": "mary-fritz", "target": "charlotte-grenier", "type": "hosted", "label": "Guest artist at CPST open studio", "year": null}, {"source": "mary-fritz", "target": "yesomi-umolu", "type": "exhibited_under", "label": "Curator of MFA exhibition at Broad", "year": 2015}, {"source": "mary-fritz", "target": "nancy-kronenberg", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "lee-kronenberg", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "jim-feldkamp", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "virginia-cassaday", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "doug-delind", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "bill-selanders", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "marie-gougeon", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "ned-krouse", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "suzanne-amann", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "mike-amann", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "jane-hildebrand", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "ryan", "target": "mary-fritz", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "mary-fritz", "type": "personal", "label": "Friend", "year": null}, {"source": "peter-fritz", "target": "mary-fritz", "type": "married_to", "label": "Husband and wife", "year": null}, {"source": "andrea-deshano", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "andrea-deshano", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "natalie-liu", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "pam-graham", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "andrea-deshano", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ann-valle", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ann-valle", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "ann-valle", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ann-valle", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "ann-valle", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "bill-selanders", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "FK studio", "year": 2025}, {"source": "bob-valle", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "bob-valle", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "bob-valle", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "bob-valle", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "brett-suave", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "brett-suave", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "brett-suave", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "brett-suave", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "brett-suave", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "brett-suave", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "brian-kakas", "target": "mcaa", "type": "member", "label": "Curated MCAA Biennial", "year": null}, {"source": "brian-kakas", "target": "mcaa", "type": "president", "label": "MCAA President since 2023", "year": 2023}, {"source": "brian-kakas", "target": "nceca-2026", "type": "organizer", "label": "Organizing MCAA events at NCECA 2026 Detroit", "year": 2026}, {"source": "brian-kakas", "target": "nceca-2026", "type": "presenting_at", "label": "Panel: State of Clay", "year": null}, {"source": "broad-art-museum", "target": "michigan-state-university", "type": "part_of", "label": "Museum at MSU, designed by Zaha Hadid", "year": 2012}, {"source": "charlotte-grenier", "target": "red-cedar-studio", "type": "exhibited_at", "label": "Guest artist at CPST", "year": 2025}, {"source": "delectable-2021", "target": "janice-charach-gallery", "type": "held_at", "label": "Oct 24 - Dec 9, 2021", "year": 2021}, {"source": "delectable-2021", "target": "mcaa", "type": "partnered_with", "label": "MCAA-partnered juried exhibition", "year": 2021}, {"source": "doug-delind", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "DD studio", "year": 2025}, {"source": "jane-hildebrand", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "RB studio", "year": 2025}, {"source": "janet-reifenberg", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "janet-reifenberg", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "janet-reifenberg", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "janet-reifenberg", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "janet-reifenberg", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "janet-reifenberg", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "janet-reifenberg", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "jim-adair", "target": "delectable-2021", "type": "organized", "label": "Co-organizer with Mary and Peter Fritz", "year": 2021}, {"source": "jim-adair", "target": "mcaa", "type": "member", "label": "MCAA member, exhibition organizer", "year": 2021}, {"source": "jim-feldkamp", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "BP studio", "year": 2025}, {"source": "kw-bell", "target": "andrea-deshano", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "kw-bell", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "natalie-liu", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "pam-graham", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "kw-bell", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "lane-kaufmann", "target": "michigan-state-university", "type": "studied_at", "label": "MFA in Ceramics, 2015", "year": 2015}, {"source": "lane-kaufmann", "target": "msu-mfa-2015", "type": "exhibited_at", "label": "One of 6 graduating MFA candidates", "year": 2015}, {"source": "lane-kaufmann", "target": "red-cedar-studio", "type": "exhibited_at", "label": "Guest artist at CPST", "year": 2025}, {"source": "lee-kronenberg", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "ACP studio", "year": 2025}, {"source": "maggie-valle", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "maggie-valle", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "maggie-valle", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "marie-gougeon", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "MG studio", "year": 2025}, {"source": "mcaa", "target": "nceca-2026", "type": "affiliated_with", "label": "MCAA is Michigan's primary ceramics organization; many members attend NCECA", "year": null}, {"source": "mcaa", "target": "nceca-2026", "type": "exhibiting_at", "label": "NCECA 2026 Resource Hall exhibitor", "year": 2026}, {"source": "mcaa", "target": "nceca-2026", "type": "participating", "label": "MCAA Ceramic Biennial Award Winners exhibit, Empty Bowls Detroit", "year": 2026}, {"source": "mike-amann", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "OGP studio", "year": 2025}, {"source": "msu-mfa-2015", "target": "broad-art-museum", "type": "held_at", "label": "Exhibition at Broad Art Museum", "year": 2015}, {"source": "nancy-kronenberg", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "ACP studio", "year": 2025}, {"source": "natalie-liu", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "natalie-liu", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "natalie-liu", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ned-krouse", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "NK studio", "year": 2025}, {"source": "pam-graham", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "pam-graham", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "natalie-liu", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "pam-graham", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "paul-nilsson", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "paul-nilsson", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "peter-fritz", "target": "cracked-pot-studio-tour", "type": "board_member", "label": "Board of Directors 2017-present", "year": 2017}, {"source": "peter-fritz", "target": "delectable-2021", "type": "organized", "label": "Co-organizer with Mary Fritz and Jim Adair", "year": 2021}, {"source": "peter-fritz", "target": "mcaa", "type": "board_member", "label": "Controller, Board of Directors 2016-2022", "year": 2016}, {"source": "red-cedar-studio", "target": "cracked-pot-studio-tour", "type": "part_of", "label": "Host studio", "year": 2025}, {"source": "ruth-zimmerman", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "ruth-zimmerman", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "ryan", "target": "andrea-deshano", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "ryan", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "kw-bell", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "natalie-liu", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "nceca-2026", "type": "presenting_at", "label": "demoing Stull Atlas", "year": null}, {"source": "ryan", "target": "pam-graham", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "ryan", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "shingo-takeuchi", "type": "work_collected_by", "label": "Takeuchi received Ryan's translucent porcelain miniature via Mary Fritz, Dec 2025", "year": 2025}, {"source": "ryan", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "suzanne-amann", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "OGP studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "tiffany-mcintyre", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "tiffany-mcintyre", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "virginia-cassaday", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "CS studio", "year": 2025}, {"source": "yesomi-umolu", "target": "msu-mfa-2015", "type": "curated", "label": "Curator of MSU MFA 2015 exhibition", "year": 2015}]};
 
     // ── Canvas setup ─────────────────────────
     const canvas = document.getElementById('canvas');
@@ -589,8 +659,6 @@
     // Breathe effect — mouse repels nodes gently
     let mouseWorldX = null, mouseWorldY = null;
     let mouseOnCanvas = false;
-    const BREATHE_RADIUS = 120;  // influence radius
-    const BREATHE_STRENGTH = 0.15; // gentle push
 
     // Animation time for sparkle
     let animTime = 0;
@@ -779,6 +847,16 @@
     let nodeScale = 1.0;
     let showLinkLines = true;
     let showGlow = true;
+    let show3D = true;
+
+    // Link style params
+    let linkStyle = 'curved';   // 'straight', 'curved', 'arc'
+    let curveAmount = 30;       // pixel offset for bezier control point
+    let arrowStyle = 'filled';  // 'none', 'filled', 'open', 'dot'
+    let arrowSize = 6;
+    let breatheEnabled = true;
+    let breatheStrength = 0.15;
+    let breatheRadius = 120;
 
     // Cluster target positions (relative to center)
     const CLUSTER_ANGLES = {
@@ -871,7 +949,7 @@
       }
 
       // Breathe — mouse gently pushes nearby nodes (dead zone around hovered node)
-      if (mouseOnCanvas && mouseWorldX !== null && !dragNode) {
+      if (breatheEnabled && mouseOnCanvas && mouseWorldX !== null && !dragNode) {
         for (const n of nodes) {
           if (n._fixed) continue;
           const dx = n.x - mouseWorldX;
@@ -879,9 +957,9 @@
           const dist = Math.sqrt(dx * dx + dy * dy) || 1;
           // Skip nodes directly under cursor (within their radius) so they stay clickable
           if (dist < n.radius * nodeScale + 6) continue;
-          if (dist < BREATHE_RADIUS) {
-            const falloff = 1 - dist / BREATHE_RADIUS; // 1 at center, 0 at edge
-            const push = BREATHE_STRENGTH * falloff * falloff; // quadratic falloff
+          if (dist < breatheRadius) {
+            const falloff = 1 - dist / breatheRadius; // 1 at center, 0 at edge
+            const push = breatheStrength * falloff * falloff; // quadratic falloff
             n.vx += (dx / dist) * push;
             n.vy += (dy / dist) * push;
           }
@@ -900,6 +978,20 @@
       simStep++;
     }
 
+    // ── Color cache for 3D rendering ──
+    const _colorCache = {};
+    const _colorParseCtx = document.createElement('canvas').getContext('2d');
+    function parseColor(c) {
+      if (_colorCache[c]) return _colorCache[c];
+      _colorParseCtx.fillStyle = c;
+      const hex = _colorParseCtx.fillStyle;
+      const r = parseInt(hex.slice(1,3), 16);
+      const g = parseInt(hex.slice(3,5), 16);
+      const b = parseInt(hex.slice(5,7), 16);
+      _colorCache[c] = [r, g, b];
+      return _colorCache[c];
+    }
+
     // ── Render ────────────────────────────────
     function draw() {
       ctx.clearRect(0, 0, W, H);
@@ -907,27 +999,119 @@
       ctx.translate(offsetX, offsetY);
       ctx.scale(scale, scale);
 
-      // Draw links
+      // ── Draw links (curved + arrows) ───────
       if (showLinkLines) {
         for (const l of links) {
           const s = nodeMap[l.source], t = nodeMap[l.target];
           if (!s || !t) continue;
-          ctx.beginPath();
-          ctx.moveTo(s.x, s.y);
-          ctx.lineTo(t.x, t.y);
+
           const isMaryLink = l.source === 'mary-fritz' || l.target === 'mary-fritz';
           const isFocusLink = focusNode && (l.source === focusNode.id || l.target === focusNode.id);
+          let lw, alpha;
           if (isFocusLink) {
-            ctx.strokeStyle = `rgba(90,114,71,${Math.min(linkOpacity * 2.5, 0.7)})`;
-            ctx.lineWidth = 2;
+            alpha = Math.min(linkOpacity * 2.5, 0.7);
+            lw = 2;
           } else if (isMaryLink) {
-            ctx.strokeStyle = `rgba(90,114,71,${focusNode ? linkOpacity * 0.3 : linkOpacity})`;
-            ctx.lineWidth = 1.5;
+            alpha = focusNode ? linkOpacity * 0.3 : linkOpacity;
+            lw = 1.5;
           } else {
-            ctx.strokeStyle = `rgba(160,160,160,${focusNode ? linkOpacity * 0.15 : linkOpacity * 0.6})`;
-            ctx.lineWidth = 0.8;
+            alpha = focusNode ? linkOpacity * 0.15 : linkOpacity * 0.6;
+            lw = 0.8;
+          }
+          const strokeColor = isFocusLink || isMaryLink
+            ? `rgba(90,114,71,${alpha})`
+            : `rgba(160,160,160,${alpha})`;
+
+          ctx.strokeStyle = strokeColor;
+          ctx.lineWidth = lw;
+
+          // Compute direction and perpendicular for curves
+          const dx = t.x - s.x, dy = t.y - s.y;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          const nx = dx / dist, ny = dy / dist;  // unit direction
+          const px = -ny, py = nx;                // perpendicular
+
+          // Control point for curve
+          const midX = (s.x + t.x) / 2;
+          const midY = (s.y + t.y) / 2;
+          let cpx = midX, cpy = midY;
+
+          if (linkStyle === 'curved') {
+            // Use link index for consistent curve offset (alternate sides)
+            const li = links.indexOf(l);
+            const side = li % 2 === 0 ? 1 : -1;
+            cpx = midX + px * curveAmount * side;
+            cpy = midY + py * curveAmount * side;
+          } else if (linkStyle === 'arc') {
+            // Always curve away from center
+            const cx = W / 2, cy = H / 2;
+            const toMid = Math.sqrt((midX - cx) ** 2 + (midY - cy) ** 2) || 1;
+            cpx = midX + ((midX - cx) / toMid) * curveAmount;
+            cpy = midY + ((midY - cy) / toMid) * curveAmount;
+          }
+
+          // Draw path
+          ctx.beginPath();
+          ctx.moveTo(s.x, s.y);
+          if (linkStyle === 'straight') {
+            ctx.lineTo(t.x, t.y);
+          } else {
+            ctx.quadraticCurveTo(cpx, cpy, t.x, t.y);
           }
           ctx.stroke();
+
+          // ── Arrows ──
+          if (arrowStyle !== 'none') {
+            // Arrow position: on the curve, near the target node edge
+            const tr = (nodeMap[l.target].radius || 8) * nodeScale;
+            // Parametric t for point near target
+            const arrT = Math.max(0.01, 1 - (tr + 3) / dist);
+            let ax, ay, adx, ady;
+            if (linkStyle === 'straight') {
+              ax = s.x + dx * arrT;
+              ay = s.y + dy * arrT;
+              adx = nx; ady = ny;
+            } else {
+              // Point on quadratic bezier at parameter arrT
+              const u = 1 - arrT;
+              ax = u * u * s.x + 2 * u * arrT * cpx + arrT * arrT * t.x;
+              ay = u * u * s.y + 2 * u * arrT * cpy + arrT * arrT * t.y;
+              // Tangent at arrT
+              const tdx = 2 * (1 - arrT) * (cpx - s.x) + 2 * arrT * (t.x - cpx);
+              const tdy = 2 * (1 - arrT) * (cpy - s.y) + 2 * arrT * (t.y - cpy);
+              const tlen = Math.sqrt(tdx * tdx + tdy * tdy) || 1;
+              adx = tdx / tlen; ady = tdy / tlen;
+            }
+
+            const aSize = arrowSize * Math.max(0.6, Math.min(1.2, lw));
+            const apx = -ady, apy = adx; // arrow perpendicular
+
+            if (arrowStyle === 'dot') {
+              ctx.beginPath();
+              ctx.arc(ax, ay, aSize * 0.5, 0, Math.PI * 2);
+              ctx.fillStyle = strokeColor;
+              ctx.fill();
+            } else {
+              // Triangle arrowhead
+              const tipX = ax + adx * aSize;
+              const tipY = ay + ady * aSize;
+              const baseX1 = ax - adx * aSize * 0.3 + apx * aSize * 0.5;
+              const baseY1 = ay - ady * aSize * 0.3 + apy * aSize * 0.5;
+              const baseX2 = ax - adx * aSize * 0.3 - apx * aSize * 0.5;
+              const baseY2 = ay - ady * aSize * 0.3 - apy * aSize * 0.5;
+              ctx.beginPath();
+              ctx.moveTo(tipX, tipY);
+              ctx.lineTo(baseX1, baseY1);
+              ctx.lineTo(baseX2, baseY2);
+              ctx.closePath();
+              if (arrowStyle === 'filled') {
+                ctx.fillStyle = strokeColor;
+                ctx.fill();
+              } else {
+                ctx.stroke();
+              }
+            }
+          }
         }
       }
 
@@ -983,15 +1167,48 @@
           ctx.stroke();
         }
 
-        // Node circle
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+        // ── Node rendering (flat or 3D) ──
         // Dim non-connected nodes during focus
         if (focusNode && n !== focusNode) {
           ctx.globalAlpha = focusDirectIds.has(n.id) ? 1.0 : 0.3;
         }
-        ctx.fillStyle = n === focusNode ? '#3a3a3a' : n.color;
-        ctx.fill();
+
+        const baseColor = n === focusNode ? '#3a3a3a' : n.color;
+
+        if (show3D) {
+          // 3D sphere: radial gradient with highlight + shadow
+          const hlX = n.x - r * 0.3;  // highlight offset upper-left
+          const hlY = n.y - r * 0.3;
+          const grad3d = ctx.createRadialGradient(hlX, hlY, r * 0.05, n.x, n.y, r);
+
+          // Parse base color to create lighter/darker variants
+          // Highlight: brighter version; edge: darker version
+          const [cr, cg, cb] = parseColor(baseColor);
+          const hlR = Math.min(255, cr + 90), hlG = Math.min(255, cg + 90), hlB = Math.min(255, cb + 90);
+          const shR = Math.max(0, cr - 50), shG = Math.max(0, cg - 50), shB = Math.max(0, cb - 50);
+
+          grad3d.addColorStop(0, `rgb(${hlR},${hlG},${hlB})`);
+          grad3d.addColorStop(0.45, baseColor);
+          grad3d.addColorStop(1, `rgb(${shR},${shG},${shB})`);
+
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+          ctx.fillStyle = grad3d;
+          ctx.fill();
+
+          // Specular highlight dot
+          ctx.beginPath();
+          ctx.arc(hlX + r * 0.05, hlY + r * 0.05, r * 0.18, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,0.45)`;
+          ctx.fill();
+        } else {
+          // Flat circle
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+          ctx.fillStyle = baseColor;
+          ctx.fill();
+        }
+
         ctx.globalAlpha = 1.0;
 
         // Focus ring
@@ -1005,8 +1222,10 @@
 
         // Border for institutions/events
         if (n.type !== 'person') {
-          ctx.strokeStyle = 'rgba(255,255,255,0.6)';
-          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+          ctx.strokeStyle = show3D ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.6)';
+          ctx.lineWidth = show3D ? 1 : 1.5;
           ctx.stroke();
         }
 
@@ -1084,9 +1303,43 @@
       document.getElementById('t-glow').classList.toggle('on', showGlow);
     }
 
+    function toggle3D() {
+      show3D = !show3D;
+      document.getElementById('t-3d').classList.toggle('on', show3D);
+    }
+
+    function toggleBreathe() {
+      breatheEnabled = !breatheEnabled;
+      document.getElementById('t-breathe').classList.toggle('on', breatheEnabled);
+    }
+
+    function setLinkStyle(v) { linkStyle = v; }
+    function setArrowStyle(v) { arrowStyle = v; }
+
     function toggleSettings() {
       const panel = document.getElementById('settings-panel');
       const btn = document.getElementById('btn-settings');
+      const adv = document.getElementById('advanced-panel');
+      const advBtn = document.getElementById('btn-advanced');
+      // Close advanced if open
+      if (adv.classList.contains('open')) {
+        adv.classList.remove('open');
+        advBtn.classList.remove('active');
+      }
+      const isOpen = panel.classList.toggle('open');
+      btn.classList.toggle('active', isOpen);
+    }
+
+    function toggleAdvanced() {
+      const panel = document.getElementById('advanced-panel');
+      const btn = document.getElementById('btn-advanced');
+      const basic = document.getElementById('settings-panel');
+      const basicBtn = document.getElementById('btn-settings');
+      // Close basic if open
+      if (basic.classList.contains('open')) {
+        basic.classList.remove('open');
+        basicBtn.classList.remove('active');
+      }
       const isOpen = panel.classList.toggle('open');
       btn.classList.toggle('active', isOpen);
     }
@@ -1118,6 +1371,14 @@
       v => Math.round(v) + '%', v => { linkOpacity = v / 100; });
     wireSlider('s-nodescale', 'v-nodescale',
       v => Math.round(v) + '%', v => { nodeScale = v / 100; });
+    wireSlider('s-curve', 'v-curve',
+      v => Math.round(v), v => { curveAmount = v; });
+    wireSlider('s-arrowsize', 'v-arrowsize',
+      v => Math.round(v), v => { arrowSize = v; });
+    wireSlider('s-breathestr', 'v-breathestr',
+      v => (v / 100).toFixed(2), v => { breatheStrength = v / 100; });
+    wireSlider('s-breatherad', 'v-breatherad',
+      v => Math.round(v), v => { breatheRadius = v; });
 
     // ── Focus mode ───────────────────────────
     function setFocus(node) {
