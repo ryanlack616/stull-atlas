@@ -306,6 +306,60 @@ footer {
 }
 footer a { color: var(--accent); }
 
+/* ── Password Gate ── */
+#pw-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #f7f5f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-family: 'Georgia', 'Times New Roman', serif;
+}
+#pw-gate .gate-sigil {
+  font-size: 2.4rem;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+#pw-gate h2 {
+  font-size: 1.1rem;
+  color: #3a3a3a;
+  font-weight: 400;
+  margin-bottom: 24px;
+  letter-spacing: 0.02em;
+}
+#pw-gate input {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 0.9rem;
+  padding: 10px 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 220px;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+}
+#pw-gate input:focus {
+  border-color: var(--accent);
+}
+#pw-gate .gate-hint {
+  font-size: 0.72rem;
+  color: #aaa;
+  margin-top: 12px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+#pw-gate.shake input {
+  animation: shake 0.4s ease;
+  border-color: #c44;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
 /* ── Responsive ── */
 @media (max-width: 600px) {
   .site-header { padding: 1.5rem 1rem; }
@@ -318,6 +372,14 @@ footer a { color: var(--accent); }
 </style>
 </head>
 <body>
+  <div id="pw-gate">
+    <div class="gate-sigil">&loz;</div>
+    <h2>Thank You, Mary</h2>
+    <input type="password" id="pw-input" placeholder="Enter password" autofocus>
+    <div class="gate-hint">Press Enter</div>
+  </div>
+
+  <div id="main-content" style="display:none">
   <div class="banner">
     A page from <a href="https://stullatlas.app">Stull Atlas</a> &mdash; built by Ryan Lack
   </div>
@@ -514,8 +576,39 @@ footer a { color: var(--accent); }
     <a href="https://stullatlas.app">stullatlas.app</a>
   </footer>
 
+  </div><!-- /main-content -->
+
   <script>
     document.title = 'Thank You, Mary — Stull Atlas';
+  </script>
+  <script>
+    const GATE_HASH = 'efb15659eb962f60acace66cf81dde4f6e1d51f58328c09b8a5ec78342f08d84';
+    const gate = document.getElementById('pw-gate');
+    const pwInput = document.getElementById('pw-input');
+    const mainContent = document.getElementById('main-content');
+
+    if (sessionStorage.getItem('mf-main-ok') === '1') {
+      gate.style.display = 'none';
+      mainContent.style.display = 'block';
+    }
+
+    pwInput.addEventListener('keydown', async (e) => {
+      if (e.key !== 'Enter') return;
+      const val = pwInput.value.trim();
+      const enc = new TextEncoder();
+      const hashBuf = await crypto.subtle.digest('SHA-256', enc.encode(val));
+      const hashHex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+      if (hashHex === GATE_HASH) {
+        sessionStorage.setItem('mf-main-ok', '1');
+        gate.style.display = 'none';
+        mainContent.style.display = 'block';
+      } else {
+        gate.classList.remove('shake');
+        void gate.offsetWidth;
+        gate.classList.add('shake');
+        pwInput.value = '';
+      }
+    });
   </script>
 </body>
 </html>
