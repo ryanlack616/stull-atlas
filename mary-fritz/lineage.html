@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mary Fritz — Lineage · Stull Atlas</title>
+  <meta name="description" content="The ceramics lineage of Mary Fritz — connections across Michigan, Japan, and the broader clay community.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23f7f5f0' stroke='%235a7247' stroke-width='2'/%3E%3Ctext x='16' y='21' text-anchor='middle' font-size='16' fill='%235a7247'%3E%E2%97%87%3C/text%3E%3C/svg%3E">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: #f7f5f0;
+      color: #2c2c2c;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .banner {
+      background: #3a3a3a;
+      color: #ccc;
+      text-align: center;
+      padding: 6px 16px;
+      font-size: 0.75rem;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      letter-spacing: 0.03em;
+    }
+    .banner a { color: #e8d5b7; text-decoration: none; }
+    .banner a:hover { text-decoration: underline; }
+
+    #graph-container {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 28px);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+    }
+    canvas:active { cursor: grabbing; }
+
+    /* ── Legend ─────────────────────────────── */
+    .legend {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(247,245,240,0.95);
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 0.78rem;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.8;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      max-width: 200px;
+    }
+    .legend h4 {
+      margin-bottom: 6px;
+      font-size: 0.82rem;
+      color: #555;
+      font-weight: 600;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── Tooltip ────────────────────────────── */
+    .tooltip {
+      position: absolute;
+      display: none;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 14px 18px;
+      max-width: 320px;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      pointer-events: none;
+      z-index: 100;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+    .tooltip h3 {
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      margin-bottom: 4px;
+      color: #2c2c2c;
+    }
+    .tooltip .tt-type {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #888;
+      margin-bottom: 6px;
+    }
+    .tooltip .tt-loc {
+      font-size: 0.75rem;
+      color: #666;
+      margin-bottom: 6px;
+    }
+    .tooltip .tt-notes {
+      font-size: 0.78rem;
+      color: #444;
+      font-style: italic;
+    }
+    .tooltip .tt-links {
+      margin-top: 8px;
+      font-size: 0.72rem;
+      color: #5a7247;
+    }
+
+    /* ── Title overlay ─────────────────────── */
+    .title-overlay {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      pointer-events: none;
+    }
+    .title-overlay h1 {
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: #3a3a3a;
+      letter-spacing: 0.02em;
+    }
+    .title-overlay h1 .sigil {
+      color: #5a7247;
+      margin-right: 6px;
+    }
+    .title-overlay .subtitle {
+      font-size: 0.82rem;
+      color: #888;
+      margin-top: 4px;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    /* ── Controls panel ─────────────────────── */
+    .controls {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      display: flex;
+      gap: 6px;
+      z-index: 50;
+    }
+    .controls button {
+      background: rgba(247,245,240,0.95);
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      cursor: pointer;
+      color: #555;
+      transition: all 0.2s;
+    }
+    .controls button:hover {
+      background: #5a7247;
+      color: #fff;
+      border-color: #5a7247;
+    }
+    .controls button.active {
+      background: #5a7247;
+      color: #fff;
+      border-color: #5a7247;
+    }
+
+    /* ── Settings panel ────────────────────── */
+    .settings-panel {
+      position: absolute;
+      top: 56px;
+      right: 20px;
+      background: rgba(247,245,240,0.97);
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 0.76rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+      z-index: 50;
+      display: none;
+      width: 250px;
+    }
+    .settings-panel.open {
+      display: block;
+    }
+    .settings-panel h4 {
+      font-size: 0.82rem;
+      color: #555;
+      margin-bottom: 10px;
+      font-weight: 600;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 6px;
+    }
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .setting-row label {
+      color: #555;
+      flex-shrink: 0;
+      min-width: 80px;
+    }
+    .setting-row input[type="range"] {
+      flex: 1;
+      height: 4px;
+      border-radius: 2px;
+      accent-color: #5a7247;
+      cursor: pointer;
+    }
+    .setting-row .val {
+      font-size: 0.68rem;
+      color: #888;
+      min-width: 32px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .setting-section {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid #eee;
+    }
+    .setting-section .section-label {
+      font-size: 0.72rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+    .setting-row .toggle {
+      position: relative;
+      width: 34px;
+      height: 18px;
+      border-radius: 9px;
+      background: #ccc;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: none;
+      padding: 0;
+    }
+    .setting-row .toggle.on {
+      background: #5a7247;
+    }
+    .setting-row .toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.2s;
+    }
+    .setting-row .toggle.on::after {
+      transform: translateX(16px);
+    }
+
+    /* ── Stats ──────────────────────────────── */
+    .stats {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      font-size: 0.72rem;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: #999;
+      text-align: right;
+      line-height: 1.6;
+    }
+
+    /* ── Instructions overlay ───────────────── */
+    .instructions {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255,255,255,0.97);
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 32px 40px;
+      max-width: 420px;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+      z-index: 200;
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -48%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+    .instructions.hiding {
+      animation: fadeOut 0.3s ease forwards;
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translate(-50%, -50%); }
+      to { opacity: 0; transform: translate(-50%, -48%); }
+    }
+    .instructions h2 {
+      font-family: Georgia, serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: #3a3a3a;
+      margin-bottom: 16px;
+    }
+    .instructions h2 .sigil { color: #5a7247; }
+    .instructions .inst-grid {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 8px 14px;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+    .instructions .inst-icon {
+      font-size: 1.3rem;
+      text-align: center;
+      line-height: 1.6;
+      color: #5a7247;
+    }
+    .instructions .inst-text {
+      font-size: 0.82rem;
+      color: #555;
+      line-height: 1.6;
+    }
+    .instructions .inst-text strong {
+      color: #3a3a3a;
+    }
+    .instructions .inst-start {
+      background: #5a7247;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 28px;
+      font-size: 0.88rem;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      cursor: pointer;
+      transition: background 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .instructions .inst-start:hover {
+      background: #4a6237;
+    }
+    .instructions .inst-hint {
+      font-size: 0.7rem;
+      color: #aaa;
+      margin-top: 10px;
+    }
+
+    /* ── Focus mode indicator ───────────────── */
+    .focus-indicator {
+      position: absolute;
+      top: 58px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(90,114,71,0.92);
+      color: #fff;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 0.78rem;
+      z-index: 60;
+      display: none;
+      cursor: pointer;
+      transition: opacity 0.3s;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+    .focus-indicator:hover {
+      background: rgba(90,114,71,1);
+    }
+
+    /* ── Help button ────────────────────────── */
+    .help-btn {
+      position: absolute;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(247,245,240,0.9);
+      border: 1px solid #ddd;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      font-family: Georgia, serif;
+      font-size: 0.82rem;
+      color: #888;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      z-index: 50;
+    }
+    .help-btn:hover {
+      background: #5a7247;
+      color: #fff;
+      border-color: #5a7247;
+    }
+  </style>
+</head>
+<body>
+  <div class="banner">
+    A page from <a href="https://stullatlas.app">Stull Atlas</a> &mdash; built by Ryan Lack
+  </div>
+
+  <div id="graph-container">
+    <canvas id="canvas"></canvas>
+
+    <div class="title-overlay">
+      <h1><span class="sigil">&loz;</span> Mary Fritz — Lineage</h1>
+      <div class="subtitle">Connections across Michigan, Japan &amp; the clay community</div>
+    </div>
+
+    <div class="controls">
+      <button onclick="resetView()">Reset</button>
+      <button onclick="toggleLabels()" id="btn-labels" class="active">Labels</button>
+      <button onclick="toggleSettings()" id="btn-settings">Settings</button>
+      <button onclick="reheat()">Reheat</button>
+    </div>
+
+    <div class="settings-panel" id="settings-panel">
+      <h4>Simulation</h4>
+      <div class="setting-row">
+        <label>Repulsion</label>
+        <input type="range" id="s-repulsion" min="500" max="8000" step="100" value="3000">
+        <span class="val" id="v-repulsion">3000</span>
+      </div>
+      <div class="setting-row">
+        <label>Link dist</label>
+        <input type="range" id="s-linkdist" min="40" max="300" step="5" value="120">
+        <span class="val" id="v-linkdist">120</span>
+      </div>
+      <div class="setting-row">
+        <label>Link strength</label>
+        <input type="range" id="s-linkstr" min="1" max="80" step="1" value="15">
+        <span class="val" id="v-linkstr">0.015</span>
+      </div>
+      <div class="setting-row">
+        <label>Cluster pull</label>
+        <input type="range" id="s-cluster" min="0" max="50" step="1" value="8">
+        <span class="val" id="v-cluster">0.008</span>
+      </div>
+      <div class="setting-row">
+        <label>Damping</label>
+        <input type="range" id="s-damping" min="50" max="99" step="1" value="92">
+        <span class="val" id="v-damping">0.92</span>
+      </div>
+
+      <div class="setting-section">
+        <div class="section-label">Display</div>
+        <div class="setting-row">
+          <label>Link opacity</label>
+          <input type="range" id="s-linkopac" min="0" max="100" step="2" value="25">
+          <span class="val" id="v-linkopac">25%</span>
+        </div>
+        <div class="setting-row">
+          <label>Node scale</label>
+          <input type="range" id="s-nodescale" min="30" max="200" step="5" value="100">
+          <span class="val" id="v-nodescale">100%</span>
+        </div>
+        <div class="setting-row">
+          <label>Labels</label>
+          <button class="toggle on" id="t-labels" onclick="toggleLabels()"></button>
+        </div>
+        <div class="setting-row">
+          <label>Link lines</label>
+          <button class="toggle on" id="t-links" onclick="toggleLinkLines()"></button>
+        </div>
+        <div class="setting-row">
+          <label>Mary glow</label>
+          <button class="toggle on" id="t-glow" onclick="toggleGlow()"></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <h4>Clusters</h4>
+      <div class="legend-item"><span class="legend-dot" style="background:#5a7247"></span> Mary Fritz</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#a85d3a"></span> Family</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#6a8e7a"></span> Education</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#7a9a6a"></span> Red Cedar Studio</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#c4956a"></span> Cracked Pot Studio Tour</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#8b6f4e"></span> MCAA / Exhibitions</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#bf4040"></span> Japan</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#4a6fa5"></span> NCECA 2026</div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <div class="focus-indicator" id="focus-indicator" onclick="clearFocus()"></div>
+
+    <div class="instructions" id="instructions">
+      <h2><span class="sigil">&loz;</span> How to Explore</h2>
+      <div class="inst-grid">
+        <div class="inst-icon">&#9775;</div>
+        <div class="inst-text"><strong>Scroll</strong> to zoom in and out</div>
+        <div class="inst-icon">&#9997;</div>
+        <div class="inst-text"><strong>Click &amp; drag</strong> the background to pan around</div>
+        <div class="inst-icon">&#9673;</div>
+        <div class="inst-text"><strong>Drag a node</strong> to pull it &mdash; the others will follow</div>
+        <div class="inst-icon">&#10022;</div>
+        <div class="inst-text"><strong>Click a node</strong> to focus &mdash; everything else pulls toward it. Click again or click empty space to release</div>
+        <div class="inst-icon">&#128270;</div>
+        <div class="inst-text"><strong>Hover</strong> over any point to see who they are and how they connect</div>
+      </div>
+      <button class="inst-start" onclick="dismissInstructions()">Explore</button>
+      <div class="inst-hint">You can reopen this anytime with the ? button</div>
+    </div>
+
+    <button class="help-btn" id="help-btn" onclick="showInstructions()" title="How to explore">?</button>
+
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <script>
+    // ── Data ──────────────────────────────────
+    const DATA = {"nodes": [{"id": "jane-hildebrand", "name": "Jane Hildebrand", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. RB studio on CPST.", "direct": true}, {"id": "paul-nilsson", "name": "Paul Nilsson", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "cracked-pot-studio-tour", "name": "Cracked Pot Studio Tour", "type": "event", "cluster": "cpst", "color": "#c4956a", "radius": 14, "location": "Lansing, MI, US", "notes": "Self-guided ceramics studio tour in the Greater Lansing, Michigan area. Founded 2017 by ceramic artists. Michigan not-for-profit organization run by volunteer board. Annual autumn weekend event \u2014 open", "direct": true}, {"id": "ryan", "name": "Ryan", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 14, "location": "Howell, MI, US", "notes": "Potter in Howell, MI. Cone 10 gas reduction, raku, glow glazes. Built Stull Atlas. My Clay Corner Studio. Got into clay through a friend, restored a kickwheel, never stopped. Self-taught glaze artistr", "direct": true}, {"id": "ferris-state-university", "name": "Ferris State University", "type": "institution", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "Big Rapids, MI, US", "notes": "University in Big Rapids, Michigan. Mary Fritz teaches Interior Design / KCID and KGAR courses.", "direct": true}, {"id": "nancy-kronenberg", "name": "Nancy Kronenberg", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. ACP studio on CPST. Co-host with Lee Kronenberg.", "direct": true}, {"id": "ann-valle", "name": "Ann Valle", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "ruth-zimmerman", "name": "Ruth Zimmerman", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "pam-graham", "name": "Pam Graham", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "broad-art-museum", "name": "Eli and Edythe Broad Art Museum", "type": "place", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "East Lansing, MI, US", "notes": "Contemporary art museum at Michigan State University. Designed by Zaha Hadid, opened 2012.", "direct": true}, {"id": "brett-suave", "name": "Brett Suave", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "msu-mfa-2015", "name": "MSU MFA Exhibition 2015", "type": "event", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "East Lansing, MI, US", "notes": "MFA graduating exhibition at Eli and Edythe Broad Art Museum, MSU, April 2015. Six MFA candidates including Mary Fritz and Lane Kaufmann. Curated by Yesomi Umolu.", "direct": true}, {"id": "nceca-2026", "name": "NCECA 2026", "type": "event", "cluster": "nceca", "color": "#4a6fa5", "radius": 14, "location": "", "notes": "60th annual conference 'Volumes' \u2014 March 25-28, 2026, Huntington Place Convention Center, Detroit. Ryan planning to demo Stull Atlas. Henry is a previous NCECA presenter (2014 Milwaukee).", "direct": true}, {"id": "natalie-liu", "name": "Natalie Liu", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "mcaa", "name": "Michigan Ceramic Art Association", "type": "institution", "cluster": "mcaa", "color": "#8b6f4e", "radius": 14, "location": "MI, US", "notes": "MCAA (michclay.com). Est. 1958 as Michigan Potters' Association. 300+ members statewide: studio artists, educators, galleries, guilds, students, collectors. Runs Michigan Ceramics Exhibition (biennial", "direct": true}, {"id": "ned-krouse", "name": "Ned Krouse", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. NK studio on CPST.", "direct": true}, {"id": "jim-feldkamp", "name": "Jim Feldkamp", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. BP studio on CPST.", "direct": true}, {"id": "suzanne-amann", "name": "Suzanne Amann", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. OGP studio on CPST. Co-host with Mike Amann.", "direct": true}, {"id": "jim-adair", "name": "Jim Adair", "type": "person", "cluster": "mcaa", "color": "#8b6f4e", "radius": 8, "location": "MI, US", "notes": "Ceramicist and MCAA member. Co-organized the \"delecTable\" exhibition at Janice Charach Gallery (2021) with Mary and Peter Fritz.", "direct": true}, {"id": "peter-fritz", "name": "Peter Fritz", "type": "person", "cluster": "family", "color": "#a85d3a", "radius": 12, "location": "Williamston, MI, US", "notes": "PhD in Engineering Mechanics (Penn State). MBA (Cardinal Stritch). Inventor of the Ceramic Arts Weldless Gas Kiln (PellaCom). MCAA Board Controller 2016-2022. CPST Board 2017-present. Husband of Mary ", "direct": true}, {"id": "lane-kaufmann", "name": "Lane Kaufmann", "type": "person", "cluster": "studio", "color": "#7a9a6a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. MFA in Ceramics from MSU (2015), same cohort as Mary Fritz. Guest artist at Red Cedar Studio for CPST.", "direct": true}, {"id": "blake-williams", "name": "Blake Williams", "type": "person", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "East Lansing, MI, US", "notes": "Associate Professor of Ceramics at Michigan State University. MFA from Louisiana State University, BFA from Alfred University. Likely MFA advisor to Mary Fritz.", "direct": true}, {"id": "virginia-cassaday", "name": "Virginia Cassaday", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. CS studio on CPST.", "direct": true}, {"id": "marie-gougeon", "name": "Marie Gougeon", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. MG studio on CPST.", "direct": true}, {"id": "andrea-deshano", "name": "Andrea DeShano", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "tiffany-mcintyre", "name": "Tiffany McIntyre", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "lee-kronenberg", "name": "Lee Kronenberg", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. ACP studio on CPST. Co-host with Nancy Kronenberg.", "direct": true}, {"id": "bob-valle", "name": "Bob Valle", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "charlotte-grenier", "name": "Charlotte Grenier", "type": "person", "cluster": "studio", "color": "#7a9a6a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio for CPST.", "direct": true}, {"id": "mary-fritz", "name": "Mary Fritz", "type": "person", "cluster": "center", "color": "#5a7247", "radius": 22, "location": "MI, US", "notes": "Creates hand-built functional and sculptural pieces. Uses flora and fauna and mother earth imagery \u2014 stories of discovery, absurdity, emotion, loss, and humor. Highlights whimsy of natural processes, ", "direct": false}, {"id": "shingo-takeuchi", "name": "Shingo Takeuchi", "type": "person", "cluster": "japan", "color": "#bf4040", "radius": 12, "location": "Seto, Aichi, Japan", "notes": "Japanese ceramist (b. 1955, Seto, Aichi). Sekki (stoneware) and iron-zogan (inlay) specialist. Trained at Aichi Kiln Training School (1979), studied under Kato ShunTei II. Opened own studio in Seto 19", "direct": true}, {"id": "kw-bell", "name": "K.W. Bell", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "maggie-valle", "name": "Maggie Valle", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "red-cedar-studio", "name": "Red Cedar Studio", "type": "place", "cluster": "studio", "color": "#7a9a6a", "radius": 14, "location": "Lansing, MI, US", "notes": "Pottery studio hosted by Mary Fritz. Part of the Cracked Pot Studio Tour. Overlooks the Red Cedar River, surrounded by nature. Website: crackedpotstudiotour.com/rcs-red-cedar-studio/", "direct": true}, {"id": "jae-won-lee", "name": "Jae Won Lee", "type": "person", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "East Lansing, MI, US", "notes": "Associate Professor at Michigan State University. MFA from Alfred University. Two-time Fulbright Scholar. Hand-builds porcelain.", "direct": true}, {"id": "brian-kakas", "name": "Brian Kakas", "type": "person", "cluster": "mcaa", "color": "#8b6f4e", "radius": 8, "location": "Bowling Green, OH, US", "notes": "Ceramic artist and educator. Associate Professor of Art at Bowling Green State University (BGSU). Board member of Michigan Ceramic Art Association (MCAA). Panelist at NCECA 2026 on 'The State of Clay:", "direct": true}, {"id": "janet-reifenberg", "name": "Janet Reifenberg", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. Guest artist at Red Cedar Studio, Cracked Pot Studio Tour.", "direct": true}, {"id": "yesomi-umolu", "name": "Yesomi Umolu", "type": "person", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "", "notes": "Curator. Curated the 2015 MSU MFA exhibition at the Broad Art Museum featuring Mary Fritz and fellow graduates.", "direct": true}, {"id": "bill-selanders", "name": "Bill Selanders", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. FK studio on CPST.", "direct": true}, {"id": "mike-amann", "name": "Mike Amann", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. OGP studio on CPST. Co-host with Suzanne Amann.", "direct": true}, {"id": "janice-charach-gallery", "name": "Janice Charach Gallery", "type": "place", "cluster": "mcaa", "color": "#8b6f4e", "radius": 6, "location": "West Bloomfield, MI, US", "notes": "Art gallery at the Jewish Community Center of Metropolitan Detroit in West Bloomfield, Michigan. Director: Kelly Kaatz.", "direct": true}, {"id": "doug-delind", "name": "Doug DeLind", "type": "person", "cluster": "cpst", "color": "#c4956a", "radius": 8, "location": "MI, US", "notes": "Ceramicist. DD studio on CPST.", "direct": true}, {"id": "michigan-state-university", "name": "Michigan State University", "type": "institution", "cluster": "education", "color": "#6a8e7a", "radius": 12, "location": "East Lansing, MI, US", "notes": "Major research university in East Lansing, Michigan. MFA ceramics program in Studio Art.", "direct": true}, {"id": "delectable-2021", "name": "delecTable", "type": "event", "cluster": "mcaa", "color": "#8b6f4e", "radius": 10, "location": "West Bloomfield, MI, US", "notes": "All-ceramic juried tableware show at Janice Charach Gallery, Oct 24 - Dec 9, 2021. ~40 Michigan artists, ~350 pieces. MCAA-partnered. Organized by Mary Fritz, Peter Fritz, and Jim Adair.", "direct": true}], "links": [{"source": "mary-fritz", "target": "red-cedar-studio", "type": "hosts", "label": "Host studio for CPST", "year": 2025}, {"source": "mary-fritz", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "mary-fritz", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "mary-fritz", "target": "kw-bell", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "andrea-deshano", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "pam-graham", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "natalie-liu", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "mary-fritz", "target": "shingo-takeuchi", "type": "visited", "label": "Visited Takeuchi in Seto during Rokkoy\u014d trip, Dec 2025", "year": 2025}, {"source": "mary-fritz", "target": "shingo-takeuchi", "type": "gave_work", "label": "Gave Takeuchi one of Ryan Lack's translucent porcelain miniatures", "year": 2025}, {"source": "mary-fritz", "target": "michigan-state-university", "type": "studied_at", "label": "MFA in Ceramics, 2015", "year": 2015}, {"source": "mary-fritz", "target": "ferris-state-university", "type": "teaches_at", "label": "Interior Design / KCID and KGAR courses", "year": 2024}, {"source": "mary-fritz", "target": "broad-art-museum", "type": "exhibited_at", "label": "MFA graduating exhibition, April 2015", "year": 2015}, {"source": "mary-fritz", "target": "msu-mfa-2015", "type": "exhibited_at", "label": "One of 6 graduating MFA candidates", "year": 2015}, {"source": "mary-fritz", "target": "blake-williams", "type": "studied_under", "label": "MSU MFA ceramics faculty (likely advisor)", "year": 2015}, {"source": "mary-fritz", "target": "jae-won-lee", "type": "studied_under", "label": "MSU MFA ceramics faculty (likely advisor)", "year": 2015}, {"source": "mary-fritz", "target": "lane-kaufmann", "type": "cohort", "label": "MSU MFA Ceramics 2015", "year": 2015}, {"source": "mary-fritz", "target": "mcaa", "type": "member", "label": "Member and exhibition organizer", "year": 2021}, {"source": "mary-fritz", "target": "delectable-2021", "type": "organized", "label": "Co-organizer with Peter Fritz and Jim Adair", "year": 2021}, {"source": "mary-fritz", "target": "cracked-pot-studio-tour", "type": "founded", "label": "Founded CPST in 2017, inspired by St. Croix Valley Pottery Tour", "year": 2017}, {"source": "mary-fritz", "target": "nceca-2026", "type": "attending", "label": "Attending NCECA 2026 in Pittsburgh", "year": 2026}, {"source": "mary-fritz", "target": "brian-kakas", "type": "colleague", "label": "MCAA colleague, NCECA organizer", "year": null}, {"source": "mary-fritz", "target": "jim-adair", "type": "co_organized", "label": "Co-organized delecTable exhibition", "year": 2021}, {"source": "mary-fritz", "target": "janice-charach-gallery", "type": "exhibited_at", "label": "delecTable exhibition venue", "year": 2021}, {"source": "mary-fritz", "target": "charlotte-grenier", "type": "hosted", "label": "Guest artist at CPST open studio", "year": null}, {"source": "mary-fritz", "target": "yesomi-umolu", "type": "exhibited_under", "label": "Curator of MFA exhibition at Broad", "year": 2015}, {"source": "mary-fritz", "target": "nancy-kronenberg", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "lee-kronenberg", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "jim-feldkamp", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "virginia-cassaday", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "doug-delind", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "bill-selanders", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "marie-gougeon", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "ned-krouse", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "suzanne-amann", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "mike-amann", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "mary-fritz", "target": "jane-hildebrand", "type": "co_host", "label": "CPST studio tour co-host", "year": null}, {"source": "ryan", "target": "mary-fritz", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "mary-fritz", "type": "personal", "label": "Friend", "year": null}, {"source": "peter-fritz", "target": "mary-fritz", "type": "married_to", "label": "Husband and wife", "year": null}, {"source": "andrea-deshano", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "andrea-deshano", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "natalie-liu", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "pam-graham", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "andrea-deshano", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "andrea-deshano", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ann-valle", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ann-valle", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "ann-valle", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ann-valle", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "ann-valle", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "bill-selanders", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "FK studio", "year": 2025}, {"source": "bob-valle", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "bob-valle", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "bob-valle", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "bob-valle", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "brett-suave", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "brett-suave", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "brett-suave", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "brett-suave", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "brett-suave", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "brett-suave", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "brian-kakas", "target": "mcaa", "type": "member", "label": "Curated MCAA Biennial", "year": null}, {"source": "brian-kakas", "target": "mcaa", "type": "president", "label": "MCAA President since 2023", "year": 2023}, {"source": "brian-kakas", "target": "nceca-2026", "type": "organizer", "label": "Organizing MCAA events at NCECA 2026 Detroit", "year": 2026}, {"source": "brian-kakas", "target": "nceca-2026", "type": "presenting_at", "label": "Panel: State of Clay", "year": null}, {"source": "broad-art-museum", "target": "michigan-state-university", "type": "part_of", "label": "Museum at MSU, designed by Zaha Hadid", "year": 2012}, {"source": "charlotte-grenier", "target": "red-cedar-studio", "type": "exhibited_at", "label": "Guest artist at CPST", "year": 2025}, {"source": "delectable-2021", "target": "janice-charach-gallery", "type": "held_at", "label": "Oct 24 - Dec 9, 2021", "year": 2021}, {"source": "delectable-2021", "target": "mcaa", "type": "partnered_with", "label": "MCAA-partnered juried exhibition", "year": 2021}, {"source": "doug-delind", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "DD studio", "year": 2025}, {"source": "jane-hildebrand", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "RB studio", "year": 2025}, {"source": "janet-reifenberg", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "janet-reifenberg", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "janet-reifenberg", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "janet-reifenberg", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "janet-reifenberg", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "janet-reifenberg", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "janet-reifenberg", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "jim-adair", "target": "delectable-2021", "type": "organized", "label": "Co-organizer with Mary and Peter Fritz", "year": 2021}, {"source": "jim-adair", "target": "mcaa", "type": "member", "label": "MCAA member, exhibition organizer", "year": 2021}, {"source": "jim-feldkamp", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "BP studio", "year": 2025}, {"source": "kw-bell", "target": "andrea-deshano", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "kw-bell", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "natalie-liu", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "pam-graham", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "kw-bell", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "kw-bell", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "lane-kaufmann", "target": "michigan-state-university", "type": "studied_at", "label": "MFA in Ceramics, 2015", "year": 2015}, {"source": "lane-kaufmann", "target": "msu-mfa-2015", "type": "exhibited_at", "label": "One of 6 graduating MFA candidates", "year": 2015}, {"source": "lane-kaufmann", "target": "red-cedar-studio", "type": "exhibited_at", "label": "Guest artist at CPST", "year": 2025}, {"source": "lee-kronenberg", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "ACP studio", "year": 2025}, {"source": "maggie-valle", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "maggie-valle", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "maggie-valle", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "marie-gougeon", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "MG studio", "year": 2025}, {"source": "mcaa", "target": "nceca-2026", "type": "affiliated_with", "label": "MCAA is Michigan's primary ceramics organization; many members attend NCECA", "year": null}, {"source": "mcaa", "target": "nceca-2026", "type": "exhibiting_at", "label": "NCECA 2026 Resource Hall exhibitor", "year": 2026}, {"source": "mcaa", "target": "nceca-2026", "type": "participating", "label": "MCAA Ceramic Biennial Award Winners exhibit, Empty Bowls Detroit", "year": 2026}, {"source": "mike-amann", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "OGP studio", "year": 2025}, {"source": "msu-mfa-2015", "target": "broad-art-museum", "type": "held_at", "label": "Exhibition at Broad Art Museum", "year": 2015}, {"source": "nancy-kronenberg", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "ACP studio", "year": 2025}, {"source": "natalie-liu", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "natalie-liu", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "natalie-liu", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "natalie-liu", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ned-krouse", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "NK studio", "year": 2025}, {"source": "pam-graham", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "pam-graham", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "natalie-liu", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "pam-graham", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "pam-graham", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "paul-nilsson", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "paul-nilsson", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "paul-nilsson", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "peter-fritz", "target": "cracked-pot-studio-tour", "type": "board_member", "label": "Board of Directors 2017-present", "year": 2017}, {"source": "peter-fritz", "target": "delectable-2021", "type": "organized", "label": "Co-organizer with Mary Fritz and Jim Adair", "year": 2021}, {"source": "peter-fritz", "target": "mcaa", "type": "board_member", "label": "Controller, Board of Directors 2016-2022", "year": 2016}, {"source": "red-cedar-studio", "target": "cracked-pot-studio-tour", "type": "part_of", "label": "Host studio", "year": 2025}, {"source": "ruth-zimmerman", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "ruth-zimmerman", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "ryan", "target": "andrea-deshano", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "ryan", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "kw-bell", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "natalie-liu", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "nceca-2026", "type": "presenting_at", "label": "demoing Stull Atlas", "year": null}, {"source": "ryan", "target": "pam-graham", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "ryan", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "ryan", "target": "shingo-takeuchi", "type": "work_collected_by", "label": "Takeuchi received Ryan's translucent porcelain miniature via Mary Fritz, Dec 2025", "year": 2025}, {"source": "ryan", "target": "tiffany-mcintyre", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "suzanne-amann", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "OGP studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "ann-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "bob-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "brett-suave", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "cracked-pot-studio-tour", "type": "exhibited_at", "label": "Red Cedar Studio stop", "year": 2025}, {"source": "tiffany-mcintyre", "target": "janet-reifenberg", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "maggie-valle", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "paul-nilsson", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "tiffany-mcintyre", "target": "red-cedar-studio", "type": "exhibited_at", "label": "CPST 2025", "year": 2025}, {"source": "tiffany-mcintyre", "target": "ruth-zimmerman", "type": "co_exhibitor", "label": "CPST 2025 - Red Cedar Studio", "year": 2025}, {"source": "virginia-cassaday", "target": "cracked-pot-studio-tour", "type": "studio_host", "label": "CS studio", "year": 2025}, {"source": "yesomi-umolu", "target": "msu-mfa-2015", "type": "curated", "label": "Curator of MSU MFA 2015 exhibition", "year": 2015}]};
+
+    // ── Canvas setup ─────────────────────────
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const tooltip = document.getElementById('tooltip');
+    const statsEl = document.getElementById('stats');
+    let W, H, dpr;
+    let showLabels = true;
+
+    function resize() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      dpr = window.devicePixelRatio || 1;
+      W = rect.width;
+      H = rect.height;
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    window.addEventListener('resize', () => { resize(); });
+    resize();
+
+    // ── Node / link data ─────────────────────
+    const nodes = DATA.nodes.map((n, i) => ({
+      ...n,
+      x: W / 2 + (Math.random() - 0.5) * 300,
+      y: H / 2 + (Math.random() - 0.5) * 300,
+      vx: 0,
+      vy: 0,
+    }));
+
+    const nodeMap = {};
+    nodes.forEach(n => nodeMap[n.id] = n);
+
+    const links = DATA.links.filter(l => nodeMap[l.source] && nodeMap[l.target]);
+
+    // Place Mary at center
+    const mary = nodeMap['mary-fritz'];
+    if (mary) {
+      mary.x = W / 2;
+      mary.y = H / 2;
+    }
+
+    // Stats
+    const personCount = nodes.filter(n => n.type === 'person').length;
+    const placeCount = nodes.filter(n => n.type === 'place' || n.type === 'institution').length;
+    const eventCount = nodes.filter(n => n.type === 'event').length;
+    statsEl.innerHTML = `${nodes.length} nodes · ${links.length} connections<br>${personCount} people · ${placeCount} places · ${eventCount} events`;
+
+    // ── Pan & zoom ───────────────────────────
+    let offsetX = 0, offsetY = 0, scale = 1;
+    let isPanning = false, panStartX, panStartY;
+    let dragNode = null;
+    let focusNode = null;  // click-to-focus target
+    let dragMoved = false; // distinguish click from drag
+
+    // Breathe effect — mouse repels nodes gently
+    let mouseWorldX = null, mouseWorldY = null;
+    let mouseOnCanvas = false;
+    const BREATHE_RADIUS = 200;  // influence radius
+    const BREATHE_STRENGTH = 0.8; // gentle push
+
+    // Animation time for sparkle
+    let animTime = 0;
+
+    function screenToWorld(sx, sy) {
+      return [(sx - offsetX) / scale, (sy - offsetY) / scale];
+    }
+    function worldToScreen(wx, wy) {
+      return [wx * scale + offsetX, wy * scale + offsetY];
+    }
+
+    canvas.addEventListener('wheel', e => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      const [wx, wy] = screenToWorld(mx, my);
+      const factor = e.deltaY < 0 ? 1.1 : 0.9;
+      scale *= factor;
+      scale = Math.max(0.2, Math.min(5, scale));
+      offsetX = mx - wx * scale;
+      offsetY = my - wy * scale;
+    }, { passive: false });
+
+    canvas.addEventListener('mousedown', e => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      const [wx, wy] = screenToWorld(mx, my);
+      dragMoved = false;
+
+      // Check if clicking on a node
+      let hit = null;
+      for (let i = nodes.length - 1; i >= 0; i--) {
+        const n = nodes[i];
+        const dx = n.x - wx, dy = n.y - wy;
+        if (dx * dx + dy * dy < (n.radius + 4) * (n.radius + 4)) {
+          hit = n;
+          break;
+        }
+      }
+
+      if (hit) {
+        dragNode = hit;
+        dragNode._fixed = true;
+      } else {
+        isPanning = true;
+        panStartX = mx - offsetX;
+        panStartY = my - offsetY;
+      }
+    });
+
+    canvas.addEventListener('mousemove', e => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+
+      if (dragNode) {
+        const [wx, wy] = screenToWorld(mx, my);
+        dragNode.x = wx;
+        dragNode.y = wy;
+        dragNode.vx = 0;
+        dragNode.vy = 0;
+        dragMoved = true;
+        return;
+      }
+
+      if (isPanning) {
+        const dx = mx - panStartX - offsetX;
+        const dy = my - panStartY - offsetY;
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) dragMoved = true;
+        offsetX = mx - panStartX;
+        offsetY = my - panStartY;
+        return;
+      }
+
+      // Track mouse in world coords for breathe effect
+      const [bwx, bwy] = screenToWorld(mx, my);
+      mouseWorldX = bwx;
+      mouseWorldY = bwy;
+      mouseOnCanvas = true;
+
+      // Hover detection
+      const [wx, wy] = screenToWorld(mx, my);
+      let hovered = null;
+      for (let i = nodes.length - 1; i >= 0; i--) {
+        const n = nodes[i];
+        const dx = n.x - wx, dy = n.y - wy;
+        if (dx * dx + dy * dy < (n.radius + 4) * (n.radius + 4)) {
+          hovered = n;
+          break;
+        }
+      }
+
+      if (hovered) {
+        // Find connections
+        const conns = links.filter(l => l.source === hovered.id || l.target === hovered.id);
+        const connNames = conns.map(l => {
+          const otherId = l.source === hovered.id ? l.target : l.source;
+          const other = nodeMap[otherId];
+          return other ? `${other.name} (${l.type.replace(/_/g, ' ')})` : '';
+        }).filter(Boolean).slice(0, 8);
+
+        let html = `<h3>${hovered.name}</h3>`;
+        html += `<div class="tt-type">${hovered.type}</div>`;
+        if (hovered.location) html += `<div class="tt-loc">${hovered.location}</div>`;
+        if (hovered.notes) html += `<div class="tt-notes">${hovered.notes}</div>`;
+        if (connNames.length) html += `<div class="tt-links">${connNames.join('<br>')}</div>`;
+
+        tooltip.innerHTML = html;
+        tooltip.style.display = 'block';
+
+        // Position tooltip
+        let tx = e.clientX + 15;
+        let ty = e.clientY - 10;
+        if (tx + 320 > window.innerWidth) tx = e.clientX - 335;
+        if (ty + 200 > window.innerHeight) ty = window.innerHeight - 210;
+        tooltip.style.left = tx + 'px';
+        tooltip.style.top = ty + 'px';
+        canvas.style.cursor = 'pointer';
+      } else {
+        tooltip.style.display = 'none';
+        canvas.style.cursor = 'grab';
+      }
+    });
+
+    canvas.addEventListener('mouseup', e => {
+      const wasDrag = dragMoved;
+      const releasedNode = dragNode;
+
+      if (dragNode) {
+        dragNode._fixed = false;
+        dragNode = null;
+      }
+      isPanning = false;
+
+      // Click (not drag) — handle focus mode
+      if (!wasDrag) {
+        const rect = canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        const [wx, wy] = screenToWorld(mx, my);
+
+        let hit = null;
+        for (let i = nodes.length - 1; i >= 0; i--) {
+          const n = nodes[i];
+          const dx = n.x - wx, dy = n.y - wy;
+          if (dx * dx + dy * dy < (n.radius + 4) * (n.radius + 4)) {
+            hit = n;
+            break;
+          }
+        }
+
+        if (hit) {
+          // Toggle focus: same node = unfocus, different = switch
+          if (focusNode === hit) {
+            clearFocus();
+          } else {
+            setFocus(hit);
+          }
+        } else {
+          // Clicked empty space — clear focus
+          if (focusNode) clearFocus();
+        }
+      }
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      tooltip.style.display = 'none';
+      isPanning = false;
+      mouseOnCanvas = false;
+      if (dragNode) { dragNode._fixed = false; dragNode = null; }
+    });
+
+    // ── Force simulation ─────────────────────
+    let SIM_STEPS = 600;
+    let simStep = 0;
+    let LINK_DISTANCE = 120;
+    let REPULSION = 3000;
+    let CENTER_PULL = 0.008;
+    let DAMPING = 0.92;
+    let LINK_STRENGTH = 0.015;
+
+    // Display params
+    let linkOpacity = 0.25;
+    let nodeScale = 1.0;
+    let showLinkLines = true;
+    let showGlow = true;
+
+    // Cluster target positions (relative to center)
+    const CLUSTER_ANGLES = {
+      'family':    -Math.PI / 2,        // top
+      'education': -Math.PI * 0.8,      // top-left
+      'studio':     Math.PI * 0.1,      // right
+      'cpst':       Math.PI * 0.5,      // bottom-right
+      'mcaa':       Math.PI * 0.85,     // bottom
+      'japan':     -Math.PI * 0.15,     // top-right
+      'nceca':      Math.PI * 1.2,      // bottom-left
+      'default':    Math.PI,            // left
+    };
+
+    function simulate() {
+      // Exponential decay for smooth settling (starts at ~0.6, decays to ~0.01)
+      const alpha = 0.6 * Math.pow(0.993, simStep);
+      const active = alpha >= 0.002 || focusNode;
+      if (!active) return;
+      const a = Math.max(alpha, 0.01); // keep minimum alpha during focus
+
+      // Repulsion between all nodes
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const na = nodes[i], nb = nodes[j];
+          let dx = nb.x - na.x, dy = nb.y - na.y;
+          let dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          let force = REPULSION / (dist * dist);
+          // Reduce repulsion during focus so nodes can cluster tighter
+          let fMult = focusNode ? 0.3 : 1;
+          let fx = (dx / dist) * force * a * fMult;
+          let fy = (dy / dist) * force * a * fMult;
+          if (!na._fixed) { na.vx -= fx; na.vy -= fy; }
+          if (!nb._fixed) { nb.vx += fx; nb.vy += fy; }
+        }
+      }
+
+      // Link attraction
+      for (const l of links) {
+        const s = nodeMap[l.source], t = nodeMap[l.target];
+        if (!s || !t) continue;
+        let dx = t.x - s.x, dy = t.y - s.y;
+        let dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        let force = (dist - LINK_DISTANCE) * LINK_STRENGTH * a;
+        let fx = (dx / dist) * force;
+        let fy = (dy / dist) * force;
+        if (!s._fixed) { s.vx += fx; s.vy += fy; }
+        if (!t._fixed) { t.vx -= fx; t.vy -= fy; }
+      }
+
+      // ── Focus mode: pull everything toward the focus node ──
+      if (focusNode) {
+        const FOCUS_STRENGTH = 0.04;
+        const focusLinks = links.filter(l => l.source === focusNode.id || l.target === focusNode.id);
+        const directIds = new Set();
+        focusLinks.forEach(l => {
+          directIds.add(l.source === focusNode.id ? l.target : l.source);
+        });
+
+        for (const n of nodes) {
+          if (n === focusNode || n._fixed) continue;
+          // Direct connections pull close, others pull medium
+          const isDirect = directIds.has(n.id);
+          const targetDist = isDirect ? 80 : 220;
+          const strength = isDirect ? FOCUS_STRENGTH * 1.5 : FOCUS_STRENGTH * 0.5;
+          const dx = focusNode.x - n.x;
+          const dy = focusNode.y - n.y;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          if (dist > targetDist) {
+            n.vx += (dx / dist) * (dist - targetDist) * strength;
+            n.vy += (dy / dist) * (dist - targetDist) * strength;
+          }
+        }
+      } else {
+        // Cluster pull — nudge nodes toward their cluster's angle (only when no focus)
+        for (const n of nodes) {
+          if (n.id === 'mary-fritz' || n._fixed) continue;
+          const angle = CLUSTER_ANGLES[n.cluster] ?? 0;
+          const targetDist = n.direct ? 180 : 280;
+          const tx = W / 2 + Math.cos(angle) * targetDist;
+          const ty = H / 2 + Math.sin(angle) * targetDist;
+          n.vx += (tx - n.x) * CENTER_PULL * a;
+          n.vy += (ty - n.y) * CENTER_PULL * a;
+        }
+
+        // Center pull for Mary
+        if (mary && !mary._fixed) {
+          mary.vx += (W / 2 - mary.x) * 0.03 * a;
+          mary.vy += (H / 2 - mary.y) * 0.03 * a;
+        }
+      }
+
+      // Breathe — mouse gently pushes nearby nodes
+      if (mouseOnCanvas && mouseWorldX !== null && !dragNode) {
+        for (const n of nodes) {
+          if (n._fixed) continue;
+          const dx = n.x - mouseWorldX;
+          const dy = n.y - mouseWorldY;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          if (dist < BREATHE_RADIUS) {
+            const falloff = 1 - dist / BREATHE_RADIUS; // 1 at center, 0 at edge
+            const push = BREATHE_STRENGTH * falloff * falloff; // quadratic falloff
+            n.vx += (dx / dist) * push;
+            n.vy += (dy / dist) * push;
+          }
+        }
+      }
+
+      // Apply velocities
+      for (const n of nodes) {
+        if (n._fixed) continue;
+        n.vx *= DAMPING;
+        n.vy *= DAMPING;
+        n.x += n.vx;
+        n.y += n.vy;
+      }
+
+      simStep++;
+    }
+
+    // ── Render ────────────────────────────────
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      ctx.save();
+      ctx.translate(offsetX, offsetY);
+      ctx.scale(scale, scale);
+
+      // Draw links
+      if (showLinkLines) {
+        for (const l of links) {
+          const s = nodeMap[l.source], t = nodeMap[l.target];
+          if (!s || !t) continue;
+          ctx.beginPath();
+          ctx.moveTo(s.x, s.y);
+          ctx.lineTo(t.x, t.y);
+          const isMaryLink = l.source === 'mary-fritz' || l.target === 'mary-fritz';
+          const isFocusLink = focusNode && (l.source === focusNode.id || l.target === focusNode.id);
+          if (isFocusLink) {
+            ctx.strokeStyle = `rgba(90,114,71,${Math.min(linkOpacity * 2.5, 0.7)})`;
+            ctx.lineWidth = 2;
+          } else if (isMaryLink) {
+            ctx.strokeStyle = `rgba(90,114,71,${focusNode ? linkOpacity * 0.3 : linkOpacity})`;
+            ctx.lineWidth = 1.5;
+          } else {
+            ctx.strokeStyle = `rgba(160,160,160,${focusNode ? linkOpacity * 0.15 : linkOpacity * 0.6})`;
+            ctx.lineWidth = 0.8;
+          }
+          ctx.stroke();
+        }
+      }
+
+      // Draw nodes
+      // Pre-compute focus connections for efficiency
+      let focusDirectIds = null;
+      if (focusNode) {
+        focusDirectIds = new Set();
+        links.forEach(l => {
+          if (l.source === focusNode.id) focusDirectIds.add(l.target);
+          if (l.target === focusNode.id) focusDirectIds.add(l.source);
+        });
+      }
+
+      for (const n of nodes) {
+        const r = n.radius * nodeScale;
+
+        // Sparkle glow for Mary
+        if (n.id === 'mary-fritz' && showGlow) {
+          // Pulsing outer glow
+          const pulse = 0.5 + 0.5 * Math.sin(animTime * 1.5);
+          const glowR = r + 10 + pulse * 6;
+          const grad = ctx.createRadialGradient(n.x, n.y, r, n.x, n.y, glowR);
+          grad.addColorStop(0, `rgba(180,200,130,${0.25 + pulse * 0.1})`);
+          grad.addColorStop(0.5, `rgba(140,175,90,${0.12 + pulse * 0.06})`);
+          grad.addColorStop(1, 'rgba(90,114,71,0)');
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, glowR, 0, Math.PI * 2);
+          ctx.fillStyle = grad;
+          ctx.fill();
+
+          // Sparkle particles orbiting Mary
+          const sparkleCount = 8;
+          for (let s = 0; s < sparkleCount; s++) {
+            const angle = (s / sparkleCount) * Math.PI * 2 + animTime * (0.4 + s * 0.05);
+            const dist = r + 7 + Math.sin(animTime * 2 + s * 1.3) * 5;
+            const sx = n.x + Math.cos(angle) * dist;
+            const sy = n.y + Math.sin(angle) * dist;
+            const sparkleAlpha = 0.3 + 0.7 * Math.abs(Math.sin(animTime * 3 + s * 0.9));
+            const sparkleSize = 1.2 + 0.8 * Math.sin(animTime * 4 + s * 1.5);
+
+            ctx.beginPath();
+            ctx.arc(sx, sy, sparkleSize, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,248,220,${sparkleAlpha})`;
+            ctx.fill();
+          }
+
+          // Inner bright ring
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, r + 2, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(200,220,150,${0.2 + pulse * 0.15})`;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+
+        // Node circle
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+        // Dim non-connected nodes during focus
+        if (focusNode && n !== focusNode) {
+          ctx.globalAlpha = focusDirectIds.has(n.id) ? 1.0 : 0.3;
+        }
+        ctx.fillStyle = n === focusNode ? '#3a3a3a' : n.color;
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+
+        // Focus ring
+        if (n === focusNode) {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, r + 4, 0, Math.PI * 2);
+          ctx.strokeStyle = '#5a7247';
+          ctx.lineWidth = 2.5;
+          ctx.stroke();
+        }
+
+        // Border for institutions/events
+        if (n.type !== 'person') {
+          ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+
+        // Labels
+        if (showLabels) {
+          const fontSize = n.id === 'mary-fritz' ? 13 : (r >= 12 ? 10 : 8);
+          ctx.font = `${fontSize}px 'Segoe UI', system-ui, sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+
+          const text = n.name;
+          const tw = ctx.measureText(text).width;
+          ctx.fillStyle = 'rgba(247,245,240,0.85)';
+          ctx.fillRect(n.x - tw / 2 - 3, n.y + r + 3, tw + 6, fontSize + 4);
+
+          ctx.fillStyle = '#3a3a3a';
+          ctx.fillText(text, n.x, n.y + r + 5);
+        }
+      }
+
+      ctx.restore();
+    }
+
+    // ── Animation loop ───────────────────────
+    function loop() {
+      animTime += 0.016; // ~60fps timestep
+      // Always simulate when mouse is on canvas (for breathe)
+      if (simStep < SIM_STEPS || dragNode || focusNode || mouseOnCanvas) {
+        simulate();
+      }
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    // ── Controls ─────────────────────────────
+    function resetView() {
+      offsetX = 0;
+      offsetY = 0;
+      scale = 1;
+      simStep = 0;
+      // Re-randomize positions
+      nodes.forEach(n => {
+        if (n.id === 'mary-fritz') {
+          n.x = W / 2; n.y = H / 2;
+        } else {
+          const angle = CLUSTER_ANGLES[n.cluster] ?? Math.random() * Math.PI * 2;
+          const dist = 100 + Math.random() * 150;
+          n.x = W / 2 + Math.cos(angle) * dist + (Math.random() - 0.5) * 80;
+          n.y = H / 2 + Math.sin(angle) * dist + (Math.random() - 0.5) * 80;
+        }
+        n.vx = 0;
+        n.vy = 0;
+      });
+    }
+
+    function reheat() {
+      simStep = 0;
+    }
+
+    function toggleLabels() {
+      showLabels = !showLabels;
+      const btn = document.getElementById('btn-labels');
+      const tog = document.getElementById('t-labels');
+      btn.classList.toggle('active', showLabels);
+      tog.classList.toggle('on', showLabels);
+    }
+
+    function toggleLinkLines() {
+      showLinkLines = !showLinkLines;
+      document.getElementById('t-links').classList.toggle('on', showLinkLines);
+    }
+
+    function toggleGlow() {
+      showGlow = !showGlow;
+      document.getElementById('t-glow').classList.toggle('on', showGlow);
+    }
+
+    function toggleSettings() {
+      const panel = document.getElementById('settings-panel');
+      const btn = document.getElementById('btn-settings');
+      const isOpen = panel.classList.toggle('open');
+      btn.classList.toggle('active', isOpen);
+    }
+
+    // ── Settings wiring ──────────────────────
+    function wireSlider(id, valId, getter, setter) {
+      const slider = document.getElementById(id);
+      const valEl = document.getElementById(valId);
+      slider.addEventListener('input', () => {
+        const v = parseFloat(slider.value);
+        setter(v);
+        valEl.textContent = getter(v);
+        // Reheat gently on change
+        if (simStep > 100) simStep = 100;
+      });
+    }
+
+    wireSlider('s-repulsion', 'v-repulsion',
+      v => Math.round(v), v => { REPULSION = v; });
+    wireSlider('s-linkdist', 'v-linkdist',
+      v => Math.round(v), v => { LINK_DISTANCE = v; });
+    wireSlider('s-linkstr', 'v-linkstr',
+      v => (v / 1000).toFixed(3), v => { LINK_STRENGTH = v / 1000; });
+    wireSlider('s-cluster', 'v-cluster',
+      v => (v / 1000).toFixed(3), v => { CENTER_PULL = v / 1000; });
+    wireSlider('s-damping', 'v-damping',
+      v => (v / 100).toFixed(2), v => { DAMPING = v / 100; });
+    wireSlider('s-linkopac', 'v-linkopac',
+      v => Math.round(v) + '%', v => { linkOpacity = v / 100; });
+    wireSlider('s-nodescale', 'v-nodescale',
+      v => Math.round(v) + '%', v => { nodeScale = v / 100; });
+
+    // ── Focus mode ───────────────────────────
+    function setFocus(node) {
+      focusNode = node;
+      // Reheat so the pull is animated
+      if (simStep > 80) simStep = 80;
+      const indicator = document.getElementById('focus-indicator');
+      indicator.textContent = `Focused on ${node.name} — click to release`;
+      indicator.style.display = 'block';
+    }
+
+    function clearFocus() {
+      focusNode = null;
+      // Reheat gently so nodes drift back to clusters
+      if (simStep > 80) simStep = 80;
+      document.getElementById('focus-indicator').style.display = 'none';
+    }
+
+    // ── Instructions ─────────────────────────
+    function dismissInstructions() {
+      const el = document.getElementById('instructions');
+      el.classList.add('hiding');
+      setTimeout(() => { el.style.display = 'none'; }, 300);
+    }
+
+    function showInstructions() {
+      const el = document.getElementById('instructions');
+      el.classList.remove('hiding');
+      el.style.display = 'block';
+    }
+
+    // ── Init ─────────────────────────────────
+    // Pre-position nodes near their cluster angles
+    nodes.forEach(n => {
+      if (n.id === 'mary-fritz') {
+        n.x = W / 2; n.y = H / 2;
+        return;
+      }
+      const angle = CLUSTER_ANGLES[n.cluster] ?? Math.random() * Math.PI * 2;
+      const dist = 100 + Math.random() * 150;
+      n.x = W / 2 + Math.cos(angle) * dist + (Math.random() - 0.5) * 80;
+      n.y = H / 2 + Math.sin(angle) * dist + (Math.random() - 0.5) * 80;
+    });
+
+    loop();
+  </script>
+</body>
+</html>
