@@ -55,7 +55,6 @@ const APP_PAGES: { title: string; path: string; keywords: string }[] = [
   { title: 'Materials Database', path: '/materials', keywords: 'materials database feldspar kaolin silica' },
   { title: 'Import / Export', path: '/import-export', keywords: 'import export csv json download upload' },
   { title: 'Guide', path: '/guide', keywords: 'guide tutorial help how to get started' },
-  { title: 'Timeline', path: '/timeline', keywords: 'timeline history ceramics pottery' },
   { title: 'About', path: '/about', keywords: 'about credits tony hansen digitalfire' },
   { title: 'What\'s New', path: '/updates', keywords: 'updates changelog release notes version' },
 ]

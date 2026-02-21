@@ -48,7 +48,6 @@ const ImportExportPage = lazyRetry(() => import('./pages/ImportExportPage').then
 const AboutPage = lazyRetry(() => import('./pages/AboutPage').then(m => ({ default: m.AboutPage })))
 const GuidePage = lazyRetry(() => import('./pages/GuidePage').then(m => ({ default: m.GuidePage })))
 const OptimizerPage = lazyRetry(() => import('./pages/OptimizerPage').then(m => ({ default: m.OptimizerPage })))
-const TimelinePage = lazyRetry(() => import('./pages/TimelinePage').then(m => ({ default: m.TimelinePage })))
 const UpdatesPage = lazyRetry(() => import('./pages/UpdatesPage').then(m => ({ default: m.UpdatesPage })))
 const SuggestionPage = lazyRetry(() => import('./pages/SuggestionPage').then(m => ({ default: m.SuggestionPage })))
 const PricingPage = lazyRetry(() => import('./pages/PricingPage').then(m => ({ default: m.PricingPage })))
@@ -146,7 +145,6 @@ function App() {
         <Route path="calc/space-filling" element={<LazyPage><SpaceFillingPage /></LazyPage>} />
         <Route path="calc/optimizer" element={<LazyPage><OptimizerPage /></LazyPage>} />
         <Route path="materials" element={<LazyPage><MaterialsPage /></LazyPage>} />
-        <Route path="timeline" element={<LazyPage><TimelinePage /></LazyPage>} />
         <Route path="import-export" element={<LazyPage><ImportExportPage /></LazyPage>} />
         <Route path="about" element={<LazyPage><AboutPage /></LazyPage>} />
         <Route path="guide" element={<LazyPage><GuidePage /></LazyPage>} />

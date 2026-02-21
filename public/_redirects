@@ -1,3 +1,6 @@
+/history/*  /history/:splat  200
+/glaze-chemist/*  /glaze-chemist/:splat  200
+/mary-fritz/*  /mary-fritz/:splat  200
 /stullv2/*  /stullv2/index.html  200
 /rje/dev/*  /rje/dev/index.html  200
 /*  /index.html  200

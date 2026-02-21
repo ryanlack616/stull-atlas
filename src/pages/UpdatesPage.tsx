@@ -129,10 +129,6 @@ export function UpdatesPage() {
               chrome, rutile, tin, zircopax, titanium), bone ash, gerstley borate, Cornwall stone,
               nepheline syenite, lithium carbonate, strontium carbonate, and more. Every mineral
               oxide analysis verified.</li>
-            <li><strong>Historical Timeline</strong> {'\u2014'} New <Link to="/timeline">Timeline</Link> page
-              with 160+ events from 18,000 BCE to 2026, covering six eras of ceramic science.
-              Filterable by category, inflection-point highlights, and thematic threads tracing
-              recurring patterns across 20,000 years.</li>
             <li><strong>Brand unification</strong> {'\u2014'} Indigo color system (#4F46E5 / #6366F1) applied
               consistently across all pages, SVG wordmark assets created, favicon updated.</li>
             <li><strong>Polished upgrade UX</strong> {'\u2014'} Stripe integration placeholders now show
@@ -333,15 +329,6 @@ export function UpdatesPage() {
           </p>
         </section>
 
-        {/* â”€â”€ Timeline â”€â”€ */}
-        <section className="about-section">
-          <h2>Historical Timeline</h2>
-          <p>
-            A new <Link to="/timeline">Timeline</Link> page traces the history of glaze
-            chemistry â€” from ancient Egyptian faience to Stull's 1912 diagram and modern
-            computational ceramics.
-          </p>
-        </section>
 
         {/* â”€â”€ WebGL Performance â”€â”€ */}
         <section className="about-section">
