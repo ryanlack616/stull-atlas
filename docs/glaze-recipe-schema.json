@@ -1,0 +1,669 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stullatlas.app/schemas/glaze-recipe/v1",
+  "title": "Stull Atlas Glaze Recipe Standard",
+  "description": "Canonical schema for recording ceramic glaze recipes with full chemistry, firing context, outcomes, calculations, and epistemic tracking. Designed as the definitive data contract for computational ceramics.",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["id", "name", "source", "ingredients"],
+
+  "$defs": {
+
+    "EpistemicState": {
+      "type": "string",
+      "enum": ["unknown", "assumed", "inferred", "declared", "verified"],
+      "description": "Confidence level: unknown (no data) → assumed (default/fallback) → inferred (calculated) → declared (source/user stated) → verified (lab tested or cross-referenced)"
+    },
+
+    "TrackedNumber": {
+      "type": "object",
+      "description": "A numeric value with epistemic provenance",
+      "required": ["value", "confidence"],
+      "properties": {
+        "value":      { "type": "number" },
+        "confidence": { "$ref": "#/$defs/EpistemicState" },
+        "precision":  { "type": "integer", "description": "Significant decimal places" },
+        "source":     { "type": "string", "description": "Where this value came from" },
+        "measuredAt": { "type": "string", "format": "date-time" }
+      }
+    },
+
+    "OxideSymbol": {
+      "type": "string",
+      "enum": [
+        "Li2O", "Na2O", "K2O",
+        "MgO", "CaO", "SrO", "BaO", "ZnO", "PbO",
+        "Al2O3", "B2O3", "Fe2O3",
+        "SiO2", "TiO2", "ZrO2", "SnO2",
+        "MnO", "MnO2", "NiO", "CuO", "Cu2O", "CoO", "Cr2O3",
+        "P2O5", "F", "FeO", "V2O5", "WO3", "Bi2O3", "CeO2", "La2O3"
+      ],
+      "description": "All ceramic oxide symbols. Includes rare oxides (V2O5, WO3, etc.) for specialty glazes."
+    },
+
+    "OxideAnalysis": {
+      "type": "object",
+      "description": "Oxide composition in a specific representation (wt%, mol%, or UMF moles). Keys are OxideSymbol strings, values are numbers or TrackedNumbers.",
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "number" },
+          { "$ref": "#/$defs/TrackedNumber" }
+        ]
+      }
+    },
+
+    "Atmosphere": {
+      "type": "string",
+      "enum": ["oxidation", "reduction", "neutral", "soda", "salt", "wood", "raku", "unknown"]
+    },
+
+    "SurfaceType": {
+      "type": "string",
+      "enum": [
+        "glossy", "semi-glossy", "satin", "satin-matte", "semi-matte",
+        "matte", "smooth-matte", "stony-matte", "dry-matte",
+        "crystalline", "crawl", "crackle", "unknown"
+      ],
+      "description": "Surface finish classification. Expanded from Glazy's 9 categories."
+    },
+
+    "Transparency": {
+      "type": "string",
+      "enum": ["transparent", "translucent", "semi-opaque", "opaque", "unknown"]
+    },
+
+    "BaseType": {
+      "type": "string",
+      "enum": ["glaze", "clay_body", "slip", "engobe", "overglaze", "underglaze", "refractory", "wash"],
+      "description": "Top-level recipe classification"
+    },
+
+    "RecipeStatus": {
+      "type": "string",
+      "enum": ["draft", "testing", "production", "archived", "discontinued"],
+      "description": "Recipe lifecycle stage"
+    },
+
+    "KilnType": {
+      "type": "string",
+      "enum": ["electric", "gas", "wood", "soda", "salt", "raku", "pit", "anagama", "noborigama", "other", "unknown"]
+    },
+
+    "ApplicationMethod": {
+      "type": "string",
+      "enum": ["dip", "pour", "brush", "spray", "sponge", "trailer", "layered", "other", "unknown"]
+    },
+
+    "FiringSegment": {
+      "type": "object",
+      "description": "One segment of a firing schedule",
+      "required": ["targetTempC"],
+      "properties": {
+        "ratePerHour":  { "type": "number", "description": "°C per hour ramp rate. Null = full speed." },
+        "targetTempC":  { "type": "number", "description": "Target temperature in °C" },
+        "holdMinutes":  { "type": "number", "description": "Hold time at target in minutes", "default": 0 },
+        "label":        { "type": "string", "description": "Human label: 'slow bisque ramp', 'body reduction', etc." }
+      }
+    },
+
+    "Ingredient": {
+      "type": "object",
+      "description": "A single material in the recipe batch",
+      "required": ["materialName", "amount"],
+      "properties": {
+        "materialName":     { "type": "string", "description": "Material name as written in original source" },
+        "materialId":       { "type": "string", "description": "Normalized material ID (from Stull Atlas material database)" },
+        "glazyMaterialId":  { "type": "integer", "description": "Glazy internal material ID for round-trip fidelity" },
+        "amount":           { "type": "number", "description": "Amount in recipe units (typically parts by weight)" },
+        "unit":             { "type": "string", "enum": ["weight", "volume"], "default": "weight" },
+        "isAddition":       { "type": "boolean", "default": false, "description": "True = colorant/addition (above the base 100%). False = base ingredient." },
+        "mesh":             { "type": "integer", "description": "Particle mesh size if specified (e.g., 200 mesh silica)" },
+        "loi":              { "type": "number", "description": "Loss on ignition (%) for this specific material lot. Null = use database default." },
+        "supplier":         { "type": "string", "description": "Material supplier if known (e.g., 'Laguna', 'Sheffield')" },
+        "lotNumber":        { "type": "string", "description": "Supplier lot number for traceability" },
+        "substitutionFor":  { "type": "string", "description": "If this replaced another material (e.g., 'EPK' → 'Tile 6')" },
+        "analysis": {
+          "$ref": "#/$defs/OxideAnalysis",
+          "description": "Oxide analysis for THIS specific lot/source. Overrides database analysis when present."
+        },
+        "confidence":       { "$ref": "#/$defs/EpistemicState" }
+      }
+    },
+
+    "RecipeImage": {
+      "type": "object",
+      "properties": {
+        "url":          { "type": "string", "format": "uri" },
+        "thumbnailUrl": { "type": "string", "format": "uri" },
+        "caption":      { "type": "string" },
+        "isPrimary":    { "type": "boolean", "default": false },
+        "clayBody":     { "type": "string", "description": "Clay body this image was fired on" },
+        "cone":         { "type": ["number", "string"], "description": "Cone for this specific firing" },
+        "atmosphere":   { "$ref": "#/$defs/Atmosphere" },
+        "uploadedAt":   { "type": "string", "format": "date-time" }
+      }
+    },
+
+    "Defect": {
+      "type": "object",
+      "description": "Observed defect in a fired result",
+      "required": ["type"],
+      "properties": {
+        "type":     { "type": "string", "enum": [
+          "crazing", "shivering", "crawling", "pinholing", "blistering",
+          "dunting", "color-variation", "running", "settling", "underfired",
+          "overfired", "devitrification", "leaching", "other"
+        ]},
+        "severity": { "type": "string", "enum": ["minor", "moderate", "severe"] },
+        "notes":    { "type": "string" }
+      }
+    },
+
+    "BlendOrigin": {
+      "type": "object",
+      "description": "If this recipe was generated from a blend calculation",
+      "required": ["type", "parents"],
+      "properties": {
+        "type":    { "type": "string", "enum": ["line", "triaxial", "quadaxial", "biaxial", "radial", "modification", "other"] },
+        "parents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["recipeId", "proportion"],
+            "properties": {
+              "recipeId":   { "type": "string" },
+              "recipeName": { "type": "string" },
+              "proportion": { "type": "number", "minimum": 0, "maximum": 1, "description": "Weight fraction (0-1)" }
+            }
+          }
+        },
+        "gridPosition": {
+          "type": "object",
+          "description": "Position in the blend grid (e.g., row 3, col 2 of a triaxial)",
+          "properties": {
+            "row": { "type": "integer" },
+            "col": { "type": "integer" },
+            "label": { "type": "string" }
+          }
+        }
+      }
+    },
+
+    "RevisionEntry": {
+      "type": "object",
+      "description": "A single revision in the recipe's edit history",
+      "required": ["timestamp", "summary"],
+      "properties": {
+        "timestamp":  { "type": "string", "format": "date-time" },
+        "summary":    { "type": "string" },
+        "changedBy":  { "type": "string" },
+        "diff":       { "type": "object", "description": "Key-value pairs of what changed" }
+      }
+    },
+
+    "CalculationTrace": {
+      "type": "object",
+      "description": "Full trace of how chemistry was calculated (show your work)",
+      "properties": {
+        "molarWeightSetId":   { "type": "string", "description": "Which molar weight set was used (e.g., 'iupac-2023', 'stull-1912')" },
+        "molarWeightSetName": { "type": "string" },
+        "calculatedAt":       { "type": "string", "format": "date-time" },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "operation": { "type": "string" },
+              "inputs":    { "type": "object" },
+              "output":    {},
+              "note":      { "type": "string" }
+            }
+          }
+        },
+        "warnings": { "type": "array", "items": { "type": "string" } },
+        "errors":   { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  },
+
+  "properties": {
+
+    "id": {
+      "type": "string",
+      "description": "Unique recipe identifier. Format: source_id (e.g., 'glazy_1234', 'user_abc123')"
+    },
+    "name": {
+      "type": "string",
+      "description": "Recipe display name"
+    },
+    "aliases": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Alternative names this recipe is known by"
+    },
+
+    "source": {
+      "type": "string",
+      "description": "Data source identifier",
+      "examples": ["glazy", "digitalfire", "user", "calculated", "import", "literature"]
+    },
+    "sourceId": {
+      "type": "string",
+      "description": "Original ID in the source system (e.g., Glazy recipe number)"
+    },
+    "sourceUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to the original recipe in the source system"
+    },
+    "author": {
+      "type": "string",
+      "description": "Recipe creator / attribution"
+    },
+    "license": {
+      "type": "string",
+      "description": "License for this recipe data (e.g., 'CC BY-NC-SA 4.0', 'public domain')"
+    },
+
+    "baseType": {
+      "$ref": "#/$defs/BaseType"
+    },
+    "glazeTypeId": {
+      "type": "integer",
+      "description": "Glaze type from the taxonomy (e.g., 470=Clear, 540=Tenmoku, 640=Copper Red)"
+    },
+    "glazeTypeName": {
+      "type": "string",
+      "description": "Human-readable type name (resolved from glazeTypeId or manually set)"
+    },
+    "subtypeId": {
+      "type": "integer",
+      "description": "Glazy sub-type ID for round-trip fidelity"
+    },
+    "baseTypeId": {
+      "type": "integer",
+      "description": "Glazy base_type_id for round-trip (460=Glaze, 110=Clay Body, etc.)"
+    },
+
+    "status": {
+      "$ref": "#/$defs/RecipeStatus"
+    },
+    "country": {
+      "type": "string",
+      "description": "Country of origin (ISO 3166-1 alpha-2 or display name)"
+    },
+
+    "ingredients": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Ingredient" },
+      "minItems": 1,
+      "description": "Recipe ingredients. Base ingredients should sum to ~100 parts by weight."
+    },
+    "ingredientTotalBase": {
+      "type": "number",
+      "description": "Sum of non-addition ingredients. Should be ~100."
+    },
+    "ingredientTotalAll": {
+      "type": "number",
+      "description": "Sum of all ingredients including additions."
+    },
+
+    "chemistry": {
+      "type": "object",
+      "description": "Oxide chemistry in multiple representations. At minimum one should be present.",
+      "properties": {
+
+        "weightPercent": {
+          "$ref": "#/$defs/OxideAnalysis",
+          "description": "Weight percent analysis. Should sum to ~100% (before LOI). This is the RAW representation — all other forms are derived from this + molar weights."
+        },
+        "weightPercentSum": {
+          "type": "number",
+          "description": "Sum of weight percent values. Ideally 100.0 ± 0.5."
+        },
+
+        "molePercent": {
+          "$ref": "#/$defs/OxideAnalysis",
+          "description": "Mole percent (each oxide's moles as % of total moles). Useful for comparing recipes on equal footing."
+        },
+
+        "umf": {
+          "$ref": "#/$defs/OxideAnalysis",
+          "description": "Unity Molecular Formula — fluxes (R2O + RO) normalized to sum to 1.0. THE coordinate system for the Stull chart."
+        },
+
+        "umfMeta": {
+          "type": "object",
+          "description": "Derived UMF metadata",
+          "properties": {
+            "SiO2_Al2O3_ratio":  { "type": "number", "description": "Silica-to-alumina ratio (x/y on Stull chart)" },
+            "R2O_RO_ratio":      { "type": "number", "description": "Alkali to alkaline-earth flux ratio" },
+            "totalFluxMoles":    { "type": "number", "description": "Total flux moles before normalization" },
+            "R2O_total":         { "type": "number", "description": "Sum of all R2O flux moles in UMF" },
+            "RO_total":          { "type": "number", "description": "Sum of all RO flux moles in UMF" },
+            "fluxBreakdown": {
+              "type": "object",
+              "description": "Individual flux contributions as fraction of total flux",
+              "additionalProperties": { "type": "number" }
+            }
+          }
+        },
+
+        "loi": {
+          "type": "number",
+          "description": "Total loss on ignition (%). The weight lost when the recipe is fired — water, carbonates, organics."
+        },
+
+        "molarWeightSetId": {
+          "type": "string",
+          "description": "Which molar weight set was used for wt% → UMF conversion",
+          "examples": ["iupac-2023", "stull-1912", "digitalfire", "glazy-default"]
+        },
+
+        "chemistrySource": {
+          "type": "string",
+          "enum": ["calculated", "analyzed", "declared", "imported"],
+          "description": "How the chemistry was obtained: calculated from ingredients, lab-analyzed, declared by source, or imported as-is."
+        },
+
+        "confidence": { "$ref": "#/$defs/EpistemicState" }
+      }
+    },
+
+    "firing": {
+      "type": "object",
+      "description": "Complete firing context",
+      "properties": {
+        "cone": {
+          "type": ["number", "string"],
+          "description": "Primary cone rating. String for special cones ('06', '04'). Negative numbers encode low-fire: cone 04 = -4."
+        },
+        "coneRange": {
+          "type": "array",
+          "items": { "type": ["number", "string"] },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "Valid cone range [min, max]"
+        },
+        "temperatureC": {
+          "type": "number",
+          "description": "Peak firing temperature in °C"
+        },
+        "temperatureRange": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "Temperature range [min, max] in °C"
+        },
+        "atmosphere": {
+          "$ref": "#/$defs/Atmosphere"
+        },
+        "kilnType": {
+          "$ref": "#/$defs/KilnType"
+        },
+        "schedule": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/FiringSegment" },
+          "description": "Firing schedule as ordered segments. Includes ramp, target, and hold for each segment."
+        },
+        "coolingRate": {
+          "type": "string",
+          "enum": ["crash", "fast", "moderate", "slow", "controlled-cooling", "unknown"],
+          "description": "General cooling behavior. 'controlled-cooling' = specific cool-down schedule (define in schedule array)."
+        },
+        "heatwork": {
+          "type": "number",
+          "description": "Estimated heatwork integral (°C·hours). Captures time-temperature relationship beyond peak temp."
+        },
+        "firingNotes": {
+          "type": "string"
+        },
+        "confidence": { "$ref": "#/$defs/EpistemicState" }
+      }
+    },
+
+    "outcomes": {
+      "type": "object",
+      "description": "Observed results from firing this recipe",
+      "properties": {
+        "surfaceType":    { "$ref": "#/$defs/SurfaceType" },
+        "transparency":   { "$ref": "#/$defs/Transparency" },
+        "colorFamily":    { "type": "string", "description": "Primary color family (blue, green, amber, etc.)" },
+        "colorDescription": { "type": "string", "description": "Detailed color description as observed" },
+        "colorHex":       { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$", "description": "Approximate color as hex" },
+        "texture":        { "type": "string", "description": "Tactile surface quality (smooth, rough, bumpy, crystals, etc.)" },
+        "clayBody":       { "type": "string", "description": "Clay body this was tested on" },
+        "clayBodyId":     { "type": "string", "description": "ID reference to a clay body recipe" },
+        "thickness":      { "type": "string", "enum": ["thin", "medium", "thick", "variable", "unknown"] },
+        "coats":          { "type": "integer", "minimum": 1, "description": "Number of coats applied" },
+        "applicationMethod": { "$ref": "#/$defs/ApplicationMethod" },
+        "defects": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Defect" }
+        },
+        "foodSafe": {
+          "type": "boolean",
+          "description": "Whether this glaze is considered food-safe (requires leaching test for verification)"
+        },
+        "rating": {
+          "type": "number",
+          "minimum": 0, "maximum": 5,
+          "description": "User quality rating"
+        },
+        "outcomeNotes": { "type": "string" },
+        "confidence":   { "$ref": "#/$defs/EpistemicState" }
+      }
+    },
+
+    "calculated": {
+      "type": "object",
+      "description": "All derived/computed properties. These are NOT stored values — the app recalculates them. Included in the schema for data exchange and caching.",
+      "properties": {
+
+        "estimatedMeltTempC": {
+          "type": "number",
+          "description": "Estimated melting temperature in °C from UMF (empirical model)"
+        },
+
+        "coe": {
+          "type": "number",
+          "description": "Calculated coefficient of thermal expansion (×10⁻⁷ / °C). Used for crazing/shivering prediction."
+        },
+        "coeFactor": {
+          "type": "object",
+          "description": "Individual oxide contributions to COE",
+          "additionalProperties": { "type": "number" }
+        },
+
+        "crazingRisk": {
+          "type": "string",
+          "enum": ["none", "low", "moderate", "high", "certain"],
+          "description": "Crazing risk assessment given the COE and typical clay body COE ranges"
+        },
+
+        "stullRegion": {
+          "type": "string",
+          "description": "Named region on the Stull chart where this recipe plots",
+          "enum": ["unfused", "matte", "semi_matte", "bright_gloss", "underfired", "crazed", "outside"]
+        },
+
+        "stullPosition": {
+          "type": "object",
+          "description": "Exact position on the Stull chart",
+          "properties": {
+            "x": { "type": "number", "description": "SiO2 (UMF moles)" },
+            "y": { "type": "number", "description": "Al2O3 (UMF moles)" }
+          }
+        },
+
+        "surfacePrediction": {
+          "type": "string",
+          "description": "Predicted surface type from ML model or empirical rules"
+        },
+        "surfaceAgreement": {
+          "type": "boolean",
+          "description": "Whether the predicted surface matches the observed surface"
+        },
+
+        "validation": {
+          "type": "object",
+          "description": "Limit check results for the recipe's cone range",
+          "properties": {
+            "valid":       { "type": "boolean" },
+            "errors":      { "type": "array", "items": { "type": "string" } },
+            "warnings":    { "type": "array", "items": { "type": "string" } },
+            "suggestions": { "type": "array", "items": { "type": "string" } },
+            "issues": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "oxide":    { "type": "string" },
+                  "value":    { "type": "number" },
+                  "limit":    { "type": "object", "properties": { "min": { "type": "number" }, "max": { "type": "number" } } },
+                  "severity": { "type": "string", "enum": ["warning", "error"] },
+                  "message":  { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+
+        "similarity": {
+          "type": "array",
+          "description": "IDs of most similar recipes by UMF distance",
+          "items": {
+            "type": "object",
+            "properties": {
+              "recipeId": { "type": "string" },
+              "distance": { "type": "number" }
+            }
+          }
+        },
+
+        "trace": { "$ref": "#/$defs/CalculationTrace" }
+      }
+    },
+
+    "batch": {
+      "type": "object",
+      "description": "Batch calculation outputs for mixing",
+      "properties": {
+        "batchSizeGrams": {
+          "type": "number",
+          "description": "Total dry batch weight in grams"
+        },
+        "batchIngredients": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "materialName": { "type": "string" },
+              "grams":        { "type": "number" }
+            }
+          }
+        },
+        "waterGrams": {
+          "type": "number",
+          "description": "Water to add for target specific gravity"
+        },
+        "specificGravity": {
+          "type": "number",
+          "description": "Target specific gravity for the mixed glaze (typically 1.40-1.55)"
+        },
+        "totalWetWeight": {
+          "type": "number",
+          "description": "Total weight including water, in grams"
+        }
+      }
+    },
+
+    "lineage": {
+      "type": "object",
+      "description": "Recipe derivation history and relationships",
+      "properties": {
+        "parentRecipeId": {
+          "type": "string",
+          "description": "ID of the recipe this was derived from (manual modification)"
+        },
+        "blendOrigin": {
+          "$ref": "#/$defs/BlendOrigin",
+          "description": "If this recipe was generated from a blend calculation"
+        },
+        "derivedRecipeIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "IDs of recipes derived from this one"
+        },
+        "revisions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/RevisionEntry" },
+          "description": "Edit history"
+        },
+        "version": {
+          "type": "integer",
+          "description": "Revision counter (increments on each edit)",
+          "default": 1
+        }
+      }
+    },
+
+    "images": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/RecipeImage" },
+      "description": "Photos of fired results"
+    },
+
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "User-defined labels for filtering and grouping"
+    },
+    "collections": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Collection IDs this recipe belongs to"
+    },
+    "isFavorite": {
+      "type": "boolean",
+      "default": false
+    },
+
+    "description": {
+      "type": "string",
+      "description": "Long-form description of the recipe"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Freeform notes (mixing tips, observations, etc.)"
+    },
+
+    "verified": {
+      "type": "boolean",
+      "description": "Overall verification flag — has this recipe been cross-checked?"
+    },
+    "overallConfidence": {
+      "$ref": "#/$defs/EpistemicState",
+      "description": "Combined confidence across all sections"
+    },
+
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "importedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this recipe was imported into Stull Atlas"
+    },
+    "originalDate": {
+      "type": "string",
+      "description": "Original publication/creation date in the source system (may be imprecise: '2019', 'March 2020', etc.)"
+    }
+  }
+}
