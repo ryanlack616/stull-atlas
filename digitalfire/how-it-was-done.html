@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How It Was Done — DigitalFire Archive</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #07070c;
+      --surface: #0f0f1a;
+      --border:  #1e1e30;
+      --accent:  #818cf8;
+      --accent2: #6366f1;
+      --amber:   #fbbf24;
+      --rose:    #fb7185;
+      --text:    #e2e8f0;
+      --muted:   #64748b;
+      --code-bg: #0a0a14;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      padding: 0 1rem 6rem;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 1.2rem 0;
+      margin-bottom: 3rem;
+    }
+
+    header nav {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    header a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    header a:hover { text-decoration: underline; }
+
+    header .sep { color: var(--muted); }
+
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 3rem;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 2.8rem 0 0.8rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--amber);
+      margin: 1.6rem 0 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    p { margin-bottom: 1rem; color: #cbd5e1; }
+
+    a { color: var(--accent); }
+    a:hover { color: #a5b4fc; }
+
+    .pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 1.5rem 0;
+    }
+
+    .step {
+      display: flex;
+      gap: 1.2rem;
+      align-items: flex-start;
+      padding: 1.2rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .step:last-child { border-bottom: none; }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: var(--accent2);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-top: 0.15rem;
+    }
+
+    .step-body h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+    }
+
+    .step-body p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .step-body code {
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.82rem;
+      color: var(--accent);
+      background: var(--code-bg);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem 1.4rem;
+      overflow-x: auto;
+      margin: 1rem 0 1.4rem;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: #94a3b8;
+    }
+
+    pre .kw  { color: #818cf8; }
+    pre .fn  { color: #fbbf24; }
+    pre .st  { color: #86efac; }
+    pre .cm  { color: #475569; font-style: italic; }
+    pre .nu  { color: #fb7185; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+    }
+
+    .stat-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .file-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0 1.5rem;
+      font-size: 0.88rem;
+    }
+
+    .file-table th {
+      text-align: left;
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.4rem 0.8rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .file-table td {
+      padding: 0.55rem 0.8rem;
+      border-bottom: 1px solid #12121e;
+      color: #94a3b8;
+    }
+
+    .file-table td:first-child {
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.82rem;
+      color: var(--accent);
+    }
+
+    .file-table tr:last-child td { border-bottom: none; }
+
+    blockquote {
+      border-left: 3px solid var(--accent2);
+      padding: 0.8rem 1.2rem;
+      margin: 1.5rem 0;
+      background: var(--surface);
+      border-radius: 0 6px 6px 0;
+      color: #94a3b8;
+      font-style: italic;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #1a1a2e;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.75rem;
+      padding: 0.15em 0.55em;
+      border-radius: 4px;
+      margin: 0.1em;
+    }
+
+    footer {
+      max-width: 800px;
+      margin: 4rem auto 0;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    footer a { color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="/digitalfire/">← DF Archive</a>
+    <span class="sep">/</span>
+    <a href="https://stullatlas.app">Stull Atlas</a>
+    <span class="sep">/</span>
+    <span style="color:var(--muted)">How It Was Done</span>
+  </nav>
+</header>
+
+<div class="page">
+
+  <h1>How It Was Done</h1>
+  <p class="subtitle">Building the DigitalFire offline archive &amp; search engine — February 2026</p>
+
+  <p>
+    This is the technical write-up for the DigitalFire archive at
+    <a href="/digitalfire/">stullatlas.app/digitalfire/</a>. It covers
+    every step from scraping the site to shipping a fully offline, searchable
+    SQLite database that runs entirely in the browser — no server, no API key,
+    no internet connection required after first load.
+  </p>
+
+  <p>
+    I'm Ryan Lack. I started programming on an Apple IIe. Spent a lot of the
+    late 90's writing PHP with MySQL backends. These days it's mostly Python.
+    I'm also a potter. That combination is why this project exists.
+  </p>
+
+  <div class="stats-grid">
+    <div class="stat">
+      <div class="stat-value">13,368</div>
+      <div class="stat-label">Pages scraped</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">37</div>
+      <div class="stat-label">DB tables</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">304K</div>
+      <div class="stat-label">Rows total</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">122 MB</div>
+      <div class="stat-label">SQLite DB</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">89K</div>
+      <div class="stat-label">Related content pairs</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">30,785</div>
+      <div class="stat-label">Oxide similarity pairs</div>
+    </div>
+  </div>
+
+  <!-- ── STEP 1: SCRAPING ─────────────────────────────────────────── -->
+  <h2>Step 1 — Scraping DigitalFire</h2>
+
+  <p>
+    The first step was building a scraper (<code>extract-digitalfire.py</code>)
+    that crawled digitalfire.com systematically, respecting the site's structure
+    and not hammering the server. The output is a single JSON file —
+    <code>pages.json</code> — containing every page as a flat object.
+  </p>
+
+  <pre><span class="cm"># pages.json — 7.7 MB gzipped, ~26 MB raw</span>
+[
+  {
+    <span class="st">"url"</span>: <span class="st">"https://digitalfire.com/material/Alberta+Slip"</span>,
+    <span class="st">"title"</span>: <span class="st">"Alberta Slip"</span>,
+    <span class="st">"content"</span>: <span class="st">"..."</span>,
+    <span class="st">"type"</span>: <span class="st">"material"</span>
+  },
+  ...
+]</pre>
+
+  <p>
+    Content types captured:
+    <span class="tag">material</span>
+    <span class="tag">oxide</span>
+    <span class="tag">glossary</span>
+    <span class="tag">article</span>
+    <span class="tag">recipe</span>
+    <span class="tag">picture</span>
+    <span class="tag">hazard</span>
+    <span class="tag">troubleshooting</span>
+    <span class="tag">test</span>
+    <span class="tag">video</span>
+    <span class="tag">temperature</span>
+  </p>
+
+  <!-- ── STEP 2: PRODUCTION DB ───────────────────────────────────── -->
+  <h2>Step 2 — Building the Production Database</h2>
+
+  <p>
+    The raw JSON was parsed into a normalized SQLite database
+    (<code>digitalfire_production.db</code>, ~101 MB) with proper relational
+    tables: materials with oxide analysis, recipes with ingredients and firing
+    schedules, glossary definitions, cross-reference links, and more.
+  </p>
+
+  <p>
+    This is the full structured representation. It's the starting point for
+    everything that comes after. The link graph alone — tracking every internal
+    cross-reference between pages — produced 144,000 edges.
+  </p>
+
+  <!-- ── STEP 3: REFERENCE DB ───────────────────────────────────── -->
+  <h2>Step 3 — Building the Reference Database</h2>
+
+  <p>
+    The production DB is too large and too raw to ship in a browser. The build
+    script (<code>scripts/build_reference_db.py</code>) runs a 6-step pipeline
+    that transforms it into something fast and self-contained:
+  </p>
+
+  <div class="pipeline">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Copy production database</h4>
+        <p>Start with the production DB as the base — preserves all 37 tables and 304K rows.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Build FTS5 full-text search index</h4>
+        <p>
+          SQLite's FTS5 virtual table with Porter stemmer. Indexes 8,884 entries
+          across 15 content categories. A unified <code>search_index</code> table
+          stores metadata (category, title, snippet, URL) alongside the FTS rows
+          for fast grouped results.
+        </p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Pre-compute related content from link graph</h4>
+        <p>
+          Walks the 144K-edge link graph to compute the top related pages for
+          each entry. Stored as <code>related_content</code> rows — 89,093 pairs
+          total. This is what powers the "Related" section in every detail panel,
+          with zero query-time computation.
+        </p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h4>Pre-compute oxide similarity rankings</h4>
+        <p>
+          For each of the 3,124 materials that have oxide analysis, computes
+          cosine similarity across 63 oxides against every other material.
+          Stores the top-N most similar materials per entry — 30,785 pairs.
+          This is what makes "Similar materials" work instantly.
+        </p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h4>Create query indexes</h4>
+        <p>17 covering indexes across the most-queried columns and join paths.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <h4>Strip redundant clean_text, VACUUM</h4>
+        <p>
+          The raw text content is now fully indexed in FTS5, so the
+          <code>clean_text</code> column in <code>pages</code> is nulled out
+          to reclaim space. Final <code>VACUUM</code> compacts the file.
+          122 MB output.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <pre><span class="cm"># Run the build</span>
+<span class="fn">python</span> scripts/build_reference_db.py
+
+<span class="cm"># Output:</span>
+<span class="cm"># [1/6] Copying production database... 304,223 rows</span>
+<span class="cm"># [2/6] Building FTS5 search index... 8,884 entries</span>
+<span class="cm"># [3/6] Pre-computing related content... 89,093 pairs</span>
+<span class="cm"># [4/6] Pre-computing oxide similarity... 30,785 pairs</span>
+<span class="cm"># [5/6] Creating query indexes... 17 indexes</span>
+<span class="cm"># [6/6] Stripping clean_text, VACUUM...</span>
+<span class="cm"># REFERENCE DATABASE COMPLETE — 122.2 MB</span></pre>
+
+  <!-- ── STEP 4: DEPLOY ──────────────────────────────────────────── -->
+  <h2>Step 4 — Deploying to the Browser</h2>
+
+  <p>
+    A 122 MB SQLite file can't be served as-is to a web browser. The solution
+    is <a href="https://sql.js.org" target="_blank">sql.js</a> — SQLite compiled
+    to WebAssembly — which lets the browser load and query a SQLite DB with
+    zero server involvement. But 122 MB is too large for a single request, so
+    the DB is gzip-compressed and served as a streaming download (~26 MB).
+  </p>
+
+  <pre><span class="cm"># Compress for web delivery</span>
+gzip -k digitalfire_reference.db
+<span class="cm"># 122 MB → 25.7 MB</span>
+
+<span class="cm"># Browser loads it with streaming progress:</span>
+<span class="kw">const</span> response = <span class="kw">await</span> fetch(<span class="st">'digitalfire_reference.db.gz'</span>);
+<span class="kw">const</span> buffer  = <span class="kw">await</span> decompress(response);   <span class="cm">// DecompressionStream API</span>
+<span class="kw">const</span> db      = <span class="kw">new</span> SQL.Database(<span class="kw">new</span> Uint8Array(buffer));</pre>
+
+  <p>
+    Once loaded, the entire DB lives in the browser's memory. Every search,
+    every "similar materials" lookup, every related-content query — all of it
+    runs as SQL against a local SQLite instance. No network requests. No API.
+    Works offline.
+  </p>
+
+  <h3>The frontend</h3>
+  <p>
+    Vanilla JavaScript and CSS — no framework. The app is a single page
+    (<code>index.html</code> + <code>app.js</code> + <code>app.css</code>)
+    with a dark theme. Search is FTS5 with Porter stemming, so "melting" finds
+    "melt," "glazing" finds "glaze." The oxide filter lets you search by
+    chemistry — find all materials above some SiO₂ threshold, for example.
+  </p>
+
+  <!-- ── FILE MANIFEST ───────────────────────────────────────────── -->
+  <h2>Files Included in the Archive</h2>
+
+  <table class="file-table">
+    <thead>
+      <tr>
+        <th>File</th>
+        <th>Size</th>
+        <th>What it is</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>pages.json</td>
+        <td>7.7 MB / 26 MB raw</td>
+        <td>Every scraped page as JSON — the raw source of everything</td>
+      </tr>
+      <tr>
+        <td>extract-digitalfire.py</td>
+        <td>5 KB</td>
+        <td>The scraper that collected pages.json</td>
+      </tr>
+      <tr>
+        <td>digitalfire_reference.db.gz</td>
+        <td>25.7 MB / 122 MB uncompressed</td>
+        <td>The built SQLite — FTS5, oxide similarity, related content, all indexes</td>
+      </tr>
+      <tr>
+        <td>scripts/build_reference_db.py</td>
+        <td>23 KB</td>
+        <td>6-step pipeline that builds the reference DB from the production DB</td>
+      </tr>
+      <tr>
+        <td>scripts/split_db.py</td>
+        <td>2 KB</td>
+        <td>Splits the 122 MB DB into chunks for GitHub Pages deployment</td>
+      </tr>
+      <tr>
+        <td>public/</td>
+        <td>—</td>
+        <td>The browser app — open index.html locally to run it offline</td>
+      </tr>
+      <tr>
+        <td>widget/digitalfire-widget.js</td>
+        <td>33 KB</td>
+        <td>Embeddable search widget — drop it into any page</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── INTEGRITY ──────────────────────────────────────────────── -->
+  <h2>A Note on Attribution</h2>
+
+  <blockquote>
+    All content is Tony Hansen's. Every page in the archive links back to the
+    original at digitalfire.com. The archive exists because I didn't want it
+    to disappear — not to republish it, replace it, or take credit for it.
+  </blockquote>
+
+  <p>
+    The app cites the source URL on every entry. The scraper identifies itself.
+    The README says whose work this is. If Tony wants me to take any of it
+    down, I will. If he wants to use any of it — the scraper, the build
+    pipeline, the browser app — he's welcome to it, no strings.
+  </p>
+
+  <!-- ── CONTACT ─────────────────────────────────────────────────── -->
+  <h2>Questions / Contact</h2>
+
+  <p>
+    Ryan Lack<br>
+    <a href="mailto:rlackpotter@gmail.com">rlackpotter@gmail.com</a><br>
+    517.304.3751 (call or text)<br>
+    <a href="https://stullatlas.app">stullatlas.app</a>
+  </p>
+
+</div>
+
+<footer>
+  <p>
+    <a href="/digitalfire/">← DF Archive</a> &nbsp;·&nbsp;
+    <a href="https://stullatlas.app">Stull Atlas</a> &nbsp;·&nbsp;
+    Built by Ryan Lack, February 2026
+  </p>
+</footer>
+
+</body>
+</html>

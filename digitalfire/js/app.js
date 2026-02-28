@@ -39,7 +39,7 @@ const app = {
     this.setProgress(5);
 
     const SQL = await initSqlJs({
-      locateFile: file => `js/${file}?v=3`
+      locateFile: file => `js/${file}`
     });
 
     this.setLoadStatus('Downloading database...');
@@ -87,6 +87,12 @@ const app = {
 
     // Bind events
     this.bindEvents();
+
+    // Handle deep-link URL params (?q=search+term&cat=glossary or ?id=123&cat=material)
+    this.handleDeepLink();
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', () => this.handleDeepLink());
 
     // Hide loading screen
     setTimeout(() => {
@@ -144,6 +150,36 @@ const app = {
     });
   },
 
+  handleDeepLink() {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q');
+    const cat = params.get('cat') || 'all';
+    const itemId = params.get('id');
+
+    if (itemId) {
+      // Direct item link: ?id=123&cat=material
+      this.openDetail(parseInt(itemId), cat);
+    } else if (q) {
+      // Search link: ?q=feldspar&cat=material
+      const input = document.getElementById('search-input');
+      input.value = q;
+      this.currentQuery = q;
+      this.currentCategory = cat;
+      document.getElementById('search-view').style.display = 'block';
+      document.getElementById('home-view').classList.remove('visible');
+      this.doSearch(q, cat);
+    }
+  },
+
+  updateUrl(q, cat) {
+    const params = new URLSearchParams();
+    if (q) params.set('q', q);
+    if (cat && cat !== 'all') params.set('cat', cat);
+    const qs = params.toString();
+    const url = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
+    history.replaceState(null, '', url);
+  },
+
   onSearch() {
     const q = document.getElementById('search-input').value.trim();
     this.currentQuery = q;
@@ -152,11 +188,13 @@ const app = {
     if (!q) {
       document.getElementById('search-view').style.display = 'none';
       document.getElementById('home-view').classList.add('visible');
+      this.updateUrl('', '');
       return;
     }
 
     document.getElementById('search-view').style.display = 'block';
     document.getElementById('home-view').classList.remove('visible');
+    this.updateUrl(q, 'all');
     this.doSearch(q);
   },
 
@@ -241,6 +279,7 @@ const app = {
 
   selectCategory(cat, query) {
     this.currentCategory = cat;
+    this.updateUrl(query, cat);
     this.doSearch(query, cat);
   },
 
@@ -717,6 +756,8 @@ const app = {
       SELECT si.rowid, si.category, si.title, si.snippet, si.url, si.page_id
       FROM search_index si
       WHERE si.category = ?
+        AND si.title IS NOT NULL
+        AND si.title != ''
       ORDER BY si.title
       LIMIT 200
     `, [cat]);
