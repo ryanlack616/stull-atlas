@@ -16,6 +16,7 @@ const app = {
   imgDepth: 0,
   currentDetailPageId: null,
   currentDetailCategory: null,
+  searchMode: 'normal',   // 'normal' | 'fuzzy' | 'deep'
 
   // Category config
   categories: {
@@ -129,6 +130,9 @@ const app = {
     // Initialize theme
     this.initTheme();
 
+    // Initialize search mode UI
+    this.updateSearchModeUI();
+
     // Handle deep-link URL params (?q=search+term&cat=glossary or ?id=123&cat=material)
     this.handleDeepLink();
 
@@ -224,6 +228,34 @@ const app = {
     }
   },
 
+  // --- Search Mode ---
+  cycleSearchMode() {
+    const modes = ['normal', 'fuzzy', 'deep'];
+    const i = modes.indexOf(this.searchMode);
+    this.searchMode = modes[(i + 1) % modes.length];
+    this.updateSearchModeUI();
+    if (this.currentQuery) this.doSearch(this.currentQuery, this.currentCategory);
+  },
+
+  updateSearchModeUI() {
+    const btn  = document.getElementById('search-mode-btn');
+    const hint = document.getElementById('search-mode-hint');
+    if (!btn) return;
+    const labels = {
+      normal: 'Normal',
+      fuzzy:  '⚡ Fuzzy',
+      deep:   '⬡ Deep',
+    };
+    const hints = {
+      normal: '',
+      fuzzy:  '⚡ Fuzzy — partial substring matching, forgiving of typos and alternate spellings',
+      deep:   '⬡ Deep — expands results by following pre-computed topic relationships in the graph',
+    };
+    btn.textContent = labels[this.searchMode];
+    btn.className   = `search-mode-btn${this.searchMode !== 'normal' ? ' mode-' + this.searchMode : ''}`;
+    hint.textContent = hints[this.searchMode];
+  },
+
   handleDeepLink() {
     const params = new URLSearchParams(window.location.search);
     const q = params.get('q');
@@ -274,53 +306,106 @@ const app = {
 
   doSearch(q, category = 'all') {
     const t0 = performance.now();
-    
-    // FTS5 search with ranking
-    let sql, params;
-    
-    // Clean query for FTS5 — wrap each word in quotes for prefix matching
-    const ftsQuery = q.split(/\s+/).filter(w => w).map(w => `"${w}"*`).join(' ');
-    
-    if (category === 'all') {
-      sql = `
-        SELECT si.rowid, si.category, si.title, si.snippet, si.url, si.page_id,
-               rank
-        FROM search_fts
-        JOIN search_index si ON si.rowid = search_fts.rowid
-        WHERE search_fts MATCH ?
-        ORDER BY rank
-        LIMIT 200
-      `;
-      params = [ftsQuery];
+    let results;
+    if (this.searchMode === 'fuzzy') {
+      results = this.doFuzzySearch(q, category);
+    } else if (this.searchMode === 'deep') {
+      results = this.doDeepSearch(q, category);
     } else {
-      sql = `
-        SELECT si.rowid, si.category, si.title, si.snippet, si.url, si.page_id,
-               rank
-        FROM search_fts
-        JOIN search_index si ON si.rowid = search_fts.rowid
-        WHERE search_fts MATCH ? AND si.category = ?
-        ORDER BY rank
-        LIMIT 200
-      `;
-      params = [ftsQuery, category];
+      results = this.doNormalSearch(q, category);
     }
-
-    const results = this.query(sql, params);
     const elapsed = (performance.now() - t0).toFixed(1);
 
-    // Count by category
     const catCounts = {};
     let total = 0;
     for (const r of results) {
       catCounts[r.category] = (catCounts[r.category] || 0) + 1;
       total++;
     }
-
-    // Render category tabs
     this.renderCategoryTabs(catCounts, category, q);
+    this.renderResults(results, total, elapsed);
+  },
 
-    // Render results
-    this.renderResults(category === 'all' ? results : results, total, elapsed);
+  // Normal — FTS5 prefix match (fast, exact)
+  doNormalSearch(q, category) {
+    const ftsQuery = q.split(/\s+/).filter(w => w).map(w => `"${w}"*`).join(' ');
+    if (category === 'all') {
+      return this.query(`
+        SELECT si.rowid, si.category, si.title, si.snippet, si.url, si.page_id, rank
+        FROM search_fts
+        JOIN search_index si ON si.rowid = search_fts.rowid
+        WHERE search_fts MATCH ?
+        ORDER BY rank LIMIT 200
+      `, [ftsQuery]);
+    }
+    return this.query(`
+      SELECT si.rowid, si.category, si.title, si.snippet, si.url, si.page_id, rank
+      FROM search_fts
+      JOIN search_index si ON si.rowid = search_fts.rowid
+      WHERE search_fts MATCH ? AND si.category = ?
+      ORDER BY rank LIMIT 200
+    `, [ftsQuery, category]);
+  },
+
+  // Fuzzy — substring LIKE, OR across words, forgiving of typos
+  doFuzzySearch(q, category) {
+    const words = q.split(/\s+/).filter(w => w.length > 1);
+    if (!words.length) return [];
+    const conditions = words.map(() => `(si.title LIKE ? OR si.snippet LIKE ?)`).join(' OR ');
+    const scoreExpr  = words.map(() => `CASE WHEN si.title LIKE ? THEN 1 ELSE 0 END`).join(' + ');
+    const catClause  = category !== 'all' ? 'AND si.category = ?' : '';
+    const likes      = words.map(w => `%${w}%`);
+    const sql = `
+      SELECT si.rowid, si.category, si.title, si.snippet, si.url, si.page_id,
+             (${scoreExpr}) AS score
+      FROM search_index si
+      WHERE (${conditions}) ${catClause}
+      ORDER BY score DESC, si.title
+      LIMIT 200
+    `;
+    // Param order: scoreExpr CASE params (N), then conditions params (2N), then optional category
+    const params = [
+      ...likes,
+      ...words.flatMap(w => [`%${w}%`, `%${w}%`]),
+      ...(category !== 'all' ? [category] : []),
+    ];
+    return this.query(sql, params);
+  },
+
+  // Deep — FTS5 seeds + related_content graph expansion
+  doDeepSearch(q, category) {
+    const direct    = this.doNormalSearch(q, 'all');
+    const directIds = new Set(direct.map(r => r.page_id));
+    const filtered  = category === 'all' ? direct : direct.filter(r => r.category === category);
+
+    const seedIds = direct.slice(0, 12).map(r => r.page_id);
+    if (!seedIds.length) return filtered;
+
+    const ph = seedIds.map(() => '?').join(',');
+    const related = this.query(`
+      SELECT rc.related_page_id AS page_id, SUM(rc.link_score) AS total_score
+      FROM related_content rc
+      WHERE rc.page_id IN (${ph})
+        AND rc.related_page_id NOT IN (${ph})
+      GROUP BY rc.related_page_id
+      ORDER BY total_score DESC
+      LIMIT 120
+    `, [...seedIds, ...seedIds]);
+
+    const relatedIds = related.map(r => r.page_id).filter(id => !directIds.has(id));
+    if (!relatedIds.length) return filtered;
+
+    const relPh    = relatedIds.map(() => '?').join(',');
+    const catClause = category !== 'all' ? 'AND si.category = ?' : '';
+    const relResults = this.query(`
+      SELECT si.rowid, si.category, si.title, si.snippet, si.url, si.page_id
+      FROM search_index si
+      WHERE si.page_id IN (${relPh}) ${catClause}
+      LIMIT 150
+    `, [...relatedIds, ...(category !== 'all' ? [category] : [])]);
+
+    for (const r of relResults) r._isRelated = true;
+    return [...filtered, ...relResults];
   },
 
   renderCategoryTabs(counts, active, query) {
@@ -369,13 +454,20 @@ const app = {
     }
 
     let html = '';
+    let shownDivider = false;
     for (const r of results) {
       const cfg = this.categories[r.category] || { icon: '📄', label: r.category };
+      if (r._isRelated && !shownDivider) {
+        html += `<div class="deep-divider">↳ Also related via topic graph</div>`;
+        shownDivider = true;
+      }
+      const badge = r._isRelated ? `<span class="rc-related-badge">related</span>` : '';
       html += `
         <div class="result-card" onclick="app.openDetail(${r.page_id}, '${r.category}')">
           <div class="rc-header">
             <span class="rc-cat ${r.category}">${cfg.icon} ${r.category}</span>
             <span class="rc-title">${this.esc(r.title || 'Untitled')}</span>
+            ${badge}
           </div>
           <div class="rc-snippet">${this.esc(r.snippet || '')}</div>
         </div>

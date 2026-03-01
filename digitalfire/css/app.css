@@ -159,7 +159,7 @@ header {
 }
 .search-wrap input {
   width: 100%;
-  padding: 0.6rem 1rem 0.6rem 2.4rem;
+  padding: 0.6rem 5.8rem 0.6rem 2.4rem;
   background: var(--bg-input);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -184,6 +184,62 @@ header {
   color: var(--text-muted);
   font-size: 0.9rem;
   pointer-events: none;
+}
+/* Search mode toggle button */
+.search-mode-btn {
+  position: absolute;
+  right: 0.45rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-muted);
+  font-size: 0.71rem;
+  font-family: var(--mono);
+  padding: 0.17rem 0.42rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+  line-height: 1.4;
+}
+.search-mode-btn:hover { color: var(--text); border-color: var(--text-dim); }
+.search-mode-btn.mode-fuzzy { border-color: var(--trouble); color: var(--trouble); }
+.search-mode-btn.mode-deep  { border-color: var(--accent);  color: var(--accent);  }
+/* Explanation hint shown below search bar when a non-normal mode is active */
+.search-mode-hint {
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 0;
+  font-size: 0.71rem;
+  color: var(--text-muted);
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+/* Deep mode: divider + related badge in result list */
+.deep-divider {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.71rem;
+  font-family: var(--mono);
+  color: var(--accent);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px dashed var(--border);
+  background: var(--accent-glow);
+  letter-spacing: 0.03em;
+}
+.rc-related-badge {
+  font-size: 0.63rem;
+  font-family: var(--mono);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  padding: 0 0.28rem;
+  opacity: 0.7;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 /* Stats */

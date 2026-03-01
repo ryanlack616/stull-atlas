@@ -34,6 +34,8 @@
   <div class="search-wrap">
     <span class="search-icon">&#128269;</span>
     <input type="text" id="search-input" placeholder="Search materials, glazes, problems, chemistry..." autocomplete="off" spellcheck="false">
+    <button class="search-mode-btn" id="search-mode-btn" onclick="app.cycleSearchMode()" title="Click to cycle: Normal → Fuzzy → Deep">Normal</button>
+    <div class="search-mode-hint" id="search-mode-hint"></div>
   </div>
   <div class="header-stats" id="header-stats"></div>
   <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode" aria-label="Toggle theme">&#9790;</button>
