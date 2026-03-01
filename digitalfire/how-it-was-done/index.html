@@ -8,16 +8,16 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:      #07070c;
-      --surface: #0f0f1a;
-      --border:  #1e1e30;
-      --accent:  #818cf8;
-      --accent2: #6366f1;
-      --amber:   #fbbf24;
-      --rose:    #fb7185;
-      --text:    #e2e8f0;
-      --muted:   #64748b;
-      --code-bg: #0a0a14;
+      --bg:      #f8f9fa;
+      --surface: #ffffff;
+      --border:  #dee2e6;
+      --accent:  #007bff;
+      --accent2: #0056b3;
+      --amber:   #6c757d;
+      --rose:    #dc3545;
+      --text:    #212529;
+      --muted:   #6c757d;
+      --code-bg: #f1f3f4;
     }
 
     body {
@@ -89,7 +89,7 @@
       letter-spacing: 0.07em;
     }
 
-    p { margin-bottom: 1rem; color: #cbd5e1; }
+    p { margin-bottom: 1rem; color: #343a40; }
 
     a { color: var(--accent); }
     a:hover { color: #a5b4fc; }
@@ -158,14 +158,14 @@
       font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
       font-size: 0.82rem;
       line-height: 1.6;
-      color: #94a3b8;
+      color: #495057;
     }
 
-    pre .kw  { color: #818cf8; }
-    pre .fn  { color: #fbbf24; }
-    pre .st  { color: #86efac; }
-    pre .cm  { color: #475569; font-style: italic; }
-    pre .nu  { color: #fb7185; }
+    pre .kw  { color: #0056b3; }
+    pre .fn  { color: #6f42c1; }
+    pre .st  { color: #28a745; }
+    pre .cm  { color: #6c757d; font-style: italic; }
+    pre .nu  { color: #dc3545; }
 
     .stats-grid {
       display: grid;
@@ -216,8 +216,8 @@
 
     .file-table td {
       padding: 0.55rem 0.8rem;
-      border-bottom: 1px solid #12121e;
-      color: #94a3b8;
+      border-bottom: 1px solid #e9ecef;
+      color: #495057;
     }
 
     .file-table td:first-child {
@@ -234,7 +234,7 @@
       margin: 1.5rem 0;
       background: var(--surface);
       border-radius: 0 6px 6px 0;
-      color: #94a3b8;
+      color: #495057;
       font-style: italic;
     }
 
@@ -557,7 +557,7 @@ gzip -k digitalfire_reference.db
 
   <p>Added after the initial February release:</p>
 
-  <ul style="margin:0.8rem 0 1rem 1.4rem;color:#94a3b8;line-height:1.9;font-size:0.92rem">
+  <ul style="margin:0.8rem 0 1rem 1.4rem;color:#495057;line-height:1.9;font-size:0.92rem">
     <li>
       <strong style="color:var(--text)">Image gallery</strong> — Every detail panel now shows images
       lazy-loaded directly from Tony's S3 bucket
@@ -574,6 +574,15 @@ gzip -k digitalfire_reference.db
       <code>prefers-color-scheme</code> on first visit. Applied via an inline
       <code>&lt;head&gt;</code> script before CSS loads, so there's no flash of
       wrong theme on reload.
+    </li>
+    <li>
+      <strong style="color:var(--text)">Normal / Fuzzy / Deep search modes</strong> — Cycle button
+      inside the search bar. <em>Normal</em> uses FTS5 with Porter stemming.
+      <em>Fuzzy</em> uses SQL <code>LIKE</code> matching, better for chemical
+      names and abbreviations. <em>Deep</em> uses Tony's own cross-reference
+      graph — seeds from FTS5, then expands through the 89K pre-computed
+      related-content pairs to surface pages connected by subject even if they
+      don't contain your search term literally.
     </li>
   </ul>
 
