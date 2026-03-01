@@ -1,16 +1,17 @@
 :root {
-  --bg: #0f1117;
-  --bg-card: #1a1d27;
-  --bg-hover: #232733;
-  --bg-input: #141620;
-  --border: #2a2e3d;
-  --border-focus: #4a6cf7;
-  --text: #e8eaed;
-  --text-dim: #8b8fa3;
-  --text-muted: #5c6078;
-  --accent: #4a6cf7;
-  --accent-hover: #5e7df9;
-  --accent-glow: rgba(74, 108, 247, 0.15);
+  /* Dark theme — navy-toned to complement digitalfire's clean aesthetic */
+  --bg: #181c24;
+  --bg-card: #1f2330;
+  --bg-hover: #272c3a;
+  --bg-input: #14171f;
+  --border: #2c3244;
+  --border-focus: #4dabf7;
+  --text: #e9ecef;
+  --text-dim: #8d99ae;
+  --text-muted: #55606e;
+  --accent: #4dabf7;
+  --accent-hover: #74c0fc;
+  --accent-glow: rgba(77, 171, 247, 0.15);
   --material: #e8a838;
   --glossary: #4ecdc4;
   --article: #9b7cf7;
@@ -28,43 +29,43 @@
   --property: #90be6d;
   --radius: 8px;
   --radius-lg: 12px;
-  --shadow: 0 2px 8px rgba(0,0,0,0.3);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+  --shadow: 0 2px 8px rgba(0,0,0,0.35);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
   --mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
   --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* Light theme */
+/* Light theme — matching digitalfire.com (Bootstrap 4 bg-light palette + #007bff) */
 [data-theme="light"] {
-  --bg: #f5f6f8;
+  --bg: #f8f9fa;
   --bg-card: #ffffff;
-  --bg-hover: #eef0f4;
+  --bg-hover: #e9ecef;
   --bg-input: #ffffff;
-  --border: #d4d7e0;
-  --border-focus: #4a6cf7;
-  --text: #1a1d27;
-  --text-dim: #4a4e60;
-  --text-muted: #8b8fa3;
-  --accent: #3a5ce5;
-  --accent-hover: #2d4fd8;
-  --accent-glow: rgba(58, 92, 229, 0.1);
-  --material: #c48820;
-  --glossary: #2ba89f;
-  --article: #7b5cd7;
-  --picture: #d75555;
-  --recipe: #d78c2a;
-  --hazard: #e04545;
-  --test: #3aade0;
-  --oxide: #6aad30;
-  --video: #d76aaf;
-  --trouble: #d89030;
-  --mineral: #4aad7a;
-  --project: #7a70d8;
-  --schedule: #c99a20;
-  --temperature: #d93033;
-  --property: #5a9040;
-  --shadow: 0 2px 8px rgba(0,0,0,0.08);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --border: #dee2e6;
+  --border-focus: #007bff;
+  --text: #212529;
+  --text-dim: #495057;
+  --text-muted: #6c757d;
+  --accent: #007bff;
+  --accent-hover: #0056b3;
+  --accent-glow: rgba(0, 123, 255, 0.12);
+  --material: #b05c08;
+  --glossary: #0e7a75;
+  --article: #5a3dbf;
+  --picture: #b92020;
+  --recipe: #b86e08;
+  --hazard: #cc2020;
+  --test: #0c7bc4;
+  --oxide: #3d8f15;
+  --video: #b83e8e;
+  --trouble: #a86e15;
+  --mineral: #1c8a56;
+  --project: #5040c0;
+  --schedule: #9c7a08;
+  --temperature: #bf2020;
+  --property: #2c6e2e;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.10);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
