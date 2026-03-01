@@ -37,6 +37,7 @@ const app = {
   },
 
   DB_GZ_SIZE: 26910515,  // gzipped size in bytes
+  DB_CACHE_VERSION: 'df-db-v1',  // bump this when the DB file changes
 
   async init() {
     this.setLoadStatus('Loading SQL engine...');
@@ -46,29 +47,62 @@ const app = {
       locateFile: file => `js/${file}`
     });
 
-    this.setLoadStatus('Downloading database...');
-    this.setProgress(10);
+    // --- Try cache first ---
+    let gzBlob = null;
+    const cacheAvailable = typeof caches !== 'undefined';
 
-    // Fetch gzipped DB with progress tracking
-    const response = await fetch('digitalfire_reference.db.gz');
-    const reader = response.body.getReader();
-    const compressed = [];
-    let received = 0;
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      compressed.push(value);
-      received += value.length;
-      const pct = Math.min(75, 10 + (received / this.DB_GZ_SIZE) * 65);
-      this.setProgress(pct);
-      const mb = (received / 1048576).toFixed(1);
-      this.setLoadStatus(`Downloading... ${mb} / ${(this.DB_GZ_SIZE / 1048576).toFixed(0)} MB`);
+    if (cacheAvailable) {
+      try {
+        const cache = await caches.open(this.DB_CACHE_VERSION);
+        const cached = await cache.match('digitalfire_reference.db.gz');
+        if (cached) {
+          this.setLoadStatus('Loading from cache...');
+          this.setProgress(40);
+          gzBlob = await cached.blob();
+        }
+      } catch (e) { /* cache unavailable, fall through */ }
     }
 
-    // Decompress gzip using native DecompressionStream
+    // --- Download if not cached ---
+    if (!gzBlob) {
+      this.setLoadStatus('Downloading database...');
+      this.setProgress(10);
+
+      const response = await fetch('digitalfire_reference.db.gz');
+      const reader = response.body.getReader();
+      const compressed = [];
+      let received = 0;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        compressed.push(value);
+        received += value.length;
+        const pct = Math.min(75, 10 + (received / this.DB_GZ_SIZE) * 65);
+        this.setProgress(pct);
+        const mb = (received / 1048576).toFixed(1);
+        this.setLoadStatus(`Downloading... ${mb} / ${(this.DB_GZ_SIZE / 1048576).toFixed(0)} MB`);
+      }
+      gzBlob = new Blob(compressed);
+
+      // Store in cache for next visit (fire-and-forget)
+      if (cacheAvailable) {
+        try {
+          const cache = await caches.open(this.DB_CACHE_VERSION);
+          cache.put('digitalfire_reference.db.gz',
+            new Response(gzBlob, {
+              headers: {
+                'Content-Type': 'application/gzip',
+                'Content-Length': String(this.DB_GZ_SIZE)
+              }
+            })
+          );
+        } catch (e) { /* storage quota exceeded or unavailable */ }
+      }
+    }
+
+    // --- Decompress ---
     this.setLoadStatus('Decompressing database...');
     this.setProgress(78);
-    const gzBlob = new Blob(compressed);
     const ds = new DecompressionStream('gzip');
     const decompressed = gzBlob.stream().pipeThrough(ds);
     const buf = new Uint8Array(await new Response(decompressed).arrayBuffer());
