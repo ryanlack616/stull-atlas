@@ -13,6 +13,9 @@ const app = {
   debounceTimer: null,
   filterRows: [],
   darkMode: true,
+  imgDepth: 0,
+  currentDetailPageId: null,
+  currentDetailCategory: null,
 
   // Category config
   categories: {
@@ -352,16 +355,19 @@ const app = {
     const page = this.query("SELECT * FROM pages WHERE id = ?", [pageId])[0];
     if (!page) return;
 
+    this.currentDetailPageId = pageId;
+    this.currentDetailCategory = category;
+
     document.getElementById('detail-title').textContent = page.title || 'Untitled';
     const catEl = document.getElementById('detail-cat');
     catEl.textContent = category;
     catEl.className = `rc-cat ${category}`;
 
     let bodyHtml = '';
-    const images = this.renderImages(pageId, category);
+    const neighborhood = this.renderImageNeighborhood(pageId, category, this.imgDepth);
 
-    // For picture pages, images come first
-    if (category === 'picture') bodyHtml += images;
+    // For picture pages, own images come first (large), neighborhood below content
+    if (category === 'picture') bodyHtml += this.renderImages(pageId, category);
 
     // Category-specific content
     switch (category) {
@@ -378,8 +384,8 @@ const app = {
         bodyHtml += this.renderGenericDetail(pageId, page, category);
     }
 
-    // Images after content for non-picture pages
-    if (category !== 'picture') bodyHtml += images;
+    // Image neighborhood (with depth selector) for all pages
+    bodyHtml += neighborhood;
 
     // Related content (all categories)
     bodyHtml += this.renderRelated(pageId);
@@ -400,7 +406,7 @@ const app = {
     const isPicture = category === 'picture';
     const limit = isPicture ? 20 : 6;
     const imgs = this.query(
-      'SELECT image_url, alt_text, local_filename FROM image_urls WHERE page_id = ? ORDER BY id LIMIT ' + limit,
+      'SELECT image_url, alt_text FROM image_urls WHERE page_id = ? ORDER BY id LIMIT ' + limit,
       [pageId]
     );
     if (!imgs.length) return '';
@@ -417,7 +423,7 @@ const app = {
         </a>`;
       }
     } else {
-      html += `<h3>Images</h3><div class="img-grid">`;
+      html += `<div class="img-grid">`;
       for (const img of imgs) {
         const url = img.image_url;
         const alt = img.alt_text || '';
@@ -429,6 +435,119 @@ const app = {
     html += `</div></div>`;
     return html;
   },
+
+  // --- Image Neighborhood (layered graph traversal) ---
+  getNeighborhood(pageId, depth) {
+    // Returns [{pageId, title, category, layer, images:[{image_url,alt_text}]}]
+    const seen = new Set([pageId]);
+    const result = [];
+    const caps = [0, 8, 4, 3]; // related pages to fetch per node at each layer
+    const imgCaps = [6, 3, 2, 2]; // images per node per layer
+
+    // Layer 0: own images
+    const ownImgs = this.query(
+      'SELECT image_url, alt_text FROM image_urls WHERE page_id = ? ORDER BY id LIMIT 6', [pageId]);
+    result.push({ pageId, title: null, category: null, layer: 0, images: ownImgs });
+    if (depth < 1) return result;
+
+    // Layers 1–3
+    const layerIds = [[pageId]]; // layerIds[n] = page IDs in layer n
+    for (let layer = 1; layer <= depth; layer++) {
+      const nextIds = [];
+      for (const pid of layerIds[layer - 1]) {
+        const rels = this.query(
+          'SELECT related_page_id, related_title, related_category FROM related_content ' +
+          'WHERE page_id = ? AND related_page_id IS NOT NULL ORDER BY rank LIMIT ' + caps[layer],
+          [pid]
+        );
+        for (const rel of rels) {
+          const rid = rel.related_page_id;
+          if (seen.has(rid)) continue;
+          seen.add(rid);
+          const imgs = this.query(
+            'SELECT image_url, alt_text FROM image_urls WHERE page_id = ? ORDER BY id LIMIT ' + imgCaps[layer],
+            [rid]
+          );
+          if (!imgs.length) continue; // skip pages with no images
+          result.push({ pageId: rid, title: rel.related_title, category: rel.related_category, layer, images: imgs });
+          nextIds.push(rid);
+        }
+      }
+      layerIds.push(nextIds);
+    }
+    return result;
+  },
+
+  renderImageNeighborhood(pageId, category, depth) {
+    const nodes = this.getNeighborhood(pageId, depth);
+    const layerNodes = [[], [], [], []];
+    for (const n of nodes) layerNodes[n.layer].push(n);
+
+    // Only show if there are images anywhere
+    const hasAny = nodes.some(n => n.images.length);
+    if (!hasAny) return '';
+
+    const layerLabels = ['', 'Related pages', '2 hops out', '3 hops out'];
+    const depthBtns = [0,1,2,3].map(d =>
+      `<button class="depth-btn${d === depth ? ' active' : ''}" onclick="app.setImgDepth(${d})">${d}</button>`
+    ).join('');
+
+    let html = `<div class="detail-section img-neighborhood">
+      <div class="img-depth-header">
+        <span>Images</span>
+        <div class="depth-selector">
+          <span class="depth-label">depth</span>${depthBtns}
+        </div>
+      </div>`;
+
+    // Layer 0: own images (shown without label, respecting picture vs thumbnail style)
+    if (layerNodes[0].length && layerNodes[0][0].images.length) {
+      const isPic = category === 'picture';
+      html += `<div class="img-grid${isPic ? ' img-grid-large' : ''}">` ;
+      for (const img of layerNodes[0][0].images) {
+        html += `<a href="${img.image_url}" target="_blank" rel="noopener" class="img-cell${isPic ? ' img-cell-large' : ''}">
+          <img src="${img.image_url}" alt="${this.esc(img.alt_text||'')}" loading="lazy" onerror="this.parentElement.style.display='none'">
+        </a>`;
+      }
+      html += `</div>`;
+    }
+
+    // Layers 1–3: grouped by source page
+    for (let layer = 1; layer <= 3; layer++) {
+      if (!layerNodes[layer].length) continue;
+      html += `<div class="img-layer img-layer-${layer}">
+        <div class="img-layer-label">${layerLabels[layer]}</div>
+        <div class="img-neighbors">`;
+      for (const node of layerNodes[layer]) {
+        const cat = node.category || '';
+        html += `<div class="img-neighbor">
+          <div class="img-neighbor-title">
+            <span class="rc-cat ${cat}">${cat}</span>
+            <a href="#" onclick="event.preventDefault();app.openDetail(${node.pageId},'${cat}')">${this.esc(node.title || '')}</a>
+          </div>
+          <div class="img-grid img-grid-mini">`;
+        for (const img of node.images) {
+          html += `<a href="#" onclick="event.preventDefault();app.openDetail(${node.pageId},'${cat}')" class="img-cell">
+            <img src="${img.image_url}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'">
+          </a>`;
+        }
+        html += `</div></div>`;
+      }
+      html += `</div></div>`;
+    }
+
+    html += `</div>`;
+    return html;
+  },
+
+  setImgDepth(depth) {
+    this.imgDepth = depth;
+    const container = document.querySelector('.img-neighborhood');
+    if (!container || !this.currentDetailPageId) return;
+    const html = this.renderImageNeighborhood(this.currentDetailPageId, this.currentDetailCategory, depth);
+    container.outerHTML = html;
+  },
+
 
   renderMaterialDetail(pageId, page) {
     let html = '';
