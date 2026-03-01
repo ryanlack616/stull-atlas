@@ -112,6 +112,35 @@ const app = {
     this.setProgress(92);
     this.db = new SQL.Database(buf);
 
+    // --- Load incremental delta updates ---
+    try {
+      const deltaResp = await fetch('updates/updates.json?_=' + Date.now());
+      if (deltaResp.ok) {
+        const delta = await deltaResp.json();
+        const pages = delta.pages || [];
+        if (pages.length > 0) {
+          this.setLoadStatus('Applying updates...');
+          const maxRowidRow = this.query('SELECT MAX(rowid) as n FROM search_index');
+          let rowid = (maxRowidRow[0]?.n ?? 0);
+          for (const p of pages) {
+            rowid++;
+            this.db.run(
+              'INSERT OR REPLACE INTO search_index (rowid,category,title,snippet,url,page_id) VALUES (?,?,?,?,?,?)',
+              [rowid, p.category || 'picture', p.title || '', p.snippet || '', p.url || '', p.page_id || 0]
+            );
+            this.db.run(
+              'INSERT INTO search_fts (rowid,title,body,category) VALUES (?,?,?,?)',
+              [rowid, p.title || '', p.body || '', p.category || 'picture']
+            );
+          }
+          console.log(`[delta] +${pages.length} pages applied`);
+        }
+      }
+    } catch (e) {
+      // Delta unavailable — base DB is still fully functional
+      console.warn('[delta] load skipped:', e.message);
+    }
+
     this.setLoadStatus('Ready.');
     this.setProgress(100);
 
