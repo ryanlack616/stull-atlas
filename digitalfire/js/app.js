@@ -12,6 +12,7 @@ const app = {
   currentCategory: 'all',
   debounceTimer: null,
   filterRows: [],
+  darkMode: true,
 
   // Category config
   categories: {
@@ -88,6 +89,9 @@ const app = {
     // Bind events
     this.bindEvents();
 
+    // Initialize theme
+    this.initTheme();
+
     // Handle deep-link URL params (?q=search+term&cat=glossary or ?id=123&cat=material)
     this.handleDeepLink();
 
@@ -148,6 +152,39 @@ const app = {
       }
       if (e.key === 'Escape') this.closeDetail();
     });
+  },
+
+  initTheme() {
+    // Check localStorage, then system preference, default dark
+    const stored = localStorage.getItem('df-theme');
+    if (stored) {
+      this.darkMode = stored === 'dark';
+    } else {
+      this.darkMode = !window.matchMedia('(prefers-color-scheme: light)').matches;
+    }
+    this.applyTheme();
+
+    // Bind toggle button
+    document.getElementById('theme-toggle').addEventListener('click', () => this.toggleTheme());
+  },
+
+  toggleTheme() {
+    this.darkMode = !this.darkMode;
+    localStorage.setItem('df-theme', this.darkMode ? 'dark' : 'light');
+    this.applyTheme();
+  },
+
+  applyTheme() {
+    const btn = document.getElementById('theme-toggle');
+    if (this.darkMode) {
+      document.documentElement.removeAttribute('data-theme');
+      btn.innerHTML = '&#9790;';  // crescent moon
+      btn.title = 'Switch to light mode';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      btn.innerHTML = '&#9728;';  // sun
+      btn.title = 'Switch to dark mode';
+    }
   },
 
   handleDeepLink() {
@@ -321,21 +358,28 @@ const app = {
     catEl.className = `rc-cat ${category}`;
 
     let bodyHtml = '';
+    const images = this.renderImages(pageId, category);
+
+    // For picture pages, images come first
+    if (category === 'picture') bodyHtml += images;
 
     // Category-specific content
     switch (category) {
       case 'material':
-        bodyHtml = this.renderMaterialDetail(pageId, page);
+        bodyHtml += this.renderMaterialDetail(pageId, page);
         break;
       case 'glossary':
-        bodyHtml = this.renderGlossaryDetail(pageId, page);
+        bodyHtml += this.renderGlossaryDetail(pageId, page);
         break;
       case 'recipe':
-        bodyHtml = this.renderRecipeDetail(pageId, page);
+        bodyHtml += this.renderRecipeDetail(pageId, page);
         break;
       default:
-        bodyHtml = this.renderGenericDetail(pageId, page, category);
+        bodyHtml += this.renderGenericDetail(pageId, page, category);
     }
+
+    // Images after content for non-picture pages
+    if (category !== 'picture') bodyHtml += images;
 
     // Related content (all categories)
     bodyHtml += this.renderRelated(pageId);
@@ -349,6 +393,41 @@ const app = {
   closeDetail() {
     document.getElementById('detail-overlay').classList.remove('visible');
     document.getElementById('detail-panel').classList.remove('open');
+  },
+
+  // --- Image Gallery ---
+  renderImages(pageId, category) {
+    const isPicture = category === 'picture';
+    const limit = isPicture ? 20 : 6;
+    const imgs = this.query(
+      'SELECT image_url, alt_text, local_filename FROM image_urls WHERE page_id = ? ORDER BY id LIMIT ' + limit,
+      [pageId]
+    );
+    if (!imgs.length) return '';
+
+    let html = `<div class="detail-section">`;
+    if (isPicture) {
+      html += `<div class="img-grid img-grid-large">`;
+      for (const img of imgs) {
+        const url = img.image_url;
+        const alt = img.alt_text || '';
+        html += `<a href="${url}" target="_blank" rel="noopener" class="img-cell img-cell-large">
+          <img src="${url}" alt="${this.esc(alt)}" loading="lazy" onerror="this.parentElement.style.display='none'">
+          ${alt ? `<div class="img-caption">${this.esc(alt)}</div>` : ''}
+        </a>`;
+      }
+    } else {
+      html += `<h3>Images</h3><div class="img-grid">`;
+      for (const img of imgs) {
+        const url = img.image_url;
+        const alt = img.alt_text || '';
+        html += `<a href="${url}" target="_blank" rel="noopener" class="img-cell">
+          <img src="${url}" alt="${this.esc(alt)}" loading="lazy" onerror="this.parentElement.style.display='none'">
+        </a>`;
+      }
+    }
+    html += `</div></div>`;
+    return html;
   },
 
   renderMaterialDetail(pageId, page) {
